@@ -20,7 +20,7 @@ function populate(data){
   const requested=params.get('hero');
   select.value=data.heroes.some(h=>h.code===requested)?requested:'TR19';
   const cut=Number(params.get('cut'));
-  if(Number.isFinite(cut)&&cut>=20&&cut<=240)$('cut').value=$('cut-number').value=cut;
+  if(Number.isFinite(cut)&&cut>=20&&cut<=300)$('cut').value=$('cut-number').value=cut;
   const coverage=Number(params.get('coverage'));
   if(Number.isFinite(coverage)&&coverage>=10&&coverage<=100)$('coverage').value=coverage;
   $('resource').checked=params.get('resource')!=='0';
@@ -120,7 +120,7 @@ async function main(){
     for(const id of ['hero','coverage','resource','summons'])$(id).addEventListener('input',schedule);
     $('cut').addEventListener('input',()=>{$('cut-number').value=$('cut').value;schedule();});
     $('cut-number').addEventListener('change',()=>{
-      const v=Math.max(20,Math.min(240,Math.round(Number($('cut-number').value)||201)));
+      const v=Math.max(20,Math.min(300,Math.round(Number($('cut-number').value)||201)));
       $('cut').value=$('cut-number').value=v;schedule();
     });
     $('share').addEventListener('click',async()=>{

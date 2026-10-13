@@ -1,0 +1,532 @@
+[
+  {
+    "code": "Z2",
+    "name": "레베카",
+    "grade": "제한됨",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      35,
+      35,
+      35
+    ],
+    "failedAtMax": "63라 9.0초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "Z6",
+    "name": "알비다",
+    "grade": "제한됨",
+    "minimumCut": 261,
+    "minimumAdditionalCut": 241,
+    "remaining": 36,
+    "rounds": [
+      36,
+      34,
+      34,
+      35,
+      35,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 16.5초",
+    "nonmonotone": false
+  },
+  {
+    "code": "Z8",
+    "name": "카타쿠리",
+    "grade": "제한됨",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      35
+    ],
+    "failedAtMax": "61라 10.0초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "Z9",
+    "name": "크로커다일",
+    "grade": "제한됨",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      35
+    ],
+    "failedAtMax": "61라 10.0초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "Z10",
+    "name": "킹",
+    "grade": "제한됨",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      35,
+      35
+    ],
+    "failedAtMax": "62라 9.5초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "TR3",
+    "name": "도플라밍고",
+    "grade": "초월함",
+    "minimumCut": 214,
+    "minimumAdditionalCut": 194,
+    "remaining": 36,
+    "rounds": [
+      32,
+      31,
+      33,
+      34,
+      34,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 14.5초",
+    "nonmonotone": false
+  },
+  {
+    "code": "TR4",
+    "name": "로빈",
+    "grade": "초월함",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      35
+    ],
+    "failedAtMax": "61라 9.0초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "TR6",
+    "name": "료쿠규",
+    "grade": "초월함",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      30,
+      33,
+      34,
+      34,
+      35
+    ],
+    "failedAtMax": "65라 14.0초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "TR8",
+    "name": "루피",
+    "grade": "초월함",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      35
+    ],
+    "failedAtMax": "61라 9.5초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "TR9",
+    "name": "바질호킨스",
+    "grade": "초월함",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      35,
+      35
+    ],
+    "failedAtMax": "62라 12.5초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "TR11",
+    "name": "사보",
+    "grade": "초월함",
+    "minimumCut": 199,
+    "minimumAdditionalCut": 179,
+    "remaining": 36,
+    "rounds": [
+      28,
+      34,
+      25,
+      35,
+      35,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 15.0초",
+    "nonmonotone": false
+  },
+  {
+    "code": "TR18",
+    "name": "야마토",
+    "grade": "초월함",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      34
+    ],
+    "failedAtMax": "61라 12.5초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "TR19",
+    "name": "우솝",
+    "grade": "초월함",
+    "minimumCut": 180,
+    "minimumAdditionalCut": 160,
+    "remaining": 36,
+    "rounds": [
+      36,
+      20,
+      33,
+      34,
+      35,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 16.0초",
+    "nonmonotone": false
+  },
+  {
+    "code": "TR20",
+    "name": "조로",
+    "grade": "초월함",
+    "minimumCut": 240,
+    "minimumAdditionalCut": 220,
+    "remaining": 36,
+    "rounds": [
+      35,
+      33,
+      34,
+      34,
+      34,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 15.5초",
+    "nonmonotone": false
+  },
+  {
+    "code": "TR22",
+    "name": "징베",
+    "grade": "초월함",
+    "minimumCut": 245,
+    "minimumAdditionalCut": 225,
+    "remaining": 36,
+    "rounds": [
+      29,
+      34,
+      27,
+      35,
+      35,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 16.5초",
+    "nonmonotone": false
+  },
+  {
+    "code": "TR23",
+    "name": "쵸파",
+    "grade": "초월함",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      30,
+      32,
+      33,
+      34
+    ],
+    "failedAtMax": "64라 12.0초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "TR27",
+    "name": "타시기",
+    "grade": "초월함",
+    "minimumCut": 20,
+    "minimumAdditionalCut": 0,
+    "remaining": 35,
+    "rounds": [
+      33,
+      34,
+      34,
+      35,
+      35,
+      35
+    ],
+    "failedAtMax": null,
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "TR29",
+    "name": "후지토라",
+    "grade": "초월함",
+    "minimumCut": 222,
+    "minimumAdditionalCut": 202,
+    "remaining": 36,
+    "rounds": [
+      34,
+      32,
+      33,
+      34,
+      34,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 15.5초",
+    "nonmonotone": false
+  },
+  {
+    "code": "TR30",
+    "name": "베가펑크",
+    "grade": "초월함",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      34
+    ],
+    "failedAtMax": "61라 11.5초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "E1",
+    "name": "니카(루피)",
+    "grade": "영원한",
+    "minimumCut": 176,
+    "minimumAdditionalCut": 156,
+    "remaining": 36,
+    "rounds": [
+      31,
+      31,
+      34,
+      35,
+      35,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 15.0초",
+    "nonmonotone": false
+  },
+  {
+    "code": "E2",
+    "name": "니카(스네이크)",
+    "grade": "영원한",
+    "minimumCut": 176,
+    "minimumAdditionalCut": 156,
+    "remaining": 36,
+    "rounds": [
+      31,
+      31,
+      34,
+      35,
+      35,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 15.0초",
+    "nonmonotone": false
+  },
+  {
+    "code": "E5",
+    "name": "버기",
+    "grade": "영원한",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      36
+    ],
+    "failedAtMax": "61라 8.5초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "E10",
+    "name": "카번딧슈",
+    "grade": "영원한",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      33,
+      34,
+      35
+    ],
+    "failedAtMax": "63라 11.0초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "E12",
+    "name": "핸콕",
+    "grade": "영원한",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      33,
+      33,
+      34,
+      34,
+      34
+    ],
+    "failedAtMax": "65라 10.0초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "I1",
+    "name": "거프",
+    "grade": "불멸의",
+    "minimumCut": 189,
+    "minimumAdditionalCut": 169,
+    "remaining": 36,
+    "rounds": [
+      35,
+      34,
+      34,
+      34,
+      34,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 14.5초",
+    "nonmonotone": false
+  },
+  {
+    "code": "I3",
+    "name": "레일리",
+    "grade": "불멸의",
+    "minimumCut": 237,
+    "minimumAdditionalCut": 217,
+    "remaining": 36,
+    "rounds": [
+      35,
+      32,
+      33,
+      34,
+      34,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 16.5초",
+    "nonmonotone": false
+  },
+  {
+    "code": "I4",
+    "name": "로져",
+    "grade": "불멸의",
+    "minimumCut": 249,
+    "minimumAdditionalCut": 229,
+    "remaining": 35,
+    "rounds": [
+      33,
+      32,
+      33,
+      33,
+      34,
+      35
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 16.5초",
+    "nonmonotone": false
+  },
+  {
+    "code": "I5",
+    "name": "불릿",
+    "grade": "불멸의",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      33,
+      33,
+      33,
+      34,
+      35
+    ],
+    "failedAtMax": "65라 9.5초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "I9",
+    "name": "시키",
+    "grade": "불멸의",
+    "minimumCut": null,
+    "minimumAdditionalCut": null,
+    "remaining": 55,
+    "rounds": [
+      34
+    ],
+    "failedAtMax": "61라 10.0초",
+    "belowFailure": null,
+    "nonmonotone": false
+  },
+  {
+    "code": "I11",
+    "name": "카이도",
+    "grade": "불멸의",
+    "minimumCut": 229,
+    "minimumAdditionalCut": 209,
+    "remaining": 36,
+    "rounds": [
+      35,
+      34,
+      34,
+      35,
+      35,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 16.5초",
+    "nonmonotone": false
+  },
+  {
+    "code": "I12",
+    "name": "흰수염",
+    "grade": "불멸의",
+    "minimumCut": 177,
+    "minimumAdditionalCut": 157,
+    "remaining": 36,
+    "rounds": [
+      35,
+      34,
+      35,
+      35,
+      35,
+      36
+    ],
+    "failedAtMax": null,
+    "belowFailure": "65라 14.5초",
+    "nonmonotone": false
+  }
+]
