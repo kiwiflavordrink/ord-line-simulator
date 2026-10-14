@@ -1,0 +1,14 @@
+{
+  "name": "같은 증폭 상황에서 라인과 단일 동시 계산",
+  "context": {
+    "selected": ["L1", "L1_ALL"],
+    "customMagicCut": 3
+  },
+  "line": {
+    "team": [{"code": "I12", "count": 1}, {"code": "L23", "count": 1}]
+  },
+  "single": {
+    "team": [{"code": "L16", "count": 2}, {"code": "L36", "count": 1}],
+    "trials": 2000
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "미지원 영웅 예시 (실패해야 정상)",
+  "description": "L1(검은수염 전설)은 data.json에 없는 영웅, L9는 단일 테스터 전용, count 7은 범위 초과",
+  "line": {
+    "team": [
+      {"code": "L1", "count": 1},
+      {"code": "L9", "count": 1},
+      {"code": "TR19", "count": 7}
+    ]
+  }
+}
