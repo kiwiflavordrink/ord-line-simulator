@@ -2,6 +2,8 @@
 
 공개 페이지: https://ordr-s2-line-sim-2026.msf011111.chatgpt.site/v3
 
+공개 자료실: https://ordr-s2-line-sim-2026.msf011111.chatgpt.site/resources.html
+
 정적 HTML/JavaScript 사이트입니다. 서버나 데이터베이스가 필요하지 않습니다. 다른 컴퓨터에서 이 폴더를 내려받아 Claude Code 등으로 수정할 수 있습니다.
 
 ## 파일 안내
@@ -12,6 +14,7 @@
 - `dist/engine_v3.mjs`: 60~65라 조합 전투 계산
 - `dist/data.json`: 영웅 및 몹 데이터. 2.305 원본 수치와 2.323 툴팁 기반 근사가 섞여 있음
 - `dist/v2.html` 등: 이전 버전. v3 변경 시 기존 URL을 깨지 않도록 유지
+- `dist/resources.html`, `dist/resources/`: 엑셀 8개와 조사 노트 5개의 공개 다운로드
 - `test_*.mjs`: 계산 엔진 회귀 확인
 
 ## 로컬 실행
