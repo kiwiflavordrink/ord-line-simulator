@@ -37,11 +37,12 @@
         </div>
         <div class="subsection">
           <h3>라인몹 삭제</h3>
-          <p class="help">모리아·페로나는 절대쿨타임 종료 후 첫 기본 공격에 삭제가 발동합니다. 슈가는 준비될 때 액티브를 자동 사용합니다. 셋 모두 한 번에 라인몹 1기를 삭제하고, 피해량·끝딜 순위에는 합산하지 않습니다. 대상은 살아 있는 라인몹 중 가장 먼저 등장한 몹으로 가정합니다.</p>
-          <div class="mini-grid"><label>모리아 절대쿨 (초)<input id="moria-cd" type="number" min="0.1" max="300" step="0.1" value="9"></label><label>모리아 삭제 확률 (%)<input id="moria-proc" type="number" min="0" max="100" step="1" value="100"></label></div>
-          <div class="mini-grid"><label>페로나 절대쿨 (초)<input id="perona-cd" type="number" min="0.1" max="300" step="0.1" value="7.5"></label><label>페로나 삭제 확률 (%)<input id="perona-proc" type="number" min="0" max="100" step="1" value="100"></label></div>
+          <p class="help">모리아는 절대쿨타임 종료 후 첫 기본 공격에 삭제가 발동합니다. 페로나는 절대쿨타임이 끝난 뒤 평타마다 10% 확률을 판정합니다. 슈가는 준비될 때 액티브를 자동 사용합니다. 셋 모두 한 번에 라인몹 1기를 삭제하고, 피해량·끝딜 순위에는 합산하지 않습니다. 대상은 살아 있는 라인몹 중 가장 먼저 등장한 몹으로 가정합니다.</p>
+          <div class="mini-grid"><label>모리아 절대쿨 (초)<input id="moria-cd" type="number" min="0.1" max="300" step="0.1" value="8.5"></label><label>모리아 삭제 확률 (%)<input id="moria-proc" type="number" min="0" max="100" step="1" value="100"></label></div>
+          <div class="mini-grid"><label>페로나 절대쿨 (초)<input id="perona-cd" type="number" min="0.1" max="300" step="0.1" value="7.5"></label><label>페로나 삭제 확률 (%)<input id="perona-proc" type="number" min="0" max="100" step="1" value="10"></label></div>
           <label class="field-label" for="sugar-cd">슈가 액티브 쿨 (초)</label><input id="sugar-cd" class="v2-number" type="number" min="0.1" max="300" step="0.1" value="85">
-          <p class="help">기본값은 2.305 맵 실행 로직입니다. 현재 홈페이지 모리아 설명은 8.5초, 페로나 설명 본문은 10%로 달라 직접 비교할 수 있게 수치를 열어 두었습니다. 확률 100% 미만은 기대 횟수를 누적해 삭제 시점을 근사합니다.</p>
+          <label class="field-label" for="delete-seed">확률 계산 시드</label><input id="delete-seed" class="v2-number" type="number" min="0" max="2147483647" step="1" value="202323">
+          <p class="help">기본값은 ordr.kr의 2.323 캐릭터 설명을 따릅니다. 페로나의 10%는 평타마다 실제 확률로 판정하며 시드가 같으면 결과가 재현됩니다. 시드를 바꾸면 확률에 따른 잔존 수 변화를 볼 수 있습니다.</p>
         </div>
         <div class="subsection">
           <h3>단일 마무리</h3>

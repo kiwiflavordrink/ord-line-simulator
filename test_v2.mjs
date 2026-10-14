@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {simulate} from './dist/engine.mjs';
-import {simulateV2} from './dist/engine_v2.mjs';
+import {simulateV2,DELETERS} from './dist/engine_v2.mjs';
 
 const data=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
 for(const hero of data.heroes){
@@ -35,6 +35,11 @@ for(const code of ['L12','D4','L19']){
   assert.equal(Object.keys(run.sourceDamage).length,0,code);
   assert.equal(run.totalLineKilled,run.deleteCounts[code],code);
 }
+assert.equal(DELETERS.L12.cooldown,8.5);
+assert.equal(DELETERS.D4.proc,.1);
+const peronaA=simulateV2(data,[{code:'D4'}],{red:false,deletion:{seed:17}});
+const peronaB=simulateV2(data,[{code:'D4'}],{red:false,deletion:{seed:17}});
+assert.deepEqual(peronaA.deleteCounts,peronaB.deleteCounts);
 assert.equal(simulateV2(data,[{code:'D4'}],{red:false,deletion:{D4Proc:0}}).deleteCounts.D4,0);
 assert.ok(simulateV2(data,[{code:'L12'}],{red:false,deletion:{L12Cooldown:18}}).deleteCounts.L12<
   simulateV2(data,[{code:'L12'}],{red:false}).deleteCounts.L12);

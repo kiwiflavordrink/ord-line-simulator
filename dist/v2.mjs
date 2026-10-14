@@ -56,7 +56,7 @@ function options(){return {
   finisher:{mode:$('finish-mode').value,interval:val('finish-interval'),successChance:val('finish-chance')/100,
     damageType:$('finish-type').value,flat:val('finish-flat'),maxPct:val('finish-max')/100,
     currentPct:val('finish-current')/100,lostPct:val('finish-lost')/100},
-  deletion:{L12Cooldown:val('moria-cd'),D4Cooldown:val('perona-cd'),L19Cooldown:val('sugar-cd'),
+  deletion:{L12Cooldown:val('moria-cd'),D4Cooldown:val('perona-cd'),L19Cooldown:val('sugar-cd'),seed:val('delete-seed'),
     L12Proc:val('moria-proc')/100,D4Proc:val('perona-proc')/100}
 };}
 
@@ -128,7 +128,7 @@ function restore(){
     ['magicAps','magic-aps'],['magicChance','magic-chance'],['magicFlat','magic-flat'],['magicMax','magic-max'],
     ['magicCurrent','magic-current'],['magicLost','magic-lost'],['finishInterval','finish-interval'],
     ['finishChance','finish-chance'],['finishFlat','finish-flat'],['finishMax','finish-max'],
-    ['finishCurrent','finish-current'],['finishLost','finish-lost'],['moriaCd','moria-cd'],['peronaCd','perona-cd'],['sugarCd','sugar-cd'],['moriaProc','moria-proc'],['peronaProc','perona-proc']]){
+    ['finishCurrent','finish-current'],['finishLost','finish-lost'],['moriaCd','moria-cd'],['peronaCd','perona-cd'],['sugarCd','sugar-cd'],['moriaProc','moria-proc'],['peronaProc','perona-proc'],['deleteSeed','delete-seed']]){
     if(params.has(key)&&Number.isFinite(Number(params.get(key))))$(id).value=params.get(key);
   }
   if(['off','damage'].includes(params.get('finishMode')))$('finish-mode').value=params.get('finishMode');
@@ -142,7 +142,7 @@ function shareURL(){
     ['magicAps','magic-aps'],['magicChance','magic-chance'],['magicFlat','magic-flat'],['magicMax','magic-max'],
     ['magicCurrent','magic-current'],['magicLost','magic-lost'],['finishInterval','finish-interval'],
     ['finishChance','finish-chance'],['finishFlat','finish-flat'],['finishMax','finish-max'],
-    ['finishCurrent','finish-current'],['finishLost','finish-lost'],['moriaCd','moria-cd'],['peronaCd','perona-cd'],['sugarCd','sugar-cd'],['moriaProc','moria-proc'],['peronaProc','perona-proc']])u.searchParams.set(key,$(id).value);
+    ['finishCurrent','finish-current'],['finishLost','finish-lost'],['moriaCd','moria-cd'],['peronaCd','perona-cd'],['sugarCd','sugar-cd'],['moriaProc','moria-proc'],['peronaProc','perona-proc'],['deleteSeed','delete-seed']])u.searchParams.set(key,$(id).value);
   u.searchParams.set('finishMode',$('finish-mode').value);u.searchParams.set('finishType',$('finish-type').value);
   u.searchParams.set('red',$('red-v2').checked?'1':'0');u.searchParams.set('resource',$('resource-v2').checked?'1':'0');
   u.searchParams.set('summons',$('summons-v2').checked?'1':'0');history.replaceState(null,'',u);return u.href;

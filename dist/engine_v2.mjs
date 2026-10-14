@@ -3,10 +3,10 @@
 import {SUPPORTS} from './engine.mjs';
 
 // Delete skills are counted as removed units, never as line damage.
-// The 2.305 JASS attack handlers have no RNG around the delete branch.
+// Default proc/cooldown settings follow the current ORDR character tooltips.
 export const DELETERS={
-  L12:{name:'겟코 모리아 전설',aps:2.24,cooldown:9,proc:1,mode:'attack'},
-  D4:{name:'페로나 왜곡',aps:4.634,cooldown:7.5,proc:1,mode:'attack'},
+  L12:{name:'겟코 모리아 전설',aps:2.24,cooldown:8.5,proc:1,mode:'attack'},
+  D4:{name:'페로나 왜곡',aps:4.634,cooldown:7.5,proc:.1,mode:'attack'},
   L19:{name:'슈가 전설',cooldown:85,proc:1,mode:'active'}
 };
 
@@ -56,7 +56,7 @@ export function simulateV2(data,composition,options={}){
     const count=clamp(Math.floor(item.count??1),1,6);
     if(heroMap.has(item.code))for(let i=0;i<count;i++)units.push({kind:'hero',code:item.code,model:heroMap.get(item.code),damage:item.damage!==false});
     else if(SUPPORTS[item.code])for(let i=0;i<count;i++)units.push({kind:'support',code:item.code,model:SUPPORTS[item.code],damage:item.damage!==false,ab:item.ab!==false});
-    else if(DELETERS[item.code])for(let i=0;i<count;i++)units.push({kind:'deleter',code:item.code,model:DELETERS[item.code],damage:item.damage!==false,nextAttack:1/(DELETERS[item.code].aps||1),nextReady:0,procBank:0});
+    else if(DELETERS[item.code])for(let i=0;i<count;i++)units.push({kind:'deleter',code:item.code,model:DELETERS[item.code],damage:item.damage!==false,nextAttack:1/(DELETERS[item.code].aps||1),nextReady:0});
     else if(item.code==='MAGIC_CUSTOM')for(let i=0;i<count;i++)units.push({kind:'magic',code:'MAGIC_CUSTOM',damage:item.damage!==false});
   }
   if(!units.length)throw new Error('조합에 유닛을 한 기 이상 넣어 주세요.');
@@ -77,6 +77,18 @@ export function simulateV2(data,composition,options={}){
   const finishCurrent=clamp(finish.currentPct??0,0,1),finishLost=clamp(finish.lostPct??0,0,1);
   const finishType=finish.damageType??'magic';
   const deleteOptions=options.deletion??{};
+  const deleteSeed=clamp(Math.floor(deleteOptions.seed??202323),0,2147483647);
+  for(const [index,u] of units.entries())if(u.kind==='deleter'){
+    let hash=0;
+    for(const ch of u.code)hash=(Math.imul(hash,31)+ch.charCodeAt(0))>>>0;
+    u.rngState=(deleteSeed^hash^Math.imul(index+1,0x9e3779b9))>>>0||1;
+  }
+  const random=u=>{
+    let x=u.rngState;
+    x^=x<<13;x^=x>>>17;x^=x<<5;
+    u.rngState=x>>>0;
+    return u.rngState/4294967296;
+  };
   const deleteCounts={L12:0,D4:0,L19:0};
   const sourceDamage={};
   const lineDamage={area:0,basic:0,finisher:0,magic:0,physical:0,fixed:0};
@@ -238,8 +250,8 @@ export function simulateV2(data,composition,options={}){
       if(redDamage)for(const m of mobs)
         deal(m,5.625*.15*275000*magicFactor*.1*hit(m),'H2','area','magic');
 
-      // Attack-triggered deletion requires a normal attack after the absolute
-      // cooldown has expired. Sugar is an active used as soon as it is ready.
+      // After absolute cooldown, each attack rolls its tooltip proc chance.
+      // Sugar is an active used as soon as it is ready.
       for(const u of units){
         if(u.kind!=='deleter'||!u.damage)continue;
         const spec=u.model;
@@ -249,9 +261,7 @@ export function simulateV2(data,composition,options={}){
           if(globalT+1e-8<u.nextReady)return;
           const victim=mobs.find(m=>m.hp>0);
           if(!victim)return;
-          u.procBank+=proc;
-          if(u.procBank<1-1e-9)return;
-          u.procBank-=1;
+          if(proc<1&&random(u)>=proc)return;
           victim.hp=0;
           deleteCounts[u.code]++;
           u.nextReady=globalT+cd;
