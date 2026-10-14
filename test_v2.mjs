@@ -28,4 +28,14 @@ const noMagic=simulateV2(data,team,{customMagic:{...magic,chance:0},finisher:{mo
 assert.equal(noMagic.sourceDamage.MAGIC_CUSTOM??0,0);
 const ab=simulateV2(data,[{code:'TR19'},{code:'D3',damage:false,ab:true}],{finisher:{mode:'off'}});
 assert.ok(ab.averageAb>0&&ab.averageAb<=75);
+for(const code of ['L12','D4','L19']){
+  const run=simulateV2(data,[{code}],{red:false});
+  assert.ok(run.deleteCounts[code]>0,code);
+  assert.equal(run.lineDamage.area,0,code);
+  assert.equal(Object.keys(run.sourceDamage).length,0,code);
+  assert.equal(run.totalLineKilled,run.deleteCounts[code],code);
+}
+assert.equal(simulateV2(data,[{code:'D4'}],{red:false,deletion:{D4Proc:0}}).deleteCounts.D4,0);
+assert.ok(simulateV2(data,[{code:'L12'}],{red:false,deletion:{L12Cooldown:18}}).deleteCounts.L12<
+  simulateV2(data,[{code:'L12'}],{red:false}).deleteCounts.L12);
 console.log('V2: 31 legacy heroes, magic, finisher pacing, success rate, damage threshold, AB: passed');

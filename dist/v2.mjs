@@ -1,5 +1,5 @@
 import {SUPPORTS} from './engine.mjs';
-import {simulateV2} from './engine_v2.mjs';
+import {simulateV2,DELETERS} from './engine_v2.mjs';
 
 const $=id=>document.getElementById(id);
 const fmt=n=>new Intl.NumberFormat('ko-KR',{maximumFractionDigits:0}).format(n);
@@ -8,7 +8,7 @@ let data,pending=false;
 const waveNames={60:['제우스','o02G'],61:['바질 호킨스','o026'],62:['잭','o025'],63:['퀸','o027'],64:['킹','o00K'],65:['오로치','o02H']};
 const bossNames={60:'빅 맘 (2.305)',65:'카이도'};
 const nameOf=code=>code==='H2'?'레드포스호 히든':code==='MAGIC_CUSTOM'?'직접 입력 마딜':code==='단일 마무리'?code:
-  data.heroes.find(h=>h.code===code)?.name??SUPPORTS[code]?.name??code;
+  data.heroes.find(h=>h.code===code)?.name??SUPPORTS[code]?.name??DELETERS[code]?.name??code;
 
 function unitSelect(value){
   const sel=document.createElement('select');sel.className='unit-select';sel.setAttribute('aria-label','조합 유닛');
@@ -19,8 +19,10 @@ function unitSelect(value){
   }
   const g=document.createElement('optgroup');g.label='보조딜 · 암브';sel.appendChild(g);
   for(const [code,s] of Object.entries(SUPPORTS)){const o=document.createElement('option');o.value=code;o.textContent=s.name;g.appendChild(o);}
+  const dg=document.createElement('optgroup');dg.label='삭제 · 별도 집계';sel.appendChild(dg);
+  for(const [code,s] of Object.entries(DELETERS)){const o=document.createElement('option');o.value=code;o.textContent=s.name;dg.appendChild(o);}
   const o=document.createElement('option');o.value='MAGIC_CUSTOM';o.textContent='직접 입력 마딜';sel.appendChild(o);
-  sel.value=value&&([...data.heroes.map(h=>h.code),...Object.keys(SUPPORTS),'MAGIC_CUSTOM'].includes(value))?value:'TR19';
+  sel.value=value&&([...data.heroes.map(h=>h.code),...Object.keys(SUPPORTS),...Object.keys(DELETERS),'MAGIC_CUSTOM'].includes(value))?value:'TR19';
   return sel;
 }
 
@@ -36,7 +38,7 @@ function addRow(item={code:'TR19',count:1,damage:true,ab:true}){
   ab.querySelector('input').checked=item.ab!==false;row.appendChild(ab);
   const remove=document.createElement('button');remove.type='button';remove.className='unit-remove';remove.textContent='×';remove.setAttribute('aria-label','조합에서 제거');row.appendChild(remove);
   $('team').appendChild(row);
-  const sync=()=>{ab.hidden=!SUPPORTS[row.querySelector('select').value];$('magic-settings').hidden=![...$('team').querySelectorAll('.unit-select')].some(x=>x.value==='MAGIC_CUSTOM');schedule();};
+  const sync=()=>{const code=row.querySelector('select').value;ab.hidden=!SUPPORTS[code];damage.querySelector('span').textContent=DELETERS[code]?'삭제':'딜';$('magic-settings').hidden=![...$('team').querySelectorAll('.unit-select')].some(x=>x.value==='MAGIC_CUSTOM');schedule();};
   row.addEventListener('input',sync);
   remove.addEventListener('click',()=>{if($('team').children.length<=1)return;row.remove();sync();});
   sync();
@@ -53,7 +55,9 @@ function options(){return {
     maxPct:val('magic-max')/100,currentPct:val('magic-current')/100,lostPct:val('magic-lost')/100},
   finisher:{mode:$('finish-mode').value,interval:val('finish-interval'),successChance:val('finish-chance')/100,
     damageType:$('finish-type').value,flat:val('finish-flat'),maxPct:val('finish-max')/100,
-    currentPct:val('finish-current')/100,lostPct:val('finish-lost')/100}
+    currentPct:val('finish-current')/100,lostPct:val('finish-lost')/100},
+  deletion:{L12Cooldown:val('moria-cd'),D4Cooldown:val('perona-cd'),L19Cooldown:val('sugar-cd'),
+    L12Proc:val('moria-proc')/100,D4Proc:val('perona-proc')/100}
 };}
 
 function renderChart(result){
@@ -83,6 +87,11 @@ function render(){
     $('v2-magic').textContent=fmt(r.sourceDamage.MAGIC_CUSTOM??0);
     $('v2-finish').textContent=`${r.finisherAttempts} / ${r.finisherKills}`;
     $('v2-without').textContent=without.clear?`${without.remaining}기`:`${without.failedRound}라 패배`;
+    $('v2-deleted').textContent=fmt(Object.values(r.deleteCounts).reduce((a,b)=>a+b,0));
+    const deletionBody=$('v2-deletions');deletionBody.innerHTML='';
+    for(const [code,count] of Object.entries(r.deleteCounts))if(chosen.some(u=>u.code===code)){
+      const tr=document.createElement('tr');for(const s of [nameOf(code),`${count}기`,`${opts.deletion[`${code}Cooldown`]}초`,code==='L19'?'액티브':`${fmt(opts.deletion[`${code}Proc`]*100)}%`]){const td=document.createElement('td');td.textContent=s;tr.appendChild(td);}deletionBody.appendChild(tr);
+    }
     renderChart(r);
     const body=$('v2-rounds');body.innerHTML='';
     for(const q of r.checkpoints){const tr=document.createElement('tr');
@@ -119,7 +128,7 @@ function restore(){
     ['magicAps','magic-aps'],['magicChance','magic-chance'],['magicFlat','magic-flat'],['magicMax','magic-max'],
     ['magicCurrent','magic-current'],['magicLost','magic-lost'],['finishInterval','finish-interval'],
     ['finishChance','finish-chance'],['finishFlat','finish-flat'],['finishMax','finish-max'],
-    ['finishCurrent','finish-current'],['finishLost','finish-lost']]){
+    ['finishCurrent','finish-current'],['finishLost','finish-lost'],['moriaCd','moria-cd'],['peronaCd','perona-cd'],['sugarCd','sugar-cd'],['moriaProc','moria-proc'],['peronaProc','perona-proc']]){
     if(params.has(key)&&Number.isFinite(Number(params.get(key))))$(id).value=params.get(key);
   }
   if(['off','damage'].includes(params.get('finishMode')))$('finish-mode').value=params.get('finishMode');
@@ -133,7 +142,7 @@ function shareURL(){
     ['magicAps','magic-aps'],['magicChance','magic-chance'],['magicFlat','magic-flat'],['magicMax','magic-max'],
     ['magicCurrent','magic-current'],['magicLost','magic-lost'],['finishInterval','finish-interval'],
     ['finishChance','finish-chance'],['finishFlat','finish-flat'],['finishMax','finish-max'],
-    ['finishCurrent','finish-current'],['finishLost','finish-lost']])u.searchParams.set(key,$(id).value);
+    ['finishCurrent','finish-current'],['finishLost','finish-lost'],['moriaCd','moria-cd'],['peronaCd','perona-cd'],['sugarCd','sugar-cd'],['moriaProc','moria-proc'],['peronaProc','perona-proc']])u.searchParams.set(key,$(id).value);
   u.searchParams.set('finishMode',$('finish-mode').value);u.searchParams.set('finishType',$('finish-type').value);
   u.searchParams.set('red',$('red-v2').checked?'1':'0');u.searchParams.set('resource',$('resource-v2').checked?'1':'0');
   u.searchParams.set('summons',$('summons-v2').checked?'1':'0');history.replaceState(null,'',u);return u.href;

@@ -2,6 +2,14 @@
 // Enemy HP/armor comes from the extracted 2.305 map; abilities use the 2.323 card model.
 import {SUPPORTS} from './engine.mjs';
 
+// Delete skills are counted as removed units, never as line damage.
+// The 2.305 JASS attack handlers have no RNG around the delete branch.
+export const DELETERS={
+  L12:{name:'겟코 모리아 전설',aps:2.24,cooldown:9,proc:1,mode:'attack'},
+  D4:{name:'페로나 왜곡',aps:4.634,cooldown:7.5,proc:1,mode:'attack'},
+  L19:{name:'슈가 전설',cooldown:85,proc:1,mode:'active'}
+};
+
 const rounds=[60,61,62,63,64,65];
 const pf=a=>a>=0?1/(1+.02*a):2-Math.pow(.98,-a);
 const typeMatrix={
@@ -48,6 +56,7 @@ export function simulateV2(data,composition,options={}){
     const count=clamp(Math.floor(item.count??1),1,6);
     if(heroMap.has(item.code))for(let i=0;i<count;i++)units.push({kind:'hero',code:item.code,model:heroMap.get(item.code),damage:item.damage!==false});
     else if(SUPPORTS[item.code])for(let i=0;i<count;i++)units.push({kind:'support',code:item.code,model:SUPPORTS[item.code],damage:item.damage!==false,ab:item.ab!==false});
+    else if(DELETERS[item.code])for(let i=0;i<count;i++)units.push({kind:'deleter',code:item.code,model:DELETERS[item.code],damage:item.damage!==false,nextAttack:1/(DELETERS[item.code].aps||1),nextReady:0,procBank:0});
     else if(item.code==='MAGIC_CUSTOM')for(let i=0;i<count;i++)units.push({kind:'magic',code:'MAGIC_CUSTOM',damage:item.damage!==false});
   }
   if(!units.length)throw new Error('조합에 유닛을 한 기 이상 넣어 주세요.');
@@ -67,6 +76,8 @@ export function simulateV2(data,composition,options={}){
   const finishFlat=clamp(finish.flat??0,0,1e10),finishMax=clamp(finish.maxPct??0,0,1);
   const finishCurrent=clamp(finish.currentPct??0,0,1),finishLost=clamp(finish.lostPct??0,0,1);
   const finishType=finish.damageType??'magic';
+  const deleteOptions=options.deletion??{};
+  const deleteCounts={L12:0,D4:0,L19:0};
   const sourceDamage={};
   const lineDamage={area:0,basic:0,finisher:0,magic:0,physical:0,fixed:0};
   const mobs=[],specials=[],checkpoints=[],timeline=[];
@@ -100,7 +111,7 @@ export function simulateV2(data,composition,options={}){
     averageAb:mobs.length?mobs.reduce((a,m)=>a+m.ab,0)/mobs.length:0});
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
-    finisherAttempts,finisherKills,lineDamage,sourceDamage,unitCount:units.length,
+    finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,unitCount:units.length,
     magicFactor,cut,coverage});
 
   for(const round of rounds){
@@ -226,6 +237,31 @@ export function simulateV2(data,composition,options={}){
       }
       if(redDamage)for(const m of mobs)
         deal(m,5.625*.15*275000*magicFactor*.1*hit(m),'H2','area','magic');
+
+      // Attack-triggered deletion requires a normal attack after the absolute
+      // cooldown has expired. Sugar is an active used as soon as it is ready.
+      for(const u of units){
+        if(u.kind!=='deleter'||!u.damage)continue;
+        const spec=u.model;
+        const cd=clamp(deleteOptions[`${u.code}Cooldown`]??spec.cooldown,.1,300);
+        const proc=clamp(deleteOptions[`${u.code}Proc`]??spec.proc,0,1);
+        const tryDelete=()=>{
+          if(globalT+1e-8<u.nextReady)return;
+          const victim=mobs.find(m=>m.hp>0);
+          if(!victim)return;
+          u.procBank+=proc;
+          if(u.procBank<1-1e-9)return;
+          u.procBank-=1;
+          victim.hp=0;
+          deleteCounts[u.code]++;
+          u.nextReady=globalT+cd;
+        };
+        if(spec.mode==='active')tryDelete();
+        else while(globalT+1e-8>=u.nextAttack){
+          tryDelete();
+          u.nextAttack+=1/spec.aps;
+        }
+      }
 
       if(finishMode==='damage'&&globalStep>0&&globalStep%Math.max(1,Math.round(finishInterval*10))===0){
         finisherAttempts++;
