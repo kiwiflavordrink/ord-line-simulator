@@ -227,23 +227,17 @@ export function simulateV2(data,composition,options={}){
       if(redDamage)for(const m of mobs)
         deal(m,5.625*.15*275000*magicFactor*.1*hit(m),'H2','area','magic');
 
-      if(finishMode!=='off'&&globalStep>0&&globalStep%Math.max(1,Math.round(finishInterval*10))===0){
+      if(finishMode==='damage'&&globalStep>0&&globalStep%Math.max(1,Math.round(finishInterval*10))===0){
         finisherAttempts++;
         successBank+=finishChance;
         if(successBank>=1-1e-9){
           successBank-=1;
-          // Guaranteed-pick mode targets the healthiest survivor to avoid
-          // claiming a kill on a mob that the area damage was about to remove.
-          // Damage mode targets the weakest survivor to maximize actual kills.
-          const eligible=mobs.filter(m=>m.hp>0).sort((a,b)=>finishMode==='oneShot'?b.hp-a.hp:a.hp-b.hp);
+          const eligible=mobs.filter(m=>m.hp>0).sort((a,b)=>a.hp-b.hp);
           const m=eligible[0];
           if(m){
             const before=m.hp;
-            let amount=before;
-            if(finishMode==='damage'){
-              amount=finishFlat+finishMax*m.maxhp+finishCurrent*m.hp+finishLost*(m.maxhp-m.hp);
-              amount*=factor(finishType,m,extraArmor);
-            }
+            let amount=finishFlat+finishMax*m.maxhp+finishCurrent*m.hp+finishLost*(m.maxhp-m.hp);
+            amount*=factor(finishType,m,extraArmor);
             deal(m,amount,'단일 마무리','finisher',finishType);
             if(m.hp<=0&&before>0)finisherKills++;
           }

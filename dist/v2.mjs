@@ -122,7 +122,7 @@ function restore(){
     ['finishCurrent','finish-current'],['finishLost','finish-lost']]){
     if(params.has(key)&&Number.isFinite(Number(params.get(key))))$(id).value=params.get(key);
   }
-  if(['off','oneShot','damage'].includes(params.get('finishMode')))$('finish-mode').value=params.get('finishMode');
+  if(['off','damage'].includes(params.get('finishMode')))$('finish-mode').value=params.get('finishMode');
   if(['magic','physical','fixed','explosive'].includes(params.get('finishType')))$('finish-type').value=params.get('finishType');
   $('red-v2').checked=params.get('red')!=='0';$('resource-v2').checked=params.get('resource')!=='0';
   $('summons-v2').checked=params.get('summons')!=='0';
