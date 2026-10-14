@@ -6,6 +6,10 @@
 
 정적 HTML/JavaScript 사이트입니다. 서버나 데이터베이스가 필요하지 않습니다. 다른 컴퓨터에서 이 폴더를 내려받아 Claude Code 등으로 수정할 수 있습니다.
 
+전체 유닛 도감: https://kiwiflavordrink.github.io/ord-line-simulator/units.html
+
+ORDR.kr의 유닛 271종, 상세 스킬·버프 툴팁 200종을 `dist/ordr_units.json`에 수집했습니다. 이는 **참고 자료 등록**이며, 271종의 전투 계산이 구현됐다는 뜻은 아닙니다. Claude Code 검증 절차는 `CLAUDE.md`와 `docs/ORDR_툴팁_검증_계획.md`에 있습니다.
+
 ## 파일 안내
 
 - `dist/v3.html`, `dist/v3.mjs`, `dist/style.css`: v3 화면과 입력 처리
@@ -14,6 +18,8 @@
 - `dist/engine_v3.mjs`: 60~65라 조합 전투 계산
 - `test_conditional.mjs`: 가반 단일 피해와 프랑키·써니호 자원/스턴 연동 검증
 - `dist/data.json`: 영웅 및 몹 데이터. 2.305 원본 수치와 2.323 툴팁 기반 근사가 섞여 있음
+- `dist/ordr_units.json`, `dist/units.html`: ORDR.kr 전체 유닛 스냅샷과 검색 화면
+- `scripts/sync_ordr_tooltips.py`, `scripts/validate_ordr_tooltips.py`: 도감 갱신·원문 대조
 - `dist/v2.html` 등: 이전 버전. v3 변경 시 기존 URL을 깨지 않도록 유지
 - `dist/resources.html`, `dist/resources/`: 엑셀 8개와 조사 노트 5개의 공개 다운로드
 - `test_*.mjs`: 계산 엔진 회귀 확인
