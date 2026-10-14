@@ -1,5 +1,6 @@
 import {SUPPORTS} from './engine.mjs';
 import {simulateV2,DELETERS} from './engine_v2.mjs';
+import {SINGLE_MOB,SINGLE_UNITS,simulateSingle,referenceSingle} from './engine_single.mjs';
 
 const $=id=>document.getElementById(id);
 const fmt=n=>new Intl.NumberFormat('ko-KR',{maximumFractionDigits:0}).format(n);
@@ -7,6 +8,8 @@ const params=new URL(location.href).searchParams;
 let data,pending=false;
 const waveNames={60:['제우스','o02G'],61:['바질 호킨스','o026'],62:['잭','o025'],63:['퀸','o027'],64:['킹','o00K'],65:['오로치','o02H']};
 const bossNames={60:'빅 맘 (2.305)',65:'카이도'};
+const sec=n=>`${n.toFixed(2)}초`;
+const singleRefs=new Map();
 const nameOf=code=>code==='H2'?'레드포스호 히든':code==='MAGIC_CUSTOM'?'직접 입력 마딜':code==='단일 마무리'?code:
   data.heroes.find(h=>h.code===code)?.name??SUPPORTS[code]?.name??DELETERS[code]?.name??code;
 
@@ -122,6 +125,71 @@ function renderMobs(){
   }
 }
 
+function addSingleRow(item={code:'L9',count:1}){
+  const row=document.createElement('div');row.className='single-unit-row';
+  const select=document.createElement('select');select.setAttribute('aria-label','단일 테스터 유닛');
+  for(const group of ['단일','조건부 단일','끝딜']){
+    const g=document.createElement('optgroup');g.label=group;
+    for(const unit of SINGLE_UNITS.filter(u=>u.role===group)){
+      const option=document.createElement('option');option.value=unit.code;option.textContent=unit.name;g.appendChild(option);
+    }
+    select.appendChild(g);
+  }
+  select.value=SINGLE_UNITS.some(u=>u.code===item.code)?item.code:'L9';row.appendChild(select);
+  const count=document.createElement('input');count.className='unit-count';count.type='number';count.min='1';count.max='12';count.step='1';count.value=item.count??1;count.setAttribute('aria-label','같은 유닛 수');row.appendChild(count);
+  const source=document.createElement('a');source.className='single-source';source.target='_blank';source.rel='noopener noreferrer';source.textContent='툴팁 ↗';row.appendChild(source);
+  const remove=document.createElement('button');remove.className='unit-remove';remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','단일 테스터에서 제거');row.appendChild(remove);
+  const sync=()=>{source.href=SINGLE_UNITS.find(u=>u.code===select.value).source;$('single-explain').textContent='조합이 바뀌었습니다. 계산 버튼을 눌러 결과를 갱신하세요.';};
+  select.addEventListener('change',sync);count.addEventListener('input',sync);
+  remove.addEventListener('click',()=>{if($('single-team').children.length<=1)return;row.remove();sync();});
+  $('single-team').appendChild(row);sync();
+}
+function singleTeam(){return [...$('single-team').children].map(row=>({code:row.querySelector('select').value,count:Number(row.querySelector('input').value)}));}
+function runSingle(){
+  const button=$('single-run');button.disabled=true;button.firstChild.textContent='계산 중… ';
+  $('single-error').hidden=true;
+  setTimeout(()=>{
+    try{
+      const trials=Number($('single-trials').value),seed=Number($('single-seed').value);
+      const key=`${trials}:${seed}`;
+      if(!singleRefs.has(key))singleRefs.set(key,referenceSingle({trials,seed}));
+      const refs=singleRefs.get(key),team=singleTeam();
+      const r=simulateSingle(team,{trials,seed});
+      $('single-to15').textContent=sec(r.to15);
+      $('single-dan').textContent=`루치 기준 ${(refs.lucci.to15/r.to15).toFixed(3)}단`;
+      $('single-kill').textContent=sec(r.kill);
+      $('single-finish').textContent=sec(r.finishFrom15);
+      $('single-end').textContent=`핸콕 기준 ${(refs.hancock.finishFrom15/r.finishFrom15).toFixed(3)}끝`;
+      $('single-three').textContent=fmt(r.remainingAt3);
+      $('single-three-pct').textContent=`원래 HP의 ${(r.remainingAt3/SINGLE_MOB.hp*100).toFixed(1)}%`;
+      $('single-reference').textContent=`루치 1기: 100→15% ${sec(refs.lucci.to15)} · 핸콕 1기: 15→처치 ${sec(refs.hancock.finishFrom15)}`;
+      $('single-explain').textContent=`${r.count}기가 같은 65라 몹 한 기를 동시에 공격 · ${fmt(trials)}회 평균 · 시드 ${seed}`;
+    }catch(error){$('single-error').textContent=String(error.message??error);$('single-error').hidden=false;}
+    finally{button.disabled=false;button.firstChild.textContent='단일 효율 계산 ';}
+  },0);
+}
+function singleShareURL(){
+  const url=new URL(location.href);url.searchParams.set('singleTeam',JSON.stringify(singleTeam()));
+  url.searchParams.set('singleTrials',$('single-trials').value);url.searchParams.set('singleSeed',$('single-seed').value);
+  url.hash='single-tester';history.replaceState(null,'',url);return url.href;
+}
+function setupSingle(){
+  try{
+    const parsed=JSON.parse(params.get('singleTeam')??'null');
+    if(Array.isArray(parsed)&&parsed.length>0&&parsed.length<=12&&parsed.every(x=>SINGLE_UNITS.some(u=>u.code===x.code)))parsed.forEach(addSingleRow);
+    else{addSingleRow({code:'L9',count:1});addSingleRow({code:'L36',count:1});}
+  }catch{addSingleRow({code:'L9',count:1});addSingleRow({code:'L36',count:1});}
+  for(const [key,id] of [['singleTrials','single-trials'],['singleSeed','single-seed']])if(params.has(key))$(id).value=params.get(key);
+  $('single-add').addEventListener('click',()=>addSingleRow({code:'L9',count:1}));
+  $('single-run').addEventListener('click',runSingle);
+  $('single-share').addEventListener('click',async()=>{
+    const url=singleShareURL();try{await navigator.clipboard.writeText(url);$('single-share').textContent='링크 복사됨';}
+    catch{$('single-share').textContent='주소창 링크를 복사하세요';}
+    setTimeout(()=>$('single-share').textContent='이 단일 조합 링크 복사',2200);
+  });
+  runSingle();
+}
+
 function restore(){
   try{const parsed=JSON.parse(params.get('team')??'null');if(Array.isArray(parsed)&&parsed.length>0&&parsed.length<=16)parsed.forEach(addRow);else addRow();}catch{addRow();}
   for(const [key,id] of [['cut','cut-v2'],['coverage','coverage-v2'],['mdef','mdef-v2'],['mamp','mamp-v2'],
@@ -149,7 +217,7 @@ function shareURL(){
 }
 async function main(){
   try{const response=await fetch('./data.json');if(!response.ok)throw new Error(`HTTP ${response.status}`);
-    data=await response.json();restore();renderMobs();render();
+    data=await response.json();restore();renderMobs();render();setupSingle();
     $('add-unit').addEventListener('click',()=>addRow({code:'MAGIC_CUSTOM'}));
     document.querySelector('.v2-controls').addEventListener('input',schedule);
     $('share-v2').addEventListener('click',async()=>{const href=shareURL();try{await navigator.clipboard.writeText(href);$('share-v2').firstChild.textContent='조합 링크 복사됨 ';}catch{$('share-v2').firstChild.textContent='주소창 링크를 복사하세요 ';}
