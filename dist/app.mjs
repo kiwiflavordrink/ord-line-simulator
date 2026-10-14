@@ -1,4 +1,4 @@
-import {simulate} from './engine.mjs';
+import {simulate,SUPPORTS} from './engine.mjs';
 
 const $=id=>document.getElementById(id);
 const fmt=n=>new Intl.NumberFormat('ko-KR',{maximumFractionDigits:0}).format(n);
@@ -19,6 +19,19 @@ function populate(data){
   }
   const requested=params.get('hero');
   select.value=data.heroes.some(h=>h.code===requested)?requested:'TR19';
+  for(const id of ['support','extra']){
+    const sel=$(id);
+    const none=document.createElement('option');none.value='';none.textContent='선택 안 함';sel.appendChild(none);
+    for(const [code,profile] of Object.entries(SUPPORTS)){
+      const option=document.createElement('option');option.value=code;option.textContent=profile.name;
+      sel.appendChild(option);
+    }
+    const requestedCode=params.get(id);
+    sel.value=SUPPORTS[requestedCode]?requestedCode:'';
+  }
+  $('support-damage').checked=params.get('supportDamage')!=='0';
+  $('support-ab').checked=params.get('supportAb')!=='0';
+  $('extra-ab').checked=params.get('extraAb')!=='0';
   const cut=Number(params.get('cut'));
   if(Number.isFinite(cut)&&cut>=20&&cut<=300)$('cut').value=$('cut-number').value=cut;
   const coverage=Number(params.get('coverage'));
@@ -32,7 +45,10 @@ function populate(data){
 function currentOptions(){
   return {cut:Number($('cut').value),coverage:Number($('coverage').value)/100,
           fullResource:$('resource').checked,summons:$('summons').checked,
-          redDamage:$('red-damage').checked};
+          redDamage:$('red-damage').checked,
+          supportCode:$('support').value,extraCode:$('extra').value,
+          supportDamage:$('support-damage').checked,supportAb:$('support-ab').checked,
+          extraAb:$('extra-ab').checked};
 }
 
 function renderChart(result){
@@ -93,6 +109,7 @@ function render(){
   $('spawned').textContent=`라인 ${fmt(result.totalLineSpawned)}기 출현`;
   $('summary-cut').textContent=fmt(options.cut);
   $('summary-coverage').textContent=Math.round(options.coverage*100)+'%';
+  $('summary-ab').textContent=result.averageAb.toFixed(1);
   renderChart(result);renderTable(result);
   state.result=result;
 }
@@ -110,6 +127,11 @@ function updateURL(){
   u.searchParams.set('resource',$('resource').checked?'1':'0');
   u.searchParams.set('summons',$('summons').checked?'1':'0');
   u.searchParams.set('redDamage',$('red-damage').checked?'1':'0');
+  u.searchParams.set('support',$('support').value);
+  u.searchParams.set('extra',$('extra').value);
+  u.searchParams.set('supportDamage',$('support-damage').checked?'1':'0');
+  u.searchParams.set('supportAb',$('support-ab').checked?'1':'0');
+  u.searchParams.set('extraAb',$('extra-ab').checked?'1':'0');
   history.replaceState(null,'',u);
   return u.href;
 }
@@ -120,7 +142,7 @@ async function main(){
     if(!response.ok)throw new Error(`데이터 HTTP ${response.status}`);
     state.data=await response.json();
     populate(state.data);render();
-    for(const id of ['hero','coverage','resource','summons','red-damage'])$(id).addEventListener('input',schedule);
+    for(const id of ['hero','coverage','resource','summons','red-damage','support','extra','support-damage','support-ab','extra-ab'])$(id).addEventListener('input',schedule);
     $('cut').addEventListener('input',()=>{$('cut-number').value=$('cut').value;schedule();});
     $('cut-number').addEventListener('change',()=>{
       const v=Math.max(20,Math.min(300,Math.round(Number($('cut-number').value)||201)));

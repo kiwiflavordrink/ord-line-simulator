@@ -1,0 +1,261 @@
+{
+  "scenario": {
+    "cut": 201,
+    "coverage": 1,
+    "fullResource": true,
+    "summons": true,
+    "redDamage": true,
+    "cap": 55,
+    "support": "constant effective AoE DPS per covered line mob"
+  },
+  "rows": [
+    {
+      "code": "Z2",
+      "name": "레베카",
+      "threshold": 1780000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "Z6",
+      "name": "알비다",
+      "threshold": 1100000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "Z8",
+      "name": "카타쿠리",
+      "threshold": 2040000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "Z9",
+      "name": "크로커다일",
+      "threshold": 2100000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "Z10",
+      "name": "킹",
+      "threshold": 1740000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR3",
+      "name": "도플라밍고",
+      "threshold": 370000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 64,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR4",
+      "name": "로빈",
+      "threshold": 2590000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR6",
+      "name": "료쿠규",
+      "threshold": 1450000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR8",
+      "name": "루피",
+      "threshold": 2120000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR9",
+      "name": "바질호킨스",
+      "threshold": 1810000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR11",
+      "name": "사보",
+      "threshold": 0,
+      "baselineRemaining": 36,
+      "baselineFailedRound": null,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR18",
+      "name": "야마토",
+      "threshold": 1520000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 35
+    },
+    {
+      "code": "TR19",
+      "name": "우솝",
+      "threshold": 0,
+      "baselineRemaining": 36,
+      "baselineFailedRound": null,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR20",
+      "name": "조로",
+      "threshold": 910000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 63,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR22",
+      "name": "징베",
+      "threshold": 990000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 62,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR23",
+      "name": "쵸파",
+      "threshold": 1540000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR27",
+      "name": "타시기",
+      "threshold": 0,
+      "baselineRemaining": 34,
+      "baselineFailedRound": null,
+      "resultRemaining": 34
+    },
+    {
+      "code": "TR29",
+      "name": "후지토라",
+      "threshold": 620000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 64,
+      "resultRemaining": 36
+    },
+    {
+      "code": "TR30",
+      "name": "베가펑크",
+      "threshold": 1720000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "E1",
+      "name": "니카(루피)",
+      "threshold": 0,
+      "baselineRemaining": 32,
+      "baselineFailedRound": null,
+      "resultRemaining": 32
+    },
+    {
+      "code": "E2",
+      "name": "니카(스네이크)",
+      "threshold": 0,
+      "baselineRemaining": 32,
+      "baselineFailedRound": null,
+      "resultRemaining": 32
+    },
+    {
+      "code": "E5",
+      "name": "버기",
+      "threshold": 3660000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "E10",
+      "name": "카번딧슈",
+      "threshold": 1610000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "E12",
+      "name": "핸콕",
+      "threshold": 1100000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "I1",
+      "name": "거프",
+      "threshold": 0,
+      "baselineRemaining": 36,
+      "baselineFailedRound": null,
+      "resultRemaining": 36
+    },
+    {
+      "code": "I3",
+      "name": "레일리",
+      "threshold": 840000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 63,
+      "resultRemaining": 36
+    },
+    {
+      "code": "I4",
+      "name": "로져",
+      "threshold": 950000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 62,
+      "resultRemaining": 36
+    },
+    {
+      "code": "I5",
+      "name": "불릿",
+      "threshold": 1430000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "I9",
+      "name": "시키",
+      "threshold": 1950000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 61,
+      "resultRemaining": 36
+    },
+    {
+      "code": "I11",
+      "name": "카이도",
+      "threshold": 650000,
+      "baselineRemaining": 55,
+      "baselineFailedRound": 63,
+      "resultRemaining": 36
+    },
+    {
+      "code": "I12",
+      "name": "흰수염",
+      "threshold": 0,
+      "baselineRemaining": 35,
+      "baselineFailedRound": null,
+      "resultRemaining": 35
+    }
+  ]
+}

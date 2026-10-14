@@ -3,3 +3,10 @@
 @media(max-width:1060px){.intro{align-items:flex-start}.intro-facts{gap:20px}.workspace{grid-template-columns:315px minmax(0,1fr)}.method{grid-template-columns:1fr}.source-links{grid-column:1}}
 @media(max-width:760px){.shell{padding:0 17px}.masthead{height:66px}.masthead-note{display:none}.intro{padding:38px 0 31px;display:block}.intro h1{font-size:39px}.intro p{font-size:13px}.intro-facts{margin-top:25px;justify-content:space-between;max-width:380px}.intro-facts strong{font-size:21px}.workspace{display:block}.controls{position:static;margin-bottom:16px}.result-column{gap:16px}.controls,.result-hero,.chart-panel,.table-panel{padding:21px}.result-layout{align-items:flex-start}.score-box{min-width:110px;padding:12px}.score-box strong{font-size:31px}.method{margin-top:27px;gap:12px}.method-grid{grid-template-columns:1fr;gap:14px}.source-links{flex-wrap:wrap}}
 @media(max-width:400px){.intro h1{font-size:33px}.result-layout{display:block}.score-box{margin-top:18px;display:inline-block}.summary-strip{gap:7px}.summary-strip strong{font-size:12px}}
+/* Optional support and armor-break configuration. */
+.support-box{margin:24px 0;padding:18px;border:1px solid #315065;border-radius:12px;background:#10283a}
+.support-box h3{margin:0 0 16px;font-size:1rem;color:#dcecf4}
+.support-box .field-label{display:block;margin:14px 0 7px}
+.support-box select{width:100%}
+.support-box .switch{margin-top:14px}
+.support-box .help{margin:14px 0 0}

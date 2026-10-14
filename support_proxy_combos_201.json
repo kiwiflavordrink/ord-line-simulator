@@ -1,0 +1,8933 @@
+{
+  "warning": "Constant 65-round per-mob support DPS proxy. Mana casts, stun pathing, and target distribution are not modeled. These are screens, not actual clear predictions.",
+  "rows": [
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "L3",
+      "supportName": "네코마무시",
+      "full": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 29
+      },
+      "half": {
+        "effectiveDps": 508993,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 29
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "L7",
+      "supportName": "레일리",
+      "full": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      },
+      "half": {
+        "effectiveDps": 555491,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "L11",
+      "supportName": "마르코 환수종",
+      "full": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      },
+      "half": {
+        "effectiveDps": 620346,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 25
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 25
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 25
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 25
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "L18",
+      "supportName": "센고쿠",
+      "full": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      },
+      "half": {
+        "effectiveDps": 628689,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "L25",
+      "supportName": "울티",
+      "full": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      },
+      "half": {
+        "effectiveDps": 196160,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 31
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 31
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 25
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 25
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 25
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 25
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "L29",
+      "supportName": "쵸파 유력강화",
+      "full": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      },
+      "half": {
+        "effectiveDps": 704647,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 31
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 31
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 31
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 31
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "L32",
+      "supportName": "쿠마 폭군",
+      "full": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 108768,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "L38",
+      "supportName": "흰수염",
+      "full": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      },
+      "half": {
+        "effectiveDps": 619514,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "H4",
+      "supportName": "료쿠규",
+      "full": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      },
+      "half": {
+        "effectiveDps": 179307,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "H7",
+      "supportName": "반더데켄",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 32
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "H9",
+      "supportName": "방주맥심",
+      "full": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 0,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 31
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 31
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 31
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 31
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "H15",
+      "supportName": "써니호",
+      "full": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      },
+      "half": {
+        "effectiveDps": 152000,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 29
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 17
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 21
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 24
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 14
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 24
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 14
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 26
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "D1",
+      "supportName": "블랙마리아",
+      "full": {
+        "effectiveDps": 738050,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      },
+      "half": {
+        "effectiveDps": 2135618,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 15
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 28
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "D2",
+      "supportName": "코알라",
+      "full": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      },
+      "half": {
+        "effectiveDps": 402902,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 27
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": false,
+        "failedRound": 65,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "D3",
+      "supportName": "퀸",
+      "full": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 29
+      },
+      "half": {
+        "effectiveDps": 467176,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 29
+      }
+    },
+    {
+      "heroCode": "Z2",
+      "heroName": "레베카",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z6",
+      "heroName": "알비다",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z8",
+      "heroName": "카타쿠리",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z9",
+      "heroName": "크로커다일",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "Z10",
+      "heroName": "킹",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR3",
+      "heroName": "도플라밍고",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR4",
+      "heroName": "로빈",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR6",
+      "heroName": "료쿠규",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR8",
+      "heroName": "루피",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR9",
+      "heroName": "바질호킨스",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR11",
+      "heroName": "사보",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "TR18",
+      "heroName": "야마토",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR19",
+      "heroName": "우솝",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 35
+      }
+    },
+    {
+      "heroCode": "TR20",
+      "heroName": "조로",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR22",
+      "heroName": "징베",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR23",
+      "heroName": "쵸파",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR27",
+      "heroName": "타시기",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 34
+      }
+    },
+    {
+      "heroCode": "TR29",
+      "heroName": "후지토라",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "TR30",
+      "heroName": "베가펑크",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E1",
+      "heroName": "니카(루피)",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      }
+    },
+    {
+      "heroCode": "E2",
+      "heroName": "니카(스네이크)",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 30
+      }
+    },
+    {
+      "heroCode": "E5",
+      "heroName": "버기",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E10",
+      "heroName": "카번딧슈",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "E12",
+      "heroName": "핸콕",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 62,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I1",
+      "heroName": "거프",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 36
+      }
+    },
+    {
+      "heroCode": "I3",
+      "heroName": "레일리",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I4",
+      "heroName": "로져",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 63,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I5",
+      "heroName": "불릿",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I9",
+      "heroName": "시키",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 61,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I11",
+      "heroName": "카이도",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": false,
+        "failedRound": 64,
+        "remaining": 55
+      }
+    },
+    {
+      "heroCode": "I12",
+      "heroName": "흰수염",
+      "supportCode": "D4",
+      "supportName": "페로나",
+      "full": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      },
+      "half": {
+        "effectiveDps": 196951,
+        "clear": true,
+        "failedRound": null,
+        "remaining": 33
+      }
+    }
+  ]
+}
