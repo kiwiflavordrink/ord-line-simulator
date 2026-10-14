@@ -17,4 +17,7 @@ for(const row of expected){
 }
 const varied=simulate(data,'TR19',{cut:201,coverage:.5,fullResource:false,summons:false});
 if(!varied.timeline.length||!Number.isFinite(varied.remaining))throw new Error('가변 입력 결과 누락');
-console.log(`Parity cases: ${checked}; variable-input smoke: passed`);
+const withRed=simulate(data,'TR19',{cut:201,redDamage:true});
+const withoutRed=simulate(data,'TR19',{cut:201,redDamage:false});
+if(!withRed.clear||withoutRed.clear)throw new Error('레포 직접피해 토글 결과 불일치');
+console.log(`Parity cases: ${checked}; variable-input and Redforce toggle: passed`);

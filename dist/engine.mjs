@@ -42,6 +42,7 @@ export function simulate(data,heroCode,options={}){
   const coverage=Math.max(0,Math.min(1,Number(options.coverage??1)));
   const fullResource=options.fullResource!==false;
   const summons=options.summons!==false;
+  const redDamage=options.redDamage!==false;
   const events=hero.events.filter(e=>summons||!isSummonEvent(e));
   const baseAps=hero.forms[0].aps,hiddenAps=5.625,hiddenAttack=67806.45;
   const mobs=[],specials=[],checkpoints=[],timeline=[];
@@ -107,12 +108,14 @@ export function simulate(data,heroCode,options={}){
             m.hp-=attack*aps*form.rounds[String(m.round)]*mpf*form.splash*.1*coverage;
           }
         }
-        const bossCrit=target.kind==='boss'?2.2:1;
-        target.hp-=hiddenAttack*hiddenAps*1.05*pf*bossCrit*.1;
+        if(redDamage){
+          const bossCrit=target.kind==='boss'?2.2:1;
+          target.hp-=hiddenAttack*hiddenAps*1.05*pf*bossCrit*.1;
+        }
       }
-      const redAoe=hiddenAps*.15*275000*magicFactor*.1;
-      for(const m of mobs)m.hp-=redAoe*(m===target?1:coverage);
-      if(target&&target.kind!=='line'){
+      const redAoe=redDamage?hiddenAps*.15*275000*magicFactor*.1:0;
+      if(redAoe)for(const m of mobs)m.hp-=redAoe*(m===target?1:coverage);
+      if(redDamage&&target&&target.kind!=='line'){
         const bonus=(target.kind==='frenzy'?.075:.0175)*target.maxhp;
         target.hp-=hiddenAps*.15*(550000+bonus)*magicFactor*.1;
       }

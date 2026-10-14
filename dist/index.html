@@ -46,6 +46,7 @@
           <p class="help">범위 안에 들어와 맞는 비율의 기대값입니다. 100%는 모든 생존 몹이 범위 안에 있는 낙관 조건입니다.</p>
 
           <div class="switches">
+            <label class="switch"><input id="red-damage" type="checkbox" checked><span class="switch-track"></span><span><strong>레포히든 직접 피해 포함</strong><small>끄면 방깎 20·공증 35%만 유지</small></span></label>
             <label class="switch"><input id="resource" type="checkbox" checked><span class="switch-track"></span><span><strong>라운드 시작 시 자원 만충</strong><small>자원 스킬 즉시 1회 기대 발동</small></span></label>
             <label class="switch"><input id="summons" type="checkbox" checked><span class="switch-track"></span><span><strong>소환 범위 피해 포함</strong><small>식물·해군·거인·새틀라이트 등</small></span></label>
           </div>
@@ -79,7 +80,7 @@
       <section class="method" aria-labelledby="method-title">
         <div><span class="eyebrow">계산 범위</span><h2 id="method-title">숫자를 읽는 방법</h2></div>
         <div class="method-grid">
-          <p><strong>포함</strong> 2.305 맵의 풀업 평타·공격타입·스플래시, 2.323 툴팁의 확률 범위딜·자원 스킬·특강·변신·확인된 소환 범위딜, 광폭 대상 단일 추가 피해.</p>
+          <p><strong>포함</strong> 2.305 맵의 풀업 평타·공격타입·스플래시, 2.323 툴팁의 확률 범위딜·자원 스킬·특강·변신·확인된 소환 범위딜, 광폭 대상 단일 추가 피해. 레포히든의 직접 피해는 별도로 끌 수 있습니다.</p>
           <p><strong>전투 흐름</strong> 매 라운드 35기가 0.5초 간격으로 나오고, 생존 몹의 체력과 출신 라운드를 계속 보존합니다. 보스·광폭이 살아 있으면 다음 라운드에도 오라가 이어집니다.</p>
           <p><strong>아직 추정</strong> 실제 배치·투사체·스턴과 이동, 자원 시전 시점, 일부 자체 아머브레이크 누적, 힘·민첩·지능 및 아이템 비례 피해는 확인되지 않았습니다. 결과는 확정 클각이 아닙니다.</p>
         </div>

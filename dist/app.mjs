@@ -25,12 +25,14 @@ function populate(data){
   if(Number.isFinite(coverage)&&coverage>=10&&coverage<=100)$('coverage').value=coverage;
   $('resource').checked=params.get('resource')!=='0';
   $('summons').checked=params.get('summons')!=='0';
+  $('red-damage').checked=params.get('redDamage')!=='0';
   $('hero-count').textContent=data.heroes.length+'명';
 }
 
 function currentOptions(){
   return {cut:Number($('cut').value),coverage:Number($('coverage').value)/100,
-          fullResource:$('resource').checked,summons:$('summons').checked};
+          fullResource:$('resource').checked,summons:$('summons').checked,
+          redDamage:$('red-damage').checked};
 }
 
 function renderChart(result){
@@ -107,6 +109,7 @@ function updateURL(){
   u.searchParams.set('coverage',$('coverage').value);
   u.searchParams.set('resource',$('resource').checked?'1':'0');
   u.searchParams.set('summons',$('summons').checked?'1':'0');
+  u.searchParams.set('redDamage',$('red-damage').checked?'1':'0');
   history.replaceState(null,'',u);
   return u.href;
 }
@@ -117,7 +120,7 @@ async function main(){
     if(!response.ok)throw new Error(`데이터 HTTP ${response.status}`);
     state.data=await response.json();
     populate(state.data);render();
-    for(const id of ['hero','coverage','resource','summons'])$(id).addEventListener('input',schedule);
+    for(const id of ['hero','coverage','resource','summons','red-damage'])$(id).addEventListener('input',schedule);
     $('cut').addEventListener('input',()=>{$('cut-number').value=$('cut').value;schedule();});
     $('cut-number').addEventListener('change',()=>{
       const v=Math.max(20,Math.min(300,Math.round(Number($('cut-number').value)||201)));

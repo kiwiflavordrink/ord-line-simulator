@@ -2,7 +2,9 @@ import fs from 'node:fs';
 import { simulate } from './dist/engine.mjs';
 
 const data = JSON.parse(fs.readFileSync(new URL('./dist/data.json', import.meta.url), 'utf8'));
-const opts = cut => ({cut, coverage: 1, fullResource: true, summons: true});
+const noRedDamage = process.argv.includes('--no-red-damage');
+const opts = cut => ({cut, coverage: 1, fullResource: true, summons: true,
+  redDamage: !noRedDamage});
 const rows = [];
 
 for (const hero of data.heroes) {
@@ -25,9 +27,12 @@ for (const hero of data.heroes) {
   const below = minimum === null || minimum === 20 ? null : at(minimum - 1);
   if (below?.clear || minimum !== null && !result.clear)
     throw new Error(`Threshold check failed for ${hero.code}`);
+  const at201 = at(201);
   const row = {
     code: hero.code, name: hero.name, grade: hero.grade,
+    redDamage: !noRedDamage,
     minimumCut: minimum, minimumAdditionalCut: minimum === null ? null : minimum - 20,
+    clearAt201: at201.clear, remainingAt201: at201.remaining,
     remaining: result.remaining,
     rounds: result.checkpoints.map(p => p.remaining),
     failedAtMax: result.clear ? null : `${result.failedRound}라 ${result.failedSecond.toFixed(1)}초`,
@@ -38,4 +43,5 @@ for (const hero of data.heroes) {
   console.log(JSON.stringify(row));
 }
 
-fs.writeFileSync(new URL('./clearance_results.json', import.meta.url), JSON.stringify(rows, null, 2) + '\n');
+const filename = noRedDamage ? './clearance_no_red_damage.json' : './clearance_results.json';
+fs.writeFileSync(new URL(filename, import.meta.url), JSON.stringify(rows, null, 2) + '\n');
