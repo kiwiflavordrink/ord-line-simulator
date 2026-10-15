@@ -91,4 +91,14 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const off=structuredClone(data);for(const e of off.heroes.find(x=>x.code==='I3').events)delete e.execute_line;
   assert.deepEqual(simulateV2(off,[{code:'I3',count:3}],{}).executeCounts,{});
 }
-console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds, boss lines, hero armor break, auras and rates, execute: passed');
+// [수정 9] I8 공격력 버프, E12 파퓸페뮤르 상한, TR16·H16 중첩 불가.
+{
+  const e12=data.heroes.find(x=>x.code==='E12').events.find(e=>e.index==='1 단일 타격');
+  assert.equal(e12.per_proc_cap_maxhp,1);
+  {
+    const ctx=await import('./dist/v3_effects.mjs');
+    assert.equal(ctx.damageContext({selected:['TR16','H16']}).explosiveAmp,10);
+    assert.equal(ctx.damageContext({selected:['H16','I2']}).explosiveAmp,25);
+  }
+}
+console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions: passed');

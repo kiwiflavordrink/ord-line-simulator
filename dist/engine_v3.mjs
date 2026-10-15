@@ -173,6 +173,8 @@ export function simulateV2(data,composition,options={}){
     // ab_scaling raises the whole skill by that fraction per AB point (TR22).
     if(event.ab_fixed)out+=event.ab_fixed*m.ab*factor('fixed',m,extra);
     if(event.ab_scaling)out*=1+event.ab_scaling*m.ab;
+    // One proc cannot deal more than this share of the target's max HP (overkill on one target is lost).
+    if(event.per_proc_cap_maxhp!=null)out=Math.min(out,event.per_proc_cap_maxhp*m.maxhp);
     return out;
   };
   const snapshot=()=>({remaining:mobs.length+specials.length,lineRemaining:mobs.length,
@@ -331,14 +333,19 @@ export function simulateV2(data,composition,options={}){
             if(!single||!u.damage)continue;
             u.energy=Math.min(45,u.energy+1);
             single.ab=Math.max(single.ab,single.kind==='line'?60:70);
-            const basic=spec.attack*(red?1.35:1)*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor));
+            // 4.5% per attack: +75만 attack for 5 s (2.305 wts STRING 5937). A re-proc refreshes the
+            // buff [추정], so the expected bonus is 75만 x P(at least one proc in the last 5 s).
+            const buff=750_000*(1-Math.pow(1-.045,spec.aps*5));
+            const basic=(spec.attack*(red?1.35:1)+buff)*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor));
             deal(single,basic,u.code,'single','physical');
-            deal(single,.55*5.25*basic,u.code,'single','fixed');
+            // 525% fixed crit: 55%, bosses 13% (tooltip "스토리 및 보스에게는 발동확률 13%로 감소").
+            deal(single,(single.kind==='boss'?.13:.55)*5.25*basic,u.code,'single','fixed');
             const proc=(8_750_000*1.25+(single.kind==='line'?.2*single.maxhp:0))*pf(armor(single,extraArmor));
             deal(single,.0425*proc,u.code,'single','physical');
             deal(single,.45*350_000*pf(armor(single,extraArmor)),u.code,'single','physical');
             if(u.energy>=45&&globalT+1e-8>=u.nextCast){
-              deal(single,(single.kind==='line'?.5:.1)*single.maxhp,u.code,'single','fixed');
+              // 참격: 일반 50% / 보스 10% (frenzy mobs are neither boss nor story, so 일반).
+              deal(single,(single.kind==='boss'?.1:.5)*single.maxhp,u.code,'single','fixed');
               u.energy-=45;u.nextCast=globalT+2.5;
             }
           }

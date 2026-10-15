@@ -24,12 +24,15 @@ export const EFFECTS=[
   {code:'H16',name:'아오키지 히든 · 폭발형 증폭',kind:'explosiveAmp',value:10,scope:'라인',url:'https://ordr.kr/character/H16'},
   {code:'D4',name:'페로나 왜곡 · 폭발형 증폭',kind:'explosiveAmp',value:2,scope:'범위',url:'https://ordr.kr/character/D4'},
   {code:'D4_SKILL',name:'페로나 왜곡 · 특강 폭발형 증폭',kind:'explosiveAmp',value:10,scope:'라인',url:'https://ordr.kr/character/D4'},
-  {code:'TR16',name:'아오키지 초월 · 폭발형 증폭',kind:'explosiveAmp',value:10,scope:'라인',url:'https://ordr.kr/character/TR16'},
+  {code:'TR16',name:'아오키지 초월 · 폭발형 증폭',kind:'explosiveAmp',value:10,scope:'라인',excludes:['H16'],url:'https://ordr.kr/character/TR16'},
   {code:'E9',name:'우타 영원 · 폭발형 증폭',kind:'explosiveAmp',value:10,scope:'범위',url:'https://ordr.kr/character/E9'},
   {code:'I2',name:'드래곤 불멸 · 체력비례 폭발형',kind:'explosiveAmp',value:20,scope:'라인 일반몹 한정',url:'https://ordr.kr/character/I2'}
 ];
 export function damageContext({selected=[],customMagicAmp=0,customMagicCut=0,customAllAmp=0,customExplosiveAmp=0,warcury=false,armor=181}={}){
-  const enabled=EFFECTS.filter(e=>selected.includes(e.code));
+  // Tooltip stacking rules: TR16 "아오키지히든과 중첩 불가능" drops H16 when both are checked.
+  const chosen=EFFECTS.filter(e=>selected.includes(e.code));
+  const excluded=new Set(chosen.flatMap(e=>e.excludes??[]));
+  const enabled=chosen.filter(e=>!excluded.has(e.code));
   const sum=k=>enabled.filter(e=>e.kind===k).reduce((n,e)=>n+e.value,0);
   const magicAmp=Math.min(25,Math.max(0,sum('magicAmp')+Number(customMagicAmp||0)));
   const magicCut=Math.max(0,sum('magicCut')+Number(customMagicCut||0));

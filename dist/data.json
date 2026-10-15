@@ -417,7 +417,8 @@
     {"code":"E12","index":"2","rate":0,"rate_kind":"신규 몹당 1 확률","parts":[["magic",200000.0,[["max",0.03]],0.0]],"on_spawn":1,"source":"2.323 툴팁 수기","note":""},
     {"code":"E12","index":"4","rate":0.4358108184845278,"rate_kind":"공격당 0.075","parts":[["physical",850000.0,[],0.0],["magic",150000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E12","index":"5","rate":1.5253378646958473,"rate_kind":"공격당 0.2625","parts":[["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"E12","index":"6","rate":0.5810810913127037,"rate_kind":"공격당 0.1","parts":[["magic",250000.0,[],0.0],["physical",1062500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+    {"code":"E12","index":"6","rate":0.5810810913127037,"rate_kind":"공격당 0.1","parts":[["magic",250000.0,[],0.0],["physical",1062500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E12","index":"1 단일 타격","rate":0.033204633789297354,"rate_kind":"자원 175; 공격당 1+초당 0; 시작시 만충","parts":[["magic",0.0,[["max",4.0]],0.0]],"boss_parts":[["magic",7500000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"target":"single","per_proc_cap_maxhp":1.0,"source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 9: 근거 파퓸페뮤르 \"타격 시마다 단일 적 전체체력 16%의 마법데미지(스토리 / 보스 30만 마법데미지) ▶ 25회 타격\". 16%×25 = 최대체력 400%라 시전 1회가 대상 1기를 처치하고 남는 피해는 버린다(per_proc_cap_maxhp 1). 보스는 30만×25"}
    ],
    "url":"https://ordr.kr/character/E12"
   },
