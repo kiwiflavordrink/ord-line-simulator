@@ -142,7 +142,23 @@ export function simulateV2(data,composition,options={}){
     activeLineMobSeconds:0,stunnedLineMobSeconds:0,stunFieldSeconds:0};
   let totalLineSpawned=0,totalLineKilled=0,finisherAttempts=0,finisherKills=0,successBank=0;
   const casts=new Map(units.map((u,i)=>[i,u.kind==='support'?supportCastSchedule(u.code,fullResource):[]]));
-  const armor=(m,extra)=>m.armor+(warcury?10:0)+(m.kind==='line'?extra:0)-cut-m.ab;
+  // Timed armor reductions per mob: one entry per debuff key (same skill refreshes, different skills add).
+  let now=0;
+  const debuffSum=m=>{
+    let sum=0;
+    if(m.debuffs)for(const d of Object.values(m.debuffs))if(d.until>now)sum+=d.value;
+    if(m.huntSingle>0)sum+=Math.min(145,70+5*m.huntSingle);
+    if(m.huntArea>0)sum+=Math.min(30,3*m.huntArea);
+    return sum;
+  };
+  const applyDebuff=(m,d,scale)=>{
+    if(d.min_ab&&m.ab<d.min_ab)return;
+    const list=m.debuffs??={},cur=list[d.key],until=now+(d.duration??Infinity),value=d.value*scale;
+    if(cur&&d.once)return;
+    if(!cur||cur.until<=now)list[d.key]={value,until};
+    else{cur.value=Math.max(cur.value,value);cur.until=Math.max(cur.until,until);}
+  };
+  const armor=(m,extra)=>m.armor+(warcury?10:0)+(m.kind==='line'?extra:0)-cut-m.ab-debuffSum(m);
   const factor=(kind,m,extra)=>kind==='physical'?pf(armor(m,extra)):kind==='magic'?magicFactor:
     kind==='explosive'?1+Math.min(.25,explosiveAmp+(m.kind==='line'?normalOnlyExplosiveAmp:0)):1;
   const deal=(m,amount,source,scope,kind)=>{
@@ -201,6 +217,7 @@ export function simulateV2(data,composition,options={}){
     }
     for(let step=0;step<320;step++){
       const t=step*.1,globalT=(round-60)*32+t,globalStep=(round-60)*320+step;
+      now=globalT;
       let newMob=null;
       if(step%5===0&&spawned<35){
         newMob={hp:hp0,maxhp:hp0,armor:armor0,ab:0,kind:'line',round};
@@ -226,6 +243,7 @@ export function simulateV2(data,composition,options={}){
         for(const e of hero.events)if(e.on_spawn&& (summons||!isSummon(e))){
           deal(newMob,e.on_spawn*eventDamage(e,newMob,attack,extraArmor),hero.code,'area','mixed');
           if(e.ab&&newMob.hp>0)abAdd(newMob,e.ab*e.on_spawn);
+          if(e.armor_debuff&&newMob.hp>0)applyDebuff(newMob,e.armor_debuff,e.on_spawn);
         }
       }
       const regen=((bossAura?500000:0)+(frenzyAura?1000000:0))*.1;
@@ -275,6 +293,13 @@ export function simulateV2(data,composition,options={}){
         const giant=['E1','E2'].includes(hero.code)&&inWindow(4.25,4.25+115/(baseAps+.25),globalT,t,resourceMode,true);
         if(giant)aps/=3.25;
         // A self attack-speed buff that holds while the attack target has enough armor break (TR29 운석낙하).
+        // I11 약육강식: per-attack stacks on the target (single) and on area mobs; no duration in the tooltip.
+        const hunt=hero.armor_stack_debuff;
+        if(hunt&&target){
+          const attacks=aps*.1,i=transformed?1:0;
+          target.huntSingle=(target.huntSingle??0)+attacks*hunt.single_stacks[i];
+          for(const m of [...mobs,...specials])m.huntArea=(m.huntArea??0)+attacks*hunt.area_stacks[i]*(m===target?1:coverage);
+        }
         const haste=hero.target_ab_aps_bonus;
         if(haste&&target&&target.ab>=haste.min_ab)aps*=1+haste.bonus;
         const attack=heroAttack(hero,form);
@@ -317,6 +342,16 @@ export function simulateV2(data,composition,options={}){
           }
           // execute_line: each proc removes the attack target if it is a line mob (I3 순속·패기발산).
           // Procs accumulate as an expected-value bank, like the finisher success bank.
+          // armor_debuff: each whole proc applies the timed reduction to the skill's targets
+          // (non-target mobs scaled by coverage).
+          if(e.armor_debuff){
+            const bank=u.debuffBank??={};
+            bank[e.index]=(bank[e.index]??0)+rate*.1;
+            while(bank[e.index]>=1-1e-9){
+              bank[e.index]-=1;
+              for(const m of targets)if(m.hp>0)applyDebuff(m,e.armor_debuff,m===target||single?1:coverage);
+            }
+          }
           if(e.execute_line){
             const bank=u.executeBank??={};
             bank[e.index]=(bank[e.index]??0)+rate*.1;

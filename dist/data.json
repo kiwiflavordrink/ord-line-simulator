@@ -73,7 +73,7 @@
    ],
    "events":[
     {"code":"Z10","index":"3","rate":0.48437500989530263,"rate_kind":"공격당 0.1","parts":[["physical",800000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab_target 4. 근거 잔혹한 검술 \"단일 적 아머브레이크 4\"","ab_target":4},
-    {"code":"Z10","index":"4","rate":0.6902343891008061,"rate_kind":"공격당 0.1425","parts":[["fixed",210000.0,[],0.0],["magic",800000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab_fixed 7000. 근거 카류우돈 \"450범위 21만 고정 데미지 + 아머브레이크 x 7,000 고정 데미지\"","ab_fixed":7000}
+    {"code":"Z10","index":"4","rate":0.6902343891008061,"rate_kind":"공격당 0.1425","parts":[["fixed",210000.0,[],0.0],["magic",800000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab_fixed 7000. 근거 카류우돈 \"450범위 21만 고정 데미지 + 아머브레이크 x 7,000 고정 데미지\" / 수정내역 12: 방어력 감소 25. 근거 카류우돈 \"스킬 적중당한 적 2.7초동안 0.27초당 8만 추가 마법 데미지 + 방어력 25감소\"","ab_fixed":7000,"armor_debuff":{"value":25,"duration":2.7,"key":"Z10 화마"}}
    ],
    "url":"https://ordr.kr/character/Z10"
   },
@@ -93,7 +93,8 @@
     {"code":"TR3","index":"4","rate":7.016129088854567,"rate_kind":"공격당 1","parts":[["physical",75000.0,[],0.75]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR3","index":"5","rate":7.016129088854567,"rate_kind":"공격당 1","parts":[["physical",105000.0,[],1.05]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR3","index":"6","rate":1.262903235993822,"rate_kind":"공격당 0.18","parts":[["magic",205000.0,[],0.0]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR3","index":"7","rate":1.4032258177709134,"rate_kind":"공격당 0.2","parts":[["physical",500000.0,[],0.0],["magic",150000.0,[["current",0.01]],0.0]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""}
+    {"code":"TR3","index":"7","rate":1.4032258177709134,"rate_kind":"공격당 0.2","parts":[["physical",500000.0,[],0.0],["magic",150000.0,[["current",0.01]],0.0]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR3","index":"각성 방깎","rate":0.2222222222222222,"rate_kind":"각성 변신 1회당 1회 (4.5초 창 동안)","parts":[],"phase":"trans","armor_debuff":{"value":60,"duration":7.5,"key":"TR3 각성"},"source":"2.323 툴팁 수치 + 2.305 변신 구조","note":"수정내역 12: 근거 각성 \"마나 150 소모, 4.5초간 각성 상태 … ▶ 7.5초간 850범위 방어력 감소 60\""}
    ],
    "url":"https://ordr.kr/character/TR3"
   },
@@ -124,7 +125,7 @@
    "events":[
     {"code":"TR6","index":"2","rate":0.42857142857142855,"rate_kind":"변신 1회당 3틱 (변신 7초 동안 분산)","parts":[["physical",1812500.0,[],0.0]],"phase":"trans","source":"2.323 툴팁 수치 + 2.305 변신 시전 구조","note":"수정내역 6b: rate 0.3333(상시)→변신 중 0.4286. 근거 2.323 \"1초마다 초당 145만(x1~1.5) … 지속시간 3초\", 2.305 wts:18801 \"숲인간으로 변신후 삼림화 시전\""},
     {"code":"TR6","index":"3","rate":0.25892858359278503,"rate_kind":"공격당 0.05","parts":[["physical",937500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR6","index":"4","rate":0.7767857507783551,"rate_kind":"공격당 0.15","parts":[["physical",875000.0,[],0.0],["magic",200000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+    {"code":"TR6","index":"4","rate":0.7767857507783551,"rate_kind":"공격당 0.15","parts":[["physical",875000.0,[],0.0],["magic",200000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 12: 방어력 감소 15. 근거 숲가꾸기 \"▶ 숲가꾸기 발동 시 해당 범위 3초간 방어력 감소 15\"","armor_debuff":{"value":15,"duration":3,"key":"TR6 숲가꾸기"}}
    ],
    "url":"https://ordr.kr/character/TR6"
   },
@@ -253,7 +254,7 @@
     {"rawcode":"H09A","attack":180001.5,"aps":4.1573034074703505,"attack_type":"siege","splash":1,"splash_radius":300,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
    ],
    "events":[
-    {"code":"TR22","index":"1","rate":0.0715730340747035,"rate_kind":"자원 100; 공격당 1+초당 3; 시작시 만충","parts":[["physical",2500000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 3. 근거 \"해당 범위 3초 스턴 및 3의 아머브레이크\" / 수정내역 5: ab_scaling 0.01. 근거 \"◎ 적의 아머브레이크로 깍인 방어력 감소량 만큼 스킬데미지가 1%씩 증가\"","ab":3,"ab_scaling":0.01},
+    {"code":"TR22","index":"1","rate":0.0715730340747035,"rate_kind":"자원 100; 공격당 1+초당 3; 시작시 만충","parts":[["physical",2500000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 3. 근거 \"해당 범위 3초 스턴 및 3의 아머브레이크\" / 수정내역 5: ab_scaling 0.01. 근거 \"◎ 적의 아머브레이크로 깍인 방어력 감소량 만큼 스킬데미지가 1%씩 증가\" / 수정내역 12: 방어력 감소 25. 근거 \"▶ 해당 범위 아머브레이크 10 이상인 적 방어력 25 감소 ▶ 해당 효과는 1회만 적용\". 지속시간이 적혀 있지 않아 영구로 봤다 [추정]","ab":3,"ab_scaling":0.01,"armor_debuff":{"value":25,"key":"TR22 진동","once":true,"min_ab":10}},
     {"code":"TR22","index":"2","rate":0.2598314629668969,"rate_kind":"공격당 0.0625","parts":[["magic",450000.0,[],0.0],["physical",1750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab 3. 근거 \"해당 범위 적에게 아머브레이크 3 (최대 75까지 중첩)\" / 수정내역 5: ab_scaling 0.01. 근거 \"◎ 적의 아머브레이크로 깍인 방어력 감소량 만큼 스킬데미지가 1%씩 증가\"","ab":3,"ab_scaling":0.01},
     {"code":"TR22","index":"3","rate":0.5924157355645249,"rate_kind":"공격당 0.1425","parts":[["physical",1250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab 1. 근거 \"해당 범위 적에게 아머브레이크 1 (최대 75까지 중첩)\" / 수정내역 5: ab_scaling 0.01. 근거 \"◎ 적의 아머브레이크로 깍인 방어력 감소량 만큼 스킬데미지가 1%씩 증가\"","ab":1,"ab_scaling":0.01},
     {"code":"TR22","index":"2 단일 추가","rate":0.2598314629668969,"rate_kind":"공격당 0.0625 / 공격 대상 단일 추가","parts":[["fixed",4950000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적에게는 225% 고정 데미지로 적용\" / 수정내역 5: ab_scaling 0.01. 근거 \"◎ 적의 아머브레이크로 깍인 방어력 감소량 만큼 스킬데미지가 1%씩 증가\"","ab_scaling":0.01},
@@ -418,7 +419,7 @@
    ],
    "events":[
     {"code":"E12","index":"1","rate":0.033204633789297354,"rate_kind":"자원 175; 공격당 1+초당 0; 시작시 만충","parts":[["physical",9000000.0,[],0.0],["magic",1250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
-    {"code":"E12","index":"2","rate":0,"rate_kind":"신규 몹당 1 확률","parts":[["magic",200000.0,[["max",0.03]],0.0]],"on_spawn":1,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E12","index":"2","rate":0,"rate_kind":"신규 몹당 1 확률","parts":[["magic",200000.0,[["max",0.03]],0.0]],"on_spawn":1,"source":"2.323 툴팁 수기","note":"수정내역 12: 방어력 감소 5. 근거 \"해당 적 마법방어력 감소 5% + 방어력 감소 5 ▶ 이 스킬은 한 개체수마다 1회만 발동\". 지속시간이 적혀 있지 않아 영구로 봤다 [추정]","armor_debuff":{"value":5,"key":"E12 접근","once":true}},
     {"code":"E12","index":"4","rate":0.4358108184845278,"rate_kind":"공격당 0.075","parts":[["physical",850000.0,[],0.0],["magic",150000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E12","index":"5","rate":1.5253378646958473,"rate_kind":"공격당 0.2625","parts":[["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E12","index":"6","rate":0.5810810913127037,"rate_kind":"공격당 0.1","parts":[["magic",250000.0,[],0.0],["physical",1062500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
@@ -522,6 +523,7 @@
    "grade":"불멸의",
    "focus":"물리 중심",
    "attack_aura":-0.75,
+   "armor_stack_debuff":{"single_stacks":[2,1],"area_stacks":[1,2],"note":"수정내역 12: 약육강식 \"단일 적 : 방어력 감소 70 이후 1스택 마다 5 감소\", \"범위 : 방어력 감소 3 추가 (최대 10스택)\", \"인간폼 : 단일 +2 / 범위 +1, 드래곤폼 : 단일 +1 / 범위 +2\", \"단일 적 최대 방어력 감소 145 / 범위 적 최대 방어력 감소 30\". 지속시간이 적혀 있지 않아 몹마다 유지로 봤다 [추정]. 단일 최대치는 명시된 총합 145를 썼다(70+5×10=120과 다름, 해석 불확실). 스킬 발동 시 스택(열식 +3)은 미반영"},
    "forms":[
     {"rawcode":"h07M","attack":527501.0,"aps":1.737588695729441,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}},
     {"rawcode":"h0AD","attack":452501.0,"aps":1.9600000023841857,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}

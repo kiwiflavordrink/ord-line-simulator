@@ -110,4 +110,14 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const noCrit=structuredClone(data);for(const f of noCrit.heroes.find(x=>x.code==='TR20').forms)delete f.crit;
   assert.ok(simulateV2(noCrit,[{code:'TR20'}],{}).sourceDamage.TR20<tr20.sourceDamage.TR20);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit: passed');
+// [수정 12] 지속시간이 있는 방어력 감소: 디버프를 빼면 약해진다.
+{
+  const without=(code,f)=>{const d=structuredClone(data),h=d.heroes.find(x=>x.code===code);f(h);return d;};
+  const tr6=simulateV2(data,[{code:'TR6',count:3}],{});
+  const tr6off=simulateV2(without('TR6',h=>{for(const e of h.events)delete e.armor_debuff;}),[{code:'TR6',count:3}],{});
+  assert.ok(tr6.remaining<tr6off.remaining);
+  const i11=simulateV2(data,[{code:'I11'}],{});
+  const i11off=simulateV2(without('I11',h=>{delete h.armor_stack_debuff;}),[{code:'I11'}],{});
+  assert.ok(i11.clear&&!i11off.clear);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs: passed');
