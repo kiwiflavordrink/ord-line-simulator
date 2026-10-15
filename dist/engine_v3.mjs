@@ -159,6 +159,10 @@ export function simulateV2(data,composition,options={}){
       }
       out+=raw*factor(kind,m,extra);
     }
+    // Armor-break scaled parts: ab_fixed adds fixed damage per AB point (Z10 카류우돈),
+    // ab_scaling raises the whole skill by that fraction per AB point (TR22).
+    if(event.ab_fixed)out+=event.ab_fixed*m.ab*factor('fixed',m,extra);
+    if(event.ab_scaling)out*=1+event.ab_scaling*m.ab;
     return out;
   };
   const snapshot=()=>({remaining:mobs.length+specials.length,lineRemaining:mobs.length,
@@ -204,8 +208,10 @@ export function simulateV2(data,composition,options={}){
         if(hero.code==='TR11')attack*=1.45;
         if(hero.code==='TR19')attack*=1.375;
         if(['E1','E2'].includes(hero.code))attack*=1.25;
-        for(const e of hero.events)if(e.on_spawn&& (summons||!isSummon(e)))
+        for(const e of hero.events)if(e.on_spawn&& (summons||!isSummon(e))){
           deal(newMob,e.on_spawn*eventDamage(e,newMob,attack,extraArmor),hero.code,'area','mixed');
+          if(e.ab&&newMob.hp>0)abAdd(newMob,e.ab*e.on_spawn);
+        }
       }
       const regen=((bossAura?500000:0)+(frenzyAura?1000000:0))*.1;
       if(regen)for(const m of mobs)m.hp=Math.min(m.maxhp,m.hp+regen);
@@ -253,6 +259,9 @@ export function simulateV2(data,composition,options={}){
         let aps=form.aps;if(hero.code==='E10'&&transformed)aps=1/.11;
         const giant=['E1','E2'].includes(hero.code)&&inWindow(4.25,4.25+115/(baseAps+.25),globalT,t,resourceMode,true);
         if(giant)aps/=3.25;
+        // A self attack-speed buff that holds while the attack target has enough armor break (TR29 운석낙하).
+        const haste=hero.target_ab_aps_bonus;
+        if(haste&&target&&target.ab>=haste.min_ab)aps*=1+haste.bonus;
         let attack=form.attack*(red?1.35:1)*(['E1','E2'].includes(hero.code)?1.25:1);
         if(hero.code==='Z2')attack+=60000;
         if(hero.code==='I11')attack*=.25;
@@ -269,6 +278,7 @@ export function simulateV2(data,composition,options={}){
           let rate=e.rate*(e.per_attack?aps/baseAps:1);
           if(e.initial&&(resourceMode==='perRound'&&step===0||resourceMode==='start'&&globalStep===0))rate+=10;
           if(!rate)continue;
+          if(e.min_target_ab&&!(target&&target.ab>=e.min_target_ab))continue;
           let targets;
           // Single-target kinds hit only the current attack target:
           // 'single' any target (boss_parts replaces parts against a boss), 'single_line' a line mob,
@@ -287,7 +297,11 @@ export function simulateV2(data,composition,options={}){
           }
           for(const m of targets)if(m.hp>0){
             const ev=e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
-            deal(m,eventDamage(ev,m,attack,extraArmor)*rate*.1*(m===target||single?1:coverage),u.code,single?'single':'area','mixed');
+            const share=rate*.1*(m===target||single?1:coverage);
+            deal(m,eventDamage(ev,m,attack,extraArmor)*share,u.code,single?'single':'area','mixed');
+            // Armor break as an expected stack per step, like the supports (cap 75 in abAdd).
+            if(m.hp>0&&e.ab)abAdd(m,e.ab*share);
+            if(m.hp>0&&e.ab_target&&m===target)abAdd(m,e.ab_target*rate*.1);
           }
         }
       }

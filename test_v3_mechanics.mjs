@@ -63,4 +63,16 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(withBoss.checkpoints[0].specialKillSecond<(noBoss.checkpoints[0].specialKillSecond??99));
   assert.ok(data.heroes.flatMap(x=>x.events).every(e=>e.target!=='single'||/근거/.test(e.note)));
 }
-console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds, boss lines: passed');
+// [수정 5] 영웅 스킬 아머브레이크: 스택이 쌓이고(상한 75) 조건부 효과를 연다.
+{
+  const strip=(code,fields)=>{const d=structuredClone(data),h=d.heroes.find(x=>x.code===code);
+    for(const e of h.events)for(const f of fields)delete e[f];delete h.target_ab_aps_bonus;return d;};
+  const ab=simulateV2(data,[{code:'TR29'}],{}),noAb=simulateV2(strip('TR29',['ab']),[{code:'TR29'}],{});
+  assert.ok(ab.checkpoints[0].averageAb>0&&ab.checkpoints[0].averageAb<=75);
+  assert.equal(noAb.checkpoints[0].averageAb,0);
+  // 운석낙하 needs AB 40: without hero AB it never fires, so TR29 does worse.
+  assert.ok(ab.clear&&!noAb.clear);
+  const tr22=simulateV2(data,[{code:'TR22'}],{}),flat=simulateV2(strip('TR22',['ab_scaling']),[{code:'TR22'}],{});
+  assert.ok(tr22.sourceDamage.TR22>flat.sourceDamage.TR22);
+}
+console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds, boss lines, hero armor break: passed');
