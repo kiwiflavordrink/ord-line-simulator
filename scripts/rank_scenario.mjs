@@ -1,6 +1,6 @@
 // Ranks physical carries in one fixed environment (docs/수정내역.md 23). Every assumption is listed in ENV.
 // Usage: node scripts/rank_scenario.mjs [out.json] [--seeds=5] [--difficulty=신] [--dan=2] [--kkeut=1]
-//        [--stun=bartolomeo|dragon] [--stunUnits=1.5] [--cut=auto|<number>]
+//        [--stun=bartolomeo|dragon] [--stunUnits=1.5] [--cut=auto|<number>] [--role=physical|magic]
 import {readFileSync,writeFileSync} from 'node:fs';
 import {simulateV2} from '../dist/engine_v3.mjs';
 import {referenceSingle,singleConditions} from '../dist/engine_single_v3.mjs';
@@ -46,7 +46,9 @@ const ENV={
   externalStuns:stunUnit.stuns(stunUnit.aps).map(x=>({...x,rate:x.rate*stunUnits})),
   singleControl
 };
-const carries=data.heroes.filter(h=>/물리/.test(h.focus)).map(h=>h.code);
+// --role=physical: focus contains 물리; --role=magic: focus contains 마법 (H17 is the fixed boss killer, excluded).
+const role=arg('role','physical');
+const carries=data.heroes.filter(h=>h.code!=='H17'&&(role==='magic'?/마법/:/물리/).test(h.focus)).map(h=>h.code);
 const label=r=>r.clear?`클리어 ${r.remaining}`:`${r.failedRound}라 ${r.failedSecond}초 패배`;
 const rows=[];
 for(const code of carries){
@@ -67,7 +69,7 @@ for(const code of carries){
 // Rank: fewest copies that clear in ≥80% of seeds, then (at that count) fewer remaining, then longer survival at 1 copy.
 const score=r=>[r.minCount??9,r.minCount?r.byCount[r.minCount].avgRemaining:99,-r.byCount[1].avgSurvived,-r.byCount[1].clearRate];
 rows.sort((a,b)=>{const x=score(a),y=score(b);for(let i=0;i<x.length;i++)if(x[i]!==y[i])return x[i]-y[i];return 0;});
-console.log(`환경: ${difficulty}, 방깎 ${cutArg==='auto'?'물딜 자기 오라만, 레드포스 없음':cutArg+', 레드 공증만'}, 풀이감 ${ENV.externalSlow}, ${stunUnit.name} ${stunUnits}기분 스턴, 아카이누 히든 1기, 단일 컨 ${dan}단(${singleControl.to15}초) ${kkeut}끝(${singleControl.finish}초), 시드 ${seeds.length}개`);
+console.log(`대상: ${role==='magic'?'마딜':'물딜'} ${carries.length}명. 환경: ${difficulty}, 방깎 ${cutArg==='auto'?'물딜 자기 오라만, 레드포스 없음':cutArg+', 레드 공증만'}, 풀이감 ${ENV.externalSlow}, ${stunUnit.name} ${stunUnits}기분 스턴, 아카이누 히든 1기, 단일 컨 ${dan}단(${singleControl.to15}초) ${kkeut}끝(${singleControl.finish}초), 시드 ${seeds.length}개`);
 rows.forEach((r,i)=>console.log(`${String(i+1).padStart(2)} ${r.code.padEnd(5)} ${r.name.padEnd(12)} 방깎 ${String(r.cut).padStart(3)} 최소 ${r.minCount??'4+'}기 | `+
   [1,2,3].map(c=>`${c}기 ${Math.round(r.byCount[c].clearRate*100)}% ${r.byCount[c].avgRemaining==null?'':'잔존 '+r.byCount[c].avgRemaining.toFixed(1)}`).join(' | ')));
-if(outPath)writeFileSync(outPath,JSON.stringify({data:data.version,env:ENV,dan,kkeut,seeds,rows},null,1)+'\n');
+if(outPath)writeFileSync(outPath,JSON.stringify({data:data.version,role,env:ENV,dan,kkeut,seeds,rows},null,1)+'\n');

@@ -22,7 +22,7 @@ const EFFECT_CODES=new Set(EFFECTS.map(e=>e.code));
 
 export const LIMITATIONS=[
   {id:'map-2305-approximation',text:'몹 HP·방어, 영웅 공격력·공속은 2.305 맵 추출값이고 스킬 수치는 2.323 ORDR 카드 설명을 얹은 근사다. 2.323 원본 스크립트를 실행 검증한 결과가 아니다.'},
-  {id:'heroes-not-registered',text:'라인 계산은 dist/data.json에 등록된 물리 중심·물리·마법 혼합 상위 영웅 31명과 E6 비비 영원(수정내역 21), 보조 4종(L7·L23·L25·D3), 조건형 3종(I8·TR28·H15), 삭제 3종(L12·D4·L19)만 지원한다. 그 밖의 상위 영웅은 미등록이며 임의 수치를 만들지 않는다.'},
+  {id:'heroes-not-registered',text:'라인 계산은 dist/data.json에 등록된 물리 중심·물리·마법 혼합 상위 영웅 31명, E6 비비 영원(수정내역 21), H17 아카이누 히든(23), 마딜 상위 30명(27), 보조 4종(L7·L23·L25·D3), 조건형 3종(I8·TR28·H15), 삭제 3종(L12·D4·L19)만 지원한다. 그 밖의 상위 영웅은 미등록이며 임의 수치를 만들지 않는다.'},
   {id:'single-units-limited',text:'65라 단일 테스터는 엔진에 정의된 단일·끝딜 유닛 10종만 지원한다.'},
   {id:'no-stun-or-movement',text:'기본(coverage) 모델에는 스턴·슬로우, 몹 이동 경로와 위치, 사거리가 없다(써니호 스턴은 line.control에 시간만 집계). 범위 피해는 coverage(범위 적중률)로 근사하고 타깃은 보스·광폭이 있으면 그쪽, 없으면 가장 먼저 나온 몹이다. 이동·스턴은 line.options.positionModel로 켠다.'},
   {id:'resource-start',text:'자원은 60라 시작 시 1회 만충 후 연속으로 쌓인다(2.305 맵에 라운드 시작 마나 회복 없음). line.options.resourceMode로 empty·perRound(이전 모델)를 고를 수 있다.'},

@@ -222,7 +222,7 @@ export function simulateV2(data,composition,options={}){
   const magicReduction=clamp((options.magicReduction??0)+teamFx.magic_cut_levels*.01,0,.35);
   const magicAmp=clamp((options.magicAmp??0)+teamFx.magic_amp,0,.25);
   const allAmp=clamp((options.allAmp??0)+teamFx.all_amp,0,5);
-  const explosiveAmp=clamp((options.explosiveAmp??0)+teamFx.explosive_amp,0,.25);
+  const explosiveAmp=clamp((options.explosiveAmp??0)+teamFx.explosive_amp,-.25,.25);  // TR24 코비: −10%
   const normalOnlyExplosiveAmp=clamp((options.normalOnlyExplosiveAmp??0)+teamFx.normal_only_explosive_amp,0,.25);
   // A04Q: level L = 0.79 + 0.01 x L (16 = 0.95, 악몽 11 = 0.90); 워큐리 lowers the level, minimum level 1.
   const defenceFactor=clamp(.79+.01*Math.max(1,diff.magic_level-(curse.magic_levels??0))+magicReduction,.80,1.15);
@@ -610,11 +610,13 @@ export function simulateV2(data,composition,options={}){
           if(e.phase==='trans'&&!transformed||e.phase==='base'&&transformed||e.phase==='giant'&&!giant||e.phase==='nongiant'&&giant)continue;
           let rate=e.rate*(e.per_attack?aps/baseAps:1);
           if(e.plant)rate*=plantCount(hero,e.plant);
-          if(e.resource_cost&&u.buffs.mana_regen)rate+=u.buffs.mana_regen/e.resource_cost;
+          // Mana-regen buffs speed up mana skills only (resource_kind 'hp' skills spend HP, 수정내역 27).
+          if(e.resource_cost&&e.resource_kind!=='hp'&&u.buffs.mana_regen)rate+=u.buffs.mana_regen/e.resource_cost;
           if(executing&&e.index===exe.boost_event)rate=aps;
           if(e.initial&&(resourceMode==='perRound'&&step===0||resourceMode==='start'&&globalStep===0))rate+=10;
           if(!rate)continue;
           if(e.min_target_ab&&!(target&&target.ab>=e.min_target_ab))continue;
+          if(e.when_target==='line'&&target?.kind!=='line')continue;   // fires only while attacking a line mob
           // Position model: a skill needs a target in range unless it is centred on the hero.
           const center=posModel?(e.center==='self'?spawnPt:target):null;
           if(posModel&&!center)continue;

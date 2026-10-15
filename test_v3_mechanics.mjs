@@ -322,4 +322,22 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   // Without a 끝 stream fast enough, mobs stop at 15%: a very slow finish kills far fewer.
   assert.ok(run({to15:2.78,finish:60}).totalLineKilled<two.totalLineKilled);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control: passed');
+// [수정 27] 마딜 상위 30명: 모두 숫자 결과, 팀 효과(마방깎·증폭), 체력 자원, 라인 대상 조건.
+{
+  const added=fullData.heroes.filter(h=>h.source_group);
+  assert.equal(added.length,30);
+  for(const h of added)for(const pos of [false,true]){
+    const r=simulateV2(fullData,[{code:h.code,count:1}],{positionModel:pos});
+    assert.ok(Number.isFinite(r.remaining)&&Object.values(r.sourceDamage).every(Number.isFinite),h.code);
+    assert.ok(h.events.every(e=>/근거/.test(e.note)),h.code);
+  }
+  // team_effects add to the magic factor once per hero code (E9 우타: 마방깎 10레벨).
+  assert.ok(Math.abs(simulateV2(fullData,[{code:'E9',count:2}],{}).magicFactor-1.05)<1e-9);
+  assert.ok(Math.abs(simulateV2(fullData,[{code:'TR19'}],{}).magicFactor-.95)<1e-9);
+  // HP-resource skills ignore mana-regen buffs; when_target 'line' skips bosses and frenzy mobs.
+  const i6=fullData.heroes.find(h=>h.code==='I6');
+  assert.ok(i6.events.some(e=>e.when_target==='line')&&i6.events.some(e=>e.resource_kind==='hp'));
+  const gated=structuredClone(fullData);for(const e of gated.heroes.find(h=>h.code==='I6').events)delete e.when_target;
+  assert.ok(simulateV2(gated,[{code:'I6'}],{}).checkpoints[0].specialKillSecond<=(simulateV2(fullData,[{code:'I6'}],{}).checkpoints[0].specialKillSecond??99));
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes: passed');
