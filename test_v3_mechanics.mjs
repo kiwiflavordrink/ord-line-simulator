@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {simulateV2} from './dist/engine_v3.mjs';
+import {simulateSingle,singleConditions,SINGLE_MOB} from './dist/engine_single_v3.mjs';
 
 const fullData=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
 // Blocks 1-18 check mechanisms on the 신 baseline they were written for: no 2.323 common HP/regen (#19)
@@ -211,4 +212,31 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const team=[{code:'I4'},{code:'TR22'},{code:'E12'}],pos={positionModel:true};
   assert.notDeepEqual(simulateV2(sep,team,pos).timeline,simulateV2(fullData,team,pos).timeline);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성: passed');
+// [수정 20] 오로성 아군 감소의 보조·조건형·레드포스·단일 테스터 적용, 방어 공식 옵션, 레오.
+{
+  // Weak single units on 신, so line damage is not capped at the mobs' HP.
+  const sup=o=>simulateV2(fullData,[{code:'L23'}],o).sourceDamage.L23;
+  assert.ok(simulateV2(fullData,[{code:'L25'}],{gorosei:'새턴'}).sourceDamage.L25<simulateV2(fullData,[{code:'L25'}],{}).sourceDamage.L25&&sup({gorosei:'나스쥬로'})<sup({}));
+  const red=o=>simulateV2(fullData,[{code:'L25'}],o).sourceDamage.H2;
+  assert.ok(red({gorosei:'나스쥬로'})<red({}));
+  const cond=o=>simulateV2(fullData,[{code:'H15'}],o).sourceDamage.H15;
+  assert.ok(cond({gorosei:'새턴'})<cond({}));
+  // Armor model: 'map' uses the 2.305 formula (62라 171 instead of 181), default unchanged.
+  assert.equal(fullData.difficulties['신'].armor_map.line['62'],171);
+  const t=[{code:'TR19',count:3}];
+  assert.equal(simulateV2(fullData,t,{}).armorModel,'data');
+  assert.notDeepEqual(simulateV2(fullData,t,{armorModel:'map'}).lineDamage,simulateV2(fullData,t,{}).lineDamage);
+  // 레오 slow aura only matters in the position model.
+  const pos={positionModel:true},team=[{code:'TR29',count:2}];
+  assert.deepEqual(simulateV2(fullData,team,{leo:true}).checkpoints,simulateV2(fullData,team,{}).checkpoints);
+  assert.notDeepEqual(simulateV2(fullData,team,{...pos,leo:true}).timeline,simulateV2(fullData,team,pos).timeline);
+  // Single tester conditions: 신 adds the 2.323 common HP; 악몽 is tougher; 새턴 slows the kill.
+  const god=singleConditions(fullData,{});
+  assert.equal(god.hp,SINGLE_MOB.hp+5000000);assert.equal(god.armor,181);
+  const s=(c)=>simulateSingle([{code:'L9',count:2}],{trials:300,seed:7,conditions:singleConditions(fullData,c)}).kill;
+  assert.ok(s({})<s({difficulty:'악몽'})&&s({})<s({gorosei:'나스쥬로'}));
+  // 새턴 mostly hits basic attacks, which are small next to 루치's procs; check its inputs instead of a noisy time.
+  assert.deepEqual([singleConditions(fullData,{gorosei:'새턴'}).attackPct,singleConditions(fullData,{gorosei:'새턴'}).explosive],[-.2,-.07]);
+  assert.equal(singleConditions(fullData,{difficulty:'지옥',gorosei:'새턴'}).gorosei,'없음');
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오: passed');

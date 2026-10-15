@@ -65,7 +65,9 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
     "team": [{"code": "L9", "count": 1}],         // count: 정수 1~12, 합계 12기 이하
     "trials": 3000,                 // 100~20000, 기본 3000
     "seed": 202323,                 // 0~2147483647, 기본 202323
-    "reference": true               // 루치·핸콕 기준 단/끝 비율 계산, 기본 true
+    "reference": true,              // 루치·핸콕 기준 단/끝 비율 계산, 기본 true
+    "difficulty": "신",             // 지옥·신·악몽, 기본 신: 65라 몹 HP·방어·마방 (수정내역 20)
+    "gorosei": "없음"               // 오로성. 생략하면 context.warcury가 true일 때 워큐리
   },
   "output": {"timeline": false}
 }
@@ -101,6 +103,8 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `positionModel` | bool | false | 위치 모델: 모든 유닛을 라인몹 생성 지점에 두고 이동·사거리·범위·스턴·이속 감소를 계산 (켜면 `coverage` 무시). 스턴·이속 감소는 `deletion.seed`로 정해지는 확률 발동 |
 | `difficulty` | `지옥` · `신` · `악몽` | `신` | 난이도: 몹 HP·방어·마방·재생·패배 기준(70·55·50)·광폭 오라·보스 스턴 저항, 위치 모델 이속. 구조는 2.305, 공통 HP·재생은 2.323 툴팁 (수정내역 19) |
 | `gorosei` | `없음` · `나스쥬로` · `워큐리` · `새턴` | `없음` | 오로성(신·악몽만, 지옥이면 무시). 2.323 수치. `context.warcury: true`는 `워큐리`와 같다 |
+| `armorModel` | `data` · `map` | `data` | 몹 방어: `data`는 기존 신 값 + 레벨 차이, `map`은 2.305 공식 udef + udup×레벨(62라 171, 60라 보스 332 등) (수정내역 20) |
+| `leo` | bool | false | 위치 모델: 2.320 패왕의길 레오의 이감 10% 오라(범위 800 [추정], 레오 피해는 미반영) |
 | `engageRange` | 100~3000 | 650 | 위치 모델의 교전 거리. 비비 영원처럼 자기 사거리를 쓰는 유닛 외에는 모두 이 거리 안의 몹을 친다 [추정] |
 | `buffTargets` | `{소스 코드: [받는 코드…]}` | 조합 전체 | 아군 오라·버프를 받을 유닛 제한. 지정하지 않은 소스는 조합 전체가 받는다 |
 | `tr19Plants` | `{pea, snow, muk}` 정수, 합 3 이하 | 2 / 1 / 0 | TR19 특강 식물 배분: 완두콩·백설콩·먹깨비 |
@@ -189,11 +193,12 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 ```json
 "single": {
   "count": 2, "trials": 3000, "seed": 202323,
-  "to15Seconds": 3.691312176213074,
-  "killSeconds": 5.279905078237144,
-  "finishFrom15Seconds": 1.9925995197324167,
-  "remainingAt3": 39962395.491772056,
-  "reference": {"danRatio": 1.4994679615409205, "endRatio": 1.417246549955263}
+  "target": {"hp": 152024700, "armor": 181, "difficulty": "신", "gorosei": "없음", ...},
+  "to15Seconds": 3.7038624793449664,
+  "killSeconds": 5.2919717719033565,
+  "finishFrom15Seconds": 1.9820799247008178,
+  "remainingAt3": 41763999.51633802,
+  "reference": {"danRatio": 1.5018628954332207, "endRatio": 1.4270047349855255}
 }
 ```
 

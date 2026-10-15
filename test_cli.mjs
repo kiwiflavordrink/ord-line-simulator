@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {simulateV2} from './dist/engine_v3.mjs';
-import {simulateSingle,referenceSingle} from './dist/engine_single_v3.mjs';
+import {simulateSingle,referenceSingle,singleConditions} from './dist/engine_single_v3.mjs';
 import {damageContext} from './dist/v3_effects.mjs';
 
 const data=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
@@ -42,7 +42,7 @@ function assertLine(out,direct){
   assert.deepEqual(out.finisher,{attempts:direct.finisherAttempts,kills:direct.finisherKills});
   assert.deepEqual(out.control,direct.control);
   assert.deepEqual(out.totals,{lineSpawned:direct.totalLineSpawned,lineKilled:direct.totalLineKilled,unitCount:direct.unitCount});
-  assert.deepEqual(out.applied,{cut:direct.cut,coverage:direct.coverage,magicFactor:direct.magicFactor,resourceMode:direct.resourceMode,positionModel:direct.positionModel,difficulty:direct.difficulty,gorosei:direct.gorosei});
+  assert.deepEqual(out.applied,{cut:direct.cut,coverage:direct.coverage,magicFactor:direct.magicFactor,resourceMode:direct.resourceMode,positionModel:direct.positionModel,difficulty:direct.difficulty,gorosei:direct.gorosei,armorModel:direct.armorModel});
 }
 function assertSingle(out,direct,refs){
   assert.equal(out.to15Seconds,direct.to15);
@@ -96,8 +96,9 @@ function assertReportShape(r){
 // 4. Single tester.
 {
   const team=[{code:'L9',count:1},{code:'L36',count:1}],ctx=damageContext({});
-  const direct=simulateSingle(team,{trials:3000,seed:202323,context:ctx});
-  const refs=referenceSingle({trials:3000,seed:202323,context:ctx});
+  const conditions=singleConditions(data,{});
+  const direct=simulateSingle(team,{trials:3000,seed:202323,context:ctx,conditions});
+  const refs=referenceSingle({trials:3000,seed:202323,context:ctx,conditions});
   const r=fromFile('single_lucci_hancock.json');
   assert.equal(r.status,0,r.stderr);assertReportShape(r.json);assertSingle(r.json.single,direct,refs);
 }
@@ -106,8 +107,9 @@ function assertReportShape(r){
   const ctx=damageContext({selected:['L1','L1_ALL'],customMagicCut:3});
   const line=simulateV2(data,[{code:'I12',count:1},{code:'L23',count:1}],lineOpts(ctx,{}));
   const team=[{code:'L16',count:2},{code:'L36',count:1}];
-  const single=simulateSingle(team,{trials:2000,seed:202323,context:ctx});
-  const refs=referenceSingle({trials:2000,seed:202323,context:ctx});
+  const conditions=singleConditions(data,{});
+  const single=simulateSingle(team,{trials:2000,seed:202323,context:ctx,conditions});
+  const refs=referenceSingle({trials:2000,seed:202323,context:ctx,conditions});
   const r=fromFile('combined.json');
   assert.equal(r.status,0,r.stderr);assertLine(r.json.line,line);assertSingle(r.json.single,single,refs);
 }
@@ -118,6 +120,16 @@ function assertReportShape(r){
   const r=fromFile('line_conditional.json');
   assert.equal(r.status,0,r.stderr);assertLine(r.json.line,direct);
   assert.ok(direct.control.sunnyCasts>0&&direct.lineDamage.single>0);
+}
+// 5c. Single tester difficulty/오로성; legacy context.warcury becomes 워큐리 and is not applied twice.
+{
+  const ctx=damageContext({}),team=[{code:'L9',count:1}];
+  const c=singleConditions(data,{difficulty:'악몽',gorosei:'워큐리'});
+  const direct=simulateSingle(team,{trials:500,seed:3,context:ctx,conditions:c});
+  const refs=referenceSingle({trials:500,seed:3,context:ctx,conditions:c});
+  const r=cli(['-','--compact'],JSON.stringify({context:{warcury:true},single:{team,trials:500,seed:3,difficulty:'악몽'}}));
+  assert.equal(r.status,0,r.stderr);assertSingle(r.json.single,direct,refs);
+  assert.equal(r.json.single.target.gorosei,'워큐리');assert.equal(r.json.single.target.hp,c.hp);
 }
 // 6. --timeline passes the engine timeline through unchanged.
 {
@@ -157,6 +169,8 @@ bad({line:{team:[{code:'TR19'}],options:{finisher:{mode:'auto'}}}},'INVALID_VALU
 bad({line:{team:[{code:'TR19'}],options:{resourceMode:'always'}}},'INVALID_VALUE','line.options.resourceMode');
 bad({line:{team:[{code:'TR19'}],options:{difficulty:'어려움'}}},'INVALID_VALUE','line.options.difficulty');
 bad({line:{team:[{code:'TR19'}],options:{gorosei:'마즈'}}},'INVALID_VALUE','line.options.gorosei');
+bad({line:{team:[{code:'TR19'}],options:{armorModel:'x'}}},'INVALID_VALUE','line.options.armorModel');
+bad({single:{team:[{code:'L9'}],difficulty:'쉬움'}},'INVALID_VALUE','single.difficulty');
 bad({line:{team:[{code:'TR19'}],options:{engageRange:50}}},'OUT_OF_RANGE','line.options.engageRange');
 bad({line:{team:[{code:'TR19'}],options:{tr19Plants:{pea:2,snow:1,muk:1}}}},'TOO_MANY_PLANTS','line.options.tr19Plants');
 bad({line:{team:[{code:'TR19'}],options:{buffTargets:{I4:'TR19'}}}},'NOT_AN_ARRAY');

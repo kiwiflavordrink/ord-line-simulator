@@ -17,6 +17,9 @@ data = json.loads(path.read_text(encoding='utf-8'))
 LINE = {'60': (12450000, 10), '61': (13582115, 10), '62': (14120000, 9),
         '63': (15610000, 10), '64': (16610000, 10), '65': (16210000, 10)}
 BOSS = {'60': (12750000, -50), '65': (13595000, -55)}
+# w3u udef (base armor), for the optional 2.305 armor formula udef + udup x level (option armorModel 'map').
+LINE_DEF = {'60': 70, '61': 76, '62': 81, '63': 84, '64': 80, '65': 81}
+BOSS_DEF = {'60': 372, '65': 395}  # + A0RR own armor aura +10
 # 2.305 upgrades per difficulty (Player 6): line HP = uhpm x (1 + R00W + R00A), boss = uhpm x (1 + boss upgrade),
 # armor levels R00J (line) / R00O (boss), R024 flat speed +29 per level, difficulty aura A0Z1/A0Z2/A0Z3 (AUau).
 DIFF = {
@@ -49,8 +52,11 @@ for name, d in DIFF.items():
         boss[r] = [boss_hp, base_armor + udup * (d['r00o'] - god['r00o'])]
         if name == '신':
             assert boss_hp == base_hp, (r, boss_hp, base_hp)
+    armor_map = {'line': {r: LINE_DEF[r] + udup * d['r00j'] for r, (_, udup) in LINE.items()},
+                 'boss': {r: BOSS_DEF[r] + udup * d['r00o'] + 10 for r, (_, udup) in BOSS.items()},
+                 'note': '수정내역 20: 2.305 공식 udef + udup×레벨(R00J/R00O), 보스는 자체 방어 오라 A0RR +10 포함. 신 기존 값과 62라(171 vs 181)·60라 보스(332 vs 327)가 다르다.'}
     out[name] = {
-        'rounds': rounds, 'boss': boss, 'frenzy': frenzy, 'defeat': d['defeat'],
+        'rounds': rounds, 'boss': boss, 'frenzy': frenzy, 'armor_map': armor_map, 'defeat': d['defeat'],
         'magic_level': d['magic_level'], 'speed': {'aura': d['aura'], 'line_flat': 29 * d['r024']},
         'frenzy_aura': d['frenzy_aura'], 'stun_resist': d['stun_resist'], 'common': d['common'],
         'gorosei': name != '지옥',

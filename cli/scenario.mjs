@@ -6,7 +6,7 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {SUPPORTS} from '../dist/engine.mjs';
 import {simulateV2,DELETERS,CONDITIONAL_UNITS} from '../dist/engine_v3.mjs';
-import {SINGLE_MOB,SINGLE_UNITS,simulateSingle,referenceSingle} from '../dist/engine_single_v3.mjs';
+import {SINGLE_MOB,SINGLE_UNITS,simulateSingle,referenceSingle,singleConditions} from '../dist/engine_single_v3.mjs';
 import {EFFECTS,damageContext} from '../dist/v3_effects.mjs';
 
 export const TOOL={name:'ordsim',version:'1.0.0'};
@@ -142,7 +142,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','engageRange','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','engageRange','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -156,6 +156,8 @@ function validateLine(raw,data,is){
       positionModel:bool(o,'positionModel','line.options',is),
       difficulty:oneOf(o,'difficulty','line.options',is,['지옥','신','악몽']),
       gorosei:oneOf(o,'gorosei','line.options',is,['없음','나스쥬로','워큐리','새턴']),
+      armorModel:oneOf(o,'armorModel','line.options',is,['data','map']),
+      leo:bool(o,'leo','line.options',is),
       engageRange:num(o,'engageRange','line.options',is,{min:100,max:3000})
     }));
     if(o.buffTargets!==undefined){
@@ -223,7 +225,7 @@ function validateLine(raw,data,is){
 
 function validateSingle(raw,data,is){
   if(!isObj(raw)){is.error('single','NOT_AN_OBJECT','객체여야 합니다.');return null;}
-  onlyKeys(raw,['team','trials','seed','reference'],'single',is);
+  onlyKeys(raw,['team','trials','seed','reference','difficulty','gorosei'],'single',is);
   const team=[];
   if(!Array.isArray(raw.team)||!raw.team.length)is.error('single.team','EMPTY_TEAM','유닛을 한 기 이상 넣은 배열이어야 합니다.');
   else raw.team.forEach((item,i)=>{
@@ -240,7 +242,9 @@ function validateSingle(raw,data,is){
   return {team,
     trials:num(raw,'trials','single',is,{min:100,max:20000,integer:true})??3000,
     seed:num(raw,'seed','single',is,{min:0,max:2147483647,integer:true})??202323,
-    reference:bool(raw,'reference','single',is)??true};
+    reference:bool(raw,'reference','single',is)??true,
+    difficulty:oneOf(raw,'difficulty','single',is,['지옥','신','악몽'])??'신',
+    gorosei:oneOf(raw,'gorosei','single',is,['없음','나스쥬로','워큐리','새턴'])};
 }
 
 export function validateScenario(raw,data){
@@ -310,18 +314,19 @@ function lineReport(r,data,includeTimeline){
     executions:r.executeCounts,
     control:r.control,
     buffs:r.buffs,
-    applied:{cut:r.cut,coverage:r.coverage,magicFactor:r.magicFactor,resourceMode:r.resourceMode,positionModel:r.positionModel,difficulty:r.difficulty,gorosei:r.gorosei},
+    applied:{cut:r.cut,coverage:r.coverage,magicFactor:r.magicFactor,resourceMode:r.resourceMode,positionModel:r.positionModel,difficulty:r.difficulty,gorosei:r.gorosei,armorModel:r.armorModel},
     ...(includeTimeline?{timeline:r.timeline}:{})
   };
 }
 
-function singleReport(r,refs){
+function singleReport(r,refs,cond){
   const out={
-    target:{...SINGLE_MOB,description:'65라 일반몹 한 기 (2.305)'},
+    target:{hp:cond.hp,armor:cond.armor,magicResist:SINGLE_MOB.magicResist,difficulty:cond.difficulty,gorosei:cond.gorosei,
+      description:'65라 일반몹 한 기 (2.305 구조, 난이도 공통 HP·오로성 포함)'},
     team:r.team,count:r.count,trials:r.trials,seed:r.seed,
     to15Seconds:r.to15,killSeconds:r.kill,finishFrom15Seconds:r.finishFrom15,
-    remainingAt3:r.remainingAt3,remainingAt3Pct:r.remainingAt3/SINGLE_MOB.hp,
-    damageBy3Seconds:SINGLE_MOB.hp-r.remainingAt3
+    remainingAt3:r.remainingAt3,remainingAt3Pct:r.remainingAt3/cond.hp,
+    damageBy3Seconds:cond.hp-r.remainingAt3
   };
   if(refs)out.reference={
     lucci:{to15Seconds:refs.lucci.to15},hancock:{finishFrom15Seconds:refs.hancock.finishFrom15},
@@ -354,10 +359,14 @@ export function runScenario(scenario,{data,sha256},warnings=[]){
     report.line=lineReport(simulateV2(data,scenario.line.team,engineOptions),data,scenario.output.timeline);
   }
   if(scenario.single){
-    const {team,trials,seed,reference}=scenario.single;
-    report.input.single={team,trials,seed,reference};
-    const r=simulateSingle(team,{trials,seed,context:ctx});
-    report.single=singleReport(r,reference?referenceSingle({trials,seed,context:ctx}):null);
+    const {team,trials,seed,reference,difficulty}=scenario.single;
+    // context.warcury is the legacy 워큐리 switch; the single tester applies it through conditions, not twice.
+    const gorosei=scenario.single.gorosei??(ctx.warcury?'워큐리':'없음');
+    const conditions=singleConditions(data,{difficulty,gorosei});
+    const singleCtx=ctx.warcury?damageContext({...scenario.context,warcury:false}):ctx;
+    report.input.single={team,trials,seed,reference,difficulty,gorosei};
+    const r=simulateSingle(team,{trials,seed,context:singleCtx,conditions});
+    report.single=singleReport(r,reference?referenceSingle({trials,seed,context:singleCtx,conditions}):null,conditions);
   }
   report.warnings=warn;
   report.limitations=LIMITATIONS;

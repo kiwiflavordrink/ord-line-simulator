@@ -1,6 +1,6 @@
 import {SUPPORTS} from './engine.mjs';
 import {simulateV2,DELETERS,CONDITIONAL_UNITS,SUPPORT_AURAS} from './engine_v3.mjs';
-import {SINGLE_MOB,SINGLE_UNITS,simulateSingle,referenceSingle} from './engine_single_v3.mjs';
+import {SINGLE_MOB,SINGLE_UNITS,simulateSingle,referenceSingle,singleConditions} from './engine_single_v3.mjs';
 import {EFFECTS,damageContext} from './v3_effects.mjs';
 
 const $=id=>document.getElementById(id);
@@ -15,7 +15,7 @@ function context(){return damageContext({
   selected:[...document.querySelectorAll('.amp-effect:checked')].map(e=>e.value),
   customMagicAmp:val('v3-custom-mamp'),customMagicCut:val('v3-custom-mcut'),
   customAllAmp:val('v3-custom-all'),customExplosiveAmp:val('v3-custom-explosive'),
-  warcury:$('v3-gorosei').value==='워큐리'
+  warcury:false // 오로성 is applied by the engines (line option gorosei, single conditions)
 });}
 function syncEffects(){
   const c=context();
@@ -135,7 +135,7 @@ function options(){const c=context();return {
   red:$('red-v2').checked,redDamage:$('red-v2').checked,fullResource:$('resource-v2').checked,summons:$('summons-v2').checked,
   frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
   tr19Plants:{pea:val('tr19-pea'),snow:val('tr19-snow'),muk:val('tr19-muk')},
-  buffTargets:buffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,
+  buffTargets:buffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,
   customMagic:{aps:val('magic-aps'),chance:val('magic-chance')/100,flat:val('magic-flat'),
     maxPct:val('magic-max')/100,currentPct:val('magic-current')/100,lostPct:val('magic-lost')/100},
   finisher:{mode:$('finish-mode').value,interval:val('finish-interval'),successChance:val('finish-chance')/100,
@@ -198,18 +198,29 @@ function render(){
 function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;render();});}
 
 function renderMobs(){
+  // Mob table and single-tester target follow the selected difficulty and 오로성 (docs/수정내역.md 19·20).
+  const dname=$('difficulty-v3').value,d=data.difficulties?.[dname],gname=$('v3-gorosei').value;
+  const curse=d?.gorosei?data.gorosei?.[gname]?.[dname]??{}:{};
+  const common=d?.common??{hp:0,regen:0},regen=common.regen+(curse.regen??0),fa=d?.frenzy_aura;
   const body=$('mob-rows');body.innerHTML='';
   for(const round of [60,61,62,63,64,65]){
-    const [hp,armor,type]=data.rounds[String(round)];
-    const special=data.boss[String(round)]?'보스':data.frenzy[String(round)]?'광폭':'—';
-    const specialHp=data.boss[String(round)]?.[0]??data.frenzy[String(round)]??null;
-    const specialArmor=data.boss[String(round)]?.[1]??(data.frenzy[String(round)]?armor+5:null);
+    const [lineHp,baseArmor,type]=(d??data).rounds[String(round)];
+    const hp=lineHp+common.hp+(curse.line_hp??0),armor=baseArmor+(curse.armor??0);
+    const boss=(d??data).boss[String(round)],frenzy=(d??data).frenzy[String(round)];
+    const special=boss?'보스':frenzy?'광폭':'—';
+    const specialHp=boss?boss[0]+common.hp+(curse.boss_hp??0):frenzy?frenzy+common.hp+(curse.line_hp??0):null;
+    const specialArmor=boss?boss[1]+(curse.armor??0):frenzy?armor+(fa?.armor??0):null;
+    const unitRegen=data.round_regen?.[String(round)]??0;
+    const specialRegen=boss?550000+regen:(fa?.regen??0)+unitRegen+regen;
     const [name,raw]=waveNames[round];
     const tr=document.createElement('tr');
-    for(const s of [`${round}라`,`${name} (${raw})`,fmt(hp),fmt(armor),type,special==='보스'?`${bossNames[round]} 보스`:special,specialHp?fmt(specialHp):'—',specialArmor==null?'—':fmt(specialArmor),special==='보스'?'시작':'7.5초',special==='보스'?'550,000':round===61?'1,045,000':'1,000,000']){
+    for(const s of [`${round}라`,`${name} (${raw})`,fmt(hp),fmt(armor),type,special==='보스'?`${bossNames[round]} 보스`:special,specialHp?fmt(specialHp):'—',specialArmor==null?'—':fmt(specialArmor),special==='보스'?'시작':special==='광폭'?'7.5초':'—',special==='—'?'—':fmt(specialRegen)]){
       const td=document.createElement('td');td.textContent=s;tr.appendChild(td);
     }body.appendChild(tr);
   }
+  const c=singleConditions(data,{difficulty:dname,gorosei:gname});
+  $('single-mob-hp').textContent=`HP ${fmt(c.hp)}`;
+  $('single-mob-info').textContent=`${dname}${c.gorosei!=='없음'?' · '+c.gorosei:''} · 방어 ${fmt(c.armor)} · 패배 ${d?.defeat??55}기`;
 }
 
 function addSingleRow(item={code:'L9',count:1}){
@@ -239,17 +250,18 @@ function runSingle(){
     try{
       const trials=Number($('single-trials').value),seed=Number($('single-seed').value);
       const c=context();
-      const key=`${trials}:${seed}:${c.magic}:${c.all}:${c.explosive}:${c.armor}`;
-      if(!singleRefs.has(key))singleRefs.set(key,referenceSingle({trials,seed,context:c}));
+      const conditions=singleConditions(data,{difficulty:$('difficulty-v3').value,gorosei:$('v3-gorosei').value});
+      const key=`${trials}:${seed}:${c.magic}:${c.all}:${c.explosive}:${c.armor}:${conditions.difficulty}:${conditions.gorosei}`;
+      if(!singleRefs.has(key))singleRefs.set(key,referenceSingle({trials,seed,context:c,conditions}));
       const refs=singleRefs.get(key),team=singleTeam();
-      const r=simulateSingle(team,{trials,seed,context:c});
+      const r=simulateSingle(team,{trials,seed,context:c,conditions});
       $('single-to15').textContent=sec(r.to15);
       $('single-dan').textContent=`루치 기준 ${(refs.lucci.to15/r.to15).toFixed(3)}단`;
       $('single-kill').textContent=sec(r.kill);
       $('single-finish').textContent=sec(r.finishFrom15);
       $('single-end').textContent=`핸콕 기준 ${(refs.hancock.finishFrom15/r.finishFrom15).toFixed(3)}끝`;
       $('single-three').textContent=fmt(r.remainingAt3);
-      $('single-three-pct').textContent=`원래 HP의 ${(r.remainingAt3/SINGLE_MOB.hp*100).toFixed(1)}%`;
+      $('single-three-pct').textContent=`원래 HP의 ${(r.remainingAt3/conditions.hp*100).toFixed(1)}%`;
       $('single-reference').textContent=`루치 1기: 100→15% ${sec(refs.lucci.to15)} · 핸콕 1기: 15→처치 ${sec(refs.hancock.finishFrom15)}`;
       $('single-explain').textContent=`${r.count}기가 같은 65라 몹 한 기를 동시에 공격 · ${fmt(trials)}회 평균 · 시드 ${seed} · 마법 배율 ${(c.magic*c.all).toFixed(3)}`;
     }catch(error){$('single-error').textContent=String(error.message??error);$('single-error').hidden=false;}
@@ -298,6 +310,8 @@ function restore(){
   $('franky-aura').checked=params.get('frankyAura')!=='0';
   $('sunny-stagger').checked=params.get('sunnyStagger')==='1';
   $('position-v3').checked=params.get('position')==='1';
+  if(params.get('armor')==='map')$('armor-model-v3').value='map';
+  $('leo-v3').checked=params.get('leo')==='1';
   if(['지옥','신','악몽'].includes(params.get('difficulty')))$('difficulty-v3').value=params.get('difficulty');
   for(const k of ['pea','snow','muk'])if(params.has('tr19'+k))$('tr19-'+k).value=params.get('tr19'+k);
   try{for(const [src,tgts] of Object.entries(JSON.parse(params.get('buffTargets')||'{}')))for(const t of data.heroes.map(h=>h.code))(buffState[src]??={})[t]=tgts.includes(t);}catch{}
@@ -316,6 +330,7 @@ function shareURL(){
   u.searchParams.set('sunnyStagger',$('sunny-stagger').checked?'1':'0');
   u.searchParams.set('position',$('position-v3').checked?'1':'0');
   u.searchParams.set('difficulty',$('difficulty-v3').value);
+  u.searchParams.set('armor',$('armor-model-v3').value);u.searchParams.set('leo',$('leo-v3').checked?'1':'0');
   for(const k of ['pea','snow','muk'])u.searchParams.set('tr19'+k,$('tr19-'+k).value);
   const bt=buffTargets();if(Object.keys(bt).length)u.searchParams.set('buffTargets',JSON.stringify(bt));
   for(const e of document.querySelectorAll('.amp-effect:checked'))u.searchParams.append('effect',e.value);
@@ -328,6 +343,7 @@ async function main(){
     data=await response.json();restore();setupEffects();renderMobs();render();setupSingle();
     $('add-unit').addEventListener('click',()=>addRow({code:'MAGIC_CUSTOM'}));
     document.querySelector('.v2-controls').addEventListener('input',schedule);
+    for(const id of ['difficulty-v3','v3-gorosei'])$(id).addEventListener('change',renderMobs);
     $('share-v2').addEventListener('click',async()=>{const href=shareURL();try{await navigator.clipboard.writeText(href);$('share-v2').firstChild.textContent='조합 링크 복사됨 ';}catch{$('share-v2').firstChild.textContent='주소창 링크를 복사하세요 ';}
       setTimeout(()=>$('share-v2').firstChild.textContent='현재 조합 링크 복사 ',2200);});
   }catch(error){$('v2-verdict').textContent='데이터를 불러오지 못했습니다';$('v2-verdict-detail').textContent=String(error.message??error);}

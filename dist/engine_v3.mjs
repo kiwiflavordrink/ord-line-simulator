@@ -26,6 +26,10 @@ export const SUPPORT_STUNS={
   D3:[{on:'attack',chance:.15,radius:500,stun:{normal:.95,hero:.19},note:'빙귀 "공격시 15% 확률로 ▶ 500범위 ▶ 해당 범위 0.95초 스턴"'}]
 };
 
+// 2.305 base attack cooldowns (w3u ua1c) for units whose aps is a fixed theory value: supports
+// h03A L7 .58, h039 L23 .75, h03S L25 1.02, h0CI D3 .85; conditional h04F I8 .24, H08Y TR28 .75,
+// h03L H15 .45; Red Force hidden h03U .64. Used only for the 나스쥬로 attack-speed penalty (수정내역 20).
+const BASE_COOLDOWN={L7:.58,L23:.75,L25:1.02,D3:.85,I8:.24,TR28:.75,H15:.45,H2:.64};
 export const CONDITIONAL_UNITS={
   I8:{name:'스코퍼가반 불멸',attack:407502,aps:17.916666558,attackType:'pierce',
     url:'https://ordr.kr/character/I8'},
@@ -101,15 +105,18 @@ export function simulateV2(data,composition,options={}){
     speed:{aura:0,line_flat:0},frenzy_aura:{armor:5,regen:1000000},stun_resist:true,common:{hp:0,regen:0},gorosei:true};
   const goroWanted=options.gorosei??(options.warcury===true?'워큐리':null);
   const goroName=diff.gorosei&&(data.gorosei?data.gorosei[goroWanted]:goroWanted==='워큐리')?goroWanted:null;
+  const armorModel=options.armorModel==='map'&&data.difficulties?'map':'data';
   const curse=goroName?(data.gorosei?.[goroName]?.[diffName]??{armor:10,magic_levels:10}):{};
+  // 나스쥬로 attack-speed penalty on any allied unit: WC3 aps = min(5, aps x cooldown + bonus) / cooldown.
+  const allyAps=(aps,cooldown)=>curse.ally_aps&&cooldown?Math.max(0,Math.min(5,aps*cooldown+curse.ally_aps))/cooldown:aps;
   const units=[];
   for(const item of composition){
     const count=clamp(Math.floor(item.count??1),1,6);
     if(heroMap.has(item.code))for(let i=0;i<count;i++)units.push({kind:'hero',code:item.code,model:heroMap.get(item.code),damage:item.damage!==false});
-    else if(SUPPORTS[item.code])for(let i=0;i<count;i++)units.push({kind:'support',code:item.code,model:SUPPORTS[item.code],damage:item.damage!==false,ab:item.ab!==false});
+    else if(SUPPORTS[item.code])for(let i=0;i<count;i++)units.push({kind:'support',code:item.code,model:{...SUPPORTS[item.code],aps:allyAps(SUPPORTS[item.code].aps,BASE_COOLDOWN[item.code])},damage:item.damage!==false,ab:item.ab!==false});
     else if(DELETERS[item.code])for(let i=0;i<count;i++)units.push({kind:'deleter',code:item.code,model:DELETERS[item.code],damage:item.damage!==false,nextAttack:1/(DELETERS[item.code].aps||1),nextReady:0});
     else if(CONDITIONAL_UNITS[item.code])for(let i=0;i<count;i++)units.push({kind:'conditional',code:item.code,
-      model:CONDITIONAL_UNITS[item.code],damage:item.damage!==false,energy:0,
+      model:{...CONDITIONAL_UNITS[item.code],aps:allyAps(CONDITIONAL_UNITS[item.code].aps,BASE_COOLDOWN[item.code])},damage:item.damage!==false,energy:0,
       attackBank:0,nextCast:0});
     else if(item.code==='MAGIC_CUSTOM')for(let i=0;i<count;i++)units.push({kind:'magic',code:'MAGIC_CUSTOM',damage:item.damage!==false});
   }
@@ -148,6 +155,8 @@ export function simulateV2(data,composition,options={}){
   const fullResource=resourceMode!=='empty',summons=options.summons!==false;
   for(const u of units)if(u.kind==='conditional')u.energy=fullResource?(u.code==='I8'?45:u.code==='H15'?100:150):0;
   const red=options.red!==false,redDamage=red&&options.redDamage!==false;
+  // 새턴 A13G (ACac) adds to Red Force's +35% like any attack aura (supports, conditional units, Red Force).
+  const allyAttack=curse.ally_attack??0;
   const frankyLinked=options.frankyAura!==false&&units.some(u=>u.code==='TR28');
   const sunnyUnits=units.filter(u=>u.code==='H15');
   const sunnyStagger=options.sunnyStagger===true;
@@ -217,6 +226,9 @@ export function simulateV2(data,composition,options={}){
   const enemySlowAuras=new Map();
   if(posModel)for(const u of units)if(u.kind==='hero')for(const a of u.model.enemy_slow_auras??[])
     if(!(enemySlowAuras.get(a.id)?.value>=a.value))enemySlowAuras.set(a.id,a);
+  // 2.320 패왕의길 항법: summons legend unit 레오 with a 10% move-speed reduction aura (option leo).
+  // Its range and support damage are not published: range 800 [추정], damage not modeled.
+  if(posModel&&options.leo===true&&!(enemySlowAuras.get('LEO')?.value>=.1))enemySlowAuras.set('LEO',{id:'LEO',value:.1,range:800});
   // Every unit is bunched at the spawn point, so one engage range applies to all (user decision).
   const engageRange=lp?clamp(options.engageRange??lp.engage_range,100,3000):0;
   // Stuns and slows proc randomly (seeded) so stun chains can leak; damage stays an expected value.
@@ -335,14 +347,17 @@ export function simulateV2(data,composition,options={}){
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
     finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,
     buffs:units.map(u=>u.buffs?{code:u.code,...u.buffs}:null).filter(Boolean),unitCount:units.length,
-    magicFactor,cut,coverage,resourceMode,positionModel:posModel,difficulty:diffName,gorosei:goroName??'없음'});
+    magicFactor,cut,coverage,resourceMode,positionModel:posModel,difficulty:diffName,gorosei:goroName??'없음',armorModel});
 
   for(const round of rounds){
-    const [lineHp,armor0]=diff.rounds[String(round)];
+    // armorModel 'map': 2.305 formula udef + udup x level (diff.armor_map); default keeps the 신 values.
+    const mapArmor=armorModel==='map'?diff.armor_map:null;
+    const [lineHp,dataArmor]=diff.rounds[String(round)],armor0=mapArmor?.line[String(round)]??dataArmor;
     const hp0=lineHp+diff.common.hp+(curse.line_hp??0);
     let spawned=0,specialKill=null;
     if(diff.boss[String(round)]){
-      const [bossHp,baseArmor]=diff.boss[String(round)],hp=bossHp+diff.common.hp+(curse.boss_hp??0);
+      const [bossHp,dataBossArmor]=diff.boss[String(round)],hp=bossHp+diff.common.hp+(curse.boss_hp??0);
+      const baseArmor=mapArmor?.boss[String(round)]??dataBossArmor;
       const boss={hp,maxhp:hp,armor:baseArmor,ab:0,kind:'boss',round};
       if(posModel){boss.s=0;boss.speed=lp.boss_speed;place(boss);}
       specials.push(boss);
@@ -399,7 +414,7 @@ export function simulateV2(data,composition,options={}){
       // Armor break is stored on each individual enemy and survives wave changes.
       for(let i=0;i<units.length;i++){
         const u=units[i];if(u.kind!=='support')continue;
-        const s=u.model,attack=s.attack*(red?1.35:1);
+        const s=u.model,attack=s.attack*(1+(red?.35:0)+allyAttack);
         const cast=casts.get(i).some(x=>x>=globalT-1e-8&&x<globalT+.1-1e-8);
         if(u.ab&&s.abProc)for(const m of aoeTargets)if(m.hp>0)abAdd(m,s.aps*s.abProc*.1*hit(m));
         if(cast&&u.ab&&u.code!=='D3')for(const m of aoeTargets)if(m.hp>0)abAdd(m,s.abCast*hit(m));
@@ -566,7 +581,7 @@ export function simulateV2(data,composition,options={}){
             // 4.5% per attack: +75만 attack for 5 s (2.305 wts STRING 5937). A re-proc refreshes the
             // buff [추정], so the expected bonus is 75만 x P(at least one proc in the last 5 s).
             const buff=750_000*(1-Math.pow(1-.045,spec.aps*5));
-            const basic=(spec.attack*(red?1.35:1)+buff)*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor));
+            const basic=(spec.attack*(1+(red?.35:0)+allyAttack)+buff)*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor));
             deal(single,basic,u.code,'single','physical');
             // 525% fixed crit: 55%, bosses 13% (tooltip "스토리 및 보스에게는 발동확률 13%로 감소").
             deal(single,(single.kind==='boss'?.13:.55)*5.25*basic,u.code,'single','fixed');
@@ -584,7 +599,7 @@ export function simulateV2(data,composition,options={}){
         }else if(u.code==='TR28'){
           while(u.attackBank>=1-1e-9){u.attackBank-=1;if(single)u.energy=Math.min(150,u.energy+1);}
           if(!u.damage)continue;
-          if(single)deal(single,spec.attack*attacks*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
+          if(single)deal(single,spec.attack*(1+allyAttack)*attacks*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
           const missiles=frankyLinked&&sunnyUnits.length?2+sunnyUnits.length:0;
           for(const m of aoeTargets)if(m.hp>0){
             deal(m,(spec.aps*.05*460_000+spec.aps*.08*250_000*missiles)*.1*magicFactor*hit(m),u.code,'area','magic');
@@ -599,7 +614,7 @@ export function simulateV2(data,composition,options={}){
             u.attackBank-=1;
             if(!single)continue;
             u.energy=Math.min(100,u.energy+1);
-            if(u.damage)deal(single,spec.attack*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
+            if(u.damage)deal(single,spec.attack*(1+allyAttack)*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
             const cast=frankyLinked&&globalT+1e-8>=u.openingDelay&&u.energy>=100;
             const proc=!frankyLinked&&random(u)<.1;
             if(!u.damage||!cast&&!proc)continue;
@@ -615,7 +630,7 @@ export function simulateV2(data,composition,options={}){
       }
       if(frankyLinked&&sunnyUnits.length)control.frankyAuraSeconds+=.1;
       if(redDamage&&target){
-        const hiddenAps=5.625,hiddenAttack=67806.45;
+        const hiddenAps=allyAps(5.625,BASE_COOLDOWN.H2),hiddenAttack=67806.45*(1+allyAttack);
         deal(target,hiddenAttack*hiddenAps*1.05*pf(armor(target,extraArmor))*(target.kind==='boss'?2.2:1)*.1,'H2','basic','physical');
         if(target.kind!=='line'){
           const bonus=(target.kind==='frenzy'?.075:.0175)*target.maxhp;
@@ -623,7 +638,7 @@ export function simulateV2(data,composition,options={}){
         }
       }
       if(redDamage)for(const m of mobs)
-        deal(m,5.625*.15*275000*magicFactor*.1*hit(m),'H2','area','magic');
+        deal(m,allyAps(5.625,BASE_COOLDOWN.H2)*.15*275000*magicFactor*.1*hit(m),'H2','area','magic');
 
       // After absolute cooldown, each attack rolls its tooltip proc chance.
       // Sugar is an active used as soon as it is ready.
