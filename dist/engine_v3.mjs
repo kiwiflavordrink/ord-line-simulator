@@ -36,15 +36,25 @@ const clamp=(x,min,max)=>Math.min(max,Math.max(min,Number.isFinite(+x)?+x:min));
 const abAdd=(m,n)=>{m.ab=Math.min(75,m.ab+n);};
 const isSummon=e=>/완두콩|백설콩|파견 해군|거인족|부유물|릴리스|아틀라스|요크/.test(String(e.index));
 
-function formAt(hero,t){
+// Resource modes: 'start' = full mana once at the start of round 60 (2.305 has no
+// round-start mana refill; only cheat functions refill mana), 'empty' = no starting
+// mana, 'perRound' = legacy model that refilled mana at every round start.
+// Mana-driven cycles start transformed when mana is full; proc-driven cycles (I11)
+// and empty mana first wait for the trigger (period - window).
+function inWindow(window,period,g,t,mode,resourceDriven){
+  if(mode==='perRound')return t%period<window;
+  const offset=resourceDriven&&mode==='start'?0:period-window;
+  return g>=offset&&(g-offset)%period<window;
+}
+function formAt(hero,g,t,mode){
   const base=hero.forms[0];
   if(hero.forms.length<2)return {form:base,transformed:false};
-  if(['TR19','TR20'].includes(hero.code))return {form:hero.forms[1],transformed:true};
+  if(hero.permanent_form!=null)return {form:hero.forms[hero.permanent_form],transformed:hero.permanent_form>0};
   const windows={TR3:[4.5,150,.25],TR6:[7,130,.25],TR18:[3.5,95,.33],TR23:[4,150,0],I11:[11,0,0],E10:[2,100,0]};
   const w=windows[hero.code];if(!w)return {form:base,transformed:false};
   let period=w[1]?w[0]+w[1]/(base.aps+w[2]):w[0]+1/(base.aps*.14);
   if(hero.code==='E10')period=w[0]+100/(base.aps*.2);
-  const transformed=t%period<w[0];
+  const transformed=inWindow(w[0],period,g,t,mode,w[1]>0);
   return {form:transformed?hero.forms[1]:base,transformed};
 }
 
@@ -75,7 +85,9 @@ export function simulateV2(data,composition,options={}){
   }
   if(!units.length)throw new Error('조합에 유닛을 한 기 이상 넣어 주세요.');
   const cut=clamp(options.cut??201,0,300),coverage=clamp(options.coverage??1,0,1);
-  const fullResource=options.fullResource!==false,summons=options.summons!==false;
+  const resourceMode=['start','empty','perRound'].includes(options.resourceMode)?options.resourceMode:
+    options.fullResource===false?'empty':'start';
+  const fullResource=resourceMode!=='empty',summons=options.summons!==false;
   for(const u of units)if(u.kind==='conditional')u.energy=fullResource?(u.code==='I8'?45:u.code==='H15'?100:150):0;
   const red=options.red!==false,redDamage=red&&options.redDamage!==false;
   const frankyLinked=options.frankyAura!==false&&units.some(u=>u.code==='TR28');
@@ -153,7 +165,7 @@ export function simulateV2(data,composition,options={}){
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
     finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,control,unitCount:units.length,
-    magicFactor,cut,coverage});
+    magicFactor,cut,coverage,resourceMode});
 
   for(const round of rounds){
     const [hp0,armor0]=data.rounds[String(round)];
@@ -184,7 +196,7 @@ export function simulateV2(data,composition,options={}){
       const extraArmor=(bossAura?10:0)+(frenzyAura?5:0);
       if(newMob)for(const u of units){
         if(u.kind!=='hero'||!u.damage)continue;
-        const hero=u.model,form=formAt(hero,t).form;
+        const hero=u.model,form=formAt(hero,globalT,t,resourceMode).form;
         let attack=form.attack*(red?1.35:1);
         if(hero.code==='Z2')attack+=60000;
         if(hero.code==='I11')attack*=.25;
@@ -236,9 +248,9 @@ export function simulateV2(data,composition,options={}){
           continue;
         }
         if(u.kind!=='hero'||!u.damage)continue;
-        const hero=u.model,{form,transformed}=formAt(hero,t),baseAps=hero.forms[0].aps;
+        const hero=u.model,{form,transformed}=formAt(hero,globalT,t,resourceMode),baseAps=hero.forms[0].aps;
         let aps=form.aps;if(hero.code==='E10'&&transformed)aps=1/.11;
-        const giant=['E1','E2'].includes(hero.code)&&(t%(4.25+115/(baseAps+.25)))<4.25;
+        const giant=['E1','E2'].includes(hero.code)&&inWindow(4.25,4.25+115/(baseAps+.25),globalT,t,resourceMode,true);
         if(giant)aps/=3.25;
         let attack=form.attack*(red?1.35:1)*(['E1','E2'].includes(hero.code)?1.25:1);
         if(hero.code==='Z2')attack+=60000;
@@ -254,7 +266,7 @@ export function simulateV2(data,composition,options={}){
           if(!summons&&isSummon(e))continue;
           if(e.phase==='trans'&&!transformed||e.phase==='base'&&transformed||e.phase==='giant'&&!giant||e.phase==='nongiant'&&giant)continue;
           let rate=e.rate*(e.per_attack?aps/baseAps:1);
-          if(fullResource&&e.initial&&step===0)rate+=10;
+          if(e.initial&&(resourceMode==='perRound'&&step===0||resourceMode==='start'&&globalStep===0))rate+=10;
           if(!rate)continue;
           let targets;
           switch(e.target){

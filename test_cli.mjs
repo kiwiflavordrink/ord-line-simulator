@@ -40,7 +40,7 @@ function assertLine(out,direct){
   assert.deepEqual(out.finisher,{attempts:direct.finisherAttempts,kills:direct.finisherKills});
   assert.deepEqual(out.control,direct.control);
   assert.deepEqual(out.totals,{lineSpawned:direct.totalLineSpawned,lineKilled:direct.totalLineKilled,unitCount:direct.unitCount});
-  assert.deepEqual(out.applied,{cut:direct.cut,coverage:direct.coverage,magicFactor:direct.magicFactor});
+  assert.deepEqual(out.applied,{cut:direct.cut,coverage:direct.coverage,magicFactor:direct.magicFactor,resourceMode:direct.resourceMode});
 }
 function assertSingle(out,direct,refs){
   assert.equal(out.to15Seconds,direct.to15);
@@ -152,6 +152,7 @@ bad({line:{team:[{code:'TR19'}],options:{coverage:85}}},'OUT_OF_RANGE','line.opt
 bad({line:{team:[{code:'TR19'}],options:{red:'yes'}}},'NOT_A_BOOLEAN');
 bad({line:{team:[{code:'TR19'}],options:{stun:true}}},'UNKNOWN_KEY','line.options.stun');
 bad({line:{team:[{code:'TR19'}],options:{finisher:{mode:'auto'}}}},'INVALID_VALUE');
+bad({line:{team:[{code:'TR19'}],options:{resourceMode:'always'}}},'INVALID_VALUE','line.options.resourceMode');
 bad({line:{team:[{code:'TR19'}]},context:{selected:['NOPE']}},'UNKNOWN_EFFECT');
 bad({single:{team:[{code:'TR19'}]}},'UNSUPPORTED_UNIT','single.team[0].code');
 bad({single:{team:[{code:'L9',count:7},{code:'L36',count:6}]}},'TOO_MANY_UNITS');

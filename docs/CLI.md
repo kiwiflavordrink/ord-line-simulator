@@ -94,6 +94,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `red` | bool | true | 레드포스호 공증 35% |
 | `redDamage` | bool | `red`와 같음 | 레드포스호 직접 피해 (웹은 `red`와 함께 켜고 끔) |
 | `fullResource` | bool | true | 시작 자원 만충 |
+| `resourceMode` | `start` · `empty` · `perRound` | `fullResource`에 따라 `start`/`empty` | `start`: 60라 시작 시 1회 만충 후 연속, `empty`: 빈 자원, `perRound`: 매 라운드 만충(이전 모델) |
 | `summons` | bool | true | 소환 범위 피해 포함 |
 | `frankyAura` | bool | true | 프랑키가 써니호 700범위 안에 있어 써니호 마나 +5/초 |
 | `sunnyStagger` | bool | false | 써니호 여러 기의 스킬 시점을 균등 분산 |

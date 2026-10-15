@@ -137,13 +137,14 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','summons','frankyAura','sunnyStagger','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
       red:bool(o,'red','line.options',is),
       redDamage:bool(o,'redDamage','line.options',is),
       fullResource:bool(o,'fullResource','line.options',is),
+      resourceMode:oneOf(o,'resourceMode','line.options',is,['start','empty','perRound']),
       summons:bool(o,'summons','line.options',is),
       frankyAura:bool(o,'frankyAura','line.options',is),
       sunnyStagger:bool(o,'sunnyStagger','line.options',is)
@@ -277,7 +278,7 @@ function lineReport(r,data,includeTimeline){
     finisher:{attempts:r.finisherAttempts,kills:r.finisherKills},
     deletions:r.deleteCounts,
     control:r.control,
-    applied:{cut:r.cut,coverage:r.coverage,magicFactor:r.magicFactor},
+    applied:{cut:r.cut,coverage:r.coverage,magicFactor:r.magicFactor,resourceMode:r.resourceMode},
     ...(includeTimeline?{timeline:r.timeline}:{})
   };
 }
