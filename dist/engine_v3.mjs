@@ -301,7 +301,7 @@ export function simulateV2(data,composition,options={}){
   }
   const spawnPt=lp?{x:lp.loop[0][0],y:lp.loop[0][1]}:null;
   const place=m=>{
-    if(m.kind==='frenzy'&&lp.frenzy){
+    if((m.kind==='frenzy'||m.shuttle)&&lp.frenzy){
       const [a,b]=lp.frenzy.shuttle,d=Math.hypot(b[0]-a[0],b[1]-a[1]),u=m.s%(2*d),f=(u<=d?u:2*d-u)/d;
       m.x=a[0]+(b[0]-a[0])*f;m.y=a[1]+(b[1]-a[1])*f;return;
     }
@@ -380,8 +380,38 @@ export function simulateV2(data,composition,options={}){
     const up=a.uptime?1-Math.exp(-a.uptime.proc*u.model.forms[0].aps*a.uptime.duration):1;
     const prev=armorAuras.get(a.id);armorAuras.set(a.id,{...a,eff:a.value*(1-(1-up)*(prev?1-prev.eff/a.value:1))});
   }
+  // MECH-A: per-mob integer stacks (TR21 나이 조작 A04P), once-per-target flags, round lowering (Z5 뒤로뒤로).
+  const stackArmor={};
+  for(const u of units)if(u.kind==='hero'&&u.model.age_stack)stackArmor[u.model.age_stack.key]=u.model.age_stack.armor_per_stack??0;
+  // WC3 SetUnitAbilityLevel above alev is ignored (over_cap 'ignore'); 'clamp' caps instead.
+  const stackAdd=(m,spec,n)=>{const st=m.stk??={},cur=st[spec.key]??0;
+    if(cur+n<=spec.max)st[spec.key]=cur+n;else if(spec.over_cap==='clamp')st[spec.key]=spec.max;};
+  const lowerCounts={moved:0,killed:0};
+  const TYPE_ROUND={normal:60,large:61,fort:62,hero:64};
+  const levelStats=L=>{
+    const k=String(L),r=diff.rounds[k];
+    if(r)return {hp:r[0]+diff.common.hp+(curse.line_hp??0),armor:r[1],typeRound:L};
+    const t=data.mob_levels?.[k];
+    if(!t||diff.line_hp_mult==null||diff.line_armor_level==null)return null;
+    return {hp:t.uhpm*diff.line_hp_mult+diff.common.hp+(curse.line_hp??0),armor:t.udef+t.udup*diff.line_armor_level,typeRound:TYPE_ROUND[t.udty]};
+  };
+  // 2.305 sGM j:23762-23831: level = acquire range; new level = level - rand(drop); 39 -> 41, x0 (<=50) -> +1;
+  // new level <= round - kill_at: killed; else O3M j:23723: new DU[level] at the frenzy spawn rect, HP = ratio x hp_keep.
+  const lowerMob=(m,lr,round)=>{
+    let V=(m.level??m.round)-(lr.drop[0]+Math.floor(pickRandom()*(lr.drop[1]-lr.drop[0]+1)));
+    if(V===39)V+=2;if(V%10===0&&V<=50)V+=1;
+    const s=V>round-lr.kill_at?levelStats(V):null;
+    if(!s){m.hp=0;lowerCounts.killed++;return;}
+    const ratio=Math.max(0,m.hp)/m.maxhp*lr.hp_keep;
+    for(const k of ['debuffs','slows','stk','once','approached','huntSingle','huntArea','stunnedUntil'])delete m[k];
+    Object.assign(m,{level:V,maxhp:s.hp,hp:s.hp*ratio,armor:s.armor,typeRound:s.typeRound,ab:0});
+    if(m.kind==='frenzy'){specials.splice(specials.indexOf(m),1);m.kind='line';mobs.push(m);totalLineSpawned++;}
+    lowerCounts.moved++;
+    if(posModel){m.shuttle=true;m.s=0;m.speed=lp.mob_speed;place(m);}
+  };
   const debuffSum=m=>{
     let sum=0;
+    if(m.stk)for(const k in m.stk)sum+=m.stk[k]*(stackArmor[k]??0);
     for(const a of armorAuras.values())if(!posModel||dist(m,spawnPt)<=a.range)sum+=a.eff;
     if(m.debuffs)for(const d of Object.values(m.debuffs))if(d.until>now)sum+=d.value;
     if(m.huntSingle>0)sum+=Math.min(145,70+5*m.huntSingle);
@@ -443,7 +473,8 @@ export function simulateV2(data,composition,options={}){
     averageAb:mobs.length?mobs.reduce((a,m)=>a+m.ab,0)/mobs.length:0});
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
-    finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,
+    finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,lowerCounts,
+    justiceLog:Object.fromEntries(units.map((u,i)=>[u.code+'#'+i,u.justiceLog]).filter(x=>x[1])),
     buffs:units.map(u=>u.buffs?{code:u.code,...u.buffs}:null).filter(Boolean),unitCount:units.length,
     magicFactor,cut,coverage,resourceMode,positionModel:posModel,difficulty:diffName,gorosei:goroName??'없음',armorModel,defeatThreshold:diff.defeat,
     // Unresolved model assumptions of the heroes in the team (data hero.assumptions), shown by the web and CLI.
@@ -536,7 +567,7 @@ export function simulateV2(data,composition,options={}){
       const enemyRegen=diff.common.regen+(curse.regen??0),frenzyRegen=diff.frenzy_aura?.regen??0;
       const unitRegen=r=>data.round_regen?.[String(r)]??0;
       const regen=(bossAura?500000:0)+(frenzyAura?frenzyRegen:0)+enemyRegen;
-      for(const m of mobs){const g=(regen+unitRegen(m.round))*.1;if(g)m.hp=Math.min(m.maxhp,m.hp+g);}
+      for(const m of mobs){const g=(regen+unitRegen(m.level??m.round))*.1;if(g)m.hp=Math.min(m.maxhp,m.hp+g);}
       for(const s of specials)s.hp=Math.min(s.maxhp,s.hp+((s.kind==='boss'?550000:frenzyRegen+unitRegen(s.round))+enemyRegen)*.1);
       if(posModel)for(const m of [...mobs,...specials])if(m.hp>0)move(m);
       // Supports, Red Force and conditional units: engage range (default lp.engage_range), splash lp.support_splash.
@@ -556,9 +587,9 @@ export function simulateV2(data,composition,options={}){
         if(u.ab&&s.abProc)for(const m of aoeTargets)if(m.hp>0)abAdd(m,s.aps*s.abProc*.1*hit(m));
         if(cast&&u.ab&&u.code!=='D3')for(const m of aoeTargets)if(m.hp>0)abAdd(m,s.abCast*hit(m));
         if(u.damage){
-          if(target)deal(target,attack*s.aps*typeFor(s.attackType,target.round,data)*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
+          if(target)deal(target,attack*s.aps*typeFor(s.attackType,target.typeRound??target.round,data)*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
           if(s.splash)for(const m of mobs)if(m!==target)
-            deal(m,attack*s.aps*s.splash*typeFor(s.attackType,m.round,data)*pf(armor(m,extraArmor))*.1*coverage,u.code,'area','physical');
+            deal(m,attack*s.aps*s.splash*typeFor(s.attackType,m.typeRound??m.round,data)*pf(armor(m,extraArmor))*.1*coverage,u.code,'area','physical');
           for(const m of aoeTargets){
             if(m.hp<=0)continue;
             let d=0,kind='mixed';
@@ -638,9 +669,24 @@ export function simulateV2(data,composition,options={}){
           const crit=critEV(form.crit);
           // attack_uptime: share of time the hero attacks (E6 난사 channels 1.27 s per cast).
           const up=hero.attack_uptime??1;
-          deal(target,attack*crit*critEV(form.target_crit)*aps*up*form.rounds[String(target.round)]*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
+          deal(target,attack*crit*critEV(form.target_crit)*aps*up*form.rounds[String(target.typeRound??target.round)]*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
           if(form.splash)for(const m of mobs)if(m!==target&&(!posModel||dist(m,target)<=form.splash_radius))
-            deal(m,attack*crit*aps*up*form.rounds[String(m.round)]*pf(armor(m,extraArmor))*form.splash*.1*cov,u.code,'area','physical');
+            deal(m,attack*crit*aps*up*form.rounds[String(m.typeRound??m.round)]*pf(armor(m,extraArmor))*form.splash*.1*cov,u.code,'area','physical');
+        }
+        // MECH-C: hero.age_stack (TR21 2.305 UtM j:45865 / OEA j:36971 +10 per attack, then oJ → rHA j:76368:
+        // every enemy within check_radius at max stacks without A0VG takes once_parts once, riA j:77294-77326).
+        const ag=hero.age_stack;
+        if(ag&&target){
+          u.ageClock=(u.ageClock??0)+aps*(hero.attack_uptime??1)*.1;
+          for(;u.ageClock>=1-1e-9;u.ageClock--){
+            if(target.hp>0)stackAdd(target,ag,ag.per_attack);
+            for(const m of [...mobs,...specials]){
+              if(m.hp<=0||(m.stk?.[ag.key]??0)<ag.max||m.once?.has(ag.key)||posModel&&dist(m,spawnPt)>ag.check_radius)continue;
+              (m.once??=new Set()).add(ag.key);
+              deal(m,eventDamage({parts:ag.once_parts},m,attack,extraArmor),u.code,m===target?'single':'area','magic');
+              if(posModel&&ag.line_stun&&m.kind==='line'&&m.hp>0)applyStun(m,ag.line_stun);
+            }
+          }
         }
         for(const e of u.events){
           if(!summons&&isSummon(e))continue;
@@ -657,6 +703,27 @@ export function simulateV2(data,composition,options={}){
           // Position model: a skill needs a target in range unless it is centred on the hero.
           const center=posModel?(e.center==='self'?spawnPt:target):null;
           if(posModel&&!center)continue;
+          if(e.when_target_stack!=null&&(target?.stk?.[hero.age_stack?.key]??0)!==e.when_target_stack)continue;
+          // MECH-B: stack_target (TR17 철저한 정의, 2.305 j:76404-76422 + oLM j:72651-72716): on the first whole
+          // attack on a boss/frenzy after `cooldown` s, cast with multiplier mult (same target as this hero's
+          // last proc: +step, else 1). area_parts hit radius around the target, parts the target, frenzy_parts x1.
+          const sj=e.stack_target;
+          if(sj){
+            const st=(u.stackState??={})[e.index]??={clock:0,ready:0,m:null,mult:0};
+            st.clock+=aps*(hero.attack_uptime??1)*.1;
+            for(;st.clock>=1-1e-9;st.clock--){
+              if(!target||target.hp<=0||target.kind==='line'||now+1e-9<st.ready)continue;
+              st.ready=now+sj.cooldown;st.mult=st.m===target?st.mult+sj.step:1;st.m=target;
+              const k=st.mult*critEV(e.crit);
+              for(const x of [...mobs,...specials])if(x.hp>0&&(x===target||!posModel||dist(x,target)<=sj.radius))
+                deal(x,eventDamage({...e,parts:sj.area_parts},x,attack,extraArmor)*k*(x===target||posModel?1:cov),u.code,x===target?'single':'area','mixed');
+              deal(target,eventDamage(e,target,attack,extraArmor)*k,u.code,'single','mixed');
+              if(sj.frenzy_parts&&target.kind==='frenzy')deal(target,eventDamage({...e,parts:sj.frenzy_parts},target,attack,extraArmor),u.code,'single','fixed');
+              if(posModel&&e.stun&&target.hp>0)applyStun(target,e.stun);
+              (u.justiceLog??=[]).push(st.mult);
+            }
+            continue;
+          }
           let targets;
           // Single-target kinds hit only the current attack target:
           // 'single' any target (boss_parts replaces parts against a boss), 'single_line' a line mob,
@@ -689,6 +756,8 @@ export function simulateV2(data,composition,options={}){
             continue;
           }
           if(posModel&&!single)targets=targets.filter(m=>m===target||dist(m,center)<=(e.radius??lp.default_radius));
+          const preTargets=targets;
+          if(e.requires_stack!=null)targets=targets.filter(m=>(m.stk?.[hero.age_stack?.key]??0)===e.requires_stack);
           for(const m of targets)if(m.hp>0){
             // boss_parts replace parts against a boss; nonline_parts against a boss or frenzy (E6 "보스").
             let ev=e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
@@ -721,6 +790,22 @@ export function simulateV2(data,composition,options={}){
               for(const m of targets)if(m.hp>0)applyDebuff(m,e.armor_debuff,m===target||single?1:coverage);
             }
           }
+          // MECH-C: stack_add — each whole proc adds n stacks to the skill's (pre-filter) targets.
+          if(e.stack_add&&hero.age_stack){
+            const bank=u.stackBank??={};bank[e.index]=(bank[e.index]??0)+rate*.1;
+            for(;bank[e.index]>=1-1e-9;bank[e.index]--)for(const m of preTargets)
+              if(m.hp>0&&(m===target||single||posModel||pickRandom()<cov))stackAdd(m,hero.age_stack,e.stack_add);
+          }
+          // MECH-A: lower_round (Z5 뒤로뒤로 열매) — each whole cast rolls chance; up to picks distinct random
+          // non-excluded enemies within radius of the skill centre are lowered (or killed).
+          if(e.lower_round){
+            const lr=e.lower_round,bank=u.lowerBank??={};
+            bank[e.index]=(bank[e.index]??0)+rate*.1*lr.chance;
+            for(;bank[e.index]>=1-1e-9;bank[e.index]--){
+              const pool=[...mobs,...specials].filter(m=>m.hp>0&&!lr.exclude.includes(m.kind)&&(!posModel||dist(m,center)<=lr.radius));
+              for(let k=0;k<lr.picks&&pool.length;k++)lowerMob(pool.splice(Math.floor(pickRandom()*pool.length),1)[0],lr,round);
+            }
+          }
           if(e.execute_line){
             const bank=u.executeBank??={};
             bank[e.index]=(bank[e.index]??0)+rate*.1;
@@ -751,7 +836,7 @@ export function simulateV2(data,composition,options={}){
             // 4.5% per attack: +75만 attack for 5 s (2.305 wts STRING 5937). A re-proc refreshes the
             // buff [추정], so the expected bonus is 75만 x P(at least one proc in the last 5 s).
             const buff=750_000*(1-Math.pow(1-.045,spec.aps*5));
-            const basic=(spec.attack*(1+(red?.35:0)+allyAttack)+buff)*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor));
+            const basic=(spec.attack*(1+(red?.35:0)+allyAttack)+buff)*typeFor(spec.attackType,single.typeRound??single.round,data)*pf(armor(single,extraArmor));
             deal(single,basic,u.code,'single','physical');
             // 525% fixed crit: 55%, bosses 13% (tooltip "스토리 및 보스에게는 발동확률 13%로 감소").
             deal(single,(single.kind==='boss'?.13:.55)*5.25*basic,u.code,'single','fixed');
@@ -769,7 +854,7 @@ export function simulateV2(data,composition,options={}){
         }else if(u.code==='TR28'){
           while(u.attackBank>=1-1e-9){u.attackBank-=1;if(single)u.energy=Math.min(150,u.energy+1);}
           if(!u.damage)continue;
-          if(single)deal(single,spec.attack*(1+(red?.35:0)+allyAttack)*attacks*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
+          if(single)deal(single,spec.attack*(1+(red?.35:0)+allyAttack)*attacks*typeFor(spec.attackType,single.typeRound??single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
           const missiles=frankyLinked&&sunnyUnits.length?2+sunnyUnits.length:0;
           for(const m of aoeTargets)if(m.hp>0){
             deal(m,(spec.aps*.05*460_000+spec.aps*.08*250_000*missiles)*.1*magicFactor*hit(m),u.code,'area','magic');
@@ -784,7 +869,7 @@ export function simulateV2(data,composition,options={}){
             u.attackBank-=1;
             if(!single)continue;
             u.energy=Math.min(100,u.energy+1);
-            if(u.damage)deal(single,spec.attack*(1+(red?.35:0)+allyAttack)*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
+            if(u.damage)deal(single,spec.attack*(1+(red?.35:0)+allyAttack)*typeFor(spec.attackType,single.typeRound??single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
             const cast=frankyLinked&&globalT+1e-8>=u.openingDelay&&u.energy>=100;
             const proc=!frankyLinked&&random(u)<.1;
             if(!u.damage||!cast&&!proc)continue;

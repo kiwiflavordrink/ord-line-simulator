@@ -340,4 +340,17 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const gated=structuredClone(fullData);for(const e of gated.heroes.find(h=>h.code==='I6').events)delete e.when_target;
   assert.ok(simulateV2(gated,[{code:'I6'}],{}).checkpoints[0].specialKillSecond<=(simulateV2(fullData,[{code:'I6'}],{}).checkpoints[0].specialKillSecond??99));
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes: passed');
+// [수정 28a] 아카이누 초월 철저한 정의 누적, 아인 뒤로뒤로 열매, 보니 나이 조작·세월관통 (몹별 시뮬레이션).
+{
+  // TR17: on one long-lived boss the justice multiplier counts 1, 2, 3, … per hero.
+  const t=simulateV2(fullData,[{code:'TR17',count:1}],{});
+  assert.deepEqual(t.justiceLog['TR17#0'].slice(0,3),[1,2,3]);
+  // Z5: mobs are sent back to lower rounds and some reach the kill rule; no NaN.
+  for(const n of [1,3]){const r=simulateV2(fullData,[{code:'Z5',count:n}],{difficulty:'지옥'});
+    assert.ok(r.lowerCounts.moved>0&&r.lowerCounts.killed>0);assert.ok(Object.values(r.sourceDamage).every(Number.isFinite));}
+  // TR21: per-mob 나이 조작 stacks replace the fixed armor_debuff event; runs in both models.
+  assert.ok(!fullData.heroes.find(h=>h.code==='TR21').events.some(e=>e.index==='나이 조작 40'));
+  for(const pm of [false,true])for(const n of [1,3]){const r=simulateV2(fullData,[{code:'TR21',count:n}],{positionModel:pm});
+    assert.ok(Object.values(r.sourceDamage).every(Number.isFinite)&&r.sourceDamage.TR21>0);}
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics: passed');
