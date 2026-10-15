@@ -138,7 +138,7 @@
     {"code":"TR8","index":"1","rate":0.0715460546567541,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5312500.0,[["max",0.015]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
     {"code":"TR8","index":"2","rate":2.0032895303891145,"rate_kind":"공격당 0.175","parts":[["magic",32500.0,[],0.0],["physical",32500.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR8","index":"3","rate":0.14309210931350821,"rate_kind":"공격당 0.0125","parts":[["magic",1235000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR8","index":"2 광폭 단일","rate":2.0032895303891145,"rate_kind":"공격당 0.175 / 광폭 전용 단일 추가","parts":[["fixed",32500.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+    {"code":"TR8","index":"2 단일 추가","rate":2.0032895303891145,"rate_kind":"공격당 0.175 / 공격 대상 단일 추가","parts":[["fixed",32500.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적 기본 공격 피해량의 250% + 3만 2,500의 추가 고정데미지\""}
    ],
    "url":"https://ordr.kr/character/TR8"
   },
@@ -171,8 +171,8 @@
     {"code":"TR11","index":"2","rate":0.9037974570848457,"rate_kind":"공격당 0.2","parts":[["physical",625000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR11","index":"3","rate":0.45189872854242286,"rate_kind":"공격당 0.1","parts":[["physical",1150000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR11","index":"5","rate":0.08,"rate_kind":"12.5초마다","parts":[["magic",3250000.0,[],0.0],["physical",1000000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR11","index":"2 광폭 단일","rate":0.9037974570848457,"rate_kind":"공격당 0.2 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["max",0.04]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""},
-    {"code":"TR11","index":"5 광폭 단일","rate":0.08,"rate_kind":"12.5초마다","parts":[["fixed",4250000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+    {"code":"TR11","index":"2 단일 추가","rate":0.9037974570848457,"rate_kind":"공격당 0.2 / 공격 대상 단일 추가","parts":[["physical",0.0,[["max",0.04]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적에게 50만 + (자신의 버프 수 x 5만)의 마법데미지 및 전체체력 4%의 물리데미지 (보스 1%)\"","boss_parts":[["physical",0.0,[["max",0.01]],0.0]]},
+    {"code":"TR11","index":"5 단일 추가","rate":0.08,"rate_kind":"12.5초마다","parts":[["fixed",4250000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적에게는 425만의 추가 고정데미지\""}
    ],
    "url":"https://ordr.kr/character/TR11"
   },
@@ -208,7 +208,7 @@
     {"code":"TR19","index":"3","rate":0.9201923559447381,"rate_kind":"공격당 0.11","parts":[["physical",750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR19","index":"완두콩 2기","rate":1.0,"rate_kind":"1초마다","parts":[["physical",534518.6793750001,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR19","index":"백설콩","rate":0.2,"rate_kind":"5초마다","parts":[["magic",200000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR19","index":"2 광폭 단일","rate":3.3461540216172296,"rate_kind":"공격당 0.4 / 광폭 전용 단일 추가","parts":[["fixed",500000.0,[["max",0.1425]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+    {"code":"TR19","index":"2 광폭 단일","rate":3.3461540216172296,"rate_kind":"공격당 0.4 / 광폭 전용 단일 추가","parts":[["fixed",500000.0,[["max",0.1425]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":"광폭 전용 유지. 근거 \"▶ 광폭화 : 스킬피해량의 200% + 전체체력 14.25% 추가 고정 데미지\""}
    ],
    "url":"https://ordr.kr/character/TR19"
   },
@@ -227,7 +227,7 @@
     {"code":"TR20","index":"2","rate":1.1037313331823941,"rate_kind":"공격당 0.17","parts":[["physical",715625.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR20","index":"3","rate":0.45447760778098584,"rate_kind":"공격당 0.07","parts":[["physical",1050000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR20","index":"4","rate":0.1947761176204225,"rate_kind":"공격당 0.03","parts":[["physical",2500000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR20","index":"2 광폭 단일","rate":1.1037313331823941,"rate_kind":"공격당 0.17 / 광폭 전용 단일 추가","parts":[["physical",1073437.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+    {"code":"TR20","index":"2 단일 추가","rate":1.1037313331823941,"rate_kind":"공격당 0.17 / 공격 대상 단일 추가","parts":[["physical",1073437.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적에게 150%의 추가 물리 데미지 및 2초 스턴\""}
    ],
    "url":"https://ordr.kr/character/TR20"
   },
@@ -243,7 +243,7 @@
     {"code":"TR22","index":"1","rate":0.0715730340747035,"rate_kind":"자원 100; 공격당 1+초당 3; 시작시 만충","parts":[["physical",2500000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
     {"code":"TR22","index":"2","rate":0.2598314629668969,"rate_kind":"공격당 0.0625","parts":[["magic",450000.0,[],0.0],["physical",1750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR22","index":"3","rate":0.5924157355645249,"rate_kind":"공격당 0.1425","parts":[["physical",1250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR22","index":"2 광폭 단일","rate":0.2598314629668969,"rate_kind":"공격당 0.0625 / 광폭 전용 단일 추가","parts":[["fixed",4950000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+    {"code":"TR22","index":"2 단일 추가","rate":0.2598314629668969,"rate_kind":"공격당 0.0625 / 공격 대상 단일 추가","parts":[["fixed",4950000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적에게는 225% 고정 데미지로 적용\""}
    ],
    "url":"https://ordr.kr/character/TR22"
   },
@@ -293,7 +293,7 @@
     {"code":"TR29","index":"2","rate":0.1507978730082458,"rate_kind":"공격당 0.045","parts":[["physical",550000.0,[],5.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR29","index":"3","rate":0.5026595766941526,"rate_kind":"공격당 0.15","parts":[["physical",250000.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR29","index":"평타추가","rate":3.3510638446276846,"rate_kind":"공격당 1","parts":[["physical",0.0,[],0.8]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR29","index":"3 광폭 단일","rate":0.5026595766941526,"rate_kind":"공격당 0.15 / 광폭 전용 단일 추가","parts":[["magic",350000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+    {"code":"TR29","index":"3 단일 추가","rate":0.5026595766941526,"rate_kind":"공격당 0.15 / 공격 대상 단일 추가","parts":[["magic",350000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일적에게 추가 35만의 마법 데미지\""}
    ],
    "url":"https://ordr.kr/character/TR29"
   },
@@ -380,7 +380,7 @@
     {"code":"E10","index":"1","rate":0.05845070775480798,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2350000.0,[["current",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
     {"code":"E10","index":"2","rate":0.6429577853028877,"rate_kind":"공격당 0.11","parts":[["physical",855000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E10","index":"5","rate":0.5845070775480797,"rate_kind":"공격당 0.1","parts":[["physical",450000.0,[],0.0],["magic",550000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"E10","index":"하쿠바 광폭 단일","rate":5.845070775480798,"rate_kind":"공격당 1 / 광폭 전용 단일 추가","parts":[["fixed",350000.0,[],0.0]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+    {"code":"E10","index":"하쿠바 하쿠바 단일 추가","rate":5.845070775480798,"rate_kind":"공격당 1 / 공격 대상 단일 추가","parts":[["fixed",350000.0,[],0.0]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적에게 35만 고정 데미지\" (하쿠바 인격)"}
    ],
    "url":"https://ordr.kr/character/E10"
   },
@@ -413,7 +413,7 @@
     {"code":"I1","index":"1","rate":0.04265872926940978,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["physical",12000000.0,[["max",0.12]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
     {"code":"I1","index":"2","rate":0.6825396683105565,"rate_kind":"공격당 0.1","parts":[["physical",615000.0,[],0.95]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I1","index":"4","rate":6.825396683105565,"rate_kind":"공격당 1","parts":[["physical",0.0,[],0.95]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"I1","index":"3 광폭 단일","rate":0.47777776781738956,"rate_kind":"공격당 0.07 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["current",0.05]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+    {"code":"I1","index":"3 단일 추가","rate":0.47777776781738956,"rate_kind":"공격당 0.07 / 공격 대상 단일 추가","parts":[["physical",0.0,[["current",0.05]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"단일 적 현재체력 5%의 물리데미지 (보스/스토리 현재체력 0.5%)\"","boss_parts":[["physical",0.0,[["current",0.005]],0.0]]}
    ],
    "url":"https://ordr.kr/character/I1"
   },
@@ -431,7 +431,7 @@
     {"code":"I3","index":"4","rate":0.3706896553053017,"rate_kind":"공격당 0.05","parts":[["magic",300000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I3","index":"5","rate":0.5931034484884827,"rate_kind":"공격당 0.08","parts":[["magic",100000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I3","index":"6","rate":0.18534482765265084,"rate_kind":"공격당 0.025","parts":[["physical",1750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"I3","index":"6 광폭 단일","rate":0.18534482765265084,"rate_kind":"공격당 0.025 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["max",0.18]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+    {"code":"I3","index":"6 광폭 단일","rate":0.18534482765265084,"rate_kind":"공격당 0.025 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["max",0.18]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":"광폭 전용 유지. 근거 \"▶ 대상이 광폭화 유닛일 경우 전체체력 18%의 추가 물리데미지\""}
    ],
    "url":"https://ordr.kr/character/I3"
   },
@@ -518,7 +518,7 @@
     {"code":"I12","index":"1","rate":0.05556878815318417,"rate_kind":"자원 115; 공격당 1+초당 0.5; 시작시 만충","parts":[["magic",500000.0,[],0.0],["physical",6875000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
     {"code":"I12","index":"2","rate":0.294520531880809,"rate_kind":"공격당 0.05","parts":[["physical",2220000.0,[["max",0.035]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I12","index":"4","rate":0.7363013297020224,"rate_kind":"공격당 0.125","parts":[["magic",900000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"I12","index":"2 광폭 단일","rate":0.294520531880809,"rate_kind":"공격당 0.05 / 광폭 전용 단일 추가","parts":[["fixed",1665000.0,[["max",0.02625]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+    {"code":"I12","index":"2 단일 추가","rate":0.294520531880809,"rate_kind":"공격당 0.05 / 공격 대상 단일 추가","parts":[["fixed",1665000.0,[["max",0.02625]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적에게 스킬데미지의 75% 추가 고정 데미지\""}
    ],
    "url":"https://ordr.kr/character/I12"
   }

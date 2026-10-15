@@ -37,4 +37,22 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.equal(tr19.forms[0].rawcode,'H09B');
   assert.equal(tr19.forms[0].splash_radius,300);
 }
-console.log('V3 mechanics: resource clock, TR23 form, TR19 form: passed');
+// [수정 4a] 단일 대상 종류: single(공격 대상 전체) / boss / frenzy / boss_parts.
+{
+  const probe=(target,parts,boss_parts)=>{
+    const d=structuredClone(data),h=d.heroes.find(x=>x.code==='TR4');
+    h.events=[{index:'probe',rate:1,rate_kind:'',parts,target,boss_parts,per_attack:false,phase:null,source:'',note:''}];
+    return simulateV2(d,[{code:'TR4'}],{red:false,redDamage:false});
+  };
+  const fixed=[['fixed',3e7,[],0]];
+  const single=probe('single',fixed),boss=probe('boss',fixed),frenzy=probe('frenzy',fixed);
+  // 'single' hits line targets too; boss/frenzy-only kinds never touch line mobs.
+  assert.ok(single.sourceDamage.TR4>0);
+  assert.ok(Math.abs(single.lineDamage.single-(single.sourceDamage.TR4-single.lineDamage.basic-single.lineDamage.area))<1);
+  assert.equal(boss.lineDamage.single,0);
+  assert.equal(frenzy.lineDamage.single,0);
+  // boss_parts replaces parts only against a boss: a huge boss value must speed up the 60R boss kill.
+  const weakBoss=probe('single',fixed,[['fixed',1,[],0]]),strongBoss=probe('single',fixed,[['fixed',1e9,[],0]]);
+  assert.ok(strongBoss.checkpoints[0].specialKillSecond<(weakBoss.checkpoints[0].specialKillSecond??99));
+}
+console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds: passed');

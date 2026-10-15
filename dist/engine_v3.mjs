@@ -34,6 +34,7 @@ const typeMatrix={
 const typeFor=(type,round,data)=>typeMatrix[type]?.[data.rounds[String(round)][2]]??1;
 const clamp=(x,min,max)=>Math.min(max,Math.max(min,Number.isFinite(+x)?+x:min));
 const abAdd=(m,n)=>{m.ab=Math.min(75,m.ab+n);};
+const SINGLE_TARGETS=new Set(['single','single_line','target_special','boss','frenzy']);
 const isSummon=e=>/완두콩|백설콩|파견 해군|거인족|부유물|릴리스|아틀라스|요크/.test(String(e.index));
 
 // Resource modes: 'start' = full mana once at the start of round 60 (2.305 has no
@@ -269,15 +270,25 @@ export function simulateV2(data,composition,options={}){
           if(e.initial&&(resourceMode==='perRound'&&step===0||resourceMode==='start'&&globalStep===0))rate+=10;
           if(!rate)continue;
           let targets;
+          // Single-target kinds hit only the current attack target:
+          // 'single' any target (boss_parts replaces parts against a boss), 'single_line' a line mob,
+          // 'target_special' a boss or frenzy, 'boss' / 'frenzy' that kind only.
+          const single=SINGLE_TARGETS.has(e.target);
           switch(e.target){
-            case 'frenzy':targets=active?.kind==='frenzy'&&target===active?[active]:[];break;
+            case 'single':targets=target?[target]:[];break;
+            case 'single_line':targets=target?.kind==='line'?[target]:[];break;
+            case 'target_special':targets=target&&target.kind!=='line'?[target]:[];break;
+            case 'boss':targets=target?.kind==='boss'?[target]:[];break;
+            case 'frenzy':targets=target?.kind==='frenzy'?[target]:[];break;
             case 'line':targets=mobs;break;
             case 'special':targets=specials;break;
             case 'line_or_frenzy':targets=[...mobs,...specials.filter(s=>s.kind==='frenzy')];break;
             default:targets=[...mobs,...specials];
           }
-          for(const m of targets)if(m.hp>0)
-            deal(m,eventDamage(e,m,attack,extraArmor)*rate*.1*(m===target||e.target==='frenzy'?1:coverage),u.code,'area','mixed');
+          for(const m of targets)if(m.hp>0){
+            const ev=e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
+            deal(m,eventDamage(ev,m,attack,extraArmor)*rate*.1*(m===target||single?1:coverage),u.code,single?'single':'area','mixed');
+          }
         }
       }
       // Conditional units use their own attack clocks. Gaban damages one target;
