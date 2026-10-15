@@ -68,8 +68,9 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const strip=(code,fields)=>{const d=structuredClone(data),h=d.heroes.find(x=>x.code===code);
     for(const e of h.events)for(const f of fields)delete e[f];delete h.target_ab_aps_bonus;return d;};
   const ab=simulateV2(data,[{code:'TR29'}],{}),noAb=simulateV2(strip('TR29',['ab']),[{code:'TR29'}],{});
-  assert.ok(ab.checkpoints[0].averageAb>0&&ab.checkpoints[0].averageAb<=75);
-  assert.equal(noAb.checkpoints[0].averageAb,0);
+  // Round 61 (TR29 alone clears round 60 completely, so its average is over zero mobs).
+  assert.ok(ab.checkpoints[1].averageAb>40&&ab.checkpoints[1].averageAb<=75);
+  assert.equal(noAb.checkpoints[1].averageAb,0);
   // 운석낙하 needs AB 40: without hero AB it never fires, so TR29 does worse.
   assert.ok(ab.clear&&!noAb.clear);
   const tr22=simulateV2(data,[{code:'TR22'}],{}),flat=simulateV2(strip('TR22',['ab_scaling']),[{code:'TR22'}],{});
