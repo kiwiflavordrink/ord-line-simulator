@@ -149,6 +149,16 @@ export function simulateV2(data,composition,options={}){
       if(kind in lineDamage)lineDamage[kind]+=applied;
     }
   };
+  // Command Aura (ACac) bonuses add before multiplying base attack in WC3: Red Force A0BC +35%
+  // plus the hero's own aura (data attack_aura: I11 A0Q1 -75%, E1/E2 A0UD +25%).
+  // TR11/TR19 multipliers are crit expectations; Z2 +60000 is bonus damage outside the aura.
+  const heroAttack=(hero,form)=>{
+    let attack=form.attack*(1+(red?.35:0)+(hero.attack_aura??0));
+    if(hero.code==='Z2')attack+=60000;
+    if(hero.code==='TR11')attack*=1.45;
+    if(hero.code==='TR19')attack*=1.375;
+    return attack;
+  };
   const eventDamage=(event,m,attack,extra)=>{
     let out=0;
     for(const [kind,flat,perc,mul=0] of event.parts){
@@ -202,12 +212,7 @@ export function simulateV2(data,composition,options={}){
       if(newMob)for(const u of units){
         if(u.kind!=='hero'||!u.damage)continue;
         const hero=u.model,form=formAt(hero,globalT,t,resourceMode).form;
-        let attack=form.attack*(red?1.35:1);
-        if(hero.code==='Z2')attack+=60000;
-        if(hero.code==='I11')attack*=.25;
-        if(hero.code==='TR11')attack*=1.45;
-        if(hero.code==='TR19')attack*=1.375;
-        if(['E1','E2'].includes(hero.code))attack*=1.25;
+        const attack=heroAttack(hero,form);
         for(const e of hero.events)if(e.on_spawn&& (summons||!isSummon(e))){
           deal(newMob,e.on_spawn*eventDamage(e,newMob,attack,extraArmor),hero.code,'area','mixed');
           if(e.ab&&newMob.hp>0)abAdd(newMob,e.ab*e.on_spawn);
@@ -262,11 +267,7 @@ export function simulateV2(data,composition,options={}){
         // A self attack-speed buff that holds while the attack target has enough armor break (TR29 운석낙하).
         const haste=hero.target_ab_aps_bonus;
         if(haste&&target&&target.ab>=haste.min_ab)aps*=1+haste.bonus;
-        let attack=form.attack*(red?1.35:1)*(['E1','E2'].includes(hero.code)?1.25:1);
-        if(hero.code==='Z2')attack+=60000;
-        if(hero.code==='I11')attack*=.25;
-        if(hero.code==='TR11')attack*=1.45;
-        if(hero.code==='TR19')attack*=1.375;
+        const attack=heroAttack(hero,form);
         if(target){
           deal(target,attack*aps*form.rounds[String(target.round)]*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
           if(form.splash)for(const m of mobs)if(m!==target)

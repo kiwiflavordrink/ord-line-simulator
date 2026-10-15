@@ -340,6 +340,7 @@
    "name":"니카(루피)",
    "grade":"영원한",
    "focus":"물리 중심",
+   "attack_aura":0.25,
    "forms":[
     {"rawcode":"H0BK","attack":170501.5,"aps":7.631579163387104,"attack_type":"hero","splash":1,"splash_radius":350,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
    ],
@@ -357,6 +358,7 @@
    "name":"니카(스네이크)",
    "grade":"영원한",
    "focus":"물리 중심",
+   "attack_aura":0.25,
    "forms":[
     {"rawcode":"H0BK","attack":170501.5,"aps":7.631579163387104,"attack_type":"hero","splash":1,"splash_radius":350,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
    ],
@@ -512,6 +514,7 @@
    "name":"카이도",
    "grade":"불멸의",
    "focus":"물리 중심",
+   "attack_aura":-0.75,
    "forms":[
     {"rawcode":"h07M","attack":527501.0,"aps":1.737588695729441,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}},
     {"rawcode":"h0AD","attack":452501.0,"aps":1.9600000023841857,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
