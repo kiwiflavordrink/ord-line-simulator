@@ -83,6 +83,13 @@ function assertReportShape(r){
   assert.equal(failed.remaining,direct.remaining);
   assert.ok(r.json.line.rounds.filter(x=>x.round>direct.failedRound).every(x=>!x.reached));
 }
+// 2b. User combination with every unit registered (수정내역 29): hero armor auras, 8 units.
+{
+  const team=[{code:'TR15',count:1},{code:'L5',count:1},{code:'L9',count:2},{code:'L37',count:1},{code:'H17',count:1},{code:'H6',count:1},{code:'H9',count:1}];
+  const direct=simulateV2(data,team,lineOpts(damageContext({}),{difficulty:'신',heroArmorCuts:true}));
+  const r=fromFile('line_user_combo.json');
+  assert.equal(r.status,0,r.stderr);assertLine(r.json.line,direct);
+}
 // 3. Context effects, deleter and finisher.
 {
   const ctx=damageContext({selected:['TR10','TR10_CUT','H9_EXP','I2'],warcury:true});
@@ -200,4 +207,4 @@ bad({single:{team:[{code:'L9'}],trials:50}},'OUT_OF_RANGE','single.trials');
   assert.equal(r.status,0);
   assert.deepEqual(r.json.line.heroes.map(h=>h.code),data.heroes.map(h=>h.code));
 }
-console.log('CLI: 6 example scenarios match direct engine calls, stdin, timeline, input errors, unit list: passed');
+console.log('CLI: 7 example scenarios match direct engine calls, stdin, timeline, input errors, unit list: passed');

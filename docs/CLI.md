@@ -77,7 +77,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 
 ### line.team 코드
 
-- `dist/data.json`의 영웅 63명 (`--list-units`의 `line.heroes`: 물딜 31명 + E6 비비 영원 + H17 아카이누 히든 + 마딜 상위 30명)
+- `dist/data.json`의 영웅 263종 (`--list-units`의 `line.heroes`): ORDR 카탈로그의 흔함~신비 전 등급(수정내역 29)과 특수 기물 `OB1` 도움소·`OB2` 군함·`OB3` 해적선·`XR1` 레일리 희귀. 근거는 `docs/유닛_근거/`
 - 보조 `L7` `L23` `L25` `D3` — `ab: false`면 암브(방깎) 효과 제외, `damage: false`면 피해 제외
 - 조건형 `I8`(스코퍼가반 불멸) `TR28`(프랑키 초월) `H15`(써니호 히든)
 - 삭제 `L12` `D4` `L19`
@@ -111,6 +111,10 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `externalSlow` | 0~3 | 0 | 위치 모델: 모든 적에게 거는 외부 이감(예: 1.02 = 신 풀이감). 같은 이속 공식에 더한다 (수정내역 23) |
 | `externalStuns` | `[{rate, radius, normal, hero}]` | 없음 | 위치 모델: 피해 없는 외부 스턴 원천. 초당 `rate`회, 공통 공격 대상 중심 `radius` 범위, 지속 `normal`초(보스·광폭 `hero`초) |
 | `singleControl` | `{to15, finish}` 초 | 없음 | 단일 컨(수정내역 24): 단 흐름이 가장 많이 깎인 라인몹(15% 초과)을 `to15`초에 최대체력 85%씩, 끝 흐름이 15% 이하 중 가장 낮은 몹을 `finish`초에 15%씩 동시에 깎는다. N단 M끝 = 루치 1기 100→15% 시간/N, 핸콕 1기 15%→처치 시간/M (단일 테스터) |
+| `heroArmorCuts` | 불리언 | false | 조합 영웅의 자기 방깎 오라(`own_armor_cut`, 2.323 buff_lines "방어력 감소 N")를 서로 다른 영웅마다 1회씩 `cut`에 더한다. 자기 오라만 보려면 `cut: 0`과 함께 (수정내역 29) |
+| `stackLevel` | `zero`·`half`·`max` | 데이터 값 | 모든 영웅의 사용자 스택 단계(수정내역 28). 영웅별은 `stackLevels: {"E11": "half"}` |
+| `extraStackLevels` | `{코드: 단계}` | 주 스택 단계 | 두 번째 스택(TR24 코비 버프 수 2/12/22) |
+| `trait` | `on`·`off` | 데이터 값 | 모든 영웅의 특강 적용 여부. 영웅별은 `traits: {"TR15": "on"}` |
 | `engageRange` | 100~3000 | 650 | 위치 모델의 교전 거리. 비비 영원처럼 자기 사거리를 쓰는 유닛 외에는 모두 이 거리 안의 몹을 친다 [추정] |
 | `buffTargets` | `{소스 코드: [받는 코드…]}` | 조합 전체 | 아군 오라·버프를 받을 유닛 제한. 지정하지 않은 소스는 조합 전체가 받는다 |
 | `tr19Plants` | `{pea, snow, muk}` 정수, 합 3 이하 | 2 / 1 / 0 | TR19 특강 식물 배분: 완두콩·백설콩·먹깨비 |
@@ -160,6 +164,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `examples/combined.json` | 같은 context로 라인과 단일 동시 계산 |
 | `examples/line_conditional.json` | 조건형 프랑키·써니호·가반, 프랑키 오라·써니호 시점 분산 |
 | `examples/invalid_unsupported.json` | 미지원 영웅·범위 초과 → 종료 코드 2 |
+| `examples/line_user_combo.json` | 시라호시 초월 + 라분·루치 2·후지토라 전설 + 아카이누 히든 + 모비딕호 + 방주맥심 (수정내역 29 예시) |
 
 ### 실제 출력 (발췌)
 
@@ -225,7 +230,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 ## 계산상 한계 (결과의 `limitations`)
 
 - 몹·영웅 기본 수치는 2.305 맵 추출값, 스킬은 2.323 ORDR 카드 설명 기반 근사다. 2.323 원본 스크립트 실행 검증이 아니다.
-- 라인은 data.json의 영웅 63명(물딜 31, 마딜 32, 아카이누 히든)과 보조 4·조건형 3·삭제 3종만 지원한다. 나머지 상위 영웅은 미등록이다.
+- 라인은 data.json의 영웅 263종(흔함~신비, 특수 기물 포함)과 보조 4·조건형 3·삭제 3종을 지원한다. 공격·전투 효과가 없는 SP5 오타마만 미등록이다. 저등급·히든 다수는 2.323 툴팁에 수치가 없어 2.305 맵 값이다.
 - 자원은 60라 시작 시 1회 만충 후 연속으로 쌓인다(`resourceMode`로 변경 가능).
 - 아직 계산하지 않는 툴팁 효과(지속 방어력 감소, 아군 오라, 크리티컬 추가 피해, Z10 처형 등)는 `docs/수정내역.md`의 미적용 목록에 있다.
 - 확률 스킬·아머브레이크·처형은 발동 기대값으로 나누어 적용한다.

@@ -22,7 +22,7 @@ const EFFECT_CODES=new Set(EFFECTS.map(e=>e.code));
 
 export const LIMITATIONS=[
   {id:'map-2305-approximation',text:'몹 HP·방어, 영웅 공격력·공속은 2.305 맵 추출값이고 스킬 수치는 2.323 ORDR 카드 설명을 얹은 근사다. 2.323 원본 스크립트를 실행 검증한 결과가 아니다.'},
-  {id:'heroes-not-registered',text:'라인 계산은 dist/data.json에 등록된 물리 중심·물리·마법 혼합 상위 영웅 31명, E6 비비 영원(수정내역 21), H17 아카이누 히든(23), 마딜 상위 30명(27), 보조 4종(L7·L23·L25·D3), 조건형 3종(I8·TR28·H15), 삭제 3종(L12·D4·L19)만 지원한다. 그 밖의 상위 영웅은 미등록이며 임의 수치를 만들지 않는다.'},
+  {id:'heroes-not-registered',text:'라인 계산은 ORDR 카탈로그 271종 중 dist/data.json에 등록된 영웅 263종(흔함~신비, 수정내역 29)과 특수 기물 4종, 보조 4종(L7·L23·L25·D3), 조건형 3종(I8·TR28·H15), 삭제 3종(L12·D4·L19), 레드포스(옵션 red)를 지원한다. 저등급·히든 다수는 2.323 툴팁에 수치가 없어 2.305 맵 값이다. 공격·전투 효과가 없는 SP5 오타마는 등록하지 않았다.'},
   {id:'single-units-limited',text:'65라 단일 테스터는 엔진에 정의된 단일·끝딜 유닛 10종만 지원한다.'},
   {id:'no-stun-or-movement',text:'기본(coverage) 모델에는 스턴·슬로우, 몹 이동 경로와 위치, 사거리가 없다(써니호 스턴은 line.control에 시간만 집계). 범위 피해는 coverage(범위 적중률)로 근사하고 타깃은 보스·광폭이 있으면 그쪽, 없으면 가장 먼저 나온 몹이다. 이동·스턴은 line.options.positionModel로 켠다.'},
   {id:'resource-start',text:'자원은 60라 시작 시 1회 만충 후 연속으로 쌓인다(2.305 맵에 라운드 시작 마나 회복 없음). line.options.resourceMode로 empty·perRound(이전 모델)를 고를 수 있다.'},
@@ -33,7 +33,9 @@ export const LIMITATIONS=[
   {id:'line-damage-scope',text:'line.damage의 피해량은 라인 일반몹에 실제로 들어간 양(초과 피해 제외)만 집계한다. 보스·광폭에 들어간 피해량은 엔진이 집계하지 않으므로 처치 여부와 처치 시각으로만 보고한다.'},
   {id:'difficulty',text:'line.options.difficulty(지옥·신·악몽, 기본 신)가 몹 HP·방어·마방·재생·패배 기준(70·55·50)·광폭 오라·보스 스턴 저항을 정한다. 구조와 지옥·악몽 배율은 2.305 맵, 공통 HP·재생과 오로성 수치는 2.323 ORDR 툴팁이다. 지옥·악몽 방어는 신 값 + 2.305 udup×레벨 차이로 계산했다(방어 공식 미검증). line.options.gorosei(기본 없음)로 오로성을 고른다. 새턴·나스쥬로의 아군 공격력·공속 감소는 data.json 영웅에만 적용하고 보조·조건형 유닛에는 적용하지 않는다.'},
   {id:'position-model',text:'positionModel을 켜면 모든 유닛을 라인몹 생성 지점에 두고 교전 거리(engageRange, 기본 650 [추정]) 안의 몹만 친다. 이속 = (기본 + 고정 보너스) × (1 + 난이도 오라 + 나스쥬로 − 이감 합), 89~490(WC3 규칙, ORDR 신 이감 목표 102%와 일치). 같은 버프를 쓰는 이감(천둥 기반 BHtc)은 마지막에 맞은 것 하나만 적용된다. 스턴·이속 감소는 시드에 따른 확률 발동이라 결과가 시드마다 다르다.'},
-  {id:'not-a-clear-guarantee',text:'clear는 모델상 난이도별 패배 기준(지옥 70·신 55·악몽 50, line.defeatThreshold) 미만 유지 여부이며 실제 게임 클리어를 보장하지 않는다.'}
+  {id:'not-a-clear-guarantee',text:'clear는 모델상 난이도별 패배 기준(지옥 70·신 55·악몽 50, line.defeatThreshold) 미만 유지 여부이며 실제 게임 클리어를 보장하지 않는다.'},
+  {id:'unit-semantics',text:'멀티샷·연쇄 번개·한 아군 지정 버프·적 개체별 누적 증폭·직선 범위·클리브(대상 제외)·체력 조건 처형은 근사하거나 빠져 있다(각 영웅 unmodeled, 수정내역 29).'},
+  {id:'hero-armor-cuts',text:'영웅 자기 방깎 오라는 heroArmorCuts를 켜야 cut에 더해진다. 기본 cut 201은 풀깍 가정이다.'},
 ];
 
 export function loadData(url=DATA_URL){
@@ -141,7 +143,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','externalSlow','externalStuns','singleControl','engageRange','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','externalSlow','externalStuns','singleControl','engageRange','heroArmorCuts','stackLevel','stackLevels','extraStackLevels','trait','traits','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -161,8 +163,23 @@ function validateLine(raw,data,is){
       e6MoveShot:bool(o,'e6MoveShot','line.options',is),
       tr6Nutrients:num(o,'tr6Nutrients','line.options',is,{min:0,max:80,integer:true}),
       externalSlow:num(o,'externalSlow','line.options',is,{min:0,max:3}),
-      engageRange:num(o,'engageRange','line.options',is,{min:100,max:3000})
+      engageRange:num(o,'engageRange','line.options',is,{min:100,max:3000}),
+      heroArmorCuts:bool(o,'heroArmorCuts','line.options',is),
+      stackLevel:oneOf(o,'stackLevel','line.options',is,['zero','half','max']),
+      trait:oneOf(o,'trait','line.options',is,['on','off'])
     }));
+    // Per-hero stack/trait levels (수정내역 28·29): {"TR24": "zero"}; extraStackLevels for heroes with extra_stacks.
+    for(const [key,values] of [['stackLevels',['zero','half','max']],['extraStackLevels',['zero','half','max']],['traits',['on','off']]]){
+      if(o[key]===undefined)continue;
+      const p=`line.options.${key}`,x=o[key];
+      if(!isObj(x)){is.error(p,'NOT_AN_OBJECT','{"영웅코드": "단계"} 형식이어야 합니다.');continue;}
+      const out={};
+      for(const code of Object.keys(x)){
+        if(!heroCodes.has(code))is.error(`${p}.${code}`,'UNSUPPORTED_UNIT',unsupportedMessage(code,data,'line'));
+        else{const v=oneOf(x,code,p,is,values);if(v!==undefined)out[code]=v;}
+      }
+      options[key]=out;
+    }
     if(o.singleControl!==undefined){
       const p='line.options.singleControl',x=o.singleControl;
       if(!isObj(x))is.error(p,'NOT_AN_OBJECT','{"to15": 초, "finish": 초} 형식이어야 합니다.');

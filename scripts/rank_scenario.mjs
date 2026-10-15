@@ -1,7 +1,7 @@
 // Ranks physical carries in one fixed environment (docs/수정내역.md 23). Every assumption is listed in ENV.
 // Usage: node scripts/rank_scenario.mjs [out.json] [--seeds=5] [--difficulty=신] [--dan=2] [--kkeut=1]
 //        [--stun=bartolomeo|dragon] [--stunUnits=1.5] [--cut=auto|<number>] [--role=physical|magic]
-//        [--stack=zero|half|max|data] [--trait=on|off|data]
+//        [--stack=zero|half|max|data] [--trait=on|off|data] [--grades=제한됨,초월함,영원한,…]
 import {readFileSync,writeFileSync} from 'node:fs';
 import {simulateV2} from '../dist/engine_v3.mjs';
 import {referenceSingle,singleConditions} from '../dist/engine_single_v3.mjs';
@@ -53,7 +53,9 @@ const ENV={
 };
 // --role=physical: focus contains 물리; --role=magic: focus contains 마법 (H17 is the fixed boss killer, excluded).
 const role=arg('role','physical');
-const carries=data.heroes.filter(h=>h.code!=='H17'&&(role==='magic'?/마법/:/물리/).test(h.focus)).map(h=>h.code);
+// --grades (수정내역 29): every unit is registered now; rank the upper grades by default (the 23~27 population plus 신비).
+const grades=new Set(arg('grades','제한됨,초월함,영원한,불멸의,신비함').split(','));
+const carries=data.heroes.filter(h=>h.code!=='H17'&&grades.has(h.grade)&&(role==='magic'?/마법/:/물리/).test(h.focus)).map(h=>h.code);
 const label=r=>r.clear?`클리어 ${r.remaining}`:`${r.failedRound}라 ${r.failedSecond}초 패배`;
 const rows=[];
 for(const code of carries){

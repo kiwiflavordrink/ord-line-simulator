@@ -11,8 +11,22 @@ const waveNames={60:['제우스','o02G'],61:['바질 호킨스','o026'],62:['잭
 const bossNames={60:'빅 맘 (2.305)',65:'카이도'};
 const sec=n=>`${n.toFixed(2)}초`;
 const singleRefs=new Map();
-function context(){return damageContext({
-  selected:[...document.querySelectorAll('.amp-effect:checked')].map(e=>e.value),
+// Effects a team hero already applies through data hero.team_effects (effects_codes, 수정내역 29) are not counted
+// again in the line calculation; their checkboxes are marked while that hero is in the team.
+function teamEffectCodes(){
+  const out=new Set();
+  for(const t of team())for(const c of data.heroes.find(h=>h.code===t.code)?.team_effects?.effects_codes??[])out.add(c);
+  return out;
+}
+function markTeamEffects(){
+  const covered=teamEffectCodes();
+  for(const input of document.querySelectorAll('.amp-effect')){
+    const on=covered.has(input.value);input.closest('label').classList.toggle('team-covered',on);
+    input.closest('label').title=on?'라인 계산에서는 조합의 영웅이 이미 적용합니다(중복 제외).':'';
+  }
+}
+function context(line=false){const covered=line?teamEffectCodes():new Set();return damageContext({
+  selected:[...document.querySelectorAll('.amp-effect:checked')].map(e=>e.value).filter(c=>!covered.has(c)),
   customMagicAmp:val('v3-custom-mamp'),customMagicCut:val('v3-custom-mcut'),
   customAllAmp:val('v3-custom-all'),customExplosiveAmp:val('v3-custom-explosive'),
   warcury:false // 오로성 is applied by the engines (line option gorosei, single conditions)
@@ -128,14 +142,15 @@ function team(){return [...$('team').children].map(row=>({code:row.querySelector
   count:Number(row.querySelector('.unit-count').value),damage:row.querySelector('.unit-damage').checked,
   ab:row.querySelector('.unit-ab').checked}));}
 const val=id=>Number($(id).value)||0;
-function options(){const c=context();return {
+function options(){const c=context(true);return {
   cut:val('cut-v2'),coverage:val('coverage-v2')/100,magicReduction:c.magicCut/100,magicAmp:c.magicAmp/100,
   allAmp:c.allAmp/100,explosiveAmp:c.generalExplosiveAmp/100,
   normalOnlyExplosiveAmp:c.normalOnlyExplosiveAmp/100,gorosei:$('v3-gorosei').value,
   red:$('red-v2').checked,redDamage:$('red-v2').checked,fullResource:$('resource-v2').checked,summons:$('summons-v2').checked,
   frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
   tr19Plants:{pea:val('tr19-pea'),snow:val('tr19-snow'),muk:val('tr19-muk')},
-  buffTargets:buffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,e6AlabastaLevel:val('e6-level'),e6MoveShot:$('e6-moveshot').checked,tr6Nutrients:val('tr6-nutrients'),
+  buffTargets:buffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,heroArmorCuts:$('hero-cuts-v3').checked,
+  ...($('stack-v3').value!=='data'?{stackLevel:$('stack-v3').value}:{}),...($('trait-v3').value!=='data'?{trait:$('trait-v3').value}:{}),e6AlabastaLevel:val('e6-level'),e6MoveShot:$('e6-moveshot').checked,tr6Nutrients:val('tr6-nutrients'),
   customMagic:{aps:val('magic-aps'),chance:val('magic-chance')/100,flat:val('magic-flat'),
     maxPct:val('magic-max')/100,currentPct:val('magic-current')/100,lostPct:val('magic-lost')/100},
   finisher:{mode:$('finish-mode').value,interval:val('finish-interval'),successChance:val('finish-chance')/100,
@@ -156,7 +171,7 @@ function renderChart(result){
   svg.innerHTML=`<title>60~65라 생존 몹 수</title>${grid}${dividers}<polyline points="${pts}" fill="none" stroke="${result.clear?'#66d5b1':'#f07470'}" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round"/>`;
 }
 
-function render(){
+function render(){markTeamEffects();
   if(data)syncBuffPanel();
   if(!data)return;
   $('finish-damage-settings').hidden=$('finish-mode').value!=='damage';
@@ -318,6 +333,9 @@ function restore(){
   $('position-v3').checked=params.get('position')==='1';
   if(params.get('armor')==='data')$('armor-model-v3').value='data';
   $('leo-v3').checked=params.get('leo')==='1';
+  $('hero-cuts-v3').checked=params.get('heroCuts')==='1';
+  if(['zero','half','max'].includes(params.get('stack')))$('stack-v3').value=params.get('stack');
+  if(['on','off'].includes(params.get('trait')))$('trait-v3').value=params.get('trait');
   if(params.has('e6'))$('e6-level').value=params.get('e6');
   if(params.has('tr6'))$('tr6-nutrients').value=params.get('tr6');
   $('e6-moveshot').checked=params.get('e6shot')!=='0';
@@ -340,6 +358,7 @@ function shareURL(){
   u.searchParams.set('position',$('position-v3').checked?'1':'0');
   u.searchParams.set('difficulty',$('difficulty-v3').value);
   u.searchParams.set('armor',$('armor-model-v3').value);u.searchParams.set('leo',$('leo-v3').checked?'1':'0');
+  u.searchParams.set('heroCuts',$('hero-cuts-v3').checked?'1':'0');u.searchParams.set('stack',$('stack-v3').value);u.searchParams.set('trait',$('trait-v3').value);
   u.searchParams.set('e6',$('e6-level').value);u.searchParams.set('tr6',$('tr6-nutrients').value);u.searchParams.set('e6shot',$('e6-moveshot').checked?'1':'0');
   for(const k of ['pea','snow','muk'])u.searchParams.set('tr19'+k,$('tr19-'+k).value);
   const bt=buffTargets();if(Object.keys(bt).length)u.searchParams.set('buffTargets',JSON.stringify(bt));
