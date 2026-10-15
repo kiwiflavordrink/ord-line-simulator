@@ -82,7 +82,7 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
 // [수정 6a·6b] 공격력 오라 가산, 절대쿨·자원 발동률.
 {
   const h=c=>data.heroes.find(x=>x.code===c),ev=(c,i)=>h(c).events.find(e=>e.index===i);
-  assert.equal(h('I11').attack_aura,-0.75);
+  assert.equal(h('I11').auras.find(a=>a.id==='A0Q1').value,-0.75);
   assert.ok(Math.abs(ev('I3','6').rate-1/(3.5+1/(0.025*h('I3').forms[0].aps)))<1e-12);
   assert.ok(Math.abs(ev('Z6','1').rate-(h('Z6').forms[0].aps*(1+5/3)+10/8)/55)<1e-12);
   assert.equal(ev('TR6','2').phase,'trans');
@@ -133,4 +133,20 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(simulateV2(data,t,{tr19Plants:{pea:0,snow:0,muk:3}}).executeCounts.TR19>0);
   assert.equal(simulateV2(data,t,{tr19Plants:{pea:3,snow:3,muk:3}}).executeCounts.TR19,undefined); // capped at 3 peas
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants: passed');
+// [수정 15] 아군 오라: 같은 오라는 한 번, 다른 오라는 합산, buffTargets로 대상 제한, 공속은 +400% 상한.
+{
+  const buffsOf=(team,o={})=>simulateV2(data,team,o).buffs;
+  const two=buffsOf([{code:'I4'},{code:'I4'},{code:'TR19'}]);
+  assert.equal(two.find(b=>b.code==='TR19').attack_pct,0.6);            // two I4 copies, one aura
+  const mix=buffsOf([{code:'I4'},{code:'TR30'},{code:'TR19'}]).find(b=>b.code==='TR19');
+  assert.ok(Math.abs(mix.attack_pct-1.0)<1e-12&&Math.abs(mix.aps-0.4)<1e-12);
+  const limited=buffsOf([{code:'I4'},{code:'TR19'},{code:'TR11'}],{buffTargets:{I4:['TR11']}});
+  assert.equal(limited.find(b=>b.code==='TR19').attack_pct,0);
+  assert.equal(limited.find(b=>b.code==='TR11').attack_pct,0.6);
+  const kaido=buffsOf([{code:'I11'},{code:'TR19'}]).find(b=>b.code==='TR19');
+  assert.equal(kaido.attack_pct,-0.75);                                   // A0Q1 hits every own unit
+  const tr22=buffsOf([{code:'TR22'},{code:'TR19'}]);
+  assert.equal(tr22.find(b=>b.code==='TR22').mana_regen,0);               // own regen already in its rates
+  assert.equal(tr22.find(b=>b.code==='TR19').mana_regen,3);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras: passed');

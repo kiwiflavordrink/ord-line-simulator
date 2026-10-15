@@ -12,6 +12,11 @@ export const DELETERS={
 
 // 2.305 object-data full upgrades, paired with the 2.323 ORDR cards.
 // These need individual targeting/resource clocks and cannot use the generic AoE hero events.
+// Ally auras of the support units (heroes carry theirs in data.json "auras").
+export const SUPPORT_AURAS={
+  L7:[{id:'L7',kind:'attack_pct',value:.25,targets:'all',note:'2.323 버프 "공격력 증가 25%"'}]
+};
+
 export const CONDITIONAL_UNITS={
   I8:{name:'스코퍼가반 불멸',attack:407502,aps:17.916666558,attackType:'pierce',
     url:'https://ordr.kr/character/I8'},
@@ -92,6 +97,32 @@ export function simulateV2(data,composition,options={}){
     else if(item.code==='MAGIC_CUSTOM')for(let i=0;i<count;i++)units.push({kind:'magic',code:'MAGIC_CUSTOM',damage:item.damage!==false});
   }
   if(!units.length)throw new Error('조합에 유닛을 한 기 이상 넣어 주세요.');
+  // Ally buffs. An aura id counts once even with several copies (WC3 same-ability auras do not stack);
+  // different auras add. targets: all (team), self, others. options.buffTargets {sourceCode:[targetCodes]}
+  // limits who receives a source's buffs (default: the whole team is in range). Timed buffs use their
+  // expected uptime: proc chance per attack over duration, or cast rate x duration.
+  const buffTargets=options.buffTargets??{};
+  const auraSources=units.map((u,i)=>({i,code:u.code,
+    auras:u.kind==='hero'?u.model.auras??[]:u.kind==='support'?SUPPORT_AURAS[u.code]??[]:[]})).filter(x=>x.auras.length);
+  for(const [j,u] of units.entries()){
+    if(u.kind!=='hero')continue;
+    const byId=new Map();
+    for(const src of auraSources)for(const a of src.auras){
+      if(a.targets==='self'&&src.i!==j||a.targets==='others'&&src.i===j)continue;
+      if(src.i!==j&&buffTargets[src.code]&&!buffTargets[src.code].includes(u.code))continue;
+      let up=1;
+      if(a.uptime){
+        const h=units[src.i].model,base=h.forms[0].aps;
+        const rate=a.uptime.proc!=null?null:(h.events.find(e=>e.index===a.uptime.cast_event)?.rate??0);
+        up=a.uptime.proc!=null?1-Math.pow(1-a.uptime.proc,base*a.uptime.duration):Math.min(1,rate*a.uptime.duration);
+      }
+      const prev=byId.get(a.id);
+      byId.set(a.id,{a,miss:(prev?prev.miss:1)*(1-up)});
+    }
+    const buffs={attack_pct:0,attack_flat:0,aps:0,mana_regen:0};
+    for(const {a,miss} of byId.values())buffs[a.kind]+=a.value*(1-miss);
+    u.buffs=buffs;
+  }
   const cut=clamp(options.cut??201,0,300),coverage=clamp(options.coverage??1,0,1);
   const resourceMode=['start','empty','perRound'].includes(options.resourceMode)?options.resourceMode:
     options.fullResource===false?'empty':'start';
@@ -183,8 +214,9 @@ export function simulateV2(data,composition,options={}){
   // Command Aura (ACac) bonuses add before multiplying base attack in WC3: Red Force A0BC +35%
   // plus the hero's own aura (data attack_aura: I11 A0Q1 -75%, E1/E2 A0UD +25%).
   // TR11/TR19 multipliers are crit expectations; Z2 +60000 is bonus damage outside the aura.
-  const heroAttack=(hero,form)=>{
-    let attack=form.attack*(1+(red?.35:0)+(hero.attack_aura??0));
+  const heroAttack=(u,form)=>{
+    const hero=u.model,b=u.buffs;
+    let attack=form.attack*(1+(red?.35:0)+b.attack_pct)+b.attack_flat;
     if(hero.code==='Z2')attack+=60000;
     return attack;
   };
@@ -213,7 +245,8 @@ export function simulateV2(data,composition,options={}){
     averageAb:mobs.length?mobs.reduce((a,m)=>a+m.ab,0)/mobs.length:0});
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
-    finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,unitCount:units.length,
+    finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,
+    buffs:units.map(u=>u.buffs?{code:u.code,...u.buffs}:null).filter(Boolean),unitCount:units.length,
     magicFactor,cut,coverage,resourceMode});
 
   for(const round of rounds){
@@ -247,7 +280,7 @@ export function simulateV2(data,composition,options={}){
       if(newMob)for(const u of units){
         if(u.kind!=='hero'||!u.damage)continue;
         const hero=u.model,form=formAt(hero,globalT,t,resourceMode).form;
-        const attack=heroAttack(hero,form);
+        const attack=heroAttack(u,form);
         for(const e of hero.events)if(e.on_spawn&& (summons||!isSummon(e))){
           deal(newMob,e.on_spawn*eventDamage(e,newMob,attack,extraArmor),hero.code,'area','mixed');
           if(e.ab&&newMob.hp>0)abAdd(newMob,e.ab*e.on_spawn);
@@ -298,6 +331,8 @@ export function simulateV2(data,composition,options={}){
         if(u.kind!=='hero'||!u.damage)continue;
         const hero=u.model,{form,transformed}=formAt(hero,globalT,t,resourceMode),baseAps=hero.forms[0].aps;
         let aps=form.aps;if(hero.code==='E10'&&transformed)aps=1/.11;
+        // Attack-speed auras add to the form's bonus (aps x base cooldown - 1), capped at +400% in WC3.
+        if(u.buffs.aps&&form.cooldown)aps=Math.min(5,aps*form.cooldown+u.buffs.aps)/form.cooldown;
         const giant=['E1','E2'].includes(hero.code)&&inWindow(4.25,4.25+115/(baseAps+.25),globalT,t,resourceMode,true);
         if(giant)aps/=3.25;
         // A self attack-speed buff that holds while the attack target has enough armor break (TR29 운석낙하).
@@ -327,7 +362,7 @@ export function simulateV2(data,composition,options={}){
         }
         const haste=hero.target_ab_aps_bonus;
         if(haste&&target&&target.ab>=haste.min_ab)aps*=1+haste.bonus;
-        const attack=heroAttack(hero,form);
+        const attack=heroAttack(u,form);
         if(target){
           const crit=critEV(form.crit);
           deal(target,attack*crit*critEV(form.target_crit)*aps*form.rounds[String(target.round)]*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
@@ -339,6 +374,7 @@ export function simulateV2(data,composition,options={}){
           if(e.phase==='trans'&&!transformed||e.phase==='base'&&transformed||e.phase==='giant'&&!giant||e.phase==='nongiant'&&giant)continue;
           let rate=e.rate*(e.per_attack?aps/baseAps:1);
           if(e.plant)rate*=plantCount(hero,e.plant);
+          if(e.resource_cost&&u.buffs.mana_regen)rate+=u.buffs.mana_regen/e.resource_cost;
           if(executing&&e.index===exe.boost_event)rate=aps;
           if(e.initial&&(resourceMode==='perRound'&&step===0||resourceMode==='start'&&globalStep===0))rate+=10;
           if(!rate)continue;

@@ -1,5 +1,5 @@
 import {SUPPORTS} from './engine.mjs';
-import {simulateV2,DELETERS,CONDITIONAL_UNITS} from './engine_v3.mjs';
+import {simulateV2,DELETERS,CONDITIONAL_UNITS,SUPPORT_AURAS} from './engine_v3.mjs';
 import {SINGLE_MOB,SINGLE_UNITS,simulateSingle,referenceSingle} from './engine_single_v3.mjs';
 import {EFFECTS,damageContext} from './v3_effects.mjs';
 
@@ -85,6 +85,43 @@ function addRow(item={code:'TR19',count:1,damage:true,ab:true}){
   sync();
 }
 
+// Buff target panel: one row per buff source in the team, one checkbox per hero in the team.
+const buffState={};let buffSignature='';
+function buffSources(codes){
+  const heroes=new Map(data.heroes.map(h=>[h.code,h]));
+  return [...new Set(codes)].filter(c=>(heroes.get(c)?.auras??SUPPORT_AURAS[c]??[]).some(a=>a.targets!=='self'));
+}
+function syncBuffPanel(){
+  const codes=team().map(t=>t.code),heroCodes=[...new Set(codes.filter(c=>data.heroes.some(h=>h.code===c)))];
+  const sources=buffSources(codes),signature=JSON.stringify([sources,heroCodes]);
+  $('buff-settings').hidden=!sources.length;
+  if(signature===buffSignature)return;
+  buffSignature=signature;
+  const box=$('buff-targets');box.innerHTML='';
+  for(const src of sources){
+    const line=document.createElement('div');line.className='buff-line';
+    const title=document.createElement('strong');title.textContent=nameOf(src)+' →';line.appendChild(title);
+    for(const tgt of heroCodes){
+      const label=document.createElement('label');label.className='tiny-check';
+      const input=document.createElement('input');input.type='checkbox';input.dataset.src=src;input.dataset.tgt=tgt;
+      input.checked=buffState[src]?.[tgt]??true;
+      input.addEventListener('change',()=>{(buffState[src]??={})[tgt]=input.checked;});
+      const span=document.createElement('span');span.textContent=nameOf(tgt);
+      label.append(input,span);line.appendChild(label);
+    }
+    box.appendChild(line);
+  }
+}
+function buffTargets(){
+  const out={};
+  for(const line of document.querySelectorAll('#buff-targets .buff-line')){
+    const boxes=[...line.querySelectorAll('input')];
+    if(boxes.every(b=>b.checked))continue;
+    out[boxes[0].dataset.src]=boxes.filter(b=>b.checked).map(b=>b.dataset.tgt);
+  }
+  return out;
+}
+
 function team(){return [...$('team').children].map(row=>({code:row.querySelector('select').value,
   count:Number(row.querySelector('.unit-count').value),damage:row.querySelector('.unit-damage').checked,
   ab:row.querySelector('.unit-ab').checked}));}
@@ -96,6 +133,7 @@ function options(){const c=context();return {
   red:$('red-v2').checked,redDamage:$('red-v2').checked,fullResource:$('resource-v2').checked,summons:$('summons-v2').checked,
   frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
   tr19Plants:{pea:val('tr19-pea'),snow:val('tr19-snow'),muk:val('tr19-muk')},
+  buffTargets:buffTargets(),
   customMagic:{aps:val('magic-aps'),chance:val('magic-chance')/100,flat:val('magic-flat'),
     maxPct:val('magic-max')/100,currentPct:val('magic-current')/100,lostPct:val('magic-lost')/100},
   finisher:{mode:$('finish-mode').value,interval:val('finish-interval'),successChance:val('finish-chance')/100,
@@ -115,6 +153,7 @@ function renderChart(result){
 }
 
 function render(){
+  if(data)syncBuffPanel();
   if(!data)return;
   $('finish-damage-settings').hidden=$('finish-mode').value!=='damage';
   const chosen=team(),opts=options();
@@ -257,6 +296,7 @@ function restore(){
   $('franky-aura').checked=params.get('frankyAura')!=='0';
   $('sunny-stagger').checked=params.get('sunnyStagger')==='1';
   for(const k of ['pea','snow','muk'])if(params.has('tr19'+k))$('tr19-'+k).value=params.get('tr19'+k);
+  try{for(const [src,tgts] of Object.entries(JSON.parse(params.get('buffTargets')||'{}')))for(const t of data.heroes.map(h=>h.code))(buffState[src]??={})[t]=tgts.includes(t);}catch{}
 }
 function shareURL(){
   const u=new URL(location.href);u.search='';u.searchParams.set('team',JSON.stringify(team()));
@@ -271,6 +311,7 @@ function shareURL(){
   u.searchParams.set('frankyAura',$('franky-aura').checked?'1':'0');
   u.searchParams.set('sunnyStagger',$('sunny-stagger').checked?'1':'0');
   for(const k of ['pea','snow','muk'])u.searchParams.set('tr19'+k,$('tr19-'+k).value);
+  const bt=buffTargets();if(Object.keys(bt).length)u.searchParams.set('buffTargets',JSON.stringify(bt));
   for(const e of document.querySelectorAll('.amp-effect:checked'))u.searchParams.append('effect',e.value);
   u.searchParams.set('warcury',$('v3-warcury').checked?'1':'0');
   for(const [param,id] of [['customMamp','v3-custom-mamp'],['customMcut','v3-custom-mcut'],['customAll','v3-custom-all'],['customExplosive','v3-custom-explosive']])u.searchParams.set(param,$(id).value);

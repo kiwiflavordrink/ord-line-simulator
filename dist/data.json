@@ -7,7 +7,7 @@
    "grade":"제한됨",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"h05I","attack":257777.0,"aps":2.7272727488239936,"attack_type":"normal","splash":1,"splash_radius":325,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+    {"rawcode":"h05I","attack":257777.0,"aps":2.7272727488239936,"attack_type":"normal","splash":1,"splash_radius":325,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"cooldown":0.88}
    ],
    "events":[
     {"code":"Z2","index":"3","rate":0.2181818199059195,"rate_kind":"공격당 0.08","parts":[["physical",1400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
@@ -22,11 +22,12 @@
    "name":"알비다",
    "grade":"제한됨",
    "focus":"물리 중심",
+   "auras":[{"id":"Z6 33%","kind":"attack_pct","value":0.33,"targets":"all","note":"2.323 \"해당 범위 3초 스턴, 아머브레이크 10, 4.5초간 아군 공격력 33% 증가\" (마나 스킬)","uptime":{"cast_event":"1","duration":4.5}}],
    "forms":[
-    {"rawcode":"h08Q","attack":504446.0,"aps":0.8555555641651152,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+    {"rawcode":"h08Q","attack":504446.0,"aps":0.8555555641651152,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"cooldown":4.5}
    ],
    "events":[
-    {"code":"Z6","index":"1","rate":0.06420875462618741,"rate_kind":"자원 55; 공격당 1+3타마다 5+8초마다 10; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",0.0,[["lost",0.1]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 10. 근거 \"해당 범위 3초 스턴, 아머브레이크 10\" / 수정내역 6b: rate 0.0156→0.0642. 근거 \"기본 공격 3회 적중시 발동 … 마나 5 획득\", \"… 마나 10 획득(절대쿨타임 8초)\"","ab":10},
+    {"code":"Z6","index":"1","rate":0.06420875462618741,"rate_kind":"자원 55; 공격당 1+3타마다 5+8초마다 10; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",0.0,[["lost",0.1]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 10. 근거 \"해당 범위 3초 스턴, 아머브레이크 10\" / 수정내역 6b: rate 0.0156→0.0642. 근거 \"기본 공격 3회 적중시 발동 … 마나 5 획득\", \"… 마나 10 획득(절대쿨타임 8초)\"","ab":10,"resource_cost":55},
     {"code":"Z6","index":"3","rate":0.2851851880550384,"rate_kind":"공격당 0.333333","parts":[["physical",0.0,[],5.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"Z6","index":"4","rate":0.125,"rate_kind":"8초마다","parts":[["physical",3500000.0,[],0.0],["physical",0.0,[["lost",0.06]],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""}
    ],
@@ -38,7 +39,7 @@
    "grade":"제한됨",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"h07I","attack":147501.5,"aps":4.754098185654198,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+    {"rawcode":"h07I","attack":147501.5,"aps":4.754098185654198,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"cooldown":0.61}
    ],
    "events":[
     {"code":"Z8","index":"1","rate":2.0612343297974927,"rate_kind":"초당 2.85/17회 발동 × 1.5초 × 최대 공속 5/0.61","parts":[["physical",100000.0,[],0.75]],"phase":null,"per_attack":false,"source":"2.323 툴팁 수치 + 2.305 공속 상한 구조","note":"수정내역 6b: rate 5.3484→2.0612. 근거 \"체력 35 이상일 때 공격시 15% 확률로 체력 17 소모, 1.5초간 공격속도 최대 … 공격시마다 415범위\", \"◎ 체력 재생 2.85\". 체력 재생이 발동을 제한(초당 2.85/17회). 최대 공속은 2.305 w3u h07I ua1c 0.61과 WC3 공속 상한 +400%로 5/0.61"},
@@ -53,10 +54,10 @@
    "grade":"제한됨",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"h05F","attack":92501.5,"aps":6.875000039913824,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}
+    {"rawcode":"h05F","attack":92501.5,"aps":6.875000039913824,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"cooldown":0.56}
    ],
    "events":[
-    {"code":"Z9","index":"1","rate":0.06265217426012021,"rate_kind":"자원 115; 공격당 1+초당 0.33; 시작시 만충","parts":[["physical",4800000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 10. 근거 침식윤회 \"매 공격 시 해당 범위 1 아머브레이크 + 마지막 타격 시 3의 아머브레이크 추가\" (7초×1 + 3)","ab":10},
+    {"code":"Z9","index":"1","rate":0.06265217426012021,"rate_kind":"자원 115; 공격당 1+초당 0.33; 시작시 만충","parts":[["physical",4800000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 10. 근거 침식윤회 \"매 공격 시 해당 범위 1 아머브레이크 + 마지막 타격 시 3의 아머브레이크 추가\" (7초×1 + 3)","ab":10,"resource_cost":115},
     {"code":"Z9","index":"3","rate":0.6875000039913824,"rate_kind":"공격당 0.1","parts":[["physical",850000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"Z9","index":"4","rate":0.3437500019956912,"rate_kind":"공격당 0.05","parts":[["magic",200000.0,[],0.0],["physical",1250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"Z9","index":"6% 단일","rate":0.4125000023948294,"rate_kind":"공격당 0.06","parts":[["magic",1200000.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 \"공격시 6% 확률로 단일 적에게 80만(x1~2)의 마법 데미지\". x1~2 기대값 1.5배"}
@@ -70,7 +71,7 @@
    "focus":"물리 중심",
    "executioner":{"min_ab":50,"mana_max":60,"mana_need":35,"mana_cost":33,"duration":1.25,"aps_bonus":0.25,"boost_event":"3","single_fixed":10000000.0,"boss_fixed":100000.0,"area_ab":1,"note":"수정내역 13: 근거 툴팁 \"처형자 :: 적의 아머브레이크 50이상 + 마나 35이상 ▶ 33의 마나소모 후 1.25초간 처형상태 ▶ 처형자 상태시 공격속도 25% 증가\", \"참수 :: … 잔혹한 검술 100% 확률로 발동 … 주변 적에게도 아머브레이크 1 ▶ 단일 적에게 1000만의 고정데미지 (보스에게는 10만)\". 마나 규칙 [2.305 j:45618-45720 Uhe] 공격마다 마나 +1, w3u h0AI 최대 마나 60. 참수의 범위 1.5배는 범위 적중률 모델이라 반영하지 않음"},
    "forms":[
-    {"rawcode":"h0AI","attack":131501.5,"aps":4.843750098953026,"attack_type":"normal","splash":1,"splash_radius":275,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+    {"rawcode":"h0AI","attack":131501.5,"aps":4.843750098953026,"attack_type":"normal","splash":1,"splash_radius":275,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"cooldown":0.64}
    ],
    "events":[
     {"code":"Z10","index":"3","rate":0.48437500989530263,"rate_kind":"공격당 0.1","parts":[["physical",800000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab_target 4. 근거 잔혹한 검술 \"단일 적 아머브레이크 4\"","ab_target":4},
@@ -84,8 +85,8 @@
    "grade":"초월함",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"H09E","attack":91751.5,"aps":7.016129088854567,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}},
-    {"rawcode":"H09D","attack":91751.5,"aps":7.372881799842138,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+    {"rawcode":"H09E","attack":91751.5,"aps":7.016129088854567,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"cooldown":0.62},
+    {"rawcode":"H09D","attack":91751.5,"aps":7.372881799842138,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"cooldown":0.59}
    ],
    "events":[
     {"code":"TR3","index":"2","rate":0.8770161361068208,"rate_kind":"공격당 0.125","parts":[["physical",750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
@@ -104,11 +105,12 @@
    "name":"로빈",
    "grade":"초월함",
    "focus":"물리 중심",
+   "auras":[{"id":"A0AY","kind":"attack_flat","value":25000,"targets":"all","note":"2.323 \"◎ 공격력 증가 25000\", 2.305 A0AY 커맨드 오라(고정값) 아군·자신"}],
    "forms":[
-    {"rawcode":"H098","attack":98833.0,"aps":6.126760845086432,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+    {"rawcode":"H098","attack":98833.0,"aps":6.126760845086432,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"cooldown":0.71}
    ],
    "events":[
-    {"code":"TR4","index":"1","rate":0.1656690211271608,"rate_kind":"자원 40; 공격당 1+초당 0.5; 시작시 만충","parts":[["physical",2250000.0,[["max",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR4","index":"1","rate":0.1656690211271608,"rate_kind":"자원 40; 공격당 1+초당 0.5; 시작시 만충","parts":[["physical",2250000.0,[["max",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":40},
     {"code":"TR4","index":"2","rate":0.6126760845086432,"rate_kind":"공격당 0.1","parts":[["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR4","index":"3","rate":0.3063380422543216,"rate_kind":"공격당 0.05","parts":[["physical",600000.0,[],0.0],["magic",120000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
    ],
@@ -120,8 +122,8 @@
    "grade":"초월함",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"H0BL","attack":170501.5,"aps":5.178571671855701,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},
-    {"rawcode":"H0BO","attack":220502.0,"aps":5.6493508783092965,"attack_type":"normal","splash":1,"splash_radius":400,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+    {"rawcode":"H0BL","attack":170501.5,"aps":5.178571671855701,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"cooldown":0.84},
+    {"rawcode":"H0BO","attack":220502.0,"aps":5.6493508783092965,"attack_type":"normal","splash":1,"splash_radius":400,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"cooldown":0.77}
    ],
    "events":[
     {"code":"TR6","index":"2","rate":0.42857142857142855,"rate_kind":"변신 1회당 3틱 (변신 7초 동안 분산)","parts":[["physical",1812500.0,[],0.0]],"phase":"trans","source":"2.323 툴팁 수치 + 2.305 변신 시전 구조","note":"수정내역 6b: rate 0.3333(상시)→변신 중 0.4286. 근거 2.323 \"1초마다 초당 145만(x1~1.5) … 지속시간 3초\", 2.305 wts:18801 \"숲인간으로 변신후 삼림화 시전\""},
@@ -136,14 +138,14 @@
    "grade":"초월함",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"H099","attack":95502.0,"aps":11.447368745080656,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+    {"rawcode":"H099","attack":95502.0,"aps":11.447368745080656,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"cooldown":0.38}
    ],
    "events":[
-    {"code":"TR8","index":"1","rate":0.0715460546567541,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5312500.0,[["max",0.015]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 7. 근거 \"해당 범위 2.15초 스턴 ▶ 아머브레이크 7\"","ab":7},
+    {"code":"TR8","index":"1","rate":0.0715460546567541,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5312500.0,[["max",0.015]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 7. 근거 \"해당 범위 2.15초 스턴 ▶ 아머브레이크 7\"","ab":7,"resource_cost":160},
     {"code":"TR8","index":"2","rate":2.0032895303891145,"rate_kind":"공격당 0.175","parts":[["magic",32500.0,[],0.0],["physical",32500.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR8","index":"3","rate":0.11443604336658013,"rate_kind":"공격당 0.0125, 절대쿨 1.75초","parts":[["magic",1235000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 6b: rate 0.1431→0.1144. 근거 \"기간트 개틀링 :: 공격시 1.25% 확률 … ▶ 1.75초의 절대쿨다운\""},
     {"code":"TR8","index":"2 단일 추가","rate":2.0032895303891145,"rate_kind":"공격당 0.175 / 공격 대상 단일 추가","parts":[["fixed",32500.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적 기본 공격 피해량의 250% + 3만 2,500의 추가 고정데미지\""},
-    {"code":"TR8","index":"1 단일 2배","rate":0.0715460546567541,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5312500.0,[["max",0.015]],0.0]],"phase":null,"per_attack":true,"initial":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 \"▶ 단일적에게는 2배의 마법데미지를 입힘\" (마나 160 스킬). 이벤트 1과 같은 피해를 공격 대상에 한 번 더"}
+    {"code":"TR8","index":"1 단일 2배","rate":0.0715460546567541,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5312500.0,[["max",0.015]],0.0]],"phase":null,"per_attack":true,"initial":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 \"▶ 단일적에게는 2배의 마법데미지를 입힘\" (마나 160 스킬). 이벤트 1과 같은 피해를 공격 대상에 한 번 더","resource_cost":160}
    ],
    "url":"https://ordr.kr/character/TR8"
   },
@@ -153,11 +155,11 @@
    "grade":"초월함",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"H094","attack":98002.0,"aps":6.126760845086432,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"crit":[0.18,5],"crit_note":"수정내역 10: 근거 \"공격시 18% 확률로 5배 크리티컬 발동\""}
+    {"rawcode":"H094","attack":98002.0,"aps":6.126760845086432,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"crit":[0.18,5],"crit_note":"수정내역 10: 근거 \"공격시 18% 확률로 5배 크리티컬 발동\"","cooldown":0.71}
    ],
    "events":[
-    {"code":"TR9","index":"1","rate":0.1614190211271608,"rate_kind":"자원 40; 공격당 1+초당 0.33; 시작시 만충","parts":[["physical",600000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
-    {"code":"TR9","index":"2","rate":0.06126760845086432,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",1687500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR9","index":"1","rate":0.1614190211271608,"rate_kind":"자원 40; 공격당 1+초당 0.33; 시작시 만충","parts":[["physical",600000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":40},
+    {"code":"TR9","index":"2","rate":0.06126760845086432,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",1687500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":100},
     {"code":"TR9","index":"3","rate":0.8577465183121006,"rate_kind":"공격당 0.14","parts":[["physical",562500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR9","index":"4","rate":6.126760845086432,"rate_kind":"공격당 1","parts":[["physical",25000.0,[],0.8]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR9","index":"타격","rate":0.382922552817902,"rate_kind":"공격당 0.0625","parts":[["physical",625000.0,[],0.0]],"phase":null,"per_attack":true,"target":"single_line","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 \"공격시 6.25% 확률로 타격 ▶ 단일 적 2초 스턴 및 62만 5,000의 물리데미지\""},
@@ -171,10 +173,10 @@
    "grade":"초월함",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"H092","attack":185001.5,"aps":4.518987285424228,"attack_type":"siege","splash":1,"splash_radius":300,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"crit":[0.15,4],"crit_note":"수정내역 10: 근거 \"기본 공격시 15% 확률로 4배 크리티컬 발동\" (이전 공격력 ×1.45 하드코딩)"}
+    {"rawcode":"H092","attack":185001.5,"aps":4.518987285424228,"attack_type":"siege","splash":1,"splash_radius":300,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"crit":[0.15,4],"crit_note":"수정내역 10: 근거 \"기본 공격시 15% 확률로 4배 크리티컬 발동\" (이전 공격력 ×1.45 하드코딩)","cooldown":0.79}
    ],
    "events":[
-    {"code":"TR11","index":"1","rate":0.036151898283393824,"rate_kind":"자원 125; 공격당 1+초당 0; 시작시 만충","parts":[["physical",5625000.0,[["max",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR11","index":"1","rate":0.036151898283393824,"rate_kind":"자원 125; 공격당 1+초당 0; 시작시 만충","parts":[["physical",5625000.0,[["max",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":125},
     {"code":"TR11","index":"2","rate":0.9037974570848457,"rate_kind":"공격당 0.2","parts":[["physical",625000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR11","index":"3","rate":0.45189872854242286,"rate_kind":"공격당 0.1","parts":[["physical",1150000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR11","index":"5","rate":0.08,"rate_kind":"12.5초마다","parts":[["magic",3250000.0,[],0.0],["physical",1000000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
@@ -189,14 +191,14 @@
    "grade":"초월함",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"H0BD","attack":152500.0,"aps":3.6363636404686397,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}},
-    {"rawcode":"H0BE","attack":227500.0,"aps":3.91304344938811,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+    {"rawcode":"H0BD","attack":152500.0,"aps":3.6363636404686397,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"cooldown":0.99},
+    {"rawcode":"H0BE","attack":227500.0,"aps":3.91304344938811,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"cooldown":0.92}
    ],
    "events":[
     {"code":"TR18","index":"3","rate":0.545454546070296,"rate_kind":"공격당 0.15","parts":[["fixed",350000.0,[],3.75]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR18","index":"6","rate":1.2727272741640239,"rate_kind":"공격당 0.35","parts":[["magic",215000.0,[],1.15]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR18","index":"6T","rate":3.6363636404686397,"rate_kind":"공격당 1","parts":[["magic",215000.0,[],1.15]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR18","index":"7","rate":0.04175119621545936,"rate_kind":"자원 95; 공격당 1+초당 0.33; 시작시 만충","parts":[["magic",3750000.0,[],0.0],["physical",10800000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 6b: 물리 900만→1080만. 근거 특강 신족 백사구 \"첫타 250만(x1~2) 마법 … 후속타 80만(x1~2) × 9 물리\"; 마법과 같이 x1~2 기대값 1.5 (80만×1.5×9)"},
+    {"code":"TR18","index":"7","rate":0.04175119621545936,"rate_kind":"자원 95; 공격당 1+초당 0.33; 시작시 만충","parts":[["magic",3750000.0,[],0.0],["physical",10800000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 6b: 물리 900만→1080만. 근거 특강 신족 백사구 \"첫타 250만(x1~2) 마법 … 후속타 80만(x1~2) × 9 물리\"; 마법과 같이 x1~2 기대값 1.5 (80만×1.5×9)","resource_cost":95},
     {"code":"TR18","index":"6 단일 추가","rate":1.2727272741640239,"rate_kind":"공격당 0.35","parts":[["magic",268750.0,[],1.4375]],"phase":"base","per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 미환인 \"▶ 단일 적은 125% 추가 피해를 입습니다.\". (21만 5,000 + 115%)×1.25"},
     {"code":"TR18","index":"6T 단일 추가","rate":3.6363636404686397,"rate_kind":"공격당 1","parts":[["magic",268750.0,[],1.4375]],"phase":"trans","per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 미환인 \"▶ 단일 적은 125% 추가 피해를 입습니다.\" (변신 중)"}
    ],
@@ -210,11 +212,11 @@
    "plants":{"max":3,"default":{"pea":2,"snow":1,"muk":0},"note":"수정내역 14: 특강 수상한 씨앗 상자 \"▶ 최대 식물 수 : 3개\". 기본 배분은 이전 모델과 같은 완두콩 2 + 백설콩 1"},
    "cooldown_form":{"window":5,"cooldown":45,"note":"수정내역 11: 우솝해머 A0OY(AEme 변신) H09B→H09C, ahdu 5초, acdn 45초 [2.305 w3a, STRING 3756]. 사용자 확인: 2.323에도 쿨마다 사용 가능한 액티브"},
    "forms":[
-    {"rawcode":"H09B","attack":88502.0,"aps":8.365385054043074,"attack_type":"pierce","splash":1,"splash_radius":300,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"crit":[0.15,3.5],"crit_note":"수정내역 10: 근거 \"기본 공격시 15% 확률로 3.5배 크리티컬 발생\" (이전 공격력 ×1.375 하드코딩)"},
-    {"rawcode":"H09C","attack":121057.0,"aps":9.062500345365462,"attack_type":"pierce","splash":1,"splash_radius":400,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"crit":[0.2,7],"crit_note":"수정내역 11: 해머 폼 10톤해머 A0OZ \"기본 공격시 20% 확률로 7배 크리티컬 발동\" [2.305 STRING 5098, 2.305 기준]"}
+    {"rawcode":"H09B","attack":88502.0,"aps":8.365385054043074,"attack_type":"pierce","splash":1,"splash_radius":300,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"crit":[0.15,3.5],"crit_note":"수정내역 10: 근거 \"기본 공격시 15% 확률로 3.5배 크리티컬 발생\" (이전 공격력 ×1.375 하드코딩)","cooldown":0.52},
+    {"rawcode":"H09C","attack":121057.0,"aps":9.062500345365462,"attack_type":"pierce","splash":1,"splash_radius":400,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"crit":[0.2,7],"crit_note":"수정내역 11: 해머 폼 10톤해머 A0OZ \"기본 공격시 20% 확률로 7배 크리티컬 발동\" [2.305 STRING 5098, 2.305 기준]","cooldown":0.48}
    ],
    "events":[
-    {"code":"TR19","index":"1","rate":0.05975275038602196,"rate_kind":"자원 140; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2250000.0,[],0.0],["physical",1000000.0,[["max",0.02]],0.0]],"phase":"base","per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 11: 해머 지속 중 사용 불가 \"지속시간 중 화염성,파이어버드 스타 사용 불가\" [2.305 STRING 3756]"},
+    {"code":"TR19","index":"1","rate":0.05975275038602196,"rate_kind":"자원 140; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2250000.0,[],0.0],["physical",1000000.0,[["max",0.02]],0.0]],"phase":"base","per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 11: 해머 지속 중 사용 불가 \"지속시간 중 화염성,파이어버드 스타 사용 불가\" [2.305 STRING 3756]","resource_cost":140},
     {"code":"TR19","index":"2","rate":1.1711539075660304,"rate_kind":"공격당 0.14","parts":[["physical",250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR19","index":"3","rate":0.9201923559447381,"rate_kind":"공격당 0.11","parts":[["physical",750000.0,[],0.0]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 11: 해머 지속 중 사용 불가 \"지속시간 중 화염성,파이어버드 스타 사용 불가\" [2.305 STRING 3756]"},
     {"code":"TR19","index":"완두콩","rate":1.0,"rate_kind":"1초마다, 식물 1기당","parts":[["physical",267259.33968750003,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":"수정내역 14: 식물 1기 기준 값으로 바꾸고 엔진이 tr19Plants.pea(기본 2)를 곱함","plant":"pea"},
@@ -235,11 +237,11 @@
    "focus":"물리 중심",
    "permanent_form":1,
    "forms":[
-    {"rawcode":"H09F","attack":115502.0,"aps":6.492537254014083,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"crit":[0.25,10],"crit_note":"수정내역 10: 근거 \"공격시 25% 확률로 10배 크리티컬 발동\""},
-    {"rawcode":"H0BT","attack":115502.0,"aps":6.492537254014083,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"crit":[0.25,10],"crit_note":"수정내역 10: 근거 \"공격시 25% 확률로 10배 크리티컬 발동\""}
+    {"rawcode":"H09F","attack":115502.0,"aps":6.492537254014083,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"crit":[0.25,10],"crit_note":"수정내역 10: 근거 \"공격시 25% 확률로 10배 크리티컬 발동\"","cooldown":0.67},
+    {"rawcode":"H0BT","attack":115502.0,"aps":6.492537254014083,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"crit":[0.25,10],"crit_note":"수정내역 10: 근거 \"공격시 25% 확률로 10배 크리티컬 발동\"","cooldown":0.67}
    ],
    "events":[
-    {"code":"TR20","index":"1","rate":0.044776118993200574,"rate_kind":"자원 145; 공격당 1+초당 0; 시작시 만충","parts":[["magic",3500000.0,[],0.0],["physical",6315000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR20","index":"1","rate":0.044776118993200574,"rate_kind":"자원 145; 공격당 1+초당 0; 시작시 만충","parts":[["magic",3500000.0,[],0.0],["physical",6315000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":145},
     {"code":"TR20","index":"2","rate":1.1037313331823941,"rate_kind":"공격당 0.17","parts":[["physical",715625.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR20","index":"3","rate":0.45447760778098584,"rate_kind":"공격당 0.07","parts":[["physical",1050000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR20","index":"4","rate":0.1947761176204225,"rate_kind":"공격당 0.03","parts":[["physical",2500000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
@@ -253,11 +255,12 @@
    "name":"징베",
    "grade":"초월함",
    "focus":"물리 중심",
+   "auras":[{"id":"A0P3","kind":"aps","value":0.2,"targets":"all","note":"2.323 버프 \"공격속도 증가 20%\", 2.305 A0P3 아군·자신"},{"id":"A0P5","kind":"mana_regen","value":3,"targets":"others","note":"2.323 \"◎ 마나재생 3\", 2.305 A0P5 브릴리언스 오라 아군. 징베 자신의 재생은 이미 자원 rate에 포함돼 others"}],
    "forms":[
-    {"rawcode":"H09A","attack":180001.5,"aps":4.1573034074703505,"attack_type":"siege","splash":1,"splash_radius":300,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+    {"rawcode":"H09A","attack":180001.5,"aps":4.1573034074703505,"attack_type":"siege","splash":1,"splash_radius":300,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"cooldown":0.89}
    ],
    "events":[
-    {"code":"TR22","index":"1","rate":0.0715730340747035,"rate_kind":"자원 100; 공격당 1+초당 3; 시작시 만충","parts":[["physical",2500000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 3. 근거 \"해당 범위 3초 스턴 및 3의 아머브레이크\" / 수정내역 5: ab_scaling 0.01. 근거 \"◎ 적의 아머브레이크로 깍인 방어력 감소량 만큼 스킬데미지가 1%씩 증가\" / 수정내역 12: 방어력 감소 25. 근거 \"▶ 해당 범위 아머브레이크 10 이상인 적 방어력 25 감소 ▶ 해당 효과는 1회만 적용\". 지속시간이 적혀 있지 않아 영구로 봤다 [추정]","ab":3,"ab_scaling":0.01,"armor_debuff":{"value":25,"key":"TR22 진동","once":true,"min_ab":10}},
+    {"code":"TR22","index":"1","rate":0.0715730340747035,"rate_kind":"자원 100; 공격당 1+초당 3; 시작시 만충","parts":[["physical",2500000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 3. 근거 \"해당 범위 3초 스턴 및 3의 아머브레이크\" / 수정내역 5: ab_scaling 0.01. 근거 \"◎ 적의 아머브레이크로 깍인 방어력 감소량 만큼 스킬데미지가 1%씩 증가\" / 수정내역 12: 방어력 감소 25. 근거 \"▶ 해당 범위 아머브레이크 10 이상인 적 방어력 25 감소 ▶ 해당 효과는 1회만 적용\". 지속시간이 적혀 있지 않아 영구로 봤다 [추정]","ab":3,"ab_scaling":0.01,"armor_debuff":{"value":25,"key":"TR22 진동","once":true,"min_ab":10},"resource_cost":100},
     {"code":"TR22","index":"2","rate":0.2598314629668969,"rate_kind":"공격당 0.0625","parts":[["magic",450000.0,[],0.0],["physical",1750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab 3. 근거 \"해당 범위 적에게 아머브레이크 3 (최대 75까지 중첩)\" / 수정내역 5: ab_scaling 0.01. 근거 \"◎ 적의 아머브레이크로 깍인 방어력 감소량 만큼 스킬데미지가 1%씩 증가\"","ab":3,"ab_scaling":0.01},
     {"code":"TR22","index":"3","rate":0.5924157355645249,"rate_kind":"공격당 0.1425","parts":[["physical",1250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab 1. 근거 \"해당 범위 적에게 아머브레이크 1 (최대 75까지 중첩)\" / 수정내역 5: ab_scaling 0.01. 근거 \"◎ 적의 아머브레이크로 깍인 방어력 감소량 만큼 스킬데미지가 1%씩 증가\"","ab":1,"ab_scaling":0.01},
     {"code":"TR22","index":"2 단일 추가","rate":0.2598314629668969,"rate_kind":"공격당 0.0625 / 공격 대상 단일 추가","parts":[["fixed",4950000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적에게는 225% 고정 데미지로 적용\" / 수정내역 5: ab_scaling 0.01. 근거 \"◎ 적의 아머브레이크로 깍인 방어력 감소량 만큼 스킬데미지가 1%씩 증가\"","ab_scaling":0.01},
@@ -270,13 +273,14 @@
    "name":"쵸파",
    "grade":"초월함",
    "focus":"물리 중심",
+   "auras":[{"id":"A0OK","kind":"attack_pct","value":0.4,"targets":"all","note":"2.323 버프 \"공격력 증가 40%\" (2.305 A0OK 0.5)"},{"id":"A0OJ","kind":"aps","value":0.4,"targets":"all","note":"2.323 버프 \"공격속도 증가 40%\" (2.305 A0OJ 0.3)"}],
    "permanent_form":1,
    "forms":[
-    {"rawcode":"H091","attack":315502.0,"aps":7.016129088854567,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},
-    {"rawcode":"H0B6","attack":350502.0,"aps":3.624999913076563,"attack_type":"siege","splash":1,"splash_radius":400,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+    {"rawcode":"H091","attack":315502.0,"aps":7.016129088854567,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"cooldown":0.62},
+    {"rawcode":"H0B6","attack":350502.0,"aps":3.624999913076563,"attack_type":"siege","splash":1,"splash_radius":400,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"cooldown":1.2}
    ],
    "events":[
-    {"code":"TR23","index":"1","rate":0.04677419392569711,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"특강 시 영구 몬스터포인트 폼이라 럼블볼 폭주 변신 마나는 피해가 없는 자원 표식으로만 남김. 근거: 2.305 wts STRING 5134 (A0OO 특성강화) \"영구적으로 몬스터포인트 형태로 변신\""},
+    {"code":"TR23","index":"1","rate":0.04677419392569711,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"특강 시 영구 몬스터포인트 폼이라 럼블볼 폭주 변신 마나는 피해가 없는 자원 표식으로만 남김. 근거: 2.305 wts STRING 5134 (A0OO 특성강화) \"영구적으로 몬스터포인트 형태로 변신\"","resource_cost":150},
     {"code":"TR23","index":"2","rate":0.7016129088854567,"rate_kind":"공격당 0.1","parts":[["physical",1750000.0,[],1.75]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR23","index":"2 단일 추가","rate":0.7016129088854567,"rate_kind":"공격당 0.1","parts":[["fixed",3062500.0,[],3.0625]],"phase":null,"per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 발굽야자 \"▶ 단일 적 스킬 피해량의 175% 고정데미지\". 스킬 피해(175만 + 공격력 175%)×1.75"}
    ],
@@ -288,12 +292,12 @@
    "grade":"초월함",
    "focus":"물리·마법 혼합",
    "forms":[
-    {"rawcode":"H05N","attack":163850.0,"aps":4.602272731890856,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}
+    {"rawcode":"H05N","attack":163850.0,"aps":4.602272731890856,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"cooldown":0.88}
    ],
    "events":[
-    {"code":"TR27","index":"1","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5760000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
-    {"code":"TR27","index":"1 라인 최대체력","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",0.0,[["max",0.1]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","target":"line","note":""},
-    {"code":"TR27","index":"1 광폭/보스 최대체력","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",0.0,[["max",0.03]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","target":"special","note":""},
+    {"code":"TR27","index":"1","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5760000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":135},
+    {"code":"TR27","index":"1 라인 최대체력","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",0.0,[["max",0.1]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","target":"line","note":"","resource_cost":135},
+    {"code":"TR27","index":"1 광폭/보스 최대체력","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",0.0,[["max",0.03]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","target":"special","note":"","resource_cost":135},
     {"code":"TR27","index":"2","rate":0.4602272731890856,"rate_kind":"공격당 0.1","parts":[["magic",850000.0,[],9.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab 5. 근거 박무 \"해당 범위 적에게 아머브레이크 5 (최대 75까지 중첩)\"","ab":5},
     {"code":"TR27","index":"3","rate":0.7823863644214455,"rate_kind":"공격당 0.17","parts":[["magic",800000.0,[],7.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
    ],
@@ -306,10 +310,10 @@
    "focus":"물리 중심",
    "target_ab_aps_bonus":{"min_ab":40,"bonus":1.0},
    "forms":[
-    {"rawcode":"H08X","attack":342502.0,"aps":3.3510638446276846,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+    {"rawcode":"H08X","attack":342502.0,"aps":3.3510638446276846,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"cooldown":0.94}
    ],
    "events":[
-    {"code":"TR29","index":"1","rate":0.023936170318769174,"rate_kind":"자원 140; 공격당 1+초당 0; 시작시 만충","parts":[["magic",6250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 9. 근거 \"스킬 명중시마다 해당 범위 아머브레이크 … 씽크홀 : 아머브레이크 9\"","ab":9},
+    {"code":"TR29","index":"1","rate":0.023936170318769174,"rate_kind":"자원 140; 공격당 1+초당 0; 시작시 만충","parts":[["magic",6250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 9. 근거 \"스킬 명중시마다 해당 범위 아머브레이크 … 씽크홀 : 아머브레이크 9\"","ab":9,"resource_cost":140},
     {"code":"TR29","index":"2","rate":0.1507978730082458,"rate_kind":"공격당 0.045","parts":[["physical",550000.0,[],5.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab 3. 근거 \"중력장 : 아머브레이크 3\"","ab":3},
     {"code":"TR29","index":"3","rate":0.5026595766941526,"rate_kind":"공격당 0.15","parts":[["physical",250000.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab 2. 근거 \"중력검 맹호 : 아머브레이크 2\"","ab":2},
     {"code":"TR29","index":"평타추가","rate":3.3510638446276846,"rate_kind":"공격당 1","parts":[["physical",0.0,[],0.8]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
@@ -323,17 +327,18 @@
    "name":"베가펑크",
    "grade":"초월함",
    "focus":"물리·마법 혼합",
+   "auras":[{"id":"A06K","kind":"attack_pct","value":0.4,"targets":"all","note":"2.323 버프 \"공격력 증가 40%\", 2.305 A06K 아군·자신"},{"id":"A05M","kind":"aps","value":0.4,"targets":"all","note":"2.323 버프 \"공격속도 증가 40%\", 2.305 A05M 인듀어런스 오라 아군·자신"}],
    "forms":[
-    {"rawcode":"H0AA","attack":120502.0,"aps":7.016129088854567,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},
-    {"rawcode":"H0AB","attack":92502.0,"aps":6.904762065825099,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}},
-    {"rawcode":"H0AE","attack":149752.0,"aps":2.7391304967534125,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}},
-    {"rawcode":"H0AM","attack":135502.0,"aps":5.800000091393788,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+    {"rawcode":"H0AA","attack":120502.0,"aps":7.016129088854567,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"cooldown":0.62},
+    {"rawcode":"H0AB","attack":92502.0,"aps":6.904762065825099,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"cooldown":0.63},
+    {"rawcode":"H0AE","attack":149752.0,"aps":2.7391304967534125,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"cooldown":1.15},
+    {"rawcode":"H0AM","attack":135502.0,"aps":5.800000091393788,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"cooldown":0.75}
    ],
    "events":[
-    {"code":"TR30","index":"1","rate":0.035080645444272834,"rate_kind":"자원 200; 공격당 1+초당 0; 시작시 만충","parts":[["physical",4250000.0,[],0.0],["fixed",4250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
-    {"code":"TR30","index":"5 릴리스","rate":0.07666666666666667,"rate_kind":"자원 90; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2200000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
-    {"code":"TR30","index":"11 아틀라스","rate":0.024909090909090912,"rate_kind":"자원 110; 공격당 1+초당 0; 시작시 만충","parts":[["fixed",2000000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
-    {"code":"TR30","index":"14 요크","rate":0.057999999999999996,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2250000.0,[],0.0],["magic",2250000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR30","index":"1","rate":0.035080645444272834,"rate_kind":"자원 200; 공격당 1+초당 0; 시작시 만충","parts":[["physical",4250000.0,[],0.0],["fixed",4250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":200},
+    {"code":"TR30","index":"5 릴리스","rate":0.07666666666666667,"rate_kind":"자원 90; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2200000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":90},
+    {"code":"TR30","index":"11 아틀라스","rate":0.024909090909090912,"rate_kind":"자원 110; 공격당 1+초당 0; 시작시 만충","parts":[["fixed",2000000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":110},
+    {"code":"TR30","index":"14 요크","rate":0.057999999999999996,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2250000.0,[],0.0],["magic",2250000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":100},
     {"code":"TR30","index":"7 릴리스","rate":0.759,"rate_kind":"1.31752초마다","parts":[["magic",220000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR30","index":"15 요크","rate":0.58,"rate_kind":"1.72414초마다","parts":[["physical",375000.0,[],0.0],["magic",375000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR30","index":"아틀라스 평타","rate":2.74,"rate_kind":"0.364964초마다","parts":[["explosive",90974.34000000001,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
@@ -347,13 +352,13 @@
    "name":"니카(루피)",
    "grade":"영원한",
    "focus":"물리 중심",
-   "attack_aura":0.25,
+   "auras":[{"id":"A0UD E1","kind":"attack_pct","value":0.25,"targets":"self","note":"2.323 \"자신의 공격력 25% 증가\", 2.305 A0UD 자신 전용 (이전 attack_aura)"},{"id":"A0UF","kind":"aps","value":0.25,"targets":"all","note":"2.323 버프 \"공격속도 증가 25%\", 2.305 A0UF 아군·자신. E1·E2가 같은 능력이라 함께 있어도 한 번만"}],
    "forms":[
-    {"rawcode":"H0BK","attack":170501.5,"aps":7.631579163387104,"attack_type":"hero","splash":1,"splash_radius":350,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"target_crit":[0.2,5],"crit_note":"수정내역 10: 근거 \"공격시 20% 확률로 타격 ▶ 단일 적 2초 스턴 및 5배 크리티컬\""}
+    {"rawcode":"H0BK","attack":170501.5,"aps":7.631579163387104,"attack_type":"hero","splash":1,"splash_radius":350,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"target_crit":[0.2,5],"crit_note":"수정내역 10: 근거 \"공격시 20% 확률로 타격 ▶ 단일 적 2초 스턴 및 5배 크리티컬\"","cooldown":0.57}
    ],
    "events":[
     {"code":"E1","index":"1","rate":7.631579163387104,"rate_kind":"공격당 1","parts":[["physical",200000.0,[],2.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"E1","index":"2","rate":0.05087719442258069,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",10625000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"E1","index":"2","rate":0.05087719442258069,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",10625000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":150},
     {"code":"E1","index":"3","rate":0.7631579163387104,"rate_kind":"공격당 0.1","parts":[["magic",187500.0,[],0.0],["physical",937500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E1","index":"5","rate":1.1447368745080655,"rate_kind":"공격당 0.15","parts":[["physical",450000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E1","index":"7","rate":1.5263158326774209,"rate_kind":"공격당 0.2","parts":[["physical",1250000.0,[],5.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""}
@@ -365,13 +370,13 @@
    "name":"니카(스네이크)",
    "grade":"영원한",
    "focus":"물리 중심",
-   "attack_aura":0.25,
+   "auras":[{"id":"A0UD E2","kind":"attack_pct","value":0.25,"targets":"self","note":"2.323 \"자신의 공격력 25% 증가\", 2.305 A0UD 자신 전용 (이전 attack_aura)"},{"id":"A0UF","kind":"aps","value":0.25,"targets":"all","note":"2.323 버프 \"공격속도 증가 25%\", 2.305 A0UF 아군·자신. E1·E2가 같은 능력이라 함께 있어도 한 번만"}],
    "forms":[
-    {"rawcode":"H0BK","attack":170501.5,"aps":7.631579163387104,"attack_type":"hero","splash":1,"splash_radius":350,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"target_crit":[0.2,5],"crit_note":"수정내역 10: 근거 \"공격시 20% 확률로 타격 ▶ 단일 적 2초 스턴 및 5배 크리티컬\""}
+    {"rawcode":"H0BK","attack":170501.5,"aps":7.631579163387104,"attack_type":"hero","splash":1,"splash_radius":350,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"target_crit":[0.2,5],"crit_note":"수정내역 10: 근거 \"공격시 20% 확률로 타격 ▶ 단일 적 2초 스턴 및 5배 크리티컬\"","cooldown":0.57}
    ],
    "events":[
     {"code":"E2","index":"1","rate":7.631579163387104,"rate_kind":"공격당 1","parts":[["physical",200000.0,[],2.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"E2","index":"2","rate":0.05087719442258069,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",10625000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"E2","index":"2","rate":0.05087719442258069,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",10625000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":150},
     {"code":"E2","index":"3","rate":0.7631579163387104,"rate_kind":"공격당 0.1","parts":[["magic",187500.0,[],0.0],["physical",937500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E2","index":"5","rate":1.1447368745080655,"rate_kind":"공격당 0.15","parts":[["physical",450000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E2","index":"7","rate":1.5263158326774209,"rate_kind":"공격당 0.2","parts":[["physical",1250000.0,[],5.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""}
@@ -383,8 +388,9 @@
    "name":"버기",
    "grade":"영원한",
    "focus":"물리 중심",
+   "auras":[{"id":"A0NL","kind":"attack_flat","value":10000,"targets":"all","note":"2.323 \"주변 유닛의 공격력을 1만(강화시 최대 1만 5,000) 증가\", 2.305 A0NL"},{"id":"A0NK","kind":"aps","value":0.6,"targets":"all","note":"2.323 \"주변 유닛의 공격속도를 60%(강화시 최대 65%) 증가\", 2.305 A0NK"},{"id":"E5 33%","kind":"attack_pct","value":0.33,"targets":"all","note":"2.323 \"공격시 4.5% 확률로 750범위 아군 유닛 4.5초간 공격력 33% 증가\"","uptime":{"proc":0.045,"duration":4.5}}],
    "forms":[
-    {"rawcode":"h05A","attack":132501.0,"aps":4.804878105956271,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}
+    {"rawcode":"h05A","attack":132501.0,"aps":4.804878105956271,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"cooldown":0.82}
    ],
    "events":[
     {"code":"E5","index":"파견 해군","rate":0.8684817176515962,"rate_kind":"공격당 0.18075","parts":[["physical",49207.5,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
@@ -398,15 +404,15 @@
    "grade":"영원한",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"h05B","attack":87501.0,"aps":5.845070775480798,"attack_type":"normal","splash":0.25,"splash_radius":325,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"target_crit":[0.2,10],"crit_note":"수정내역 10: 근거 \"공격시 20% 확률로 단일 적 타격 ▶ 단일 적 3초 스턴 및 10배 크리티컬 + 40만의 물리데미지\" (하쿠바 폼 제외)"},
-    {"rawcode":"h06H","attack":652501.0,"aps":37.72727406960874,"attack_type":"normal","splash":1,"splash_radius":500,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+    {"rawcode":"h05B","attack":87501.0,"aps":5.845070775480798,"attack_type":"normal","splash":0.25,"splash_radius":325,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"target_crit":[0.2,10],"crit_note":"수정내역 10: 근거 \"공격시 20% 확률로 단일 적 타격 ▶ 단일 적 3초 스턴 및 10배 크리티컬 + 40만의 물리데미지\" (하쿠바 폼 제외)","cooldown":0.71},
+    {"rawcode":"h06H","attack":652501.0,"aps":37.72727406960874,"attack_type":"normal","splash":1,"splash_radius":500,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"cooldown":0.11}
    ],
    "events":[
-    {"code":"E10","index":"1","rate":0.05845070775480798,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2350000.0,[["current",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"E10","index":"1","rate":0.05845070775480798,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2350000.0,[["current",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":100},
     {"code":"E10","index":"2","rate":0.6429577853028877,"rate_kind":"공격당 0.11","parts":[["physical",855000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E10","index":"5","rate":0.5845070775480797,"rate_kind":"공격당 0.1","parts":[["physical",450000.0,[],0.0],["magic",550000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E10","index":"하쿠바 하쿠바 단일 추가","rate":5.845070775480798,"rate_kind":"공격당 1 / 공격 대상 단일 추가","parts":[["fixed",350000.0,[],0.0]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적에게 35만 고정 데미지\" (하쿠바 인격)"},
-    {"code":"E10","index":"1 단일 추가","rate":0.05845070775480798,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["magic",1100000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 기면증 \"▶ 단일 적에게 110만의 마법데미지\""},
+    {"code":"E10","index":"1 단일 추가","rate":0.05845070775480798,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["magic",1100000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 기면증 \"▶ 단일 적에게 110만의 마법데미지\"","resource_cost":100},
     {"code":"E10","index":"2 미검 단일","rate":0.6429577853028877,"rate_kind":"공격당 0.11","parts":[["fixed",2565000.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 \"미검 스킬 발동시 해당 스킬 데미지의 300% 단일 고정 데미지 추가\". 85만 5,000×3 / 수정내역 5: ab_target 5. 근거 \"미검 :: … 단일 적 아머브레이크 5\"","ab_target":5},
     {"code":"E10","index":"타격 추가","rate":1.1690141550961595,"rate_kind":"공격당 0.2","parts":[["physical",400000.0,[],0.0]],"phase":"base","per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 크리티컬 구조","note":"수정내역 10: 근거 \"10배 크리티컬 + 40만의 물리데미지\""}
    ],
@@ -418,15 +424,15 @@
    "grade":"영원한",
    "focus":"물리·마법 혼합",
    "forms":[
-    {"rawcode":"h05C","attack":129501.0,"aps":5.810810913127037,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"target_crit":[0.15,8],"crit_note":"수정내역 10: 근거 \"공격시 15% 확률로 타격 ▶ 단일 적 3초 스턴 및 8배 크리티컬과 50만의 추가 물리데미지\""}
+    {"rawcode":"h05C","attack":129501.0,"aps":5.810810913127037,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"target_crit":[0.15,8],"crit_note":"수정내역 10: 근거 \"공격시 15% 확률로 타격 ▶ 단일 적 3초 스턴 및 8배 크리티컬과 50만의 추가 물리데미지\"","cooldown":0.74}
    ],
    "events":[
-    {"code":"E12","index":"1","rate":0.033204633789297354,"rate_kind":"자원 175; 공격당 1+초당 0; 시작시 만충","parts":[["physical",9000000.0,[],0.0],["magic",1250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"E12","index":"1","rate":0.033204633789297354,"rate_kind":"자원 175; 공격당 1+초당 0; 시작시 만충","parts":[["physical",9000000.0,[],0.0],["magic",1250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":175},
     {"code":"E12","index":"2","rate":0,"rate_kind":"신규 몹당 1 확률","parts":[["magic",200000.0,[["max",0.03]],0.0]],"on_spawn":1,"source":"2.323 툴팁 수기","note":"수정내역 12: 방어력 감소 5. 근거 \"해당 적 마법방어력 감소 5% + 방어력 감소 5 ▶ 이 스킬은 한 개체수마다 1회만 발동\". 지속시간이 적혀 있지 않아 영구로 봤다 [추정]","armor_debuff":{"value":5,"key":"E12 접근","once":true}},
     {"code":"E12","index":"4","rate":0.4358108184845278,"rate_kind":"공격당 0.075","parts":[["physical",850000.0,[],0.0],["magic",150000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E12","index":"5","rate":1.5253378646958473,"rate_kind":"공격당 0.2625","parts":[["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"E12","index":"6","rate":0.5810810913127037,"rate_kind":"공격당 0.1","parts":[["magic",250000.0,[],0.0],["physical",1062500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"E12","index":"1 단일 타격","rate":0.033204633789297354,"rate_kind":"자원 175; 공격당 1+초당 0; 시작시 만충","parts":[["magic",0.0,[["max",4.0]],0.0]],"boss_parts":[["magic",7500000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"target":"single","per_proc_cap_maxhp":1.0,"source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 9: 근거 파퓸페뮤르 \"타격 시마다 단일 적 전체체력 16%의 마법데미지(스토리 / 보스 30만 마법데미지) ▶ 25회 타격\". 16%×25 = 최대체력 400%라 시전 1회가 대상 1기를 처치하고 남는 피해는 버린다(per_proc_cap_maxhp 1). 보스는 30만×25"},
+    {"code":"E12","index":"1 단일 타격","rate":0.033204633789297354,"rate_kind":"자원 175; 공격당 1+초당 0; 시작시 만충","parts":[["magic",0.0,[["max",4.0]],0.0]],"boss_parts":[["magic",7500000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"target":"single","per_proc_cap_maxhp":1.0,"source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 9: 근거 파퓸페뮤르 \"타격 시마다 단일 적 전체체력 16%의 마법데미지(스토리 / 보스 30만 마법데미지) ▶ 25회 타격\". 16%×25 = 최대체력 400%라 시전 1회가 대상 1기를 처치하고 남는 피해는 버린다(per_proc_cap_maxhp 1). 보스는 30만×25","resource_cost":175},
     {"code":"E12","index":"타격 추가","rate":0.8716216369690556,"rate_kind":"공격당 0.15","parts":[["physical",500000.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 크리티컬 구조","note":"수정내역 10: 근거 \"8배 크리티컬과 50만의 추가 물리데미지\""}
    ],
    "url":"https://ordr.kr/character/E12"
@@ -437,10 +443,10 @@
    "grade":"불멸의",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"h04C","attack":133251.0,"aps":6.825396683105565,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"target_crit":[0.2,5],"crit_note":"수정내역 10: 근거 \"공격시 20% 확률로 타격 ▶ 단일 적 3초 스턴 및 5배 크리티컬 + 25만의 물리데미지\""}
+    {"rawcode":"h04C","attack":133251.0,"aps":6.825396683105565,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"target_crit":[0.2,5],"crit_note":"수정내역 10: 근거 \"공격시 20% 확률로 타격 ▶ 단일 적 3초 스턴 및 5배 크리티컬 + 25만의 물리데미지\"","cooldown":0.63}
    ],
    "events":[
-    {"code":"I1","index":"1","rate":0.04265872926940978,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["physical",12000000.0,[["max",0.12]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"I1","index":"1","rate":0.04265872926940978,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["physical",12000000.0,[["max",0.12]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":160},
     {"code":"I1","index":"2","rate":0.6825396683105565,"rate_kind":"공격당 0.1","parts":[["physical",615000.0,[],0.95]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I1","index":"4","rate":6.825396683105565,"rate_kind":"공격당 1","parts":[["physical",0.0,[],0.95]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I1","index":"3 단일 추가","rate":0.47777776781738956,"rate_kind":"공격당 0.07 / 공격 대상 단일 추가","parts":[["physical",0.0,[["current",0.05]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"단일 적 현재체력 5%의 물리데미지 (보스/스토리 현재체력 0.5%)\"","boss_parts":[["physical",0.0,[["current",0.005]],0.0]]},
@@ -453,11 +459,12 @@
    "name":"레일리",
    "grade":"불멸의",
    "focus":"물리 중심",
+   "auras":[{"id":"A0J8","kind":"aps","value":0.45,"targets":"all","note":"2.323 버프 \"공격속도 증가 45%\", 2.305 A0J8 아군·자신"}],
    "forms":[
-    {"rawcode":"h049","attack":152501.0,"aps":7.413793106106033,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}
+    {"rawcode":"h049","attack":152501.0,"aps":7.413793106106033,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"cooldown":0.58}
    ],
    "events":[
-    {"code":"I3","index":"1","rate":0.06446776614005247,"rate_kind":"자원 115; 공격당 1+초당 0; 시작시 만충","parts":[["physical",3437500.0,[],0.0],["magic",1250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 5. 근거 \"해당 범위 3초 스턴 (보스 1초) 및 아머브레이크 5\" / 수정내역 7: 발동 시 공격 대상이 라인몹이면 제거. 근거 \"순속 or 패기발산 발동시 대상이 라인몬스터라면 제거 후 노획물 드랍\", 2.305 wts:39002 동일","ab":5,"execute_line":true},
+    {"code":"I3","index":"1","rate":0.06446776614005247,"rate_kind":"자원 115; 공격당 1+초당 0; 시작시 만충","parts":[["physical",3437500.0,[],0.0],["magic",1250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 5. 근거 \"해당 범위 3초 스턴 (보스 1초) 및 아머브레이크 5\" / 수정내역 7: 발동 시 공격 대상이 라인몹이면 제거. 근거 \"순속 or 패기발산 발동시 대상이 라인몬스터라면 제거 후 노획물 드랍\", 2.305 wts:39002 동일","ab":5,"execute_line":true,"resource_cost":115},
     {"code":"I3","index":"2","rate":7.413793106106033,"rate_kind":"공격당 1","parts":[["physical",0.0,[],1.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I3","index":"4","rate":0.3706896553053017,"rate_kind":"공격당 0.05","parts":[["magic",300000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I3","index":"5","rate":0.5931034484884827,"rate_kind":"공격당 0.08","parts":[["magic",100000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
@@ -474,11 +481,12 @@
    "name":"로져",
    "grade":"불멸의",
    "focus":"물리 중심",
+   "auras":[{"id":"A0JN","kind":"attack_pct","value":0.6,"targets":"all","note":"2.323 버프 \"공격력 증가 60%\", 2.305 A0JN 커맨드 오라 850 아군·자신"}],
    "forms":[
-    {"rawcode":"h04J","attack":202223.5,"aps":8.775509783919786,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+    {"rawcode":"h04J","attack":202223.5,"aps":8.775509783919786,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"cooldown":0.49}
    ],
    "events":[
-    {"code":"I4","index":"1","rate":0.058503398559465236,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",1700000.0,[],0.0],["physical",9062500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"I4","index":"1","rate":0.058503398559465236,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",1700000.0,[],0.0],["physical",9062500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":150},
     {"code":"I4","index":"2","rate":0.7459183316331818,"rate_kind":"공격당 0.085","parts":[["physical",920000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I4","index":"4","rate":0.39489794027639036,"rate_kind":"공격당 0.045","parts":[["physical",1450000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I4","index":"5","rate":6.666666666666667,"rate_kind":"0.15초마다","parts":[["magic",30000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
@@ -494,7 +502,7 @@
    "grade":"불멸의",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"h081","attack":340001.0,"aps":3.5833330891198685,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"target_crit":[0.15,4],"crit_note":"수정내역 10: 근거 괴물의 후계자 \"단일 적 공격 시 15% 확률로 2초 스턴 및 4배 크리티컬\""}
+    {"rawcode":"h081","attack":340001.0,"aps":3.5833330891198685,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"target_crit":[0.15,4],"crit_note":"수정내역 10: 근거 괴물의 후계자 \"단일 적 공격 시 15% 확률로 2초 스턴 및 4배 크리티컬\"","cooldown":1.2}
    ],
    "events":[
     {"code":"I5","index":"4","rate":0.17916665445599345,"rate_kind":"공격당 0.05","parts":[["physical",250000.0,[["current",0.02]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"line_or_frenzy","note":""},
@@ -509,10 +517,10 @@
    "grade":"불멸의",
    "focus":"물리·마법 혼합",
    "forms":[
-    {"rawcode":"h04B","attack":135001.5,"aps":8.775509783919786,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+    {"rawcode":"h04B","attack":135001.5,"aps":8.775509783919786,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"cooldown":0.49}
    ],
    "events":[
-    {"code":"I9","index":"1","rate":0.07020407827135829,"rate_kind":"자원 125; 공격당 1+초당 0; 시작시 만충","parts":[["magic",4062500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"I9","index":"1","rate":0.07020407827135829,"rate_kind":"자원 125; 공격당 1+초당 0; 시작시 만충","parts":[["magic",4062500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":125},
     {"code":"I9","index":"부유물","rate":1.022785665315851,"rate_kind":"공격당 0.11655","parts":[["physical",159093.75,[],0.0],["magic",52500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I9","index":"5","rate":0.8775509783919786,"rate_kind":"공격당 0.1","parts":[["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 5: ab 1. 근거 \"공격시 10% 확률로 600범위 40만의 마법데미지 ▶ 해당 범위 3초 스턴, 아머브레이크 1\"","ab":1},
     {"code":"I9","index":"6","rate":0.6581632337939839,"rate_kind":"공격당 0.075","parts":[["physical",750000.0,[],0.0],["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
@@ -525,14 +533,14 @@
    "name":"카이도",
    "grade":"불멸의",
    "focus":"물리 중심",
-   "attack_aura":-0.75,
+   "auras":[{"id":"A0Q1","kind":"attack_pct","value":-0.75,"targets":"all","note":"2.323 \"◎ 공격력 감소 75%\", 2.305 A0Q1 커맨드 오라 −0.75, 2000범위, 대상 player(자신의 모든 유닛) → 조합 전체 (이전 attack_aura는 카이도 자신만)"}],
    "armor_stack_debuff":{"single_stacks":[2,1],"area_stacks":[1,2],"note":"수정내역 12: 약육강식 \"단일 적 : 방어력 감소 70 이후 1스택 마다 5 감소\", \"범위 : 방어력 감소 3 추가 (최대 10스택)\", \"인간폼 : 단일 +2 / 범위 +1, 드래곤폼 : 단일 +1 / 범위 +2\", \"단일 적 최대 방어력 감소 145 / 범위 적 최대 방어력 감소 30\". 지속시간이 적혀 있지 않아 몹마다 유지로 봤다 [추정]. 단일 최대치는 명시된 총합 145를 썼다(70+5×10=120과 다름, 해석 불확실). 스킬 발동 시 스택(열식 +3)은 미반영"},
    "forms":[
-    {"rawcode":"h07M","attack":527501.0,"aps":1.737588695729441,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}},
-    {"rawcode":"h0AD","attack":452501.0,"aps":1.9600000023841857,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+    {"rawcode":"h07M","attack":527501.0,"aps":1.737588695729441,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"cooldown":1.41},
+    {"rawcode":"h0AD","attack":452501.0,"aps":1.9600000023841857,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"cooldown":1.25}
    ],
    "events":[
-    {"code":"I11","index":"1","rate":0.020675886957294408,"rate_kind":"자원 100; 공격당 1+초당 0.33; 시작시 만충","parts":[["magic",2850000.0,[],0.0],["physical",12499999.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"I11","index":"1","rate":0.020675886957294408,"rate_kind":"자원 100; 공격당 1+초당 0.33; 시작시 만충","parts":[["magic",2850000.0,[],0.0],["physical",12499999.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":100},
     {"code":"I11","index":"2","rate":0.13900709565835528,"rate_kind":"공격당 0.08","parts":[["physical",500000.0,[],0.5]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 10: 스킬 크리 \"▶ 40% 확률로 1.5배 크리티컬 데미지\"","crit":[0.4,1.5]},
     {"code":"I11","index":"3","rate":0.17375886957294412,"rate_kind":"공격당 0.1","parts":[["physical",2000000.0,[],4.0]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I11","index":"4","rate":1.737588695729441,"rate_kind":"공격당 1","parts":[["magic",150000.0,[],0.25]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
@@ -555,10 +563,10 @@
    "grade":"불멸의",
    "focus":"물리 중심",
    "forms":[
-    {"rawcode":"h04A","attack":122501.0,"aps":5.89041063761618,"attack_type":"hero","splash":1,"splash_radius":400,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+    {"rawcode":"h04A","attack":122501.0,"aps":5.89041063761618,"attack_type":"hero","splash":1,"splash_radius":400,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"cooldown":0.73}
    ],
    "events":[
-    {"code":"I12","index":"1","rate":0.05556878815318417,"rate_kind":"자원 115; 공격당 1+초당 0.5; 시작시 만충","parts":[["magic",500000.0,[],0.0],["physical",6875000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"I12","index":"1","rate":0.05556878815318417,"rate_kind":"자원 115; 공격당 1+초당 0.5; 시작시 만충","parts":[["magic",500000.0,[],0.0],["physical",6875000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"","resource_cost":115},
     {"code":"I12","index":"2","rate":0.294520531880809,"rate_kind":"공격당 0.05","parts":[["physical",2220000.0,[["max",0.035]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I12","index":"4","rate":0.7363013297020224,"rate_kind":"공격당 0.125","parts":[["magic",900000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I12","index":"2 단일 추가","rate":0.294520531880809,"rate_kind":"공격당 0.05 / 공격 대상 단일 추가","parts":[["fixed",1665000.0,[["max",0.02625]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적에게 스킬데미지의 75% 추가 고정 데미지\""}

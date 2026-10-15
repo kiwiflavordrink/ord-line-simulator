@@ -98,6 +98,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `summons` | bool | true | 소환 범위 피해 포함 |
 | `frankyAura` | bool | true | 프랑키가 써니호 700범위 안에 있어 써니호 마나 +5/초 |
 | `sunnyStagger` | bool | false | 써니호 여러 기의 스킬 시점을 균등 분산 |
+| `buffTargets` | `{소스 코드: [받는 코드…]}` | 조합 전체 | 아군 오라·버프를 받을 유닛 제한. 지정하지 않은 소스는 조합 전체가 받는다 |
 | `tr19Plants` | `{pea, snow, muk}` 정수, 합 3 이하 | 2 / 1 / 0 | TR19 특강 식물 배분: 완두콩·백설콩·먹깨비 |
 | `customMagic.aps` / `.chance` | 0~100 / 0~1 | 5 / 0.15 | `MAGIC_CUSTOM`의 초당 공격·발동 확률 |
 | `customMagic.flat` | 0~1e10 | 0 | 1회·몹당 마법 피해 (웹 기본은 1,000,000) |

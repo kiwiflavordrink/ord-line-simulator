@@ -140,7 +140,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -152,6 +152,16 @@ function validateLine(raw,data,is){
       frankyAura:bool(o,'frankyAura','line.options',is),
       sunnyStagger:bool(o,'sunnyStagger','line.options',is)
     }));
+    if(o.buffTargets!==undefined){
+      const b=o.buffTargets,p='line.options.buffTargets';
+      if(!isObj(b))is.error(p,'NOT_AN_OBJECT','{"버프 유닛 코드": ["받는 유닛 코드", ...]} 형식이어야 합니다.');
+      else{
+        for(const [src,list] of Object.entries(b)){
+          if(!Array.isArray(list)||list.some(x=>typeof x!=='string'))is.error(`${p}.${src}`,'NOT_AN_ARRAY','받는 유닛 코드 배열이어야 합니다.');
+        }
+        options.buffTargets=b;
+      }
+    }
     if(o.tr19Plants!==undefined){
       const t=o.tr19Plants,p='line.options.tr19Plants';
       if(!isObj(t))is.error(p,'NOT_AN_OBJECT','객체여야 합니다.');
@@ -293,6 +303,7 @@ function lineReport(r,data,includeTimeline){
     deletions:r.deleteCounts,
     executions:r.executeCounts,
     control:r.control,
+    buffs:r.buffs,
     applied:{cut:r.cut,coverage:r.coverage,magicFactor:r.magicFactor,resourceMode:r.resourceMode},
     ...(includeTimeline?{timeline:r.timeline}:{})
   };

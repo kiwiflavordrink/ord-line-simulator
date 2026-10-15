@@ -38,6 +38,7 @@ function assertLine(out,direct){
   assert.deepEqual(out.damage.bySource,direct.sourceDamage);
   assert.deepEqual(out.deletions,direct.deleteCounts);
   assert.deepEqual(out.executions,direct.executeCounts);
+  assert.deepEqual(out.buffs,direct.buffs);
   assert.deepEqual(out.finisher,{attempts:direct.finisherAttempts,kills:direct.finisherKills});
   assert.deepEqual(out.control,direct.control);
   assert.deepEqual(out.totals,{lineSpawned:direct.totalLineSpawned,lineKilled:direct.totalLineKilled,unitCount:direct.unitCount});
@@ -155,6 +156,7 @@ bad({line:{team:[{code:'TR19'}],options:{stun:true}}},'UNKNOWN_KEY','line.option
 bad({line:{team:[{code:'TR19'}],options:{finisher:{mode:'auto'}}}},'INVALID_VALUE');
 bad({line:{team:[{code:'TR19'}],options:{resourceMode:'always'}}},'INVALID_VALUE','line.options.resourceMode');
 bad({line:{team:[{code:'TR19'}],options:{tr19Plants:{pea:2,snow:1,muk:1}}}},'TOO_MANY_PLANTS','line.options.tr19Plants');
+bad({line:{team:[{code:'TR19'}],options:{buffTargets:{I4:'TR19'}}}},'NOT_AN_ARRAY');
 bad({line:{team:[{code:'TR19'}]},context:{selected:['NOPE']}},'UNKNOWN_EFFECT');
 bad({single:{team:[{code:'TR19'}]}},'UNSUPPORTED_UNIT','single.team[0].code');
 bad({single:{team:[{code:'L9',count:7},{code:'L36',count:6}]}},'TOO_MANY_UNITS');
