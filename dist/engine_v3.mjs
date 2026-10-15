@@ -67,9 +67,6 @@ export function randomPicks(candidates,picks,rng,hit){
   }
 }
 const scaleParts=(parts,k)=>parts.map(([kind,flat,perc,mul=0])=>[kind,flat*k,perc.map(([b,r])=>[b,r*k]),mul*k]);
-// Stack scenarios (수정내역 28): hero.stack.variants {zero, half, max} override events by index ({removed:true}
-// drops one), and may replace auras, forms or team_effects. options.stackLevel picks the level for every hero
-// ('max' default = the stored data), options.stackLevels {code: level} per hero.
 // 특강 on/off (수정내역 28): hero.trait {current:'on'|'off', other:{events, add_events, forms, auras, ...}} — data
 // holds `current`; asking for the other state applies `other` (event overrides by index, {removed:true} drops one,
 // add_events appends, any other key replaces the hero field). options.trait 'on'|'off' for every hero,
@@ -87,17 +84,22 @@ export function traitVariant(hero,want){
   for(const [k,v] of Object.entries(o))if(!['events','add_events','note'].includes(k))out[k]=v;
   return out;
 }
+// Stack scenarios (수정내역 28): hero.stack.variants {zero, half, max} override events by index ({removed:true}
+// drops one) and replace any other hero field they carry (auras, forms, team_effects, attack_uptime …).
+// options.stackLevel picks the level for every hero, options.stackLevels {code: level} per hero; unset keeps the
+// stored data (which may sit between levels, e.g. one application of a per-enemy debuff).
 export function stackVariant(hero,level){
   const v=hero.stack?.variants?.[level];
-  if(!v||level==='max')return hero;
+  if(!v)return hero;
   const events=[];
   for(const e of hero.events){
     const o=v.events?.[e.index];
     if(o?.removed)continue;
     events.push(o?{...e,...o}:e);
   }
-  return {...hero,events,...(v.auras?{auras:v.auras}:{}),...(v.forms?{forms:v.forms}:{}),
-    ...(v.team_effects!==undefined?{team_effects:v.team_effects}:{})};
+  const out={...hero,events};
+  for(const [k,x] of Object.entries(v))if(!['events','note','options'].includes(k))out[k]=x;
+  return out;
 }
 export function alabastaEvents(hero,level,moveShot=true){
   const a=hero.alabasta;if(!a)return hero.events;
@@ -166,7 +168,7 @@ function supportCastSchedule(code,full){
 
 export function simulateV2(data,composition,options={}){
   const stackLevelOf=code=>['zero','half','max'].includes(options.stackLevels?.[code])?options.stackLevels[code]:
-    ['zero','half','max'].includes(options.stackLevel)?options.stackLevel:'max';
+    ['zero','half','max'].includes(options.stackLevel)?options.stackLevel:null;
   const traitOf=code=>['on','off'].includes(options.traits?.[code])?options.traits[code]:['on','off'].includes(options.trait)?options.trait:null;
   const heroMap=new Map(data.heroes.map(h=>[h.code,stackVariant(traitVariant(h,traitOf(h.code)),stackLevelOf(h.code))]));
   // Difficulty (data.difficulties: 2.305 structure, 2.323 common HP/regen) and 오로성 (data.gorosei, 2.323 values).
