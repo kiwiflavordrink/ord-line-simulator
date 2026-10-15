@@ -120,4 +120,10 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const i11off=simulateV2(without('I11',h=>{delete h.armor_stack_debuff;}),[{code:'I11'}],{});
   assert.ok(i11.clear&&!i11off.clear);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs: passed');
+// [수정 13] Z10 처형자: 암브 조건을 0으로 낮추면 처형 상태가 자주 열려 피해가 늘어난다.
+{
+  const easy=structuredClone(data);easy.heroes.find(x=>x.code==='Z10').executioner.min_ab=0;
+  const base=simulateV2(data,[{code:'Z10'}],{}),boosted=simulateV2(easy,[{code:'Z10'}],{});
+  assert.ok(boosted.lineDamage.single>base.lineDamage.single);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner: passed');

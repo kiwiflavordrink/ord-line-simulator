@@ -300,6 +300,23 @@ export function simulateV2(data,composition,options={}){
           target.huntSingle=(target.huntSingle??0)+attacks*hunt.single_stacks[i];
           for(const m of [...mobs,...specials])m.huntArea=(m.huntArea??0)+attacks*hunt.area_stacks[i]*(m===target?1:coverage);
         }
+        // Executioner state (Z10 처형자, 2.305 war3map.j 45618-45720): +1 mana per attack; when the attack
+        // target has AB >= min_ab, not already active and mana >= need, spend cost for duration seconds of
+        // +aps_bonus attack speed, during which boost_event procs on every attack plus a single fixed hit.
+        const exe=hero.executioner;let executing=false;
+        if(exe){
+          const st=u.executioner??={mana:fullResource?exe.mana_max:0,until:-1};
+          const qualifies=target&&target.ab>=exe.min_ab;
+          if(qualifies&&st.until<=now&&st.mana>=exe.mana_need){st.mana-=exe.mana_cost;st.until=now+exe.duration;}
+          executing=qualifies&&st.until>now;
+          if(st.until>now)aps*=1+exe.aps_bonus;
+          st.mana=Math.min(exe.mana_max,st.mana+aps*.1);
+          if(executing){
+            const n=aps*.1;
+            deal(target,(target.kind==='boss'?exe.boss_fixed:exe.single_fixed)*n,u.code,'single','fixed');
+            for(const m of [...mobs,...specials])if(m!==target&&m.hp>0)abAdd(m,exe.area_ab*n*coverage);
+          }
+        }
         const haste=hero.target_ab_aps_bonus;
         if(haste&&target&&target.ab>=haste.min_ab)aps*=1+haste.bonus;
         const attack=heroAttack(hero,form);
@@ -313,6 +330,7 @@ export function simulateV2(data,composition,options={}){
           if(!summons&&isSummon(e))continue;
           if(e.phase==='trans'&&!transformed||e.phase==='base'&&transformed||e.phase==='giant'&&!giant||e.phase==='nongiant'&&giant)continue;
           let rate=e.rate*(e.per_attack?aps/baseAps:1);
+          if(executing&&e.index===exe.boost_event)rate=aps;
           if(e.initial&&(resourceMode==='perRound'&&step===0||resourceMode==='start'&&globalStep===0))rate+=10;
           if(!rate)continue;
           if(e.min_target_ab&&!(target&&target.ab>=e.min_target_ab))continue;
