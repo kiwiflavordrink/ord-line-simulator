@@ -58,6 +58,14 @@ const SINGLE_TARGETS=new Set(['single','single_line','target_special','boss','fr
 // raises it from that level on); level_mul scales the line parts by (1 + k x level); min_level drops the
 // event below that level. Without 이동사격 (option off or level < 5) the 3연사/웨스턴 rates use
 // rate_without_move_shot and 이동사격 itself is dropped (docs/수정내역.md 21).
+// Random-target hits: `picks` draws, each among the candidates still alive, applying `hit` in full.
+export function randomPicks(candidates,picks,rng,hit){
+  for(let k=0;k<picks;k++){
+    const alive=candidates.filter(m=>m.hp>0);
+    if(!alive.length)return;
+    hit(alive[Math.min(alive.length-1,Math.floor(rng()*alive.length))]);
+  }
+}
 const scaleParts=(parts,k)=>parts.map(([kind,flat,perc,mul=0])=>[kind,flat*k,perc.map(([b,r])=>[b,r*k]),mul*k]);
 export function alabastaEvents(hero,level,moveShot=true){
   const a=hero.alabasta;if(!a)return hero.events;
@@ -132,7 +140,8 @@ export function simulateV2(data,composition,options={}){
     speed:{aura:0,line_flat:0},frenzy_aura:{armor:5,regen:1000000},stun_resist:true,common:{hp:0,regen:0},gorosei:true};
   const goroWanted=options.gorosei??(options.warcury===true?'워큐리':null);
   const goroName=diff.gorosei&&(data.gorosei?data.gorosei[goroWanted]:goroWanted==='워큐리')?goroWanted:null;
-  const armorModel=options.armorModel==='map'&&data.difficulties?'map':'data';
+  // Armor (수정내역 22): default 'map' = 2.305 formula in diff.rounds/boss; 'data' = the pre-22 values.
+  const armorModel=options.armorModel==='data'&&data.difficulties?'data':'map';
   const curse=goroName?(data.gorosei?.[goroName]?.[diffName]??{armor:10,magic_levels:10}):{};
   // 나스쥬로 attack-speed penalty on any allied unit: WC3 aps = min(5, aps x cooldown + bonus) / cooldown.
   const allyAps=(aps,cooldown)=>curse.ally_aps&&cooldown?Math.max(0,Math.min(5,aps*cooldown+curse.ally_aps))/cooldown:aps;
@@ -265,6 +274,9 @@ export function simulateV2(data,composition,options={}){
   // Stuns and slows proc randomly (seeded) so stun chains can leak; damage stays an expected value.
   let ccState=(clamp(Math.floor((options.deletion??{}).seed??202323),0,2147483647)^0x5bd1e995)>>>0||1;
   const ccRandom=()=>{ccState^=ccState<<13;ccState^=ccState>>>17;ccState^=ccState<<5;ccState>>>=0;return ccState/4294967296;};
+  // Separate seeded stream for random-target draws so they do not shift the stun/slow sequence.
+  let pickState=(clamp(Math.floor((options.deletion??{}).seed??202323),0,2147483647)^0x27d4eb2f)>>>0||1;
+  const pickRandom=()=>{pickState^=pickState<<13;pickState^=pickState>>>17;pickState^=pickState<<5;pickState>>>=0;return pickState/4294967296;};
   const ccProcs=rate=>{let n=0;const p=1-Math.exp(-rate*.1);while(n<20&&ccRandom()<p)n++;return n;};
   const slowOf=m=>{
     let sum=0;
@@ -303,6 +315,9 @@ export function simulateV2(data,composition,options={}){
   const control={sunnyCasts:0,sunnyProcExpected:0,frankyAuraSeconds:0,
     activeLineMobSeconds:0,stunnedLineMobSeconds:0,stunFieldSeconds:0};
   let totalLineSpawned=0,totalLineKilled=0,finisherAttempts=0,finisherKills=0,successBank=0;
+  // 양분 counters (option tr6Nutrients = stacks at the start of round 60), one per hero code (= per player).
+  const nutrients={};
+  const nutrientState=hero=>nutrients[hero.code]??={S:clamp(Math.floor(options[hero.nutrients.option]??hero.nutrients.default),0,hero.nutrients.cap)};
   const casts=new Map(units.map((u,i)=>[i,u.kind==='support'?supportCastSchedule(u.code,fullResource):[]]));
   // Timed armor reductions per mob: one entry per debuff key (same skill refreshes, different skills add).
   let now=0;
@@ -378,17 +393,30 @@ export function simulateV2(data,composition,options={}){
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
     finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,
     buffs:units.map(u=>u.buffs?{code:u.code,...u.buffs}:null).filter(Boolean),unitCount:units.length,
-    magicFactor,cut,coverage,resourceMode,positionModel:posModel,difficulty:diffName,gorosei:goroName??'없음',armorModel});
+    magicFactor,cut,coverage,resourceMode,positionModel:posModel,difficulty:diffName,gorosei:goroName??'없음',armorModel,defeatThreshold:diff.defeat,
+    // Unresolved model assumptions of the heroes in the team (data hero.assumptions), shown by the web and CLI.
+    mobTable,
+    assumptions:[...new Set(units.flatMap(u=>u.kind==='hero'?u.model.assumptions??[]:[]))],
+    nutrients:Object.fromEntries(Object.entries(nutrients).map(([k,v])=>[k,+v.S.toFixed(2)]))});
 
+  // Mob values actually used per round (difficulty, 2.323 common HP, 오로성, armor model) for reports.
+  const mobTable={};
+  for(const r of [60,61,62,63,64,65]){
+    const k=String(r),legacy=armorModel==='data'?diff.armor_legacy:null,[hp,armor]=diff.rounds[k];
+    const lineArmor=(legacy?.line[k]??armor)+(curse.armor??0);
+    const row={hp:hp+diff.common.hp+(curse.line_hp??0),armor:lineArmor};
+    if(diff.boss[k])row.special={type:'boss',hp:diff.boss[k][0]+diff.common.hp+(curse.boss_hp??0),armor:(legacy?.boss[k]??diff.boss[k][1])+(curse.armor??0)};
+    else if(diff.frenzy[k])row.special={type:'frenzy',hp:diff.frenzy[k]+diff.common.hp+(curse.line_hp??0),armor:lineArmor+(diff.frenzy_aura?.armor??0)};
+    mobTable[k]=row;
+  }
   for(const round of rounds){
-    // armorModel 'map': 2.305 formula udef + udup x level (diff.armor_map); default keeps the 신 values.
-    const mapArmor=armorModel==='map'?diff.armor_map:null;
-    const [lineHp,dataArmor]=diff.rounds[String(round)],armor0=mapArmor?.line[String(round)]??dataArmor;
+    const legacyArmor=armorModel==='data'?diff.armor_legacy:null;
+    const [lineHp,mapArmor]=diff.rounds[String(round)],armor0=legacyArmor?.line[String(round)]??mapArmor;
     const hp0=lineHp+diff.common.hp+(curse.line_hp??0);
     let spawned=0,specialKill=null;
     if(diff.boss[String(round)]){
       const [bossHp,dataBossArmor]=diff.boss[String(round)],hp=bossHp+diff.common.hp+(curse.boss_hp??0);
-      const baseArmor=mapArmor?.boss[String(round)]??dataBossArmor;
+      const baseArmor=legacyArmor?.boss[String(round)]??dataBossArmor;
       const boss={hp,maxhp:hp,armor:baseArmor,ab:0,kind:'boss',round};
       if(posModel){boss.s=0;boss.speed=lp.boss_speed;place(boss);}
       specials.push(boss);
@@ -417,14 +445,38 @@ export function simulateV2(data,composition,options={}){
       const active=specials.find(s=>s.round===round);
       const bossAura=specials.some(s=>s.kind==='boss'),frenzyAura=specials.some(s=>s.kind==='frenzy');
       const extraArmor=(bossAura?10:0)+(frenzyAura?diff.frenzy_aura?.armor??0:0);
-      if(newMob)for(const u of units){
+      // Enemies arriving this step: the new line mob, the round's boss (step 0) and frenzy mob (7.5 s).
+      const arrivals=[newMob,...specials.filter(s=>s.round===round&&!s.arrived)].filter(Boolean);
+      for(const s of arrivals)s.arrived=true;
+      for(const m of arrivals)for(const u of units){
         if(u.kind!=='hero'||!u.damage)continue;
         const hero=u.model,form=formAt(hero,globalT,t,resourceMode).form;
         const attack=heroAttack(u,form);
-        for(const e of u.events)if(e.on_spawn&& (summons||!isSummon(e))){
-          deal(newMob,e.on_spawn*eventDamage(e,newMob,attack,extraArmor),hero.code,'area','mixed');
-          if(e.ab&&newMob.hp>0)abAdd(newMob,e.ab*e.on_spawn);
-          if(e.armor_debuff&&newMob.hp>0)applyDebuff(newMob,e.armor_debuff,e.on_spawn);
+        for(const e of u.events){
+          if(!summons&&isSummon(e))continue;
+          if(e.on_spawn&&m===newMob){
+            deal(newMob,e.on_spawn*eventDamage(e,newMob,attack,extraArmor),hero.code,'area','mixed');
+            if(e.ab&&newMob.hp>0)abAdd(newMob,e.ab*e.on_spawn);
+            if(e.armor_debuff&&newMob.hp>0)applyDebuff(newMob,e.armor_debuff,e.on_spawn);
+          }
+          // on_approach (Z8 접근 스킬, 2.305 j:79460-79512): each enemy rolls once in its life when it first
+          // comes near (the map marks it with turn speed 0.49, shared by every copy of the hero): chance
+          // line / special (boss·frenzy 100%). parts hit every enemy within radius of the approaching one,
+          // single_parts hit the approaching enemy only.
+          const ap=e.on_approach;
+          if(!ap)continue;
+          const key=`${hero.code}:${e.index}`;
+          if((m.approached??=new Set()).has(key))continue;
+          m.approached.add(key);
+          const p=m.kind==='line'?ap.line:ap.special;
+          if(!p)continue;
+          const area=[...mobs,...specials].filter(x=>x.hp>0&&(!posModel||dist(x,m)<=(e.radius??lp.default_radius)));
+          for(const x of area){
+            const share=p*(x===m||posModel?1:cov);
+            deal(x,share*eventDamage(e,x,attack,extraArmor),hero.code,'area','mixed');
+            if(e.ab&&x.hp>0)abAdd(x,e.ab*share);
+          }
+          if(e.single_parts&&m.hp>0)deal(m,p*eventDamage({...e,parts:e.single_parts},m,attack,extraArmor),hero.code,'single','mixed');
         }
       }
       // Regen per second: unit base (w3u uhpr, 61라 45,000), boss aura 500,000, frenzy aura (신 1,000,000,
@@ -486,7 +538,17 @@ export function simulateV2(data,composition,options={}){
         if(posModel)target=pickTarget(hero.own_range?form.range:engageRange);
         let aps=form.aps;if(hero.code==='E10'&&transformed)aps=1/.11;
         // Attack-speed auras add to the form's bonus (aps x base cooldown - 1), capped at +400% in WC3.
-        if(u.buffs.aps&&form.cooldown)aps=Math.min(5,aps*form.cooldown+u.buffs.aps)/form.cooldown;
+        // 양분 (TR6, hero.nutrients, 수정내역 22): one counter per player shared by every copy. A transform
+        // snapshots it (S_cast) and then adds +1; the transformed form gets +attack and +attack speed per
+        // 10 stacks of S_cast for the whole window; every attack adds the expected per-attack gain.
+        const nut=hero.nutrients,nst=nut?nutrientState(hero):null;
+        if(nut){
+          if(transformed&&!u.wasTransformed){u.castS=nst.S;nst.S=Math.min(nut.cap,nst.S+nut.per_transform);}
+          u.wasTransformed=transformed;
+        }
+        const tens=nut&&transformed?Math.floor((u.castS??nst.S)/10):0;
+        const apsBonus=u.buffs.aps+tens*(nut?.aps_per_10??0);
+        if(apsBonus&&form.cooldown)aps=Math.min(5,aps*form.cooldown+apsBonus)/form.cooldown;
         const giant=['E1','E2'].includes(hero.code)&&inWindow(4.25,4.25+115/(baseAps+.25),globalT,t,resourceMode,true);
         if(giant)aps/=3.25;
         // A self attack-speed buff that holds while the attack target has enough armor break (TR29 운석낙하).
@@ -516,7 +578,8 @@ export function simulateV2(data,composition,options={}){
         }
         const haste=hero.target_ab_aps_bonus;
         if(haste&&target&&target.ab>=haste.min_ab)aps*=1+haste.bonus;
-        const attack=heroAttack(u,form);
+        const attack=heroAttack(u,form)+tens*(nut?.attack_per_10??0);
+        if(nut&&target)nst.S=Math.min(nut.cap,nst.S+aps*.1*nut.per_attack);
         if(target){
           const crit=critEV(form.crit);
           // attack_uptime: share of time the hero attacks (E6 난사 channels 1.27 s per cast).
@@ -552,17 +615,30 @@ export function simulateV2(data,composition,options={}){
             case 'line':targets=mobs;break;
             case 'special':targets=specials;break;
             case 'line_or_frenzy':targets=[...mobs,...specials.filter(s=>s.kind==='frenzy')];break;
-            // 'random': picks independent draws (with replacement) among living enemies, in the position model
-            // only those within pick_range of the hero; expected share per enemy = picks / count, no coverage.
+            // 'random': candidates are the living enemies (position model: within pick_range of the hero); the
+            // hits are sampled below (randomPicks), not spread, so a hit that kills one mob kills it.
             case 'random':targets=[...mobs,...specials].filter(m=>m.hp>0&&(!posModel||dist(m,spawnPt)<=(e.pick_range??engageRange)));break;
             default:targets=[...mobs,...specials];
           }
           const random=e.target==='random';
-          if(posModel&&!single&&!random)targets=targets.filter(m=>m===target||dist(m,center)<=(e.radius??lp.default_radius));
+          if(random){
+            // Whole procs from an expected-count bank (exact average timing); each proc makes `picks` draws,
+            // each a uniformly chosen living candidate (seeded), and deals the full per-hit damage (수정내역 22).
+            const bank=u.randomBank??={};
+            bank[e.index]=(bank[e.index]??0)+rate*.1;
+            for(;bank[e.index]>=1;bank[e.index]--)randomPicks(targets,e.picks??1,pickRandom,m=>{
+              const ev=e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e;
+              deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit),u.code,'area','mixed');
+            });
+            continue;
+          }
+          if(posModel&&!single)targets=targets.filter(m=>m===target||dist(m,center)<=(e.radius??lp.default_radius));
           for(const m of targets)if(m.hp>0){
             // boss_parts replace parts against a boss; nonline_parts against a boss or frenzy (E6 "보스").
-            const ev=e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
-            const share=random?rate*.1*(e.picks??1)/targets.length:rate*.1*(m===target||single?1:cov);
+            let ev=e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
+            const ns=nut?.skill?.[e.index];
+            if(ns)ev={...ev,parts:[...ev.parts,[ns.kind,ns.flat*(ns.basis==='cast'?(u.castS??nst.S):nst.S),[],0]]};
+            const share=rate*.1*(m===target||single?1:cov);
             deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
             // Armor break as an expected stack per step, like the supports (cap 75 in abAdd).
             if(m.hp>0&&e.ab)abAdd(m,e.ab*share);
@@ -637,7 +713,7 @@ export function simulateV2(data,composition,options={}){
         }else if(u.code==='TR28'){
           while(u.attackBank>=1-1e-9){u.attackBank-=1;if(single)u.energy=Math.min(150,u.energy+1);}
           if(!u.damage)continue;
-          if(single)deal(single,spec.attack*(1+allyAttack)*attacks*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
+          if(single)deal(single,spec.attack*(1+(red?.35:0)+allyAttack)*attacks*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
           const missiles=frankyLinked&&sunnyUnits.length?2+sunnyUnits.length:0;
           for(const m of aoeTargets)if(m.hp>0){
             deal(m,(spec.aps*.05*460_000+spec.aps*.08*250_000*missiles)*.1*magicFactor*hit(m),u.code,'area','magic');
@@ -652,7 +728,7 @@ export function simulateV2(data,composition,options={}){
             u.attackBank-=1;
             if(!single)continue;
             u.energy=Math.min(100,u.energy+1);
-            if(u.damage)deal(single,spec.attack*(1+allyAttack)*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
+            if(u.damage)deal(single,spec.attack*(1+(red?.35:0)+allyAttack)*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
             const cast=frankyLinked&&globalT+1e-8>=u.openingDelay&&u.energy>=100;
             const proc=!frankyLinked&&random(u)<.1;
             if(!u.damage||!cast&&!proc)continue;

@@ -20,6 +20,9 @@ BOSS = {'60': (12750000, -50), '65': (13595000, -55)}
 # w3u udef (base armor), for the optional 2.305 armor formula udef + udup x level (option armorModel 'map').
 LINE_DEF = {'60': 70, '61': 76, '62': 81, '63': 84, '64': 80, '65': 81}
 BOSS_DEF = {'60': 372, '65': 395}  # + A0RR own armor aura +10
+# Armor values the simulator used before 수정내역 22 (신, source unknown); kept as option armorModel 'data'.
+LEGACY_GOD_LINE = {'60': 170, '61': 176, '62': 181, '63': 184, '64': 180, '65': 181}
+LEGACY_GOD_BOSS = {'60': 327, '65': 350}
 # 2.305 upgrades per difficulty (Player 6): line HP = uhpm x (1 + R00W + R00A), boss = uhpm x (1 + boss upgrade),
 # armor levels R00J (line) / R00O (boss), R024 flat speed +29 per level, difficulty aura A0Z1/A0Z2/A0Z3 (AUau).
 DIFF = {
@@ -38,30 +41,31 @@ out = {}
 for name, d in DIFF.items():
     rounds, boss, frenzy = {}, {}, {}
     for r, (hp, udup) in LINE.items():
-        base_hp, base_armor, kind = data['rounds'][r]
+        base_hp, _, kind = data['rounds'][r]
         line_hp = int(hp * d['line'] + 1e-6)
-        # Armor: the existing 신 value plus udup x (R00J level difference) (2.305 w3u udup).
-        rounds[r] = [line_hp, base_armor + udup * (d['r00j'] - god['r00j']), kind]
+        # Armor (수정내역 22): 2.305 formula udef + udup x R00J level is the default.
+        rounds[r] = [line_hp, LINE_DEF[r] + udup * d['r00j'], kind]
         if name == '신':
             assert line_hp == base_hp, (r, line_hp, base_hp)
         if r in data['frenzy']:
             frenzy[r] = line_hp
     for r, (hp, udup) in BOSS.items():
-        base_hp, base_armor = data['boss'][r]
+        base_hp, _ = data['boss'][r]
         boss_hp = int(hp * d['boss'] + 1e-6)
-        boss[r] = [boss_hp, base_armor + udup * (d['r00o'] - god['r00o'])]
+        boss[r] = [boss_hp, BOSS_DEF[r] + udup * d['r00o'] + 10]
         if name == '신':
             assert boss_hp == base_hp, (r, boss_hp, base_hp)
-    armor_map = {'line': {r: LINE_DEF[r] + udup * d['r00j'] for r, (_, udup) in LINE.items()},
-                 'boss': {r: BOSS_DEF[r] + udup * d['r00o'] + 10 for r, (_, udup) in BOSS.items()},
-                 'note': '수정내역 20: 2.305 공식 udef + udup×레벨(R00J/R00O), 보스는 자체 방어 오라 A0RR +10 포함. 신 기존 값과 62라(171 vs 181)·60라 보스(332 vs 327)가 다르다.'}
+    # Option armorModel 'data': the pre-22 values (신 legacy + udup x level difference).
+    armor_legacy = {'line': {r: LEGACY_GOD_LINE[r] + udup * (d['r00j'] - god['r00j']) for r, (_, udup) in LINE.items()},
+                    'boss': {r: LEGACY_GOD_BOSS[r] + udup * (d['r00o'] - god['r00o']) for r, (_, udup) in BOSS.items()},
+                    'note': '수정내역 22: 이전 기본값(출처 미상인 신 값 + udup×레벨 차이). 2.305 공식과 신 62라(181 vs 171)·60라 보스(327 vs 332)만 다르다. 옵션 armorModel "data".'}
     out[name] = {
-        'rounds': rounds, 'boss': boss, 'frenzy': frenzy, 'armor_map': armor_map, 'defeat': d['defeat'],
+        'rounds': rounds, 'boss': boss, 'frenzy': frenzy, 'armor_legacy': armor_legacy, 'defeat': d['defeat'],
         'magic_level': d['magic_level'], 'speed': {'aura': d['aura'], 'line_flat': 29 * d['r024']},
         'frenzy_aura': d['frenzy_aura'], 'stun_resist': d['stun_resist'], 'common': d['common'],
         'gorosei': name != '지옥',
         'note': (f"[2.305 기준] ne=={d['ne']}: 라인 HP = uhpm×{d['line']:.2f}, 보스 HP = uhpm×{d['boss']:.2f} "
-                 f"(R00W·R00A / 보스 업그레이드), 방어 = 신 값 + udup×(R00J {d['r00j']}−10) / 보스 udup×(R00O {d['r00o']}−1), "
+                 f"(R00W·R00A / 보스 업그레이드), 방어 = udef + udup×R00J {d['r00j']} / 보스 udef + udup×R00O {d['r00o']} + 자체 오라 10 (수정내역 22), "
                  f"이속 고정 +{29 * d['r024']}(R024 rmvx, 라인·광폭) + 난이도 오라 {int(d['aura'] * 100)}%(AUau), "
                  f"패배 {d['defeat']}기(bM, j:46792, 50라 종료 시 데스카운트 0 j:47570), A04Q {d['magic_level']}레벨. "
                  f"공통 HP·재생은 2.323 ORDR 난이도 툴팁 "
@@ -70,6 +74,9 @@ for name, d in DIFF.items():
                  + (' 광폭 오라·저항성 스킨(R01R) 없음.' if name == '지옥' else ''))}
 
 data['difficulties'] = out
+# Top-level 신 tables (fallback and round types) follow the same 2.305 armor (수정내역 22).
+data['rounds'] = {r: list(v) for r, v in out['신']['rounds'].items()}
+data['boss'] = {r: list(v) for r, v in out['신']['boss'].items()}
 # 2.323 ORDR /guides/gorosei (values) + 2.305 j:54329-54429 (structure: Player 6 aura/upgrades after round 50).
 data['gorosei'] = {
     '나스쥬로': {'신': {'enemy_speed': .10, 'ally_aps': -.10, 'line_hp': 10000000},

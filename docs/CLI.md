@@ -103,10 +103,11 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `positionModel` | bool | false | 위치 모델: 모든 유닛을 라인몹 생성 지점에 두고 이동·사거리·범위·스턴·이속 감소를 계산 (켜면 `coverage` 무시). 스턴·이속 감소는 `deletion.seed`로 정해지는 확률 발동 |
 | `difficulty` | `지옥` · `신` · `악몽` | `신` | 난이도: 몹 HP·방어·마방·재생·패배 기준(70·55·50)·광폭 오라·보스 스턴 저항, 위치 모델 이속. 구조는 2.305, 공통 HP·재생은 2.323 툴팁 (수정내역 19) |
 | `gorosei` | `없음` · `나스쥬로` · `워큐리` · `새턴` | `없음` | 오로성(신·악몽만, 지옥이면 무시). 2.323 수치. `context.warcury: true`는 `워큐리`와 같다 |
-| `armorModel` | `data` · `map` | `data` | 몹 방어: `data`는 기존 신 값 + 레벨 차이, `map`은 2.305 공식 udef + udup×레벨(62라 171, 60라 보스 332 등) (수정내역 20) |
+| `armorModel` | `map` · `data` | `map` | 몹 방어: `map`은 2.305 공식 udef + udup×레벨(보스는 자체 오라 +10 포함), `data`는 수정내역 22 이전 값(신 62라 181, 60라 보스 327). 두 방식은 그 두 값만 다르다 (수정내역 20·22) |
 | `leo` | bool | false | 위치 모델: 2.320 패왕의길 레오의 이감 10% 오라(범위 800 [추정], 레오 피해는 미반영) |
 | `e6AlabastaLevel` | 정수 1~10 | 10 | E6 비비 영원의 알라바스타 건 레벨(2.305 해금: 3레벨 3연사 4타, 5레벨 이동사격, 7레벨 헤드샷 강화) (수정내역 21) |
 | `e6MoveShot` | bool | true | E6 이동사격(Q, 7.25초)을 쿨마다 사용하고 3연사 쿨을 초기화. 5레벨 미만이면 무시 |
+| `tr6Nutrients` | 정수 0~80 | 0 | TR6 료쿠규 초월의 60라 시작 양분 스택(모든 TR6이 공유). 라운드 중 변신 +1, 공격당 0.005씩 늘고 변신 공격력·공속, 삼림화·전방위 흡수 피해에 반영 (수정내역 22) |
 | `engageRange` | 100~3000 | 650 | 위치 모델의 교전 거리. 비비 영원처럼 자기 사거리를 쓰는 유닛 외에는 모두 이 거리 안의 몹을 친다 [추정] |
 | `buffTargets` | `{소스 코드: [받는 코드…]}` | 조합 전체 | 아군 오라·버프를 받을 유닛 제한. 지정하지 않은 소스는 조합 전체가 받는다 |
 | `tr19Plants` | `{pea, snow, muk}` 정수, 합 3 이하 | 2 / 1 / 0 | TR19 특강 식물 배분: 완두콩·백설콩·먹깨비 |
@@ -132,7 +133,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `engines` | 호출한 엔진 함수 |
 | `input` | 검증·정규화된 입력, `line.engineOptions` |
 | `damageContext` | 마방 단계, 마법·폭발형·모든 피해 배율 |
-| `line.clear`, `verdict`, `failedRound`, `failedSecond` | 클리어 판정. 동시 생존 55기에 닿으면 실패하고 그 시점에서 계산을 멈춘다 |
+| `line.clear`, `verdict`, `failedRound`, `failedSecond` | 클리어 판정. 동시 생존이 난이도별 패배 기준(`defeatThreshold`: 지옥 70·신 55·악몽 50)에 닿으면 실패하고 그 시점에서 계산을 멈춘다 |
 | `line.rounds[]` | 라운드별 `remaining`(보스·광폭 포함 잔존 수), `lineRemaining`, 이전 라운드 이월 수, 평균 암브, `special` 처리 결과 |
 | `line.rounds[].special` | 60·65라 `boss`, 61~64라 `frenzy`. `result`: `killed` / `survived`(라운드 끝에 생존, 다음 라운드로 이월) / `unknown_round_failed` / `not_reached`. `killSecond`는 해당 라운드 시작 기준 초(광폭은 7.5초에 등장) |
 | `line.damage` | 라인 일반몹에 들어간 피해. `byCategory`(area·basic·finisher·magic·physical·fixed), `bySource`(유닛 코드별, `H2`는 레드포스호) |
@@ -230,7 +231,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 - 선택한 증폭 효과는 항상 걸려 있다고 가정한다. 발동 확률·지속시간·대상 조건은 판정하지 않는다.
 - 서로 다른 저항·증폭 단계의 결합 순서는 곱셈으로 가정한다.
 - 보스·광폭에 들어간 피해량은 엔진이 집계하지 않는다(처치 여부·시각만 보고).
-- `clear`는 모델상 55기 미만 유지이며 실제 클리어 보장이 아니다.
+- `clear`는 모델상 난이도별 패배 기준(지옥 70·신 55·악몽 50) 미만 유지이며 실제 클리어 보장이 아니다.
 
 ## 테스트
 

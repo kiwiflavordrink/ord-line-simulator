@@ -1,7 +1,7 @@
 // Focused checks for v3 calculation fixes. Each block names the change in docs/수정내역.md.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {simulateV2,alabastaEvents} from './dist/engine_v3.mjs';
+import {simulateV2,alabastaEvents,randomPicks} from './dist/engine_v3.mjs';
 import {simulateSingle,singleConditions,SINGLE_MOB} from './dist/engine_single_v3.mjs';
 
 const fullData=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
@@ -221,11 +221,12 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(red({gorosei:'나스쥬로'})<red({}));
   const cond=o=>simulateV2(fullData,[{code:'H15'}],o).sourceDamage.H15;
   assert.ok(cond({gorosei:'새턴'})<cond({}));
-  // Armor model: 'map' uses the 2.305 formula (62라 171 instead of 181), default unchanged.
-  assert.equal(fullData.difficulties['신'].armor_map.line['62'],171);
+  // Armor model (수정내역 22): default 'map' is the 2.305 formula (62라 171, 60라 boss 332); 'data' the old values.
+  assert.equal(fullData.difficulties['신'].rounds['62'][1],171);assert.equal(fullData.difficulties['신'].boss['60'][1],332);
+  assert.equal(fullData.difficulties['신'].armor_legacy.line['62'],181);assert.equal(fullData.difficulties['신'].armor_legacy.boss['60'],327);
   const t=[{code:'TR19',count:3}];
-  assert.equal(simulateV2(fullData,t,{}).armorModel,'data');
-  assert.notDeepEqual(simulateV2(fullData,t,{armorModel:'map'}).lineDamage,simulateV2(fullData,t,{}).lineDamage);
+  assert.equal(simulateV2(fullData,t,{}).armorModel,'map');
+  assert.notDeepEqual(simulateV2(fullData,t,{armorModel:'data'}).lineDamage,simulateV2(fullData,t,{}).lineDamage);
   // 레오 slow aura only matters in the position model.
   const pos={positionModel:true},team=[{code:'TR29',count:2}];
   assert.deepEqual(simulateV2(fullData,team,{leo:true}).checkpoints,simulateV2(fullData,team,{}).checkpoints);
@@ -259,4 +260,43 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const d=o=>simulateV2(nansaOnly,[{code:'E6'}],o).sourceDamage.E6;
   assert.ok(d({})>0&&Math.abs(d({coverage:.5})-d({}))<1e-6*d({}));
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6: passed');
+// [수정 22] 검수 반영: 랜덤 대상 표본, Z8 접근 스킬, 레드포스 +35%(TR28·H15), TR6 양분, E6 가정 표시.
+{
+  // Two mobs of HP 100, one random hit of 100: exactly one dies (spreading 50/50 would kill none).
+  for(const seed of [.1,.9]){
+    const ms=[{hp:100},{hp:100}];
+    randomPicks(ms,1,()=>seed,m=>{m.hp-=100;});
+    assert.equal(ms.filter(m=>m.hp<=0).length,1);
+  }
+  // Draws skip dead candidates: two hits of 100 kill both.
+  const two=[{hp:100},{hp:100}];randomPicks(two,2,()=>0,m=>{m.hp-=100;});
+  assert.equal(two.filter(m=>m.hp<=0).length,2);
+  // Same seed, same result; E6 still reports its unresolved assumptions.
+  const e6=o=>simulateV2(fullData,[{code:'E6'}],o);
+  assert.deepEqual(e6({deletion:{seed:5}}).checkpoints,e6({deletion:{seed:5}}).checkpoints);
+  assert.equal(e6({}).assumptions.length,2);assert.match(e6({}).assumptions.join(),/이동사격/);
+  assert.deepEqual(simulateV2(fullData,[{code:'TR19'}],{}).assumptions,[]);
+  // Z8 approach: area (parts) and single (single_parts) split, once per enemy shared by copies, boss/frenzy 100%.
+  const z8=fullData.heroes.find(h=>h.code==='Z8').events.find(e=>e.on_approach);
+  assert.deepEqual([z8.parts[0][1],z8.single_parts[0][1],z8.on_approach.line,z8.on_approach.special],[450000,4500000,.2,1]);
+  const noSpecial=structuredClone(fullData);noSpecial.heroes.find(h=>h.code==='Z8').events.find(e=>e.on_approach).on_approach.special=0;
+  const z=(d,n)=>simulateV2(d,[{code:'Z8',count:n}],{}).sourceDamage.Z8;
+  assert.ok(z(fullData,1)>z(noSpecial,1));                       // bosses and frenzy mobs trigger it
+  const approachOnly=structuredClone(fullData),za=approachOnly.heroes.find(h=>h.code==='Z8');
+  za.events=za.events.filter(e=>e.on_approach);za.events[0].ab=0;
+  const one=simulateV2(approachOnly,[{code:'Z8',count:1}],{red:false}).sourceDamage.Z8;
+  const three=simulateV2(approachOnly,[{code:'Z8',count:3}],{red:false}).sourceDamage.Z8;
+  assert.ok(Math.abs(three-one)<1e-6*one);                       // copies share the once-per-enemy roll
+  // Red Force +35% reaches TR28 and H15 basic attacks.
+  for(const c of ['TR28','H15']){
+    const dmg=red=>simulateV2(fullData,[{code:c}],{red,redDamage:false}).sourceDamage[c];
+    assert.ok(dmg(true)>dmg(false),c);
+  }
+  // TR6 양분: shared counter, grows during the run, capped at 80, more stacks = more damage.
+  const tr6=(s,n=1)=>simulateV2(fullData,[{code:'TR6',count:n}],{tr6Nutrients:s});
+  assert.ok(tr6(0).nutrients.TR6>0&&tr6(80).nutrients.TR6===80);
+  assert.ok(tr6(40).sourceDamage.TR6>tr6(0).sourceDamage.TR6);
+  assert.ok(tr6(0,3).nutrients.TR6>tr6(0,1).nutrients.TR6);       // three copies feed one counter
+  assert.equal(Object.keys(tr6(0,3).nutrients).length,1);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6): passed');

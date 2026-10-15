@@ -4,12 +4,14 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {simulateV2} from './dist/engine_v3.mjs';
 import {simulateSingle,referenceSingle,singleConditions} from './dist/engine_single_v3.mjs';
 import {damageContext} from './dist/v3_effects.mjs';
 
 const data=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
-const CLI=new URL('./cli/ordsim.mjs',import.meta.url).pathname;
+// fileURLToPath, not URL.pathname: on Windows pathname gives '/C:/...' (수정내역 22).
+const CLI=fileURLToPath(new URL('./cli/ordsim.mjs',import.meta.url));
 const cli=(args,input)=>{
   const p=spawnSync(process.execPath,[CLI,...args],{input,encoding:'utf8'});
   return {status:p.status,stderr:p.stderr,json:p.stdout?JSON.parse(p.stdout):null};
@@ -130,6 +132,15 @@ function assertReportShape(r){
   const r=cli(['-','--compact'],JSON.stringify({context:{warcury:true},single:{team,trials:500,seed:3,difficulty:'악몽'}}));
   assert.equal(r.status,0,r.stderr);assertSingle(r.json.single,direct,refs);
   assert.equal(r.json.single.target.gorosei,'워큐리');assert.equal(r.json.single.target.hp,c.hp);
+}
+// 5d. Defeat threshold follows the difficulty in the verdict and the returned value (지옥 70·신 55·악몽 50).
+{
+  const r=cli(['-','--compact'],JSON.stringify({line:{team:[{code:'TR29'}],options:{difficulty:'악몽',red:false}}}));
+  const direct=simulateV2(data,[{code:'TR29'}],lineOpts(damageContext({}),{difficulty:'악몽',red:false}));
+  assert.equal(r.status,0,r.stderr);assertLine(r.json.line,direct);
+  assert.equal(direct.clear,false);assert.equal(direct.remaining,50);
+  assert.equal(r.json.line.defeatThreshold,50);assert.match(r.json.line.verdict,/50기 도달/);
+  for(const [d,n] of [['지옥',70],['신',55]])assert.equal(simulateV2(data,[{code:'TR19'}],{difficulty:d}).defeatThreshold,n);
 }
 // 6. --timeline passes the engine timeline through unchanged.
 {

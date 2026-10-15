@@ -135,7 +135,7 @@ function options(){const c=context();return {
   red:$('red-v2').checked,redDamage:$('red-v2').checked,fullResource:$('resource-v2').checked,summons:$('summons-v2').checked,
   frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
   tr19Plants:{pea:val('tr19-pea'),snow:val('tr19-snow'),muk:val('tr19-muk')},
-  buffTargets:buffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,e6AlabastaLevel:val('e6-level'),e6MoveShot:$('e6-moveshot').checked,
+  buffTargets:buffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,e6AlabastaLevel:val('e6-level'),e6MoveShot:$('e6-moveshot').checked,tr6Nutrients:val('tr6-nutrients'),
   customMagic:{aps:val('magic-aps'),chance:val('magic-chance')/100,flat:val('magic-flat'),
     maxPct:val('magic-max')/100,currentPct:val('magic-current')/100,lostPct:val('magic-lost')/100},
   finisher:{mode:$('finish-mode').value,interval:val('finish-interval'),successChance:val('finish-chance')/100,
@@ -146,9 +146,11 @@ function options(){const c=context();return {
 };}
 
 function renderChart(result){
+  // The dashed line is the difficulty's defeat threshold (지옥 70, 신 55, 악몽 50).
+  const limit=result.defeatThreshold??55,top=Math.max(60,limit+5);
   const svg=$('v2-chart'),w=800,h=260,l=34,r=16,t=13,b=30;
-  const x=sec=>l+sec/192*(w-l-r),y=n=>h-b-n/60*(h-t-b);
-  const grid=[0,20,40,55].map(v=>`<g><line x1="${l}" y1="${y(v)}" x2="${w-r}" y2="${y(v)}" stroke="${v===55?'#a55255':'#294253'}" stroke-dasharray="${v===55?'5 5':'0'}"/><text x="${l-9}" y="${y(v)+4}" text-anchor="end" fill="#8ea6b7" font-size="11">${v}</text></g>`).join('');
+  const x=sec=>l+sec/192*(w-l-r),y=n=>h-b-n/top*(h-t-b);
+  const grid=[0,20,40,limit].map(v=>`<g><line x1="${l}" y1="${y(v)}" x2="${w-r}" y2="${y(v)}" stroke="${v===limit?'#a55255':'#294253'}" stroke-dasharray="${v===limit?'5 5':'0'}"/><text x="${l-9}" y="${y(v)+4}" text-anchor="end" fill="#8ea6b7" font-size="11">${v}</text></g>`).join('');
   const dividers=[60,61,62,63,64,65].map((v,i)=>`<g><line x1="${x(i*32)}" y1="${t}" x2="${x(i*32)}" y2="${h-b}" stroke="#294253"/><text x="${x(i*32+16)}" y="${h-8}" text-anchor="middle" fill="#8ea6b7" font-size="11">${v}라</text></g>`).join('');
   const pts=result.timeline.map(p=>`${x(p.second).toFixed(2)},${y(p.count).toFixed(2)}`).join(' ');
   svg.innerHTML=`<title>60~65라 생존 몹 수</title>${grid}${dividers}<polyline points="${pts}" fill="none" stroke="${result.clear?'#66d5b1':'#f07470'}" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round"/>`;
@@ -162,11 +164,14 @@ function render(){
   try{
     const r=simulateV2(data,chosen,opts);
     const without=opts.finisher.mode==='off'?r:simulateV2(data,chosen,{...opts,finisher:{...opts.finisher,mode:'off'}});
-    $('v2-verdict-label').textContent=r.clear?'55기 미만 유지':'패배 기준 도달';
+    $('v2-verdict-label').textContent=r.clear?`${r.defeatThreshold}기 미만 유지`:'패배 기준 도달';
+    for(const el of document.querySelectorAll('.defeat-threshold'))el.textContent=`${r.defeatThreshold}기`;
     $('v2-verdict-label').classList.toggle('failed',!r.clear);
     $('v2-verdict').textContent=r.clear?'65라 종료까지 유지':`${r.failedRound}라에서 한계 도달`;
     $('v2-verdict-detail').textContent=r.clear?`65라 종료 시 ${r.remaining}기 생존 · 선택 유닛 ${r.unitCount}기`:
-      `${r.failedRound}라 ${r.failedSecond.toFixed(1)}초에 55기 도달 · 이후 계산 중단`;
+      `${r.failedRound}라 ${r.failedSecond.toFixed(1)}초에 ${r.defeatThreshold}기(${r.difficulty} 패배 기준) 도달 · 이후 계산 중단`;
+    const notes=$('v3-assumptions');notes.hidden=!r.assumptions.length;notes.innerHTML='';
+    for(const a of r.assumptions){const li=document.createElement('li');li.textContent=`가정: ${a}`;notes.appendChild(li);}
     $('v2-remaining').textContent=fmt(r.remaining);
     $('v2-spawned').textContent=`라인 ${fmt(r.totalLineSpawned)}기 출현`;
     $('v2-area').textContent=fmt(r.lineDamage.area);
@@ -204,12 +209,13 @@ function renderMobs(){
   const common=d?.common??{hp:0,regen:0},regen=common.regen+(curse.regen??0),fa=d?.frenzy_aura;
   const body=$('mob-rows');body.innerHTML='';
   for(const round of [60,61,62,63,64,65]){
-    const [lineHp,baseArmor,type]=(d??data).rounds[String(round)];
+    const legacy=$('armor-model-v3').value==='data'?d?.armor_legacy:null;
+    const [lineHp,mapArmor,type]=(d??data).rounds[String(round)],baseArmor=legacy?.line[String(round)]??mapArmor;
     const hp=lineHp+common.hp+(curse.line_hp??0),armor=baseArmor+(curse.armor??0);
     const boss=(d??data).boss[String(round)],frenzy=(d??data).frenzy[String(round)];
     const special=boss?'보스':frenzy?'광폭':'—';
     const specialHp=boss?boss[0]+common.hp+(curse.boss_hp??0):frenzy?frenzy+common.hp+(curse.line_hp??0):null;
-    const specialArmor=boss?boss[1]+(curse.armor??0):frenzy?armor+(fa?.armor??0):null;
+    const specialArmor=boss?(legacy?.boss[String(round)]??boss[1])+(curse.armor??0):frenzy?armor+(fa?.armor??0):null;
     const unitRegen=data.round_regen?.[String(round)]??0;
     const specialRegen=boss?550000+regen:(fa?.regen??0)+unitRegen+regen;
     const [name,raw]=waveNames[round];
@@ -310,9 +316,10 @@ function restore(){
   $('franky-aura').checked=params.get('frankyAura')!=='0';
   $('sunny-stagger').checked=params.get('sunnyStagger')==='1';
   $('position-v3').checked=params.get('position')==='1';
-  if(params.get('armor')==='map')$('armor-model-v3').value='map';
+  if(params.get('armor')==='data')$('armor-model-v3').value='data';
   $('leo-v3').checked=params.get('leo')==='1';
   if(params.has('e6'))$('e6-level').value=params.get('e6');
+  if(params.has('tr6'))$('tr6-nutrients').value=params.get('tr6');
   $('e6-moveshot').checked=params.get('e6shot')!=='0';
   if(['지옥','신','악몽'].includes(params.get('difficulty')))$('difficulty-v3').value=params.get('difficulty');
   for(const k of ['pea','snow','muk'])if(params.has('tr19'+k))$('tr19-'+k).value=params.get('tr19'+k);
@@ -333,7 +340,7 @@ function shareURL(){
   u.searchParams.set('position',$('position-v3').checked?'1':'0');
   u.searchParams.set('difficulty',$('difficulty-v3').value);
   u.searchParams.set('armor',$('armor-model-v3').value);u.searchParams.set('leo',$('leo-v3').checked?'1':'0');
-  u.searchParams.set('e6',$('e6-level').value);u.searchParams.set('e6shot',$('e6-moveshot').checked?'1':'0');
+  u.searchParams.set('e6',$('e6-level').value);u.searchParams.set('tr6',$('tr6-nutrients').value);u.searchParams.set('e6shot',$('e6-moveshot').checked?'1':'0');
   for(const k of ['pea','snow','muk'])u.searchParams.set('tr19'+k,$('tr19-'+k).value);
   const bt=buffTargets();if(Object.keys(bt).length)u.searchParams.set('buffTargets',JSON.stringify(bt));
   for(const e of document.querySelectorAll('.amp-effect:checked'))u.searchParams.append('effect',e.value);
@@ -346,7 +353,7 @@ async function main(){
     data=await response.json();restore();setupEffects();renderMobs();render();setupSingle();
     $('add-unit').addEventListener('click',()=>addRow({code:'MAGIC_CUSTOM'}));
     document.querySelector('.v2-controls').addEventListener('input',schedule);
-    for(const id of ['difficulty-v3','v3-gorosei'])$(id).addEventListener('change',renderMobs);
+    for(const id of ['difficulty-v3','v3-gorosei','armor-model-v3'])$(id).addEventListener('change',renderMobs);
     $('share-v2').addEventListener('click',async()=>{const href=shareURL();try{await navigator.clipboard.writeText(href);$('share-v2').firstChild.textContent='조합 링크 복사됨 ';}catch{$('share-v2').firstChild.textContent='주소창 링크를 복사하세요 ';}
       setTimeout(()=>$('share-v2').firstChild.textContent='현재 조합 링크 복사 ',2200);});
   }catch(error){$('v2-verdict').textContent='데이터를 불러오지 못했습니다';$('v2-verdict-detail').textContent=String(error.message??error);}

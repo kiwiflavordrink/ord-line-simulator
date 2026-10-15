@@ -17,7 +17,6 @@ export const ENGINES={
   context:'dist/v3_effects.mjs#damageContext'
 };
 const ROUNDS=[60,61,62,63,64,65];
-const DEFEAT_THRESHOLD=55;
 const SINGLE_BY_CODE=new Map(SINGLE_UNITS.map(u=>[u.code,u]));
 const EFFECT_CODES=new Set(EFFECTS.map(e=>e.code));
 
@@ -34,7 +33,7 @@ export const LIMITATIONS=[
   {id:'line-damage-scope',text:'line.damage의 피해량은 라인 일반몹에 실제로 들어간 양(초과 피해 제외)만 집계한다. 보스·광폭에 들어간 피해량은 엔진이 집계하지 않으므로 처치 여부와 처치 시각으로만 보고한다.'},
   {id:'difficulty',text:'line.options.difficulty(지옥·신·악몽, 기본 신)가 몹 HP·방어·마방·재생·패배 기준(70·55·50)·광폭 오라·보스 스턴 저항을 정한다. 구조와 지옥·악몽 배율은 2.305 맵, 공통 HP·재생과 오로성 수치는 2.323 ORDR 툴팁이다. 지옥·악몽 방어는 신 값 + 2.305 udup×레벨 차이로 계산했다(방어 공식 미검증). line.options.gorosei(기본 없음)로 오로성을 고른다. 새턴·나스쥬로의 아군 공격력·공속 감소는 data.json 영웅에만 적용하고 보조·조건형 유닛에는 적용하지 않는다.'},
   {id:'position-model',text:'positionModel을 켜면 모든 유닛을 라인몹 생성 지점에 두고 교전 거리(engageRange, 기본 650 [추정]) 안의 몹만 친다. 이속 = (기본 + 고정 보너스) × (1 + 난이도 오라 + 나스쥬로 − 이감 합), 89~490(WC3 규칙, ORDR 신 이감 목표 102%와 일치). 같은 버프를 쓰는 이감(천둥 기반 BHtc)은 마지막에 맞은 것 하나만 적용된다. 스턴·이속 감소는 시드에 따른 확률 발동이라 결과가 시드마다 다르다.'},
-  {id:'not-a-clear-guarantee',text:'clear는 모델상 55기 미만 유지 여부이며 실제 게임 클리어를 보장하지 않는다.'}
+  {id:'not-a-clear-guarantee',text:'clear는 모델상 난이도별 패배 기준(지옥 70·신 55·악몽 50, line.defeatThreshold) 미만 유지 여부이며 실제 게임 클리어를 보장하지 않는다.'}
 ];
 
 export function loadData(url=DATA_URL){
@@ -142,7 +141,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','engageRange','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','engageRange','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -160,6 +159,7 @@ function validateLine(raw,data,is){
       leo:bool(o,'leo','line.options',is),
       e6AlabastaLevel:num(o,'e6AlabastaLevel','line.options',is,{min:1,max:10,integer:true}),
       e6MoveShot:bool(o,'e6MoveShot','line.options',is),
+      tr6Nutrients:num(o,'tr6Nutrients','line.options',is,{min:0,max:80,integer:true}),
       engageRange:num(o,'engageRange','line.options',is,{min:100,max:3000})
     }));
     if(o.buffTargets!==undefined){
@@ -283,10 +283,10 @@ function lineReport(r,data,includeTimeline){
   const byRound=new Map(r.checkpoints.map(c=>[c.round,c]));
   const rounds=ROUNDS.map(round=>{
     const key=String(round),c=byRound.get(round);
-    const special=data.boss[key]?{type:'boss',hp:data.boss[key][0],armor:data.boss[key][1]}
-      :data.frenzy[key]?{type:'frenzy',hp:data.frenzy[key],armor:data.rounds[key][1]+5}:null;
+    // Mob values as the engine used them (difficulty, common HP, 오로성, armor model; 수정내역 22).
+    const mob=r.mobTable[key],special=mob.special?{...mob.special}:null;
     const reached=round<=(r.failedRound??65);
-    const base={round,mobHp:data.rounds[key][0],mobArmor:data.rounds[key][1],reached,completed:!!c};
+    const base={round,mobHp:mob.hp,mobArmor:mob.armor,reached,completed:!!c};
     if(!c&&round===r.failedRound)return {...base,remaining:r.remaining,lineRemaining:r.lineRemaining,failedSecond:r.failedSecond,
       special:special&&{...special,result:'unknown_round_failed',killed:null,killSecond:null}};
     if(!c)return {...base,special:special&&{...special,result:reached?'unknown_round_failed':'not_reached',killed:null,killSecond:null}};
@@ -299,8 +299,9 @@ function lineReport(r,data,includeTimeline){
   const lineTotal=Object.values(r.sourceDamage).reduce((a,b)=>a+b,0);
   return {
     clear:r.clear,
-    verdict:r.clear?'65라 종료까지 55기 미만 유지':`${r.failedRound}라 ${r.failedSecond}초에 55기 도달`,
-    failedRound:r.failedRound,failedSecond:r.failedSecond,defeatThreshold:DEFEAT_THRESHOLD,
+    verdict:r.clear?`65라 종료까지 ${r.defeatThreshold}기 미만 유지`:`${r.failedRound}라 ${r.failedSecond}초에 ${r.defeatThreshold}기 도달`,
+    failedRound:r.failedRound,failedSecond:r.failedSecond,defeatThreshold:r.defeatThreshold,
+    assumptions:r.assumptions,nutrients:r.nutrients,
     final:{remaining:r.remaining,lineRemaining:r.lineRemaining,averageAb:r.averageAb},
     rounds,
     specials:rounds.filter(x=>x.special).map(x=>({round:x.round,...x.special})),
