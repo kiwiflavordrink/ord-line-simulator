@@ -1,0 +1,1373 @@
+{
+ "data": "2.305 원시 공격 + 2.323 ORDR 툴팁",
+ "env": {
+  "difficulty": "신",
+  "positionModel": true,
+  "cut": 201,
+  "red": true,
+  "redDamage": false,
+  "externalSlow": 1.02,
+  "externalStuns": [
+   {
+    "rate": 0.83445,
+    "radius": 550,
+    "normal": 2.75,
+    "hero": 0.55
+   },
+   {
+    "rate": 1.418565,
+    "radius": 0,
+    "normal": 0.5,
+    "hero": 0.25
+   }
+  ],
+  "singleControl": {
+   "to15": 2.78,
+   "finish": 2.83
+  }
+ },
+ "dan": 2,
+ "kkeut": 1,
+ "seeds": [
+  202323,
+  202324,
+  202325,
+  202326,
+  202327
+ ],
+ "rows": [
+  {
+   "code": "E1",
+   "name": "니카(루피) 영원한",
+   "minCount": 1,
+   "byCount": {
+    "1": {
+     "clearRate": 1,
+     "avgRemaining": 18,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 18",
+      "클리어 18",
+      "클리어 18",
+      "클리어 18",
+      "클리어 18"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "E2",
+   "name": "니카(스네이크) 영원한",
+   "minCount": 1,
+   "byCount": {
+    "1": {
+     "clearRate": 1,
+     "avgRemaining": 18,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 18",
+      "클리어 18",
+      "클리어 18",
+      "클리어 18",
+      "클리어 18"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "I12",
+   "name": "흰수염 불멸의",
+   "minCount": 1,
+   "byCount": {
+    "1": {
+     "clearRate": 1,
+     "avgRemaining": 18,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 18",
+      "클리어 18",
+      "클리어 18",
+      "클리어 18",
+      "클리어 18"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "I11",
+   "name": "카이도 불멸의",
+   "minCount": 1,
+   "byCount": {
+    "1": {
+     "clearRate": 1,
+     "avgRemaining": 23.8,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 25",
+      "클리어 21",
+      "클리어 22",
+      "클리어 26",
+      "클리어 25"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0.4,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 2",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR29",
+   "name": "후지토라 초월함",
+   "minCount": 1,
+   "byCount": {
+    "1": {
+     "clearRate": 1,
+     "avgRemaining": 24.8,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 25",
+      "클리어 24",
+      "클리어 26",
+      "클리어 25",
+      "클리어 24"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "I1",
+   "name": "거프 불멸의",
+   "minCount": 1,
+   "byCount": {
+    "1": {
+     "clearRate": 1,
+     "avgRemaining": 27,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 27",
+      "클리어 27",
+      "클리어 27",
+      "클리어 27",
+      "클리어 27"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 7.6,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 8",
+      "클리어 8",
+      "클리어 7",
+      "클리어 8",
+      "클리어 7"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR22",
+   "name": "징베 초월함",
+   "minCount": 1,
+   "byCount": {
+    "1": {
+     "clearRate": 0.8,
+     "avgRemaining": 30.75,
+     "avgSurvived": 182.1,
+     "runs": [
+      "64라 14.5초 패배",
+      "클리어 39",
+      "클리어 26",
+      "클리어 31",
+      "클리어 27"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0.6,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 3"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR19",
+   "name": "우솝 초월함",
+   "minCount": 1,
+   "byCount": {
+    "1": {
+     "clearRate": 1,
+     "avgRemaining": 33.4,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 37",
+      "클리어 34",
+      "클리어 36",
+      "클리어 35",
+      "클리어 25"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR23",
+   "name": "쵸파 초월함",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0.6,
+     "avgRemaining": 33.333333333333336,
+     "avgSurvived": 178.4,
+     "runs": [
+      "65라 13.5초 패배",
+      "클리어 31",
+      "64라 14.5초 패배",
+      "클리어 42",
+      "클리어 27"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 2.8,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 3",
+      "클리어 2",
+      "클리어 4",
+      "클리어 3",
+      "클리어 2"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR27",
+   "name": "타시기 초월함",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0.4,
+     "avgRemaining": 35.5,
+     "avgSurvived": 166.6,
+     "runs": [
+      "63라 10초 패배",
+      "클리어 42",
+      "클리어 29",
+      "65라 8초 패배",
+      "65라 15초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 4,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 4",
+      "클리어 5",
+      "클리어 3",
+      "클리어 4",
+      "클리어 4"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0.4,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 2",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR11",
+   "name": "사보 초월함",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0.4,
+     "avgRemaining": 35,
+     "avgSurvived": 172.4,
+     "runs": [
+      "65라 7.5초 패배",
+      "65라 12.5초 패배",
+      "64라 10초 패배",
+      "클리어 33",
+      "클리어 37"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 6.4,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 7",
+      "클리어 7",
+      "클리어 7",
+      "클리어 5",
+      "클리어 6"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR3",
+   "name": "도플라밍고 초월함",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0.2,
+     "avgRemaining": 43,
+     "avgSurvived": 144.5,
+     "runs": [
+      "62라 9초 패배",
+      "클리어 43",
+      "65라 8.5초 패배",
+      "64라 16초 패배",
+      "64라 17초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 10.2,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 5",
+      "클리어 16",
+      "클리어 9",
+      "클리어 10",
+      "클리어 11"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0.2,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 1",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "I3",
+   "name": "레일리 불멸의",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0.6,
+     "avgRemaining": 36.666666666666664,
+     "avgSurvived": 172.2,
+     "runs": [
+      "63라 13초 패배",
+      "클리어 39",
+      "클리어 30",
+      "65라 16초 패배",
+      "클리어 41"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 10.8,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 11",
+      "클리어 15",
+      "클리어 8",
+      "클리어 10",
+      "클리어 10"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0.8,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 1",
+      "클리어 0",
+      "클리어 3"
+     ]
+    }
+   }
+  },
+  {
+   "code": "E12",
+   "name": "핸콕 영원한",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0.2,
+     "avgRemaining": 40,
+     "avgSurvived": 179.2,
+     "runs": [
+      "65라 17초 패배",
+      "65라 15초 패배",
+      "클리어 40",
+      "65라 17초 패배",
+      "65라 15초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 12.6,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 13",
+      "클리어 12",
+      "클리어 13",
+      "클리어 13",
+      "클리어 12"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "Z6",
+   "name": "알비다 제한됨",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0.2,
+     "avgRemaining": 32,
+     "avgSurvived": 130.9,
+     "runs": [
+      "62라 11초 패배",
+      "클리어 32",
+      "62라 8초 패배",
+      "64라 14.5초 패배",
+      "65라 13초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 13.4,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 18",
+      "클리어 12",
+      "클리어 13",
+      "클리어 12",
+      "클리어 12"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0.6,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 3",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR20",
+   "name": "조로 초월함",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 150.4,
+     "runs": [
+      "64라 16.5초 패배",
+      "65라 15.5초 패배",
+      "62라 15초 패배",
+      "65라 16초 패배",
+      "65라 17초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 15,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 15",
+      "클리어 15",
+      "클리어 15",
+      "클리어 14",
+      "클리어 16"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "E10",
+   "name": "카번딧슈 영원한",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 79.8,
+     "runs": [
+      "62라 16초 패배",
+      "62라 15초 패배",
+      "62라 16초 패배",
+      "62라 16초 패배",
+      "62라 16초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 15.2,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 16",
+      "클리어 14",
+      "클리어 16",
+      "클리어 15",
+      "클리어 15"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 0,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "I4",
+   "name": "로져 불멸의",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 145.4,
+     "runs": [
+      "62라 7.5초 패배",
+      "65라 15초 패배",
+      "65라 3.5초 패배",
+      "64라 15초 패배",
+      "65라 14초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 19.8,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 16",
+      "클리어 36",
+      "클리어 17",
+      "클리어 15",
+      "클리어 15"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 2.8,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 0",
+      "클리어 14",
+      "클리어 0",
+      "클리어 0",
+      "클리어 0"
+     ]
+    }
+   }
+  },
+  {
+   "code": "I9",
+   "name": "시키 불멸의",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 77.7,
+     "runs": [
+      "62라 13.5초 패배",
+      "62라 13.5초 패배",
+      "62라 14.5초 패배",
+      "62라 13.5초 패배",
+      "62라 13.5초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 23,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 23",
+      "클리어 23",
+      "클리어 23",
+      "클리어 23",
+      "클리어 23"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 9.8,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 10",
+      "클리어 10",
+      "클리어 10",
+      "클리어 10",
+      "클리어 9"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR30",
+   "name": "베가펑크 초월함",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 78.8,
+     "runs": [
+      "62라 14.5초 패배",
+      "62라 15초 패배",
+      "62라 14.5초 패배",
+      "62라 15초 패배",
+      "62라 15초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 25,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 25",
+      "클리어 25",
+      "클리어 25",
+      "클리어 25",
+      "클리어 25"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 12.6,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 13",
+      "클리어 12",
+      "클리어 13",
+      "클리어 13",
+      "클리어 12"
+     ]
+    }
+   }
+  },
+  {
+   "code": "Z9",
+   "name": "크로커다일 제한됨",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 70.9,
+     "runs": [
+      "62라 4초 패배",
+      "62라 8초 패배",
+      "62라 10초 패배",
+      "62라 6.5초 패배",
+      "62라 6초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 26,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 26",
+      "클리어 26",
+      "클리어 26",
+      "클리어 26",
+      "클리어 26"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 13.2,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 13",
+      "클리어 14",
+      "클리어 13",
+      "클리어 13",
+      "클리어 13"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR18",
+   "name": "야마토 초월함",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 73,
+     "runs": [
+      "62라 9.5초 패배",
+      "62라 15.5초 패배",
+      "62라 7.5초 패배",
+      "62라 5초 패배",
+      "62라 7.5초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 27.6,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 33",
+      "클리어 26",
+      "클리어 24",
+      "클리어 33",
+      "클리어 22"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 12.2,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 10",
+      "클리어 11",
+      "클리어 11",
+      "클리어 11",
+      "클리어 18"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR8",
+   "name": "루피 초월함",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 71.9,
+     "runs": [
+      "62라 7.5초 패배",
+      "62라 8.5초 패배",
+      "62라 7.5초 패배",
+      "62라 8.5초 패배",
+      "62라 7.5초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 1,
+     "avgRemaining": 28.2,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 27",
+      "클리어 33",
+      "클리어 26",
+      "클리어 27",
+      "클리어 28"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 15.2,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 15",
+      "클리어 15",
+      "클리어 15",
+      "클리어 15",
+      "클리어 16"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR9",
+   "name": "바질호킨스 초월함",
+   "minCount": 2,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 68.5,
+     "runs": [
+      "61라 17초 패배",
+      "62라 13초 패배",
+      "62라 4초 패배",
+      "62라 13초 패배",
+      "62라 7.5초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 0.8,
+     "avgRemaining": 33.25,
+     "avgSurvived": 180.7,
+     "runs": [
+      "클리어 43",
+      "64라 7.5초 패배",
+      "클리어 36",
+      "클리어 26",
+      "클리어 28"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 17,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 14",
+      "클리어 18",
+      "클리어 15",
+      "클리어 24",
+      "클리어 14"
+     ]
+    }
+   }
+  },
+  {
+   "code": "Z10",
+   "name": "킹 제한됨",
+   "minCount": 3,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 76.8,
+     "runs": [
+      "62라 9.5초 패배",
+      "62라 15.5초 패배",
+      "62라 11.5초 패배",
+      "62라 16.5초 패배",
+      "62라 11초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 0.4,
+     "avgRemaining": 4.5,
+     "avgSurvived": 156,
+     "runs": [
+      "63라 14.5초 패배",
+      "클리어 2",
+      "63라 13초 패배",
+      "65라 16.5초 패배",
+      "클리어 7"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 5.6,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 4",
+      "클리어 1",
+      "클리어 14",
+      "클리어 8",
+      "클리어 1"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR6",
+   "name": "료쿠규 초월함",
+   "minCount": 3,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 72,
+     "runs": [
+      "62라 9.5초 패배",
+      "62라 11초 패배",
+      "62라 6.5초 패배",
+      "62라 6.5초 패배",
+      "62라 6.5초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 0.6,
+     "avgRemaining": 27.666666666666668,
+     "avgSurvived": 168.8,
+     "runs": [
+      "클리어 29",
+      "클리어 24",
+      "64라 4초 패배",
+      "클리어 30",
+      "64라 8초 패배"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 9.4,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 15",
+      "클리어 7",
+      "클리어 6",
+      "클리어 14",
+      "클리어 5"
+     ]
+    }
+   }
+  },
+  {
+   "code": "Z2",
+   "name": "레베카 제한됨",
+   "minCount": 3,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 78.4,
+     "runs": [
+      "62라 5.5초 패배",
+      "62라 10초 패배",
+      "62라 6.5초 패배",
+      "63라 10.5초 패배",
+      "62라 7.5초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 134.9,
+     "runs": [
+      "64라 8초 패배",
+      "64라 17초 패배",
+      "63라 15.5초 패배",
+      "64라 16초 패배",
+      "64라 10초 패배"
+     ]
+    },
+    "3": {
+     "clearRate": 0.8,
+     "avgRemaining": 13.75,
+     "avgSurvived": 182.5,
+     "runs": [
+      "클리어 13",
+      "클리어 21",
+      "클리어 14",
+      "클리어 7",
+      "64라 16.5초 패배"
+     ]
+    }
+   }
+  },
+  {
+   "code": "I5",
+   "name": "불릿 불멸의",
+   "minCount": 3,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 70.5,
+     "runs": [
+      "62라 4초 패배",
+      "62라 8.5초 패배",
+      "62라 6초 패배",
+      "62라 7.5초 패배",
+      "62라 6.5초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 0.6,
+     "avgRemaining": 30.666666666666668,
+     "avgSurvived": 177.7,
+     "runs": [
+      "64라 15초 패배",
+      "클리어 27",
+      "65라 9.5초 패배",
+      "클리어 41",
+      "클리어 24"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 17.6,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 23",
+      "클리어 6",
+      "클리어 34",
+      "클리어 17",
+      "클리어 8"
+     ]
+    }
+   }
+  },
+  {
+   "code": "TR4",
+   "name": "로빈 초월함",
+   "minCount": 3,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 56.9,
+     "runs": [
+      "61라 17초 패배",
+      "61라 17초 패배",
+      "62라 5초 패배",
+      "62라 5초 패배",
+      "61라 16.5초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 174.4,
+     "runs": [
+      "65라 14.5초 패배",
+      "65라 14.5초 패배",
+      "65라 14.5초 패배",
+      "65라 14초 패배",
+      "65라 14.5초 패배"
+     ]
+    },
+    "3": {
+     "clearRate": 1,
+     "avgRemaining": 27,
+     "avgSurvived": 192,
+     "runs": [
+      "클리어 27",
+      "클리어 27",
+      "클리어 27",
+      "클리어 27",
+      "클리어 27"
+     ]
+    }
+   }
+  },
+  {
+   "code": "Z8",
+   "name": "카타쿠리 제한됨",
+   "minCount": null,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 60,
+     "runs": [
+      "62라 4초 패배",
+      "62라 4.5초 패배",
+      "61라 16초 패배",
+      "61라 16초 패배",
+      "62라 3.5초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 84.5,
+     "runs": [
+      "62라 6.5초 패배",
+      "62라 11.5초 패배",
+      "64라 8.5초 패배",
+      "62라 5초 패배",
+      "62라 7초 패배"
+     ]
+    },
+    "3": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 126,
+     "runs": [
+      "62라 14초 패배",
+      "64라 13.5초 패배",
+      "64라 7.5초 패배",
+      "64라 11.5초 패배",
+      "64라 7.5초 패배"
+     ]
+    }
+   }
+  },
+  {
+   "code": "E5",
+   "name": "버기 영원한",
+   "minCount": null,
+   "byCount": {
+    "1": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 47.5,
+     "runs": [
+      "61라 15.5초 패배",
+      "61라 15.5초 패배",
+      "61라 15.5초 패배",
+      "61라 15.5초 패배",
+      "61라 15.5초 패배"
+     ]
+    },
+    "2": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 51.8,
+     "runs": [
+      "61라 15.5초 패배",
+      "61라 15.5초 패배",
+      "61라 17초 패배",
+      "61라 15.5초 패배",
+      "62라 3.5초 패배"
+     ]
+    },
+    "3": {
+     "clearRate": 0,
+     "avgRemaining": null,
+     "avgSurvived": 65.6,
+     "runs": [
+      "61라 15초 패배",
+      "62라 6초 패배",
+      "62라 5.5초 패배",
+      "62라 8.5초 패배",
+      "62라 5초 패배"
+     ]
+    }
+   }
+  }
+ ]
+}
