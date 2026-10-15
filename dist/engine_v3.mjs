@@ -503,8 +503,10 @@ export function simulateV2(data,composition,options={}){
   };
   const factor=(kind,m,extra)=>kind==='physical'?pf(armor(m,extra)):kind==='magic'?mobMagic(m):
     kind==='explosive'?1+Math.min(.25,explosiveAmp+(m.dbf?.explosive_amp??0)+(m.kind==='line'?normalOnlyExplosiveAmp:0))+(curse.explosive??0):1;
+  // options.controlOnly [codes] (수정내역 32): those units deal no damage but keep stuns and slows (control evaluation).
+  const controlOnly=new Set(options.controlOnly??[]);
   const deal=(m,amount,source,scope,kind)=>{
-    if(!m||m.hp<=0||!Number.isFinite(amount)||amount<=0)return;
+    if(!m||m.hp<=0||!Number.isFinite(amount)||amount<=0||controlOnly.has(source))return;
     amount*=1+allAmp+(m.dbf?.all_amp??0);
     const applied=Math.min(m.hp,amount);
     m.hp-=amount;
