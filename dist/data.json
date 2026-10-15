@@ -1,1 +1,527 @@
-{"version":"2.305 원시 공격 + 2.323 ORDR 툴팁","heroes":[{"code":"Z2","name":"레베카","grade":"제한됨","focus":"물리 중심","forms":[{"rawcode":"h05I","attack":257777.0,"aps":2.7272727488239936,"attack_type":"normal","splash":1,"splash_radius":325,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}],"events":[{"code":"Z2","index":"3","rate":0.2181818199059195,"rate_kind":"공격당 0.08","parts":[["physical",1400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"Z2","index":"4","rate":0.2727272748823994,"rate_kind":"공격당 0.1","parts":[["physical",1100000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"Z2","index":"4 광폭 단일","rate":0.5454545497647988,"rate_kind":"공격당 0.2 / 광폭 전용 단일 추가","parts":[["magic",2100000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}],"url":"https://ordr.kr/character/Z2"},{"code":"Z6","name":"알비다","grade":"제한됨","focus":"물리 중심","forms":[{"rawcode":"h08Q","attack":504446.0,"aps":0.8555555641651152,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}],"events":[{"code":"Z6","index":"1","rate":0.015555555712093005,"rate_kind":"자원 55; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",0.0,[["lost",0.1]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"Z6","index":"3","rate":0.2851851880550384,"rate_kind":"공격당 0.333333","parts":[["physical",0.0,[],5.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"Z6","index":"4","rate":0.125,"rate_kind":"8초마다","parts":[["physical",3500000.0,[],0.0],["physical",0.0,[["lost",0.06]],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/Z6"},{"code":"Z8","name":"카타쿠리","grade":"제한됨","focus":"물리 중심","forms":[{"rawcode":"h07I","attack":147501.5,"aps":4.754098185654198,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}],"events":[{"code":"Z8","index":"1","rate":5.348360458860973,"rate_kind":"공격당 1.125","parts":[["physical",100000.0,[],0.75]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"Z8","index":"3","rate":0.6655737459915877,"rate_kind":"공격당 0.14","parts":[["magic",375000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"Z8","index":"4","rate":0,"rate_kind":"신규 몹당 0.2 확률","parts":[["physical",450000.0,[],0.0]],"on_spawn":0.2,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/Z8"},{"code":"Z9","name":"크로커다일","grade":"제한됨","focus":"물리 중심","forms":[{"rawcode":"h05F","attack":92501.5,"aps":6.875000039913824,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}],"events":[{"code":"Z9","index":"1","rate":0.06265217426012021,"rate_kind":"자원 115; 공격당 1+초당 0.33; 시작시 만충","parts":[["physical",4800000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"Z9","index":"3","rate":0.6875000039913824,"rate_kind":"공격당 0.1","parts":[["physical",850000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"Z9","index":"4","rate":0.3437500019956912,"rate_kind":"공격당 0.05","parts":[["magic",200000.0,[],0.0],["physical",1250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/Z9"},{"code":"Z10","name":"킹","grade":"제한됨","focus":"물리 중심","forms":[{"rawcode":"h0AI","attack":131501.5,"aps":4.843750098953026,"attack_type":"normal","splash":1,"splash_radius":275,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}],"events":[{"code":"Z10","index":"3","rate":0.48437500989530263,"rate_kind":"공격당 0.1","parts":[["physical",800000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"Z10","index":"4","rate":0.6902343891008061,"rate_kind":"공격당 0.1425","parts":[["fixed",210000.0,[],0.0],["magic",800000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/Z10"},{"code":"TR3","name":"도플라밍고","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H09E","attack":91751.5,"aps":7.016129088854567,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}},{"rawcode":"H09D","attack":91751.5,"aps":7.372881799842138,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}],"events":[{"code":"TR3","index":"2","rate":0.8770161361068208,"rate_kind":"공격당 0.125","parts":[["physical",750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR3","index":"3","rate":0.7016129088854567,"rate_kind":"공격당 0.1","parts":[["magic",200000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR3","index":"3 라인 현체","rate":0.7016129088854567,"rate_kind":"공격당 0.1","parts":[["explosive",0.0,[["current",0.006]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"line","note":""},{"code":"TR3","index":"4","rate":7.016129088854567,"rate_kind":"공격당 1","parts":[["physical",75000.0,[],0.75]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR3","index":"5","rate":7.016129088854567,"rate_kind":"공격당 1","parts":[["physical",105000.0,[],1.05]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR3","index":"6","rate":1.262903235993822,"rate_kind":"공격당 0.18","parts":[["magic",205000.0,[],0.0]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR3","index":"7","rate":1.4032258177709134,"rate_kind":"공격당 0.2","parts":[["physical",500000.0,[],0.0],["magic",150000.0,[["current",0.01]],0.0]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/TR3"},{"code":"TR4","name":"로빈","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H098","attack":98833.0,"aps":6.126760845086432,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}],"events":[{"code":"TR4","index":"1","rate":0.1656690211271608,"rate_kind":"자원 40; 공격당 1+초당 0.5; 시작시 만충","parts":[["physical",2250000.0,[["max",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR4","index":"2","rate":0.6126760845086432,"rate_kind":"공격당 0.1","parts":[["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR4","index":"3","rate":0.3063380422543216,"rate_kind":"공격당 0.05","parts":[["physical",600000.0,[],0.0],["magic",120000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/TR4"},{"code":"TR6","name":"료쿠규","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H0BL","attack":170501.5,"aps":5.178571671855701,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},{"rawcode":"H0BO","attack":220502.0,"aps":5.6493508783092965,"attack_type":"normal","splash":1,"splash_radius":400,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}],"events":[{"code":"TR6","index":"2","rate":0.3333333333333333,"rate_kind":"3초마다","parts":[["physical",1812500.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},{"code":"TR6","index":"3","rate":0.25892858359278503,"rate_kind":"공격당 0.05","parts":[["physical",937500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR6","index":"4","rate":0.7767857507783551,"rate_kind":"공격당 0.15","parts":[["physical",875000.0,[],0.0],["magic",200000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/TR6"},{"code":"TR8","name":"루피","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H099","attack":95502.0,"aps":11.447368745080656,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}],"events":[{"code":"TR8","index":"1","rate":0.0715460546567541,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5312500.0,[["max",0.015]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR8","index":"2","rate":2.0032895303891145,"rate_kind":"공격당 0.175","parts":[["magic",32500.0,[],0.0],["physical",32500.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR8","index":"3","rate":0.14309210931350821,"rate_kind":"공격당 0.0125","parts":[["magic",1235000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR8","index":"2 광폭 단일","rate":2.0032895303891145,"rate_kind":"공격당 0.175 / 광폭 전용 단일 추가","parts":[["fixed",32500.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}],"url":"https://ordr.kr/character/TR8"},{"code":"TR9","name":"바질호킨스","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H094","attack":98002.0,"aps":6.126760845086432,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}],"events":[{"code":"TR9","index":"1","rate":0.1614190211271608,"rate_kind":"자원 40; 공격당 1+초당 0.33; 시작시 만충","parts":[["physical",600000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR9","index":"2","rate":0.06126760845086432,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",1687500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR9","index":"3","rate":0.8577465183121006,"rate_kind":"공격당 0.14","parts":[["physical",562500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR9","index":"4","rate":6.126760845086432,"rate_kind":"공격당 1","parts":[["physical",25000.0,[],0.8]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/TR9"},{"code":"TR11","name":"사보","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H092","attack":185001.5,"aps":4.518987285424228,"attack_type":"siege","splash":1,"splash_radius":300,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}],"events":[{"code":"TR11","index":"1","rate":0.036151898283393824,"rate_kind":"자원 125; 공격당 1+초당 0; 시작시 만충","parts":[["physical",5625000.0,[["max",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR11","index":"2","rate":0.9037974570848457,"rate_kind":"공격당 0.2","parts":[["physical",625000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR11","index":"3","rate":0.45189872854242286,"rate_kind":"공격당 0.1","parts":[["physical",1150000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR11","index":"5","rate":0.08,"rate_kind":"12.5초마다","parts":[["magic",3250000.0,[],0.0],["physical",1000000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},{"code":"TR11","index":"2 광폭 단일","rate":0.9037974570848457,"rate_kind":"공격당 0.2 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["max",0.04]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""},{"code":"TR11","index":"5 광폭 단일","rate":0.08,"rate_kind":"12.5초마다","parts":[["fixed",4250000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","target":"frenzy","note":""}],"url":"https://ordr.kr/character/TR11"},{"code":"TR18","name":"야마토","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H0BD","attack":152500.0,"aps":3.6363636404686397,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}},{"rawcode":"H0BE","attack":227500.0,"aps":3.91304344938811,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}],"events":[{"code":"TR18","index":"3","rate":0.545454546070296,"rate_kind":"공격당 0.15","parts":[["fixed",350000.0,[],3.75]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR18","index":"6","rate":1.2727272741640239,"rate_kind":"공격당 0.35","parts":[["magic",215000.0,[],1.15]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR18","index":"6T","rate":3.6363636404686397,"rate_kind":"공격당 1","parts":[["magic",215000.0,[],1.15]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR18","index":"7","rate":0.04175119621545936,"rate_kind":"자원 95; 공격당 1+초당 0.33; 시작시 만충","parts":[["magic",3750000.0,[],0.0],["physical",9000000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""}],"url":"https://ordr.kr/character/TR18"},{"code":"TR19","name":"우솝","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H09B","attack":88502.0,"aps":8.365385054043074,"attack_type":"pierce","splash":1,"splash_radius":300,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}},{"rawcode":"H09C","attack":121057.0,"aps":9.062500345365462,"attack_type":"pierce","splash":1,"splash_radius":400,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}],"events":[{"code":"TR19","index":"1","rate":0.05975275038602196,"rate_kind":"자원 140; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2250000.0,[],0.0],["physical",1000000.0,[["max",0.02]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR19","index":"2","rate":1.1711539075660304,"rate_kind":"공격당 0.14","parts":[["physical",250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR19","index":"3","rate":0.9201923559447381,"rate_kind":"공격당 0.11","parts":[["physical",750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR19","index":"완두콩 2기","rate":1.0,"rate_kind":"1초마다","parts":[["physical",534518.6793750001,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},{"code":"TR19","index":"백설콩","rate":0.2,"rate_kind":"5초마다","parts":[["magic",200000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},{"code":"TR19","index":"2 광폭 단일","rate":3.3461540216172296,"rate_kind":"공격당 0.4 / 광폭 전용 단일 추가","parts":[["fixed",500000.0,[["max",0.1425]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}],"url":"https://ordr.kr/character/TR19"},{"code":"TR20","name":"조로","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H09F","attack":115502.0,"aps":6.492537254014083,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}},{"rawcode":"H0BT","attack":115502.0,"aps":6.492537254014083,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}],"events":[{"code":"TR20","index":"1","rate":0.044776118993200574,"rate_kind":"자원 145; 공격당 1+초당 0; 시작시 만충","parts":[["magic",3500000.0,[],0.0],["physical",6315000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR20","index":"2","rate":1.1037313331823941,"rate_kind":"공격당 0.17","parts":[["physical",715625.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR20","index":"3","rate":0.45447760778098584,"rate_kind":"공격당 0.07","parts":[["physical",1050000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR20","index":"4","rate":0.1947761176204225,"rate_kind":"공격당 0.03","parts":[["physical",2500000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR20","index":"2 광폭 단일","rate":1.1037313331823941,"rate_kind":"공격당 0.17 / 광폭 전용 단일 추가","parts":[["physical",1073437.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}],"url":"https://ordr.kr/character/TR20"},{"code":"TR22","name":"징베","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H09A","attack":180001.5,"aps":4.1573034074703505,"attack_type":"siege","splash":1,"splash_radius":300,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}],"events":[{"code":"TR22","index":"1","rate":0.0715730340747035,"rate_kind":"자원 100; 공격당 1+초당 3; 시작시 만충","parts":[["physical",2500000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR22","index":"2","rate":0.2598314629668969,"rate_kind":"공격당 0.0625","parts":[["magic",450000.0,[],0.0],["physical",1750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR22","index":"3","rate":0.5924157355645249,"rate_kind":"공격당 0.1425","parts":[["physical",1250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR22","index":"2 광폭 단일","rate":0.2598314629668969,"rate_kind":"공격당 0.0625 / 광폭 전용 단일 추가","parts":[["fixed",4950000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}],"url":"https://ordr.kr/character/TR22"},{"code":"TR23","name":"쵸파","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H091","attack":315502.0,"aps":7.016129088854567,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},{"rawcode":"H0B6","attack":350502.0,"aps":3.624999913076563,"attack_type":"siege","splash":1,"splash_radius":400,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}],"events":[{"code":"TR23","index":"1","rate":0.04677419392569711,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR23","index":"2","rate":0.7016129088854567,"rate_kind":"공격당 0.1","parts":[["physical",1750000.0,[],1.75]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/TR23"},{"code":"TR27","name":"타시기","grade":"초월함","focus":"물리·마법 혼합","forms":[{"rawcode":"H05N","attack":163850.0,"aps":4.602272731890856,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}],"events":[{"code":"TR27","index":"1","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5760000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR27","index":"1 라인 최대체력","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",0.0,[["max",0.1]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","target":"line","note":""},{"code":"TR27","index":"1 광폭/보스 최대체력","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",0.0,[["max",0.03]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","target":"special","note":""},{"code":"TR27","index":"2","rate":0.4602272731890856,"rate_kind":"공격당 0.1","parts":[["magic",850000.0,[],9.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR27","index":"3","rate":0.7823863644214455,"rate_kind":"공격당 0.17","parts":[["magic",800000.0,[],7.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/TR27"},{"code":"TR29","name":"후지토라","grade":"초월함","focus":"물리 중심","forms":[{"rawcode":"H08X","attack":342502.0,"aps":3.3510638446276846,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}],"events":[{"code":"TR29","index":"1","rate":0.023936170318769174,"rate_kind":"자원 140; 공격당 1+초당 0; 시작시 만충","parts":[["magic",6250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR29","index":"2","rate":0.1507978730082458,"rate_kind":"공격당 0.045","parts":[["physical",550000.0,[],5.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR29","index":"3","rate":0.5026595766941526,"rate_kind":"공격당 0.15","parts":[["physical",250000.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR29","index":"평타추가","rate":3.3510638446276846,"rate_kind":"공격당 1","parts":[["physical",0.0,[],0.8]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"TR29","index":"3 광폭 단일","rate":0.5026595766941526,"rate_kind":"공격당 0.15 / 광폭 전용 단일 추가","parts":[["magic",350000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}],"url":"https://ordr.kr/character/TR29"},{"code":"TR30","name":"베가펑크","grade":"초월함","focus":"물리·마법 혼합","forms":[{"rawcode":"H0AA","attack":120502.0,"aps":7.016129088854567,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},{"rawcode":"H0AB","attack":92502.0,"aps":6.904762065825099,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}},{"rawcode":"H0AE","attack":149752.0,"aps":2.7391304967534125,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}},{"rawcode":"H0AM","attack":135502.0,"aps":5.800000091393788,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}],"events":[{"code":"TR30","index":"1","rate":0.035080645444272834,"rate_kind":"자원 200; 공격당 1+초당 0; 시작시 만충","parts":[["physical",4250000.0,[],0.0],["fixed",4250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR30","index":"5 릴리스","rate":0.07666666666666667,"rate_kind":"자원 90; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2200000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR30","index":"11 아틀라스","rate":0.024909090909090912,"rate_kind":"자원 110; 공격당 1+초당 0; 시작시 만충","parts":[["fixed",2000000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR30","index":"14 요크","rate":0.057999999999999996,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2250000.0,[],0.0],["magic",2250000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"TR30","index":"7 릴리스","rate":0.759,"rate_kind":"1.31752초마다","parts":[["magic",220000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},{"code":"TR30","index":"15 요크","rate":0.58,"rate_kind":"1.72414초마다","parts":[["physical",375000.0,[],0.0],["magic",375000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},{"code":"TR30","index":"아틀라스 평타","rate":2.74,"rate_kind":"0.364964초마다","parts":[["explosive",90974.34000000001,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/TR30"},{"code":"E1","name":"니카(루피)","grade":"영원한","focus":"물리 중심","forms":[{"rawcode":"H0BK","attack":170501.5,"aps":7.631579163387104,"attack_type":"hero","splash":1,"splash_radius":350,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}],"events":[{"code":"E1","index":"1","rate":7.631579163387104,"rate_kind":"공격당 1","parts":[["physical",200000.0,[],2.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"E1","index":"2","rate":0.05087719442258069,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",10625000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"E1","index":"3","rate":0.7631579163387104,"rate_kind":"공격당 0.1","parts":[["magic",187500.0,[],0.0],["physical",937500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"E1","index":"5","rate":1.1447368745080655,"rate_kind":"공격당 0.15","parts":[["physical",450000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"E1","index":"7","rate":1.5263158326774209,"rate_kind":"공격당 0.2","parts":[["physical",1250000.0,[],5.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/E1"},{"code":"E2","name":"니카(스네이크)","grade":"영원한","focus":"물리 중심","forms":[{"rawcode":"H0BK","attack":170501.5,"aps":7.631579163387104,"attack_type":"hero","splash":1,"splash_radius":350,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}],"events":[{"code":"E2","index":"1","rate":7.631579163387104,"rate_kind":"공격당 1","parts":[["physical",200000.0,[],2.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"E2","index":"2","rate":0.05087719442258069,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",10625000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"E2","index":"3","rate":0.7631579163387104,"rate_kind":"공격당 0.1","parts":[["magic",187500.0,[],0.0],["physical",937500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"E2","index":"5","rate":1.1447368745080655,"rate_kind":"공격당 0.15","parts":[["physical",450000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"E2","index":"7","rate":1.5263158326774209,"rate_kind":"공격당 0.2","parts":[["physical",1250000.0,[],5.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/E2"},{"code":"E5","name":"버기","grade":"영원한","focus":"물리 중심","forms":[{"rawcode":"h05A","attack":132501.0,"aps":4.804878105956271,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}],"events":[{"code":"E5","index":"파견 해군","rate":0.8684817176515962,"rate_kind":"공격당 0.18075","parts":[["physical",49207.5,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"E5","index":"거인족","rate":1.3247337230807794,"rate_kind":"공격당 0.275706","parts":[["physical",181499.67000000004,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/E5"},{"code":"E10","name":"카번딧슈","grade":"영원한","focus":"물리 중심","forms":[{"rawcode":"h05B","attack":87501.0,"aps":5.845070775480798,"attack_type":"normal","splash":0.25,"splash_radius":325,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},{"rawcode":"h06H","attack":652501.0,"aps":37.72727406960874,"attack_type":"normal","splash":1,"splash_radius":500,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}],"events":[{"code":"E10","index":"1","rate":0.05845070775480798,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2350000.0,[["current",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"E10","index":"2","rate":0.6429577853028877,"rate_kind":"공격당 0.11","parts":[["physical",855000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"E10","index":"5","rate":0.5845070775480797,"rate_kind":"공격당 0.1","parts":[["physical",450000.0,[],0.0],["magic",550000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"E10","index":"하쿠바 광폭 단일","rate":5.845070775480798,"rate_kind":"공격당 1 / 광폭 전용 단일 추가","parts":[["fixed",350000.0,[],0.0]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}],"url":"https://ordr.kr/character/E10"},{"code":"E12","name":"핸콕","grade":"영원한","focus":"물리·마법 혼합","forms":[{"rawcode":"h05C","attack":129501.0,"aps":5.810810913127037,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}],"events":[{"code":"E12","index":"1","rate":0.033204633789297354,"rate_kind":"자원 175; 공격당 1+초당 0; 시작시 만충","parts":[["physical",9000000.0,[],0.0],["magic",1250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"E12","index":"2","rate":0,"rate_kind":"신규 몹당 1 확률","parts":[["magic",200000.0,[["max",0.03]],0.0]],"on_spawn":1,"source":"2.323 툴팁 수기","note":""},{"code":"E12","index":"4","rate":0.4358108184845278,"rate_kind":"공격당 0.075","parts":[["physical",850000.0,[],0.0],["magic",150000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"E12","index":"5","rate":1.5253378646958473,"rate_kind":"공격당 0.2625","parts":[["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"E12","index":"6","rate":0.5810810913127037,"rate_kind":"공격당 0.1","parts":[["magic",250000.0,[],0.0],["physical",1062500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/E12"},{"code":"I1","name":"거프","grade":"불멸의","focus":"물리 중심","forms":[{"rawcode":"h04C","attack":133251.0,"aps":6.825396683105565,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}],"events":[{"code":"I1","index":"1","rate":0.04265872926940978,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["physical",12000000.0,[["max",0.12]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"I1","index":"2","rate":0.6825396683105565,"rate_kind":"공격당 0.1","parts":[["physical",615000.0,[],0.95]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I1","index":"4","rate":6.825396683105565,"rate_kind":"공격당 1","parts":[["physical",0.0,[],0.95]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I1","index":"3 광폭 단일","rate":0.47777776781738956,"rate_kind":"공격당 0.07 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["current",0.05]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}],"url":"https://ordr.kr/character/I1"},{"code":"I3","name":"레일리","grade":"불멸의","focus":"물리 중심","forms":[{"rawcode":"h049","attack":152501.0,"aps":7.413793106106033,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}],"events":[{"code":"I3","index":"1","rate":0.06446776614005247,"rate_kind":"자원 115; 공격당 1+초당 0; 시작시 만충","parts":[["physical",3437500.0,[],0.0],["magic",1250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"I3","index":"2","rate":7.413793106106033,"rate_kind":"공격당 1","parts":[["physical",0.0,[],1.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I3","index":"4","rate":0.3706896553053017,"rate_kind":"공격당 0.05","parts":[["magic",300000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I3","index":"5","rate":0.5931034484884827,"rate_kind":"공격당 0.08","parts":[["magic",100000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I3","index":"6","rate":0.18534482765265084,"rate_kind":"공격당 0.025","parts":[["physical",1750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I3","index":"6 광폭 단일","rate":0.18534482765265084,"rate_kind":"공격당 0.025 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["max",0.18]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}],"url":"https://ordr.kr/character/I3"},{"code":"I4","name":"로져","grade":"불멸의","focus":"물리 중심","forms":[{"rawcode":"h04J","attack":202223.5,"aps":8.775509783919786,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}],"events":[{"code":"I4","index":"1","rate":0.058503398559465236,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",1700000.0,[],0.0],["physical",9062500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"I4","index":"2","rate":0.7459183316331818,"rate_kind":"공격당 0.085","parts":[["physical",920000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I4","index":"4","rate":0.39489794027639036,"rate_kind":"공격당 0.045","parts":[["physical",1450000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I4","index":"5","rate":6.666666666666667,"rate_kind":"0.15초마다","parts":[["magic",30000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},{"code":"I4","index":"5b","rate":1.0,"rate_kind":"1초마다","parts":[["magic",100000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/I4"},{"code":"I5","name":"불릿","grade":"불멸의","focus":"물리 중심","forms":[{"rawcode":"h081","attack":340001.0,"aps":3.5833330891198685,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}],"events":[{"code":"I5","index":"4","rate":0.17916665445599345,"rate_kind":"공격당 0.05","parts":[["physical",250000.0,[["current",0.02]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"line_or_frenzy","note":""},{"code":"I5","index":"7","rate":0.7524999487151725,"rate_kind":"공격당 0.21","parts":[["magic",30000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I5","index":"10","rate":3.5833330891198685,"rate_kind":"공격당 1","parts":[["physical",0.0,[],1.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/I5"},{"code":"I9","name":"시키","grade":"불멸의","focus":"물리·마법 혼합","forms":[{"rawcode":"h04B","attack":135001.5,"aps":8.775509783919786,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}],"events":[{"code":"I9","index":"1","rate":0.07020407827135829,"rate_kind":"자원 125; 공격당 1+초당 0; 시작시 만충","parts":[["magic",4062500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"I9","index":"부유물","rate":1.022785665315851,"rate_kind":"공격당 0.11655","parts":[["physical",159093.75,[],0.0],["magic",52500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I9","index":"5","rate":0.8775509783919786,"rate_kind":"공격당 0.1","parts":[["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I9","index":"6","rate":0.6581632337939839,"rate_kind":"공격당 0.075","parts":[["physical",750000.0,[],0.0],["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I9","index":"7","rate":0.368571410924631,"rate_kind":"공격당 0.042","parts":[["magic",450000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/I9"},{"code":"I11","name":"카이도","grade":"불멸의","focus":"물리 중심","forms":[{"rawcode":"h07M","attack":527501.0,"aps":1.737588695729441,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}},{"rawcode":"h0AD","attack":452501.0,"aps":1.9600000023841857,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}],"events":[{"code":"I11","index":"1","rate":0.020675886957294408,"rate_kind":"자원 100; 공격당 1+초당 0.33; 시작시 만충","parts":[["magic",2850000.0,[],0.0],["physical",12499999.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"I11","index":"2","rate":0.13900709565835528,"rate_kind":"공격당 0.08","parts":[["physical",500000.0,[],0.5]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I11","index":"3","rate":0.17375886957294412,"rate_kind":"공격당 0.1","parts":[["physical",2000000.0,[],4.0]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I11","index":"4","rate":1.737588695729441,"rate_kind":"공격당 1","parts":[["magic",150000.0,[],0.25]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I11","index":"5","rate":0.26063830435941615,"rate_kind":"공격당 0.15","parts":[["fixed",350000.0,[],0.3]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I11","index":"6","rate":0.13900709565835528,"rate_kind":"공격당 0.08","parts":[["physical",1800000.0,[],0.3]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I11","index":"7","rate":0.17375886957294412,"rate_kind":"공격당 0.1","parts":[["physical",3600000.0,[],3.0]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I11","index":"8","rate":1.737588695729441,"rate_kind":"공격당 1","parts":[["magic",400000.0,[],0.2]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I11","index":"9","rate":0.26063830435941615,"rate_kind":"공격당 0.15","parts":[["physical",800000.0,[],0.2]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""}],"url":"https://ordr.kr/character/I11"},{"code":"I12","name":"흰수염","grade":"불멸의","focus":"물리 중심","forms":[{"rawcode":"h04A","attack":122501.0,"aps":5.89041063761618,"attack_type":"hero","splash":1,"splash_radius":400,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}],"events":[{"code":"I12","index":"1","rate":0.05556878815318417,"rate_kind":"자원 115; 공격당 1+초당 0.5; 시작시 만충","parts":[["magic",500000.0,[],0.0],["physical",6875000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},{"code":"I12","index":"2","rate":0.294520531880809,"rate_kind":"공격당 0.05","parts":[["physical",2220000.0,[["max",0.035]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I12","index":"4","rate":0.7363013297020224,"rate_kind":"공격당 0.125","parts":[["magic",900000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},{"code":"I12","index":"2 광폭 단일","rate":0.294520531880809,"rate_kind":"공격당 0.05 / 광폭 전용 단일 추가","parts":[["fixed",1665000.0,[["max",0.02625]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}],"url":"https://ordr.kr/character/I12"}],"rounds":{"60":[112921500,170,"normal"],"61":[123189783,176,"large"],"62":[128068400,181,"fort"],"63":[141582700,184,"large"],"64":[150652700,180,"hero"],"65":[147024700,181,"hero"]},"frenzy":{"61":123189783,"62":128068400,"63":141582700,"64":150652700},"boss":{"60":[105187500,327],"65":[112158750,350]}}
+{
+ "version":"2.305 원시 공격 + 2.323 ORDR 툴팁",
+ "heroes":[
+  {
+   "code":"Z2",
+   "name":"레베카",
+   "grade":"제한됨",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h05I","attack":257777.0,"aps":2.7272727488239936,"attack_type":"normal","splash":1,"splash_radius":325,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+   ],
+   "events":[
+    {"code":"Z2","index":"3","rate":0.2181818199059195,"rate_kind":"공격당 0.08","parts":[["physical",1400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"Z2","index":"4","rate":0.2727272748823994,"rate_kind":"공격당 0.1","parts":[["physical",1100000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"Z2","index":"4 광폭 단일","rate":0.5454545497647988,"rate_kind":"공격당 0.2 / 광폭 전용 단일 추가","parts":[["magic",2100000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+   ],
+   "url":"https://ordr.kr/character/Z2"
+  },
+  {
+   "code":"Z6",
+   "name":"알비다",
+   "grade":"제한됨",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h08Q","attack":504446.0,"aps":0.8555555641651152,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+   ],
+   "events":[
+    {"code":"Z6","index":"1","rate":0.015555555712093005,"rate_kind":"자원 55; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",0.0,[["lost",0.1]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"Z6","index":"3","rate":0.2851851880550384,"rate_kind":"공격당 0.333333","parts":[["physical",0.0,[],5.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"Z6","index":"4","rate":0.125,"rate_kind":"8초마다","parts":[["physical",3500000.0,[],0.0],["physical",0.0,[["lost",0.06]],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/Z6"
+  },
+  {
+   "code":"Z8",
+   "name":"카타쿠리",
+   "grade":"제한됨",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h07I","attack":147501.5,"aps":4.754098185654198,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+   ],
+   "events":[
+    {"code":"Z8","index":"1","rate":5.348360458860973,"rate_kind":"공격당 1.125","parts":[["physical",100000.0,[],0.75]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"Z8","index":"3","rate":0.6655737459915877,"rate_kind":"공격당 0.14","parts":[["magic",375000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"Z8","index":"4","rate":0,"rate_kind":"신규 몹당 0.2 확률","parts":[["physical",450000.0,[],0.0]],"on_spawn":0.2,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/Z8"
+  },
+  {
+   "code":"Z9",
+   "name":"크로커다일",
+   "grade":"제한됨",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h05F","attack":92501.5,"aps":6.875000039913824,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}
+   ],
+   "events":[
+    {"code":"Z9","index":"1","rate":0.06265217426012021,"rate_kind":"자원 115; 공격당 1+초당 0.33; 시작시 만충","parts":[["physical",4800000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"Z9","index":"3","rate":0.6875000039913824,"rate_kind":"공격당 0.1","parts":[["physical",850000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"Z9","index":"4","rate":0.3437500019956912,"rate_kind":"공격당 0.05","parts":[["magic",200000.0,[],0.0],["physical",1250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/Z9"
+  },
+  {
+   "code":"Z10",
+   "name":"킹",
+   "grade":"제한됨",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h0AI","attack":131501.5,"aps":4.843750098953026,"attack_type":"normal","splash":1,"splash_radius":275,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+   ],
+   "events":[
+    {"code":"Z10","index":"3","rate":0.48437500989530263,"rate_kind":"공격당 0.1","parts":[["physical",800000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"Z10","index":"4","rate":0.6902343891008061,"rate_kind":"공격당 0.1425","parts":[["fixed",210000.0,[],0.0],["magic",800000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/Z10"
+  },
+  {
+   "code":"TR3",
+   "name":"도플라밍고",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H09E","attack":91751.5,"aps":7.016129088854567,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}},
+    {"rawcode":"H09D","attack":91751.5,"aps":7.372881799842138,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+   ],
+   "events":[
+    {"code":"TR3","index":"2","rate":0.8770161361068208,"rate_kind":"공격당 0.125","parts":[["physical",750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR3","index":"3","rate":0.7016129088854567,"rate_kind":"공격당 0.1","parts":[["magic",200000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR3","index":"3 라인 현체","rate":0.7016129088854567,"rate_kind":"공격당 0.1","parts":[["explosive",0.0,[["current",0.006]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"line","note":""},
+    {"code":"TR3","index":"4","rate":7.016129088854567,"rate_kind":"공격당 1","parts":[["physical",75000.0,[],0.75]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR3","index":"5","rate":7.016129088854567,"rate_kind":"공격당 1","parts":[["physical",105000.0,[],1.05]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR3","index":"6","rate":1.262903235993822,"rate_kind":"공격당 0.18","parts":[["magic",205000.0,[],0.0]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR3","index":"7","rate":1.4032258177709134,"rate_kind":"공격당 0.2","parts":[["physical",500000.0,[],0.0],["magic",150000.0,[["current",0.01]],0.0]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR3"
+  },
+  {
+   "code":"TR4",
+   "name":"로빈",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H098","attack":98833.0,"aps":6.126760845086432,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+   ],
+   "events":[
+    {"code":"TR4","index":"1","rate":0.1656690211271608,"rate_kind":"자원 40; 공격당 1+초당 0.5; 시작시 만충","parts":[["physical",2250000.0,[["max",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR4","index":"2","rate":0.6126760845086432,"rate_kind":"공격당 0.1","parts":[["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR4","index":"3","rate":0.3063380422543216,"rate_kind":"공격당 0.05","parts":[["physical",600000.0,[],0.0],["magic",120000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR4"
+  },
+  {
+   "code":"TR6",
+   "name":"료쿠규",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H0BL","attack":170501.5,"aps":5.178571671855701,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},
+    {"rawcode":"H0BO","attack":220502.0,"aps":5.6493508783092965,"attack_type":"normal","splash":1,"splash_radius":400,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+   ],
+   "events":[
+    {"code":"TR6","index":"2","rate":0.3333333333333333,"rate_kind":"3초마다","parts":[["physical",1812500.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR6","index":"3","rate":0.25892858359278503,"rate_kind":"공격당 0.05","parts":[["physical",937500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR6","index":"4","rate":0.7767857507783551,"rate_kind":"공격당 0.15","parts":[["physical",875000.0,[],0.0],["magic",200000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR6"
+  },
+  {
+   "code":"TR8",
+   "name":"루피",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H099","attack":95502.0,"aps":11.447368745080656,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+   ],
+   "events":[
+    {"code":"TR8","index":"1","rate":0.0715460546567541,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5312500.0,[["max",0.015]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR8","index":"2","rate":2.0032895303891145,"rate_kind":"공격당 0.175","parts":[["magic",32500.0,[],0.0],["physical",32500.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR8","index":"3","rate":0.14309210931350821,"rate_kind":"공격당 0.0125","parts":[["magic",1235000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR8","index":"2 광폭 단일","rate":2.0032895303891145,"rate_kind":"공격당 0.175 / 광폭 전용 단일 추가","parts":[["fixed",32500.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR8"
+  },
+  {
+   "code":"TR9",
+   "name":"바질호킨스",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H094","attack":98002.0,"aps":6.126760845086432,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+   ],
+   "events":[
+    {"code":"TR9","index":"1","rate":0.1614190211271608,"rate_kind":"자원 40; 공격당 1+초당 0.33; 시작시 만충","parts":[["physical",600000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR9","index":"2","rate":0.06126760845086432,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",1687500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR9","index":"3","rate":0.8577465183121006,"rate_kind":"공격당 0.14","parts":[["physical",562500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR9","index":"4","rate":6.126760845086432,"rate_kind":"공격당 1","parts":[["physical",25000.0,[],0.8]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR9"
+  },
+  {
+   "code":"TR11",
+   "name":"사보",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H092","attack":185001.5,"aps":4.518987285424228,"attack_type":"siege","splash":1,"splash_radius":300,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+   ],
+   "events":[
+    {"code":"TR11","index":"1","rate":0.036151898283393824,"rate_kind":"자원 125; 공격당 1+초당 0; 시작시 만충","parts":[["physical",5625000.0,[["max",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR11","index":"2","rate":0.9037974570848457,"rate_kind":"공격당 0.2","parts":[["physical",625000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR11","index":"3","rate":0.45189872854242286,"rate_kind":"공격당 0.1","parts":[["physical",1150000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR11","index":"5","rate":0.08,"rate_kind":"12.5초마다","parts":[["magic",3250000.0,[],0.0],["physical",1000000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR11","index":"2 광폭 단일","rate":0.9037974570848457,"rate_kind":"공격당 0.2 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["max",0.04]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""},
+    {"code":"TR11","index":"5 광폭 단일","rate":0.08,"rate_kind":"12.5초마다","parts":[["fixed",4250000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR11"
+  },
+  {
+   "code":"TR18",
+   "name":"야마토",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H0BD","attack":152500.0,"aps":3.6363636404686397,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}},
+    {"rawcode":"H0BE","attack":227500.0,"aps":3.91304344938811,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+   ],
+   "events":[
+    {"code":"TR18","index":"3","rate":0.545454546070296,"rate_kind":"공격당 0.15","parts":[["fixed",350000.0,[],3.75]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR18","index":"6","rate":1.2727272741640239,"rate_kind":"공격당 0.35","parts":[["magic",215000.0,[],1.15]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR18","index":"6T","rate":3.6363636404686397,"rate_kind":"공격당 1","parts":[["magic",215000.0,[],1.15]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR18","index":"7","rate":0.04175119621545936,"rate_kind":"자원 95; 공격당 1+초당 0.33; 시작시 만충","parts":[["magic",3750000.0,[],0.0],["physical",9000000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR18"
+  },
+  {
+   "code":"TR19",
+   "name":"우솝",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H09B","attack":88502.0,"aps":8.365385054043074,"attack_type":"pierce","splash":1,"splash_radius":300,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}},
+    {"rawcode":"H09C","attack":121057.0,"aps":9.062500345365462,"attack_type":"pierce","splash":1,"splash_radius":400,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}
+   ],
+   "events":[
+    {"code":"TR19","index":"1","rate":0.05975275038602196,"rate_kind":"자원 140; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2250000.0,[],0.0],["physical",1000000.0,[["max",0.02]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR19","index":"2","rate":1.1711539075660304,"rate_kind":"공격당 0.14","parts":[["physical",250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR19","index":"3","rate":0.9201923559447381,"rate_kind":"공격당 0.11","parts":[["physical",750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR19","index":"완두콩 2기","rate":1.0,"rate_kind":"1초마다","parts":[["physical",534518.6793750001,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR19","index":"백설콩","rate":0.2,"rate_kind":"5초마다","parts":[["magic",200000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR19","index":"2 광폭 단일","rate":3.3461540216172296,"rate_kind":"공격당 0.4 / 광폭 전용 단일 추가","parts":[["fixed",500000.0,[["max",0.1425]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR19"
+  },
+  {
+   "code":"TR20",
+   "name":"조로",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H09F","attack":115502.0,"aps":6.492537254014083,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}},
+    {"rawcode":"H0BT","attack":115502.0,"aps":6.492537254014083,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}
+   ],
+   "events":[
+    {"code":"TR20","index":"1","rate":0.044776118993200574,"rate_kind":"자원 145; 공격당 1+초당 0; 시작시 만충","parts":[["magic",3500000.0,[],0.0],["physical",6315000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR20","index":"2","rate":1.1037313331823941,"rate_kind":"공격당 0.17","parts":[["physical",715625.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR20","index":"3","rate":0.45447760778098584,"rate_kind":"공격당 0.07","parts":[["physical",1050000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR20","index":"4","rate":0.1947761176204225,"rate_kind":"공격당 0.03","parts":[["physical",2500000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR20","index":"2 광폭 단일","rate":1.1037313331823941,"rate_kind":"공격당 0.17 / 광폭 전용 단일 추가","parts":[["physical",1073437.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR20"
+  },
+  {
+   "code":"TR22",
+   "name":"징베",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H09A","attack":180001.5,"aps":4.1573034074703505,"attack_type":"siege","splash":1,"splash_radius":300,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+   ],
+   "events":[
+    {"code":"TR22","index":"1","rate":0.0715730340747035,"rate_kind":"자원 100; 공격당 1+초당 3; 시작시 만충","parts":[["physical",2500000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR22","index":"2","rate":0.2598314629668969,"rate_kind":"공격당 0.0625","parts":[["magic",450000.0,[],0.0],["physical",1750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR22","index":"3","rate":0.5924157355645249,"rate_kind":"공격당 0.1425","parts":[["physical",1250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR22","index":"2 광폭 단일","rate":0.2598314629668969,"rate_kind":"공격당 0.0625 / 광폭 전용 단일 추가","parts":[["fixed",4950000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR22"
+  },
+  {
+   "code":"TR23",
+   "name":"쵸파",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H091","attack":315502.0,"aps":7.016129088854567,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},
+    {"rawcode":"H0B6","attack":350502.0,"aps":3.624999913076563,"attack_type":"siege","splash":1,"splash_radius":400,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+   ],
+   "events":[
+    {"code":"TR23","index":"1","rate":0.04677419392569711,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR23","index":"2","rate":0.7016129088854567,"rate_kind":"공격당 0.1","parts":[["physical",1750000.0,[],1.75]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR23"
+  },
+  {
+   "code":"TR27",
+   "name":"타시기",
+   "grade":"초월함",
+   "focus":"물리·마법 혼합",
+   "forms":[
+    {"rawcode":"H05N","attack":163850.0,"aps":4.602272731890856,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}
+   ],
+   "events":[
+    {"code":"TR27","index":"1","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5760000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR27","index":"1 라인 최대체력","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",0.0,[["max",0.1]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","target":"line","note":""},
+    {"code":"TR27","index":"1 광폭/보스 최대체력","rate":0.03409090912511745,"rate_kind":"자원 135; 공격당 1+초당 0; 시작시 만충","parts":[["magic",0.0,[["max",0.03]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","target":"special","note":""},
+    {"code":"TR27","index":"2","rate":0.4602272731890856,"rate_kind":"공격당 0.1","parts":[["magic",850000.0,[],9.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR27","index":"3","rate":0.7823863644214455,"rate_kind":"공격당 0.17","parts":[["magic",800000.0,[],7.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR27"
+  },
+  {
+   "code":"TR29",
+   "name":"후지토라",
+   "grade":"초월함",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H08X","attack":342502.0,"aps":3.3510638446276846,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+   ],
+   "events":[
+    {"code":"TR29","index":"1","rate":0.023936170318769174,"rate_kind":"자원 140; 공격당 1+초당 0; 시작시 만충","parts":[["magic",6250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR29","index":"2","rate":0.1507978730082458,"rate_kind":"공격당 0.045","parts":[["physical",550000.0,[],5.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR29","index":"3","rate":0.5026595766941526,"rate_kind":"공격당 0.15","parts":[["physical",250000.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR29","index":"평타추가","rate":3.3510638446276846,"rate_kind":"공격당 1","parts":[["physical",0.0,[],0.8]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR29","index":"3 광폭 단일","rate":0.5026595766941526,"rate_kind":"공격당 0.15 / 광폭 전용 단일 추가","parts":[["magic",350000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR29"
+  },
+  {
+   "code":"TR30",
+   "name":"베가펑크",
+   "grade":"초월함",
+   "focus":"물리·마법 혼합",
+   "forms":[
+    {"rawcode":"H0AA","attack":120502.0,"aps":7.016129088854567,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},
+    {"rawcode":"H0AB","attack":92502.0,"aps":6.904762065825099,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}},
+    {"rawcode":"H0AE","attack":149752.0,"aps":2.7391304967534125,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}},
+    {"rawcode":"H0AM","attack":135502.0,"aps":5.800000091393788,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+   ],
+   "events":[
+    {"code":"TR30","index":"1","rate":0.035080645444272834,"rate_kind":"자원 200; 공격당 1+초당 0; 시작시 만충","parts":[["physical",4250000.0,[],0.0],["fixed",4250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR30","index":"5 릴리스","rate":0.07666666666666667,"rate_kind":"자원 90; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2200000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR30","index":"11 아틀라스","rate":0.024909090909090912,"rate_kind":"자원 110; 공격당 1+초당 0; 시작시 만충","parts":[["fixed",2000000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR30","index":"14 요크","rate":0.057999999999999996,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2250000.0,[],0.0],["magic",2250000.0,[],0.0]],"phase":null,"per_attack":false,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR30","index":"7 릴리스","rate":0.759,"rate_kind":"1.31752초마다","parts":[["magic",220000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR30","index":"15 요크","rate":0.58,"rate_kind":"1.72414초마다","parts":[["physical",375000.0,[],0.0],["magic",375000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR30","index":"아틀라스 평타","rate":2.74,"rate_kind":"0.364964초마다","parts":[["explosive",90974.34000000001,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/TR30"
+  },
+  {
+   "code":"E1",
+   "name":"니카(루피)",
+   "grade":"영원한",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H0BK","attack":170501.5,"aps":7.631579163387104,"attack_type":"hero","splash":1,"splash_radius":350,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+   ],
+   "events":[
+    {"code":"E1","index":"1","rate":7.631579163387104,"rate_kind":"공격당 1","parts":[["physical",200000.0,[],2.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E1","index":"2","rate":0.05087719442258069,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",10625000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"E1","index":"3","rate":0.7631579163387104,"rate_kind":"공격당 0.1","parts":[["magic",187500.0,[],0.0],["physical",937500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E1","index":"5","rate":1.1447368745080655,"rate_kind":"공격당 0.15","parts":[["physical",450000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E1","index":"7","rate":1.5263158326774209,"rate_kind":"공격당 0.2","parts":[["physical",1250000.0,[],5.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/E1"
+  },
+  {
+   "code":"E2",
+   "name":"니카(스네이크)",
+   "grade":"영원한",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"H0BK","attack":170501.5,"aps":7.631579163387104,"attack_type":"hero","splash":1,"splash_radius":350,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+   ],
+   "events":[
+    {"code":"E2","index":"1","rate":7.631579163387104,"rate_kind":"공격당 1","parts":[["physical",200000.0,[],2.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E2","index":"2","rate":0.05087719442258069,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",10625000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"E2","index":"3","rate":0.7631579163387104,"rate_kind":"공격당 0.1","parts":[["magic",187500.0,[],0.0],["physical",937500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E2","index":"5","rate":1.1447368745080655,"rate_kind":"공격당 0.15","parts":[["physical",450000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E2","index":"7","rate":1.5263158326774209,"rate_kind":"공격당 0.2","parts":[["physical",1250000.0,[],5.0]],"phase":"giant","per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/E2"
+  },
+  {
+   "code":"E5",
+   "name":"버기",
+   "grade":"영원한",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h05A","attack":132501.0,"aps":4.804878105956271,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}
+   ],
+   "events":[
+    {"code":"E5","index":"파견 해군","rate":0.8684817176515962,"rate_kind":"공격당 0.18075","parts":[["physical",49207.5,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E5","index":"거인족","rate":1.3247337230807794,"rate_kind":"공격당 0.275706","parts":[["physical",181499.67000000004,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/E5"
+  },
+  {
+   "code":"E10",
+   "name":"카번딧슈",
+   "grade":"영원한",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h05B","attack":87501.0,"aps":5.845070775480798,"attack_type":"normal","splash":0.25,"splash_radius":325,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},
+    {"rawcode":"h06H","attack":652501.0,"aps":37.72727406960874,"attack_type":"normal","splash":1,"splash_radius":500,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+   ],
+   "events":[
+    {"code":"E10","index":"1","rate":0.05845070775480798,"rate_kind":"자원 100; 공격당 1+초당 0; 시작시 만충","parts":[["physical",2350000.0,[["current",0.01]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"E10","index":"2","rate":0.6429577853028877,"rate_kind":"공격당 0.11","parts":[["physical",855000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E10","index":"5","rate":0.5845070775480797,"rate_kind":"공격당 0.1","parts":[["physical",450000.0,[],0.0],["magic",550000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E10","index":"하쿠바 광폭 단일","rate":5.845070775480798,"rate_kind":"공격당 1 / 광폭 전용 단일 추가","parts":[["fixed",350000.0,[],0.0]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+   ],
+   "url":"https://ordr.kr/character/E10"
+  },
+  {
+   "code":"E12",
+   "name":"핸콕",
+   "grade":"영원한",
+   "focus":"물리·마법 혼합",
+   "forms":[
+    {"rawcode":"h05C","attack":129501.0,"aps":5.810810913127037,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+   ],
+   "events":[
+    {"code":"E12","index":"1","rate":0.033204633789297354,"rate_kind":"자원 175; 공격당 1+초당 0; 시작시 만충","parts":[["physical",9000000.0,[],0.0],["magic",1250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"E12","index":"2","rate":0,"rate_kind":"신규 몹당 1 확률","parts":[["magic",200000.0,[["max",0.03]],0.0]],"on_spawn":1,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E12","index":"4","rate":0.4358108184845278,"rate_kind":"공격당 0.075","parts":[["physical",850000.0,[],0.0],["magic",150000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E12","index":"5","rate":1.5253378646958473,"rate_kind":"공격당 0.2625","parts":[["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"E12","index":"6","rate":0.5810810913127037,"rate_kind":"공격당 0.1","parts":[["magic",250000.0,[],0.0],["physical",1062500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/E12"
+  },
+  {
+   "code":"I1",
+   "name":"거프",
+   "grade":"불멸의",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h04C","attack":133251.0,"aps":6.825396683105565,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+   ],
+   "events":[
+    {"code":"I1","index":"1","rate":0.04265872926940978,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["physical",12000000.0,[["max",0.12]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"I1","index":"2","rate":0.6825396683105565,"rate_kind":"공격당 0.1","parts":[["physical",615000.0,[],0.95]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I1","index":"4","rate":6.825396683105565,"rate_kind":"공격당 1","parts":[["physical",0.0,[],0.95]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I1","index":"3 광폭 단일","rate":0.47777776781738956,"rate_kind":"공격당 0.07 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["current",0.05]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+   ],
+   "url":"https://ordr.kr/character/I1"
+  },
+  {
+   "code":"I3",
+   "name":"레일리",
+   "grade":"불멸의",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h049","attack":152501.0,"aps":7.413793106106033,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}
+   ],
+   "events":[
+    {"code":"I3","index":"1","rate":0.06446776614005247,"rate_kind":"자원 115; 공격당 1+초당 0; 시작시 만충","parts":[["physical",3437500.0,[],0.0],["magic",1250000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"I3","index":"2","rate":7.413793106106033,"rate_kind":"공격당 1","parts":[["physical",0.0,[],1.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I3","index":"4","rate":0.3706896553053017,"rate_kind":"공격당 0.05","parts":[["magic",300000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I3","index":"5","rate":0.5931034484884827,"rate_kind":"공격당 0.08","parts":[["magic",100000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I3","index":"6","rate":0.18534482765265084,"rate_kind":"공격당 0.025","parts":[["physical",1750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I3","index":"6 광폭 단일","rate":0.18534482765265084,"rate_kind":"공격당 0.025 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["max",0.18]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+   ],
+   "url":"https://ordr.kr/character/I3"
+  },
+  {
+   "code":"I4",
+   "name":"로져",
+   "grade":"불멸의",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h04J","attack":202223.5,"aps":8.775509783919786,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+   ],
+   "events":[
+    {"code":"I4","index":"1","rate":0.058503398559465236,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[["magic",1700000.0,[],0.0],["physical",9062500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"I4","index":"2","rate":0.7459183316331818,"rate_kind":"공격당 0.085","parts":[["physical",920000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I4","index":"4","rate":0.39489794027639036,"rate_kind":"공격당 0.045","parts":[["physical",1450000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I4","index":"5","rate":6.666666666666667,"rate_kind":"0.15초마다","parts":[["magic",30000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I4","index":"5b","rate":1.0,"rate_kind":"1초마다","parts":[["magic",100000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/I4"
+  },
+  {
+   "code":"I5",
+   "name":"불릿",
+   "grade":"불멸의",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h081","attack":340001.0,"aps":3.5833330891198685,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
+   ],
+   "events":[
+    {"code":"I5","index":"4","rate":0.17916665445599345,"rate_kind":"공격당 0.05","parts":[["physical",250000.0,[["current",0.02]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"line_or_frenzy","note":""},
+    {"code":"I5","index":"7","rate":0.7524999487151725,"rate_kind":"공격당 0.21","parts":[["magic",30000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I5","index":"10","rate":3.5833330891198685,"rate_kind":"공격당 1","parts":[["physical",0.0,[],1.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/I5"
+  },
+  {
+   "code":"I9",
+   "name":"시키",
+   "grade":"불멸의",
+   "focus":"물리·마법 혼합",
+   "forms":[
+    {"rawcode":"h04B","attack":135001.5,"aps":8.775509783919786,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
+   ],
+   "events":[
+    {"code":"I9","index":"1","rate":0.07020407827135829,"rate_kind":"자원 125; 공격당 1+초당 0; 시작시 만충","parts":[["magic",4062500.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"I9","index":"부유물","rate":1.022785665315851,"rate_kind":"공격당 0.11655","parts":[["physical",159093.75,[],0.0],["magic",52500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I9","index":"5","rate":0.8775509783919786,"rate_kind":"공격당 0.1","parts":[["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I9","index":"6","rate":0.6581632337939839,"rate_kind":"공격당 0.075","parts":[["physical",750000.0,[],0.0],["magic",400000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I9","index":"7","rate":0.368571410924631,"rate_kind":"공격당 0.042","parts":[["magic",450000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/I9"
+  },
+  {
+   "code":"I11",
+   "name":"카이도",
+   "grade":"불멸의",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h07M","attack":527501.0,"aps":1.737588695729441,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}},
+    {"rawcode":"h0AD","attack":452501.0,"aps":1.9600000023841857,"attack_type":"hero","splash":1,"splash_radius":500,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+   ],
+   "events":[
+    {"code":"I11","index":"1","rate":0.020675886957294408,"rate_kind":"자원 100; 공격당 1+초당 0.33; 시작시 만충","parts":[["magic",2850000.0,[],0.0],["physical",12499999.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"I11","index":"2","rate":0.13900709565835528,"rate_kind":"공격당 0.08","parts":[["physical",500000.0,[],0.5]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I11","index":"3","rate":0.17375886957294412,"rate_kind":"공격당 0.1","parts":[["physical",2000000.0,[],4.0]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I11","index":"4","rate":1.737588695729441,"rate_kind":"공격당 1","parts":[["magic",150000.0,[],0.25]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I11","index":"5","rate":0.26063830435941615,"rate_kind":"공격당 0.15","parts":[["fixed",350000.0,[],0.3]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I11","index":"6","rate":0.13900709565835528,"rate_kind":"공격당 0.08","parts":[["physical",1800000.0,[],0.3]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I11","index":"7","rate":0.17375886957294412,"rate_kind":"공격당 0.1","parts":[["physical",3600000.0,[],3.0]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I11","index":"8","rate":1.737588695729441,"rate_kind":"공격당 1","parts":[["magic",400000.0,[],0.2]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I11","index":"9","rate":0.26063830435941615,"rate_kind":"공격당 0.15","parts":[["physical",800000.0,[],0.2]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""}
+   ],
+   "url":"https://ordr.kr/character/I11"
+  },
+  {
+   "code":"I12",
+   "name":"흰수염",
+   "grade":"불멸의",
+   "focus":"물리 중심",
+   "forms":[
+    {"rawcode":"h04A","attack":122501.0,"aps":5.89041063761618,"attack_type":"hero","splash":1,"splash_radius":400,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05}}
+   ],
+   "events":[
+    {"code":"I12","index":"1","rate":0.05556878815318417,"rate_kind":"자원 115; 공격당 1+초당 0.5; 시작시 만충","parts":[["magic",500000.0,[],0.0],["physical",6875000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"I12","index":"2","rate":0.294520531880809,"rate_kind":"공격당 0.05","parts":[["physical",2220000.0,[["max",0.035]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I12","index":"4","rate":0.7363013297020224,"rate_kind":"공격당 0.125","parts":[["magic",900000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"I12","index":"2 광폭 단일","rate":0.294520531880809,"rate_kind":"공격당 0.05 / 광폭 전용 단일 추가","parts":[["fixed",1665000.0,[["max",0.02625]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":""}
+   ],
+   "url":"https://ordr.kr/character/I12"
+  }
+ ],
+ "rounds":{"60":[112921500,170,"normal"],"61":[123189783,176,"large"],"62":[128068400,181,"fort"],"63":[141582700,184,"large"],"64":[150652700,180,"hero"],"65":[147024700,181,"hero"]},
+ "frenzy":{"61":123189783,"62":128068400,"63":141582700,"64":150652700},
+ "boss":{"60":[105187500,327],"65":[112158750,350]}
+}
