@@ -37,6 +37,7 @@ function assertLine(out,direct){
   assert.deepEqual(out.damage.byCategory,direct.lineDamage);
   assert.deepEqual(out.damage.bySource,direct.sourceDamage);
   assert.deepEqual(out.deletions,direct.deleteCounts);
+  assert.deepEqual(out.executions,direct.executeCounts);
   assert.deepEqual(out.finisher,{attempts:direct.finisherAttempts,kills:direct.finisherKills});
   assert.deepEqual(out.control,direct.control);
   assert.deepEqual(out.totals,{lineSpawned:direct.totalLineSpawned,lineKilled:direct.totalLineKilled,unitCount:direct.unitCount});

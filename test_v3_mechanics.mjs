@@ -84,4 +84,11 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(Math.abs(ev('Z6','1').rate-(h('Z6').forms[0].aps*(1+5/3)+10/8)/55)<1e-12);
   assert.equal(ev('TR6','2').phase,'trans');
 }
-console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds, boss lines, hero armor break, auras and rates: passed');
+// [수정 7] I3 라인몹 제거: 라인 대상일 때만 집계된다.
+{
+  const r=simulateV2(data,[{code:'I3',count:3}],{});
+  assert.ok(r.executeCounts.I3>0);
+  const off=structuredClone(data);for(const e of off.heroes.find(x=>x.code==='I3').events)delete e.execute_line;
+  assert.deepEqual(simulateV2(off,[{code:'I3',count:3}],{}).executeCounts,{});
+}
+console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds, boss lines, hero armor break, auras and rates, execute: passed');

@@ -127,7 +127,7 @@ export function simulateV2(data,composition,options={}){
     u.rngState=x>>>0;
     return u.rngState/4294967296;
   };
-  const deleteCounts={L12:0,D4:0,L19:0};
+  const deleteCounts={L12:0,D4:0,L19:0},executeCounts={};
   const sourceDamage={};
   const lineDamage={area:0,basic:0,single:0,finisher:0,magic:0,physical:0,fixed:0};
   const mobs=[],specials=[],checkpoints=[],timeline=[];
@@ -179,7 +179,7 @@ export function simulateV2(data,composition,options={}){
     averageAb:mobs.length?mobs.reduce((a,m)=>a+m.ab,0)/mobs.length:0});
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
-    finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,control,unitCount:units.length,
+    finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,unitCount:units.length,
     magicFactor,cut,coverage,resourceMode});
 
   for(const round of rounds){
@@ -303,6 +303,18 @@ export function simulateV2(data,composition,options={}){
             // Armor break as an expected stack per step, like the supports (cap 75 in abAdd).
             if(m.hp>0&&e.ab)abAdd(m,e.ab*share);
             if(m.hp>0&&e.ab_target&&m===target)abAdd(m,e.ab_target*rate*.1);
+          }
+          // execute_line: each proc removes the attack target if it is a line mob (I3 순속·패기발산).
+          // Procs accumulate as an expected-value bank, like the finisher success bank.
+          if(e.execute_line){
+            const bank=u.executeBank??={};
+            bank[e.index]=(bank[e.index]??0)+rate*.1;
+            while(bank[e.index]>=1-1e-9){
+              bank[e.index]-=1;
+              if(target?.kind==='line'&&target.hp>0){
+                target.hp=0;executeCounts[u.code]=(executeCounts[u.code]??0)+1;
+              }
+            }
           }
         }
       }

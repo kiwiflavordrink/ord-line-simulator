@@ -277,6 +277,7 @@ function lineReport(r,data,includeTimeline){
     totals:{lineSpawned:r.totalLineSpawned,lineKilled:r.totalLineKilled,unitCount:r.unitCount},
     finisher:{attempts:r.finisherAttempts,kills:r.finisherKills},
     deletions:r.deleteCounts,
+    executions:r.executeCounts,
     control:r.control,
     applied:{cut:r.cut,coverage:r.coverage,magicFactor:r.magicFactor,resourceMode:r.resourceMode},
     ...(includeTimeline?{timeline:r.timeline}:{})
