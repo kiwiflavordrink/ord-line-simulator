@@ -205,20 +205,22 @@
    "name":"우솝",
    "grade":"초월함",
    "focus":"물리 중심",
+   "cooldown_form":{"window":5,"cooldown":45,"note":"수정내역 11: 우솝해머 A0OY(AEme 변신) H09B→H09C, ahdu 5초, acdn 45초 [2.305 w3a, STRING 3756]. 사용자 확인: 2.323에도 쿨마다 사용 가능한 액티브"},
    "forms":[
     {"rawcode":"H09B","attack":88502.0,"aps":8.365385054043074,"attack_type":"pierce","splash":1,"splash_radius":300,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"crit":[0.15,3.5],"crit_note":"수정내역 10: 근거 \"기본 공격시 15% 확률로 3.5배 크리티컬 발생\" (이전 공격력 ×1.375 하드코딩)"},
-    {"rawcode":"H09C","attack":121057.0,"aps":9.062500345365462,"attack_type":"pierce","splash":1,"splash_radius":400,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}
+    {"rawcode":"H09C","attack":121057.0,"aps":9.062500345365462,"attack_type":"pierce","splash":1,"splash_radius":400,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"crit":[0.2,7],"crit_note":"수정내역 11: 해머 폼 10톤해머 A0OZ \"기본 공격시 20% 확률로 7배 크리티컬 발동\" [2.305 STRING 5098, 2.305 기준]"}
    ],
    "events":[
-    {"code":"TR19","index":"1","rate":0.05975275038602196,"rate_kind":"자원 140; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2250000.0,[],0.0],["physical",1000000.0,[["max",0.02]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR19","index":"1","rate":0.05975275038602196,"rate_kind":"자원 140; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2250000.0,[],0.0],["physical",1000000.0,[["max",0.02]],0.0]],"phase":"base","per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 11: 해머 지속 중 사용 불가 \"지속시간 중 화염성,파이어버드 스타 사용 불가\" [2.305 STRING 3756]"},
     {"code":"TR19","index":"2","rate":1.1711539075660304,"rate_kind":"공격당 0.14","parts":[["physical",250000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR19","index":"3","rate":0.9201923559447381,"rate_kind":"공격당 0.11","parts":[["physical",750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR19","index":"3","rate":0.9201923559447381,"rate_kind":"공격당 0.11","parts":[["physical",750000.0,[],0.0]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 11: 해머 지속 중 사용 불가 \"지속시간 중 화염성,파이어버드 스타 사용 불가\" [2.305 STRING 3756]"},
     {"code":"TR19","index":"완두콩 2기","rate":1.0,"rate_kind":"1초마다","parts":[["physical",534518.6793750001,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR19","index":"백설콩","rate":0.2,"rate_kind":"5초마다","parts":[["magic",200000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR19","index":"2 광폭 단일","rate":3.3461540216172296,"rate_kind":"공격당 0.4 / 광폭 전용 단일 추가","parts":[["fixed",500000.0,[["max",0.1425]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":"광폭 전용 유지. 근거 \"▶ 광폭화 : 스킬피해량의 200% + 전체체력 14.25% 추가 고정 데미지\""},
     {"code":"TR19","index":"2 보스 단일","rate":3.3461540216172296,"rate_kind":"공격당 0.4","parts":[["fixed",250000.0,[["max",0.0425]],0.0]],"phase":null,"per_attack":true,"target":"boss","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 \"▶ 보스 : 스킬피해량의 100% + 전체체력 4.25% 추가 고정 데미지\", \"▶ 특수 유닛 공격 시 저격의 발동확률이 20%로 증가 및 저격 2회 발동\""},
     {"code":"TR19","index":"2 특수 확률 증가","rate":2.1750001140511994,"rate_kind":"공격당 0.26","parts":[["physical",250000.0,[],0.0]],"phase":null,"per_attack":true,"target":"target_special","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 \"특수 유닛 공격 시 저격의 발동확률이 20%로 증가 및 저격 2회 발동\". 저격 25만 자체가 특수 대상에 0.4회/공격, 범위 이벤트 2의 0.14회를 뺀 0.26회"},
-    {"code":"TR19","index":"3 단일 추가","rate":0.9201923559447381,"rate_kind":"공격당 0.11","parts":[["magic",600000.0,[],0.0]],"boss_parts":[["magic",750000.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 화염성 \"▶ 단일 적에게는 60만의 추가 마법데미지 (보스 125% / 스토리 150%)\""}
+    {"code":"TR19","index":"3 단일 추가","rate":0.9201923559447381,"rate_kind":"공격당 0.11","parts":[["magic",600000.0,[],0.0]],"boss_parts":[["magic",750000.0,[],0.0]],"phase":"base","per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 화염성 \"▶ 단일 적에게는 60만의 추가 마법데미지 (보스 125% / 스토리 150%)\" / 수정내역 11: 해머 지속 중 사용 불가 \"지속시간 중 화염성,파이어버드 스타 사용 불가\" [2.305 STRING 3756]"},
+    {"code":"TR19","index":"해머 보스","rate":8.365385054043074,"rate_kind":"공격당 1 (해머 폼)","parts":[["physical",0.0,[["max",0.025]],0.0]],"phase":"trans","per_attack":true,"target":"boss","source":"2.305 우솝해머 구조·수치 [2.305 기준]","note":"수정내역 11: 근거 2.305 STRING 3756 우솝해머 \"보스 공격시 전체체력 2.5%의 관통 물리데미지\". 2.323 툴팁에 해머 문장이 없어 2.305 값을 쓴다. 같은 폼의 10톤해머 STRING 5098은 \"보스 공격시 전체 체력의 3.5%(x1~1.75)\"라고 다르게 적고 있어 해석 불확실"}
    ],
    "url":"https://ordr.kr/character/TR19"
   },

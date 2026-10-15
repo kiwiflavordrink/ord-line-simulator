@@ -30,12 +30,15 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.equal(tr23.permanent_form,1);
   assert.equal(tr23.forms[1].splash_radius,400);
 }
-// [수정 3] TR19는 저격왕 기본 폼 H09B(300 스플래시).
+// [수정 3·11] TR19: 기본 폼 H09B(300 스플래시), 우솝해머 H09C는 45초마다 5초.
 {
   const tr19=data.heroes.find(h=>h.code==='TR19');
   assert.equal(tr19.permanent_form,undefined);
   assert.equal(tr19.forms[0].rawcode,'H09B');
   assert.equal(tr19.forms[0].splash_radius,300);
+  assert.deepEqual([tr19.cooldown_form.window,tr19.cooldown_form.cooldown],[5,45]);
+  const noHammer=structuredClone(data);delete noHammer.heroes.find(h=>h.code==='TR19').cooldown_form;
+  assert.notDeepEqual(simulateV2(noHammer,[{code:'TR19'}],{}).checkpoints,simulateV2(data,[{code:'TR19'}],{}).checkpoints);
 }
 // [수정 4a] 단일 대상 종류: single(공격 대상 전체) / boss / frenzy / boss_parts.
 {

@@ -51,6 +51,13 @@ function formAt(hero,g,t,mode){
   const base=hero.forms[0];
   if(hero.forms.length<2)return {form:base,transformed:false};
   if(hero.permanent_form!=null)return {form:hero.forms[hero.permanent_form],transformed:hero.permanent_form>0};
+  // Cooldown-driven active transform (data cooldown_form): used whenever the cooldown is ready,
+  // so the window opens at time 0 and every cooldown seconds (TR19 우솝해머 5 s / 45 s).
+  const cd=hero.cooldown_form;
+  if(cd){
+    const on=mode==='perRound'?t%cd.cooldown<cd.window:g%cd.cooldown<cd.window;
+    return {form:on?hero.forms[1]:base,transformed:on};
+  }
   const windows={TR3:[4.5,150,.25],TR6:[7,130,.25],TR18:[3.5,95,.33],TR23:[4,150,0],I11:[11,0,0],E10:[2,100,0]};
   const w=windows[hero.code];if(!w)return {form:base,transformed:false};
   let period=w[1]?w[0]+w[1]/(base.aps+w[2]):w[0]+1/(base.aps*.14);
