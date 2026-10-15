@@ -277,12 +277,16 @@ export function simulateV2(data,composition,options={}){
   // Separate seeded stream for random-target draws so they do not shift the stun/slow sequence.
   let pickState=(clamp(Math.floor((options.deletion??{}).seed??202323),0,2147483647)^0x27d4eb2f)>>>0||1;
   const pickRandom=()=>{pickState^=pickState<<13;pickState^=pickState>>>17;pickState^=pickState<<5;pickState>>>=0;return pickState/4294967296;};
+  // External control (position model, 수정내역 23): a slow on every enemy (e.g. 1.02 = full slow on 신)
+  // and stun sources without damage {rate per s, radius, normal, hero} centred on the shared attack target.
+  const externalSlow=clamp(options.externalSlow??0,0,3);
+  const externalStuns=Array.isArray(options.externalStuns)?options.externalStuns:[];
   const ccProcs=rate=>{let n=0;const p=1-Math.exp(-rate*.1);while(n<20&&ccRandom()<p)n++;return n;};
   const slowOf=m=>{
     let sum=0;
     if(m.slows)for(const v of Object.values(m.slows))if(v.until>now)sum+=v.value;
     for(const a of enemySlowAuras.values())if(dist(m,spawnPt)<=a.range)sum+=a.value;
-    return sum;
+    return sum+externalSlow;
   };
   // WC3: speed = (base + flat bonuses) x (1 + sum of % modifiers), clamped to [MinUnitSpeed, MaxUnitSpeed].
   // Flat: R024 (line and frenzy, not bosses). %: difficulty aura AUau, 나스쥬로 A13F, minus every slow.
@@ -490,6 +494,8 @@ export function simulateV2(data,composition,options={}){
       // Supports, Red Force and conditional units: engage range (default lp.engage_range), splash lp.support_splash.
       const globalTarget=pickTarget(engageRange);
       let target=globalTarget;
+      if(posModel&&globalTarget)for(const x of externalStuns)for(let k=ccProcs(x.rate);k>0;k--)
+        for(const m of [...mobs,...specials])if(m.hp>0&&dist(m,globalTarget)<=x.radius)applyStun(m,{normal:x.normal,hero:x.hero??x.normal});
       const aoeTargets=posModel?[...mobs,...specials].filter(m=>m===target||target&&dist(m,target)<=lp.support_splash)
         :[...mobs,...specials.filter(s=>s===target)];
       const hit=m=>m===target?1:coverage;

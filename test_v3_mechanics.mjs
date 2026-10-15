@@ -299,4 +299,18 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(tr6(0,3).nutrients.TR6>tr6(0,1).nutrients.TR6);       // three copies feed one counter
   assert.equal(Object.keys(tr6(0,3).nutrients).length,1);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6): passed');
+// [수정 23] 아카이누 히든(H17)과 외부 이감·스턴(위치 모델).
+{
+  const h17=fullData.heroes.find(h=>h.code==='H17');
+  assert.equal(h17.forms[0].attack,51226.5);assert.ok(Math.abs(h17.forms[0].aps-4.8)<1e-9);
+  // Its skill hits bosses for 275만 and frenzy mobs for 18% max HP: the boss dies sooner with it.
+  const bossKill=team=>simulateV2(fullData,team,{}).checkpoints[0].specialKillSecond??99;
+  assert.ok(bossKill([{code:'TR19'},{code:'H17'}])<bossKill([{code:'TR19'}]));
+  const pos={positionModel:true},team=[{code:'TR19',count:2}];
+  const left=o=>simulateV2(fullData,team,{...pos,...o}).totalLineKilled;
+  assert.ok(left({externalSlow:1.02})>left({}));                    // slower mobs stay in range longer
+  const stun=simulateV2(fullData,team,{...pos,externalStuns:[{rate:1,radius:600,normal:1.4,hero:.7}]});
+  assert.ok(stun.control.stunnedLineMobSeconds>simulateV2(fullData,team,pos).control.stunnedLineMobSeconds);
+  assert.deepEqual(simulateV2(fullData,team,{externalSlow:1.02}).checkpoints,simulateV2(fullData,team,{}).checkpoints); // coverage model ignores it
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control: passed');
