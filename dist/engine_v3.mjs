@@ -67,6 +67,21 @@ export function randomPicks(candidates,picks,rng,hit){
   }
 }
 const scaleParts=(parts,k)=>parts.map(([kind,flat,perc,mul=0])=>[kind,flat*k,perc.map(([b,r])=>[b,r*k]),mul*k]);
+// Stack scenarios (수정내역 28): hero.stack.variants {zero, half, max} override events by index ({removed:true}
+// drops one), and may replace auras, forms or team_effects. options.stackLevel picks the level for every hero
+// ('max' default = the stored data), options.stackLevels {code: level} per hero.
+export function stackVariant(hero,level){
+  const v=hero.stack?.variants?.[level];
+  if(!v||level==='max')return hero;
+  const events=[];
+  for(const e of hero.events){
+    const o=v.events?.[e.index];
+    if(o?.removed)continue;
+    events.push(o?{...e,...o}:e);
+  }
+  return {...hero,events,...(v.auras?{auras:v.auras}:{}),...(v.forms?{forms:v.forms}:{}),
+    ...(v.team_effects!==undefined?{team_effects:v.team_effects}:{})};
+}
 export function alabastaEvents(hero,level,moveShot=true){
   const a=hero.alabasta;if(!a)return hero.events;
   const L=Math.round(clamp(level??a.default,a.min,a.max)),shot=moveShot&&L>=5;
@@ -133,7 +148,9 @@ function supportCastSchedule(code,full){
 }
 
 export function simulateV2(data,composition,options={}){
-  const heroMap=new Map(data.heroes.map(h=>[h.code,h]));
+  const stackLevelOf=code=>['zero','half','max'].includes(options.stackLevels?.[code])?options.stackLevels[code]:
+    ['zero','half','max'].includes(options.stackLevel)?options.stackLevel:'max';
+  const heroMap=new Map(data.heroes.map(h=>[h.code,stackVariant(h,stackLevelOf(h.code))]));
   // Difficulty (data.difficulties: 2.305 structure, 2.323 common HP/regen) and 오로성 (data.gorosei, 2.323 values).
   // The legacy option warcury=true selects 워큐리. 지옥 has no 오로성.
   const diffName=['지옥','신','악몽'].includes(options.difficulty)?options.difficulty:'신';
