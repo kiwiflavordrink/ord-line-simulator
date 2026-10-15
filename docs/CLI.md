@@ -112,6 +112,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `externalStuns` | `[{rate, radius, normal, hero}]` | 없음 | 위치 모델: 피해 없는 외부 스턴 원천. 초당 `rate`회, 공통 공격 대상 중심 `radius` 범위, 지속 `normal`초(보스·광폭 `hero`초) |
 | `singleControl` | `{to15, finish}` 초 | 없음 | 단일 컨(수정내역 24): 단 흐름이 가장 많이 깎인 라인몹(15% 초과)을 `to15`초에 최대체력 85%씩, 끝 흐름이 15% 이하 중 가장 낮은 몹을 `finish`초에 15%씩 동시에 깎는다. N단 M끝 = 루치 1기 100→15% 시간/N, 핸콕 1기 15%→처치 시간/M (단일 테스터) |
 | `heroArmorCuts` | 불리언 | false | 조합 영웅의 자기 방깎 오라(`own_armor_cut`, 2.323 buff_lines "방어력 감소 N")를 서로 다른 영웅마다 1회씩 `cut`에 더한다. 자기 오라만 보려면 `cut: 0`과 함께 (수정내역 29) |
+| `executeTarget` | `attack`·`lowest` | `attack` | 체력 조건 처형(L27 조로 전설 15% 이하)의 대상. `attack`은 2.305 구조대로 공격 대상만, `lowest`는 끝딜처럼 사거리 안 체력 비율이 가장 낮은 라인몹을 직접 지정 (수정내역 30) |
 | `stackLevel` | `zero`·`half`·`max` | 데이터 값 | 모든 영웅의 사용자 스택 단계(수정내역 28). 영웅별은 `stackLevels: {"E11": "half"}` |
 | `extraStackLevels` | `{코드: 단계}` | 주 스택 단계 | 두 번째 스택(TR24 코비 버프 수 2/12/22) |
 | `trait` | `on`·`off` | 데이터 값 | 모든 영웅의 특강 적용 여부. 영웅별은 `traits: {"TR15": "on"}` |

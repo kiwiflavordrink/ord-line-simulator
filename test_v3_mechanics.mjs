@@ -376,4 +376,19 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const i5=fullData.heroes.find(h=>h.code==='I5');
   assert.equal(i5.stack.max,30);assert.deepEqual(i5.stack.variants.max,{});
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks: passed');
+// [수정 30] 체력 조건 처형(L27 조로 전설): 공격 대상 라인몹 체력 ≤ 15%일 때만 제거.
+{
+  const z=fullData.heroes.find(h=>h.code==='L27').events.find(e=>e.execute_below!=null);
+  assert.equal(z.execute_below,.15);
+  const off=structuredClone(fullData);off.heroes.find(h=>h.code==='L27').events=off.heroes.find(h=>h.code==='L27').events.filter(e=>e.execute_below==null);
+  const team=[{code:'L27',count:3},{code:'H17'},{code:'TR11',count:2}];
+  const a=simulateV2(off,team,{}),b=simulateV2(fullData,team,{});
+  assert.ok(b.executeCounts.L27>0&&!a.executeCounts.L27);
+  assert.ok(b.remaining<=a.remaining);
+  // Alone, Zoro cannot bring line mobs to 15%: (almost) no executes.
+  assert.ok((simulateV2(fullData,[{code:'L27'}],{}).executeCounts.L27??0)<=2);
+  // 'lowest' target picks qualifying mobs in range at least as often as the attack target (position model).
+  const p=o=>simulateV2(fullData,[{code:'L27',count:2},{code:'H17'},{code:'I12',count:2}],{positionModel:true,deletion:{seed:1},...o}).executeCounts.L27;
+  assert.ok(p({executeTarget:'lowest'})>=p({}));
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute: passed');

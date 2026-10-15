@@ -716,6 +716,29 @@ export function simulateV2(data,composition,options={}){
           if(e.resource_cost&&e.resource_kind!=='hp'&&u.buffs.mana_regen)rate+=u.buffs.mana_regen/e.resource_cost;
           if(executing&&e.index===exe.boost_event)rate=aps;
           if(e.initial&&(resourceMode==='perRound'&&step===0||resourceMode==='start'&&globalStep===0))rate+=10;
+          // execute_below (L27 사자의노래, 수정내역 30): the hero's attack clock (actual aps incl. buffs) runs every
+          // step; on each whole attack, if the attack target is a line mob at or below execute_below x max HP, the
+          // skill fires 100% and removes it. Line damage brings mobs down; only the attack target is checked (2.305).
+          if(e.execute_below!=null){
+            const bank=u.executeBank??={};
+            bank[e.index]=(bank[e.index]??0)+aps*(hero.attack_uptime??1)*.1;
+            // options.executeTarget 'lowest' (끝딜처럼 직접 지정): the attack goes to the line mob with the lowest HP
+            // share within the hero's range (base model: any line mob) when that mob qualifies.
+            const range=hero.own_range?form.range:engageRange;
+            while(bank[e.index]>=1-1e-9){
+              bank[e.index]-=1;
+              let x=target;
+              if(options.executeTarget==='lowest'){
+                let best=null;
+                for(const m of mobs)if(m.hp>0&&(!posModel||dist(m,spawnPt)<=range)&&(!best||m.hp/m.maxhp<best.hp/best.maxhp))best=m;
+                x=best;
+              }
+              if(x?.kind==='line'&&x.hp>0&&x.hp<=e.execute_below*x.maxhp){
+                x.hp=0;executeCounts[u.code]=(executeCounts[u.code]??0)+1;
+              }
+            }
+            continue;
+          }
           if(!rate)continue;
           if(e.min_target_ab&&!(target&&target.ab>=e.min_target_ab))continue;
           if(e.when_target==='line'&&target?.kind!=='line')continue;   // fires only while attacking a line mob
