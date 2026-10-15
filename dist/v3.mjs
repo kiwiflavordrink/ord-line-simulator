@@ -105,12 +105,13 @@ function addRow(item={code:'TR19',count:1,damage:true,ab:true}){
 const buffState={};let buffSignature='';
 function buffSources(codes){
   const heroes=new Map(data.heroes.map(h=>[h.code,h]));
-  return [...new Set(codes)].filter(c=>(heroes.get(c)?.auras??SUPPORT_AURAS[c]??[]).some(a=>a.targets!=='self'));
+  return [...new Set(codes)].filter(c=>(heroes.get(c)?.auras??SUPPORT_AURAS[c]??[]).some(a=>a.targets!=='self'&&a.targets!=='one'));
 }
 function syncBuffPanel(){
   const codes=team().map(t=>t.code),heroCodes=[...new Set(codes.filter(c=>data.heroes.some(h=>h.code===c)))];
-  const sources=buffSources(codes),signature=JSON.stringify([sources,heroCodes]);
-  $('buff-settings').hidden=!sources.length;
+  const sources=buffSources(codes),oneSources=[...new Set(codes)].filter(c=>data.heroes.find(h=>h.code===c)?.auras?.some(a=>a.targets==='one'));
+  const signature=JSON.stringify([sources,oneSources,heroCodes]);
+  $('buff-settings').hidden=!sources.length&&!oneSources.length;
   if(signature===buffSignature)return;
   buffSignature=signature;
   const box=$('buff-targets');box.innerHTML='';
@@ -127,10 +128,32 @@ function syncBuffPanel(){
     }
     box.appendChild(line);
   }
+  // Chosen-ally buffs (auras targets 'one', 수정내역 31): one select per receiver slot, default = other heroes in order.
+  const heroes=new Map(data.heroes.map(h=>[h.code,h]));
+  for(const src of [...new Set(codes)]){
+    const ones=(heroes.get(src)?.auras??[]).filter(a=>a.targets==='one');if(!ones.length)continue;
+    const picks=Math.max(...ones.map(a=>a.picks??1)),others=heroCodes.filter(c=>c!==src);
+    const line=document.createElement('div');line.className='buff-line chosen-line';line.dataset.src=src;
+    const title=document.createElement('strong');title.textContent=`${nameOf(src)} 지정 버프(${ones.map(a=>a.kind==='aps'?`공속 ${Math.round(a.value*100)}%`:a.kind==='attack_pct'?`공격력 ${Math.round(a.value*100)}%`:a.kind).join('·')}) →`;line.appendChild(title);
+    for(let k=0;k<picks;k++){
+      const sel=document.createElement('select');sel.className='chosen-target';
+      for(const c of heroCodes){const o=document.createElement('option');o.value=c;o.textContent=nameOf(c)+(c===src?' (자신)':'');sel.appendChild(o);}
+      sel.value=buffState['one:'+src]?.[k]??others[k%Math.max(1,others.length)]??src;
+      sel.addEventListener('change',()=>{(buffState['one:'+src]??=[])[k]=sel.value;});
+      line.appendChild(sel);
+    }
+    box.appendChild(line);
+  }
+}
+function chosenBuffTargets(){
+  const out={};
+  for(const line of document.querySelectorAll('#buff-targets .chosen-line'))
+    out[line.dataset.src]=[...new Set([...line.querySelectorAll('select')].map(s=>s.value))];
+  return out;
 }
 function buffTargets(){
   const out={};
-  for(const line of document.querySelectorAll('#buff-targets .buff-line')){
+  for(const line of document.querySelectorAll('#buff-targets .buff-line:not(.chosen-line)')){
     const boxes=[...line.querySelectorAll('input')];
     if(boxes.every(b=>b.checked))continue;
     out[boxes[0].dataset.src]=boxes.filter(b=>b.checked).map(b=>b.dataset.tgt);
@@ -149,7 +172,7 @@ function options(){const c=context(true);return {
   red:$('red-v2').checked,redDamage:$('red-v2').checked,fullResource:$('resource-v2').checked,summons:$('summons-v2').checked,
   frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
   tr19Plants:{pea:val('tr19-pea'),snow:val('tr19-snow'),muk:val('tr19-muk')},
-  buffTargets:buffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,heroArmorCuts:$('hero-cuts-v3').checked,executeTarget:$('execute-v3').value,
+  buffTargets:buffTargets(),chosenBuffTargets:chosenBuffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,heroArmorCuts:$('hero-cuts-v3').checked,executeTarget:$('execute-v3').value,
   ...($('stack-v3').value!=='data'?{stackLevel:$('stack-v3').value}:{}),...($('trait-v3').value!=='data'?{trait:$('trait-v3').value}:{}),e6AlabastaLevel:val('e6-level'),e6MoveShot:$('e6-moveshot').checked,tr6Nutrients:val('tr6-nutrients'),
   customMagic:{aps:val('magic-aps'),chance:val('magic-chance')/100,flat:val('magic-flat'),
     maxPct:val('magic-max')/100,currentPct:val('magic-current')/100,lostPct:val('magic-lost')/100},
@@ -342,6 +365,7 @@ function restore(){
   $('e6-moveshot').checked=params.get('e6shot')!=='0';
   if(['지옥','신','악몽'].includes(params.get('difficulty')))$('difficulty-v3').value=params.get('difficulty');
   for(const k of ['pea','snow','muk'])if(params.has('tr19'+k))$('tr19-'+k).value=params.get('tr19'+k);
+  try{for(const [src,tgts] of Object.entries(JSON.parse(params.get('chosenBuffs')||'{}')))buffState['one:'+src]=tgts;}catch{}
   try{for(const [src,tgts] of Object.entries(JSON.parse(params.get('buffTargets')||'{}')))for(const t of data.heroes.map(h=>h.code))(buffState[src]??={})[t]=tgts.includes(t);}catch{}
 }
 function shareURL(){
@@ -363,6 +387,7 @@ function shareURL(){
   u.searchParams.set('e6',$('e6-level').value);u.searchParams.set('tr6',$('tr6-nutrients').value);u.searchParams.set('e6shot',$('e6-moveshot').checked?'1':'0');
   for(const k of ['pea','snow','muk'])u.searchParams.set('tr19'+k,$('tr19-'+k).value);
   const bt=buffTargets();if(Object.keys(bt).length)u.searchParams.set('buffTargets',JSON.stringify(bt));
+  const cb=chosenBuffTargets();if(Object.keys(cb).length)u.searchParams.set('chosenBuffs',JSON.stringify(cb));
   for(const e of document.querySelectorAll('.amp-effect:checked'))u.searchParams.append('effect',e.value);
   u.searchParams.delete('warcury');u.searchParams.set('gorosei',$('v3-gorosei').value);
   for(const [param,id] of [['customMamp','v3-custom-mamp'],['customMcut','v3-custom-mcut'],['customAll','v3-custom-all'],['customExplosive','v3-custom-explosive']])u.searchParams.set(param,$(id).value);

@@ -52,19 +52,44 @@ const typeMatrix={
 const typeFor=(type,round,data)=>typeMatrix[type]?.[data.rounds[String(round)][2]]??1;
 const clamp=(x,min,max)=>Math.min(max,Math.max(min,Number.isFinite(+x)?+x:min));
 const abAdd=(m,n)=>{m.ab=Math.min(75,m.ab+n);};
-const SINGLE_TARGETS=new Set(['single','single_line','target_special','boss','frenzy']);
+// Caps of per-mob debuffs: A04R 25%, A04Q 36 levels, A11S 25% (수정내역 31).
+const MOB_DEBUFF_CAP={magic_amp:.25,magic_cut_levels:36,explosive_amp:.25,all_amp:1};
+const SINGLE_TARGETS=new Set(['single','single_line','target_special','boss','frenzy','multishot']);
 // E6 알라바스타 건 level (hero.alabasta): data events hold the default level; level_formula rebuilds parts for
 // another level. per_level parts are multiplied by the level; per_hit parts by the hit count (hits_by_level
 // raises it from that level on); level_mul scales the line parts by (1 + k x level); min_level drops the
 // event below that level. Without 이동사격 (option off or level < 5) the 3연사/웨스턴 rates use
 // rate_without_move_shot and 이동사격 itself is dropped (docs/수정내역.md 21).
 // Random-target hits: `picks` draws, each among the candidates still alive, applying `hit` in full.
-export function randomPicks(candidates,picks,rng,hit){
+// distinct (수정내역 31): "최대 N명" fan of knives / forked lightning hit N different enemies (no repeats).
+export function randomPicks(candidates,picks,rng,hit,distinct=false){
+  const used=new Set();
   for(let k=0;k<picks;k++){
-    const alive=candidates.filter(m=>m.hp>0);
+    const alive=candidates.filter(m=>m.hp>0&&!used.has(m));
     if(!alive.length)return;
-    hit(alive[Math.min(alive.length-1,Math.floor(rng()*alive.length))]);
+    const m=alive[Math.min(alive.length-1,Math.floor(rng()*alive.length))];
+    if(distinct)used.add(m);
+    hit(m);
   }
+}
+// Chain lightning (AOcl, mode 'bounce'): the first hit is the attack target, each next hit is the nearest enemy not yet
+// hit within `range` of the previous one, damage x factor per bounce. Forked lightning (ACfl, mode 'fork'): the
+// target plus the nearest other enemies around it, same damage. Basic model (no positions): next line mobs in order.
+export function chainTargets(start,pool,c,posModel,dist){
+  const out=[];if(!start)return out;
+  const left=pool.filter(m=>m!==start&&m.hp>0);out.push(start);
+  let cur=start;
+  while(out.length<c.targets&&left.length){
+    let i=0;
+    if(posModel){
+      const from=c.mode==='fork'?start:cur;
+      let best=-1,bd=Infinity;
+      left.forEach((m,j)=>{const dd=dist(m,from);if(dd<=c.range&&dd<bd){bd=dd;best=j;}});
+      if(best<0)break;i=best;
+    }
+    cur=left.splice(i,1)[0];out.push(cur);
+  }
+  return out;
 }
 const scaleParts=(parts,k)=>parts.map(([kind,flat,perc,mul=0])=>[kind,flat*k,perc.map(([b,r])=>[b,r*k]),mul*k]);
 // 특강 on/off (수정내역 28): hero.trait {current:'on'|'off', other:{events, add_events, forms, auras, ...}} — data
@@ -220,20 +245,40 @@ export function simulateV2(data,composition,options={}){
   const buffTargets=options.buffTargets??{};
   const auraSources=units.map((u,i)=>({i,code:u.code,
     auras:u.kind==='hero'?u.model.auras??[]:u.kind==='support'?SUPPORT_AURAS[u.code]??[]:[]})).filter(x=>x.auras.length);
+  // targets 'one' (수정내역 31): a buff cast on chosen allies — `picks` receivers per source copy (default 1), plus the
+  // source itself when self_always. options.chosenBuffTargets {sourceCode:[codes in order]} picks them; the source's
+  // own code may be listed (self-cast). Default: the other heroes in team order. Copies of a source take the next
+  // receivers in that order, so two 로우 buff two different units.
+  const chosen=options.chosenBuffTargets??{},oneReceivers=new Map();
+  for(const code of new Set(auraSources.filter(x=>x.auras.some(a=>a.targets==='one')).map(x=>x.code))){
+    const picks=Math.max(...auraSources.find(x=>x.code===code).auras.filter(a=>a.targets==='one').map(a=>a.picks??1));
+    const order=chosen[code]?.length?chosen[code]:[...new Set(units.filter(x=>x.kind==='hero'&&x.code!==code).map(x=>x.code))];
+    const cands=[];for(const c of order)units.forEach((x,i)=>{if(x.kind==='hero'&&x.code===c)cands.push(i);});
+    let next=0;
+    for(const src of auraSources.filter(x=>x.code===code)){
+      const got=new Set();
+      for(let k=0;k<cands.length&&got.size<picks;k++){const i=cands[(next+k)%cands.length];if(i!==src.i||order.includes(code))got.add(i);}
+      next+=picks;oneReceivers.set(src.i,got);
+    }
+  }
   for(const [j,u] of units.entries()){
     if(u.kind!=='hero')continue;
     const byId=new Map();
     for(const src of auraSources)for(const a of src.auras){
       if(a.targets==='self'&&src.i!==j||a.targets==='others'&&src.i===j)continue;
-      if(src.i!==j&&buffTargets[src.code]&&!buffTargets[src.code].includes(u.code))continue;
+      if(a.targets==='one'&&!(oneReceivers.get(src.i)?.has(j)||a.self_always&&src.i===j))continue;
+      if(a.targets!=='one'&&src.i!==j&&buffTargets[src.code]&&!buffTargets[src.code].includes(u.code))continue;
       let up=1;
-      if(a.uptime){
+      if(a.uptime?.fixed!=null)up=a.uptime.fixed;
+      else if(a.uptime){
         const h=units[src.i].model,base=h.forms[0].aps;
         const rate=a.uptime.proc!=null?null:(h.events.find(e=>e.index===a.uptime.cast_event)?.rate??0);
         up=a.uptime.proc!=null?1-Math.pow(1-a.uptime.proc,base*a.uptime.duration):Math.min(1,rate*a.uptime.duration);
       }
-      const prev=byId.get(a.id);
-      byId.set(a.id,{a,miss:(prev?prev.miss:1)*(1-up)});
+      // group: buffs the tooltip says do not stack with each other ("다른 가속 스킬과 중복 불가능") share one slot,
+      // like the same buff id (the stronger value is kept, uptimes combine).
+      const key=a.group?a.group+':'+a.kind:a.id,prev=byId.get(key);
+      byId.set(key,{a:prev&&prev.a.value>a.value?prev.a:a,miss:(prev?prev.miss:1)*(1-up)});
     }
     const buffs={attack_pct:0,attack_flat:0,aps:0,mana_regen:0};
     for(const {a,miss} of byId.values())buffs[a.kind]+=a.value*(1-miss);
@@ -445,11 +490,22 @@ export function simulateV2(data,composition,options={}){
     else{cur.value=Math.max(cur.value,value);cur.until=Math.max(cur.until,until);}
   };
   const armor=(m,extra)=>m.armor+(curse.armor??0)+(m.kind==='line'?extra:0)-cut-m.ab-debuffSum(m);
-  const factor=(kind,m,extra)=>kind==='physical'?pf(armor(m,extra)):kind==='magic'?magicFactor:
-    kind==='explosive'?1+Math.min(.25,explosiveAmp+(m.kind==='line'?normalOnlyExplosiveAmp:0))+(curse.explosive??0):1;
+  // Per-mob debuffs (event mob_debuff, 수정내역 31): magic amp (A04R), magic defence cut levels (A04Q), explosive amp
+  // (A11S) and all-damage amp stay on the mob that was hit and add to the team values under the same caps.
+  const mobMagic=m=>{
+    const d=m.dbf;if(!d)return magicFactor;
+    const red=clamp((options.magicReduction??0)+teamFx.magic_cut_levels*.01+(d.magic_cut_levels??0)*.01,0,.35);
+    return clamp(.79+.01*Math.max(1,diff.magic_level-(curse.magic_levels??0))+red,.80,1.15)*(1+Math.min(.25,magicAmp+(d.magic_amp??0)));
+  };
+  const mobDebuff=(m,dbf,share)=>{
+    const d=m.dbf??={};
+    for(const [k,v] of Object.entries(dbf))if(k!=='note')d[k]=Math.min(MOB_DEBUFF_CAP[k]??1,(d[k]??0)+v*share);
+  };
+  const factor=(kind,m,extra)=>kind==='physical'?pf(armor(m,extra)):kind==='magic'?mobMagic(m):
+    kind==='explosive'?1+Math.min(.25,explosiveAmp+(m.dbf?.explosive_amp??0)+(m.kind==='line'?normalOnlyExplosiveAmp:0))+(curse.explosive??0):1;
   const deal=(m,amount,source,scope,kind)=>{
     if(!m||m.hp<=0||!Number.isFinite(amount)||amount<=0)return;
-    amount*=1+allAmp;
+    amount*=1+allAmp+(m.dbf?.all_amp??0);
     const applied=Math.min(m.hp,amount);
     m.hp-=amount;
     if(m.kind==='line'){
@@ -492,6 +548,7 @@ export function simulateV2(data,composition,options={}){
     averageAb:mobs.length?mobs.reduce((a,m)=>a+m.ab,0)/mobs.length:0});
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
+    chosenBuffs:Object.fromEntries([...oneReceivers].map(([i,got])=>[`${units[i].code}#${units.slice(0,i).filter(x=>x.code===units[i].code).length}`,[...got].map(j=>units[j].code)])),
     finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,lowerCounts,
     justiceLog:Object.fromEntries(units.map((u,i)=>[u.code+'#'+i,u.justiceLog]).filter(x=>x[1])),
     buffs:units.map(u=>u.buffs?{code:u.code,...u.buffs}:null).filter(Boolean),unitCount:units.length,
@@ -579,6 +636,7 @@ export function simulateV2(data,composition,options={}){
             if(e.ab&&x.hp>0)abAdd(x,e.ab*share);
           }
           if(e.single_parts&&m.hp>0)deal(m,p*eventDamage({...e,parts:e.single_parts},m,attack,extraArmor),hero.code,'single','mixed');
+          if(e.mob_debuff&&m.hp>0)mobDebuff(m,e.mob_debuff,p);   // 독심술 (MY8): the approaching enemy only
         }
       }
       // Regen per second: unit base (w3u uhpr, 61라 45,000), boss aura 500,000, frenzy aura (신 1,000,000,
@@ -691,7 +749,19 @@ export function simulateV2(data,composition,options={}){
           deal(target,attack*crit*critEV(form.target_crit)*aps*up*form.rounds[String(target.typeRound??target.round)]*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
           if(form.splash)for(const m of mobs)if(m!==target&&(!posModel||dist(m,target)<=form.splash_radius))
             deal(m,attack*crit*aps*up*form.rounds[String(m.typeRound??m.round)]*pf(armor(m,extraArmor))*form.splash*.1*cov,u.code,'area','physical');
-        }
+          // form.multishot (Aroc 다중 공격, 수정내역 31): every attack also sends `extra` missiles at other enemies within
+          // `range` of the hero (position model: nearest first; basic model: line mobs in order). Each takes the basic
+          // attack (type and armor; Barrage missiles carry no crit and no on-attack procs [추정]). Event target
+          // 'multishot' hits the attack target plus these.
+          const ms=form.multishot;
+          if(ms){
+            let pool=[...mobs,...specials].filter(m=>m!==target&&m.hp>0&&(!posModel||dist(m,spawnPt)<=ms.range));
+            if(posModel)pool.sort((a,b)=>dist(a,spawnPt)-dist(b,spawnPt));
+            u.msTargets=pool.slice(0,ms.extra);
+            for(const m of u.msTargets)
+              deal(m,attack*aps*up*form.rounds[String(m.typeRound??m.round)]*pf(armor(m,extraArmor))*.1,u.code,'area','physical');
+          }else u.msTargets=[];
+        }else u.msTargets=[];
         // MECH-C: hero.age_stack (TR21 2.305 UtM j:45865 / OEA j:36971 +10 per attack, then oJ → rHA j:76368:
         // every enemy within check_radius at max stacks without A0VG takes once_parts once, riA j:77294-77326).
         const ag=hero.age_stack;
@@ -773,6 +843,7 @@ export function simulateV2(data,composition,options={}){
           const single=SINGLE_TARGETS.has(e.target);
           switch(e.target){
             case 'single':targets=target?[target]:[];break;
+            case 'multishot':targets=target?[target,...(u.msTargets??[])]:[];break;
             case 'single_line':targets=target?.kind==='line'?[target]:[];break;
             case 'target_special':targets=target&&target.kind!=='line'?[target]:[];break;
             case 'boss':targets=target?.kind==='boss'?[target]:[];break;
@@ -794,7 +865,22 @@ export function simulateV2(data,composition,options={}){
             for(;bank[e.index]>=1;bank[e.index]--)randomPicks(targets,e.picks??1,pickRandom,m=>{
               const ev=e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e;
               deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit),u.code,'area','mixed');
-            });
+              if(e.mob_debuff&&m.hp>0)mobDebuff(m,e.mob_debuff,1);
+            },e.distinct===true);
+            continue;
+          }
+          if(e.chain){
+            // Whole procs from an expected-count bank, like random picks (수정내역 31).
+            const bank=u.chainBank??={};
+            bank[e.index]=(bank[e.index]??0)+rate*.1;
+            for(;bank[e.index]>=1;bank[e.index]--){
+              chainTargets(target,[...mobs,...specials],e.chain,posModel,dist).forEach((m,k)=>{
+                const ev=e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e;
+                deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit)*(e.chain.factor??1)**k,u.code,k?'area':'single','mixed');
+                if(posModel&&e.stun&&m.hp>0)applyStun(m,e.stun);
+                if(e.mob_debuff&&m.hp>0)mobDebuff(m,e.mob_debuff,1);
+              });
+            }
             continue;
           }
           if(posModel&&!single)targets=targets.filter(m=>m===target||dist(m,center)<=(e.radius??lp.default_radius));
@@ -809,6 +895,7 @@ export function simulateV2(data,composition,options={}){
             deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
             // Armor break as an expected stack per step, like the supports (cap 75 in abAdd).
             if(m.hp>0&&e.ab)abAdd(m,e.ab*share);
+            if(m.hp>0&&e.mob_debuff)mobDebuff(m,e.mob_debuff,share);
             if(m.hp>0&&e.ab_target&&m===target)abAdd(m,e.ab_target*rate*.1);
           }
           // execute_line: each proc removes the attack target if it is a line mob (I3 순속·패기발산).

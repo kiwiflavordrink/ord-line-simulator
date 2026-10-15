@@ -34,7 +34,7 @@ export const LIMITATIONS=[
   {id:'difficulty',text:'line.options.difficulty(지옥·신·악몽, 기본 신)가 몹 HP·방어·마방·재생·패배 기준(70·55·50)·광폭 오라·보스 스턴 저항을 정한다. 구조와 지옥·악몽 배율은 2.305 맵, 공통 HP·재생과 오로성 수치는 2.323 ORDR 툴팁이다. 지옥·악몽 방어는 신 값 + 2.305 udup×레벨 차이로 계산했다(방어 공식 미검증). line.options.gorosei(기본 없음)로 오로성을 고른다. 새턴·나스쥬로의 아군 공격력·공속 감소는 data.json 영웅에만 적용하고 보조·조건형 유닛에는 적용하지 않는다.'},
   {id:'position-model',text:'positionModel을 켜면 모든 유닛을 라인몹 생성 지점에 두고 교전 거리(engageRange, 기본 650 [추정]) 안의 몹만 친다. 이속 = (기본 + 고정 보너스) × (1 + 난이도 오라 + 나스쥬로 − 이감 합), 89~490(WC3 규칙, ORDR 신 이감 목표 102%와 일치). 같은 버프를 쓰는 이감(천둥 기반 BHtc)은 마지막에 맞은 것 하나만 적용된다. 스턴·이속 감소는 시드에 따른 확률 발동이라 결과가 시드마다 다르다.'},
   {id:'not-a-clear-guarantee',text:'clear는 모델상 난이도별 패배 기준(지옥 70·신 55·악몽 50, line.defeatThreshold) 미만 유지 여부이며 실제 게임 클리어를 보장하지 않는다.'},
-  {id:'unit-semantics',text:'멀티샷·연쇄 번개·한 아군 지정 버프·적 개체별 누적 증폭·직선 범위·클리브(대상 제외)·체력 조건 처형은 근사하거나 빠져 있다(각 영웅 unmodeled, 수정내역 29).'},
+  {id:'unit-semantics',text:'멀티샷(Aroc)은 툴팁의 "N명 동시" 수, 연쇄·포크 번개는 가까운 적 순서, 지정 아군 버프는 chosenBuffTargets(기본: 다른 영웅 순서), 적 개체별 증폭은 맞은 몹에만 누적한다. 직선 범위는 원 범위로 본다. 실제 평타 피해 기반 계수·마나 예산형 시전은 근사다(수정내역 31).'},
   {id:'hero-armor-cuts',text:'영웅 자기 방깎 오라는 heroArmorCuts를 켜야 cut에 더해진다. 기본 cut 201은 풀깍 가정이다.'},
 ];
 
@@ -143,7 +143,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','externalSlow','externalStuns','singleControl','engageRange','heroArmorCuts','executeTarget','stackLevel','stackLevels','extraStackLevels','trait','traits','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','externalSlow','externalStuns','singleControl','engageRange','heroArmorCuts','executeTarget','chosenBuffTargets','stackLevel','stackLevels','extraStackLevels','trait','traits','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -170,6 +170,20 @@ function validateLine(raw,data,is){
       trait:oneOf(o,'trait','line.options',is,['on','off'])
     }));
     // Per-hero stack/trait levels (수정내역 28·29): {"TR24": "zero"}; extraStackLevels for heroes with extra_stacks.
+    // chosenBuffTargets (수정내역 31): {"L8": ["TR4"]} — receivers of chosen-ally buffs (auras targets 'one').
+    if(o.chosenBuffTargets!==undefined){
+      const p='line.options.chosenBuffTargets',x=o.chosenBuffTargets;
+      if(!isObj(x))is.error(p,'NOT_AN_OBJECT','{"버프 유닛 코드": ["받는 유닛 코드", …]} 형식이어야 합니다.');
+      else{
+        const out={};
+        for(const [src,list] of Object.entries(x)){
+          if(!Array.isArray(list)||!list.every(c=>typeof c==='string'&&heroCodes.has(c)))is.error(`${p}.${src}`,'NOT_AN_ARRAY','data.json 영웅 코드 배열이어야 합니다.');
+          else if(!heroCodes.has(src))is.error(`${p}.${src}`,'UNSUPPORTED_UNIT',unsupportedMessage(src,data,'line'));
+          else out[src]=list;
+        }
+        options.chosenBuffTargets=out;
+      }
+    }
     for(const [key,values] of [['stackLevels',['zero','half','max']],['extraStackLevels',['zero','half','max']],['traits',['on','off']]]){
       if(o[key]===undefined)continue;
       const p=`line.options.${key}`,x=o[key];

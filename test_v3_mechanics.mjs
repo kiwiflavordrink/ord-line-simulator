@@ -1,7 +1,7 @@
 // Focused checks for v3 calculation fixes. Each block names the change in docs/수정내역.md.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {simulateV2,alabastaEvents,randomPicks,stackVariant} from './dist/engine_v3.mjs';
+import {simulateV2,alabastaEvents,randomPicks,stackVariant,chainTargets} from './dist/engine_v3.mjs';
 import {simulateSingle,singleConditions,SINGLE_MOB} from './dist/engine_single_v3.mjs';
 
 const fullData=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
@@ -331,8 +331,10 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
     assert.ok(Number.isFinite(r.remaining)&&Object.values(r.sourceDamage).every(Number.isFinite),h.code);
     assert.ok(h.events.every(e=>/근거/.test(e.note)),h.code);
   }
-  // team_effects add to the magic factor once per hero code (E9 우타: 마방깎 10레벨).
-  assert.ok(Math.abs(simulateV2(fullData,[{code:'E9',count:2}],{}).magicFactor-1.05)<1e-9);
+  // team_effects add to the magic factor once per hero code (TR10 브룩: 라인존 마방깎 3레벨; 우타 라이브의 10레벨은
+  // 수정내역 31부터 맞은 몹별 디버프라 팀 배율에 들어가지 않는다).
+  assert.ok(Math.abs(simulateV2(fullData,[{code:'TR10',count:2}],{}).magicFactor-.98)<1e-9);
+  assert.ok(Math.abs(simulateV2(fullData,[{code:'E9',count:2}],{}).magicFactor-.95)<1e-9);
   assert.ok(Math.abs(simulateV2(fullData,[{code:'TR19'}],{}).magicFactor-.95)<1e-9);
   // HP-resource skills ignore mana-regen buffs; when_target 'line' skips bosses and frenzy mobs.
   const i6=fullData.heroes.find(h=>h.code==='I6');
@@ -391,4 +393,32 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const p=o=>simulateV2(fullData,[{code:'L27',count:2},{code:'H17'},{code:'I12',count:2}],{positionModel:true,deletion:{seed:1},...o}).executeCounts.L27;
   assert.ok(p({executeTarget:'lowest'})>=p({}));
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute: passed');
+// [수정 31] 멀티샷, 연쇄·포크 번개, 서로 다른 무작위 대상, 지정 아군 버프, 적 개체별 디버프.
+{
+  // Multishot: removing it lowers TR4's line damage; the 15% 멀티샷 강타 hits the target plus the extra targets.
+  const noMs=structuredClone(fullData);for(const f of noMs.heroes.find(h=>h.code==='TR4').forms)delete f.multishot;
+  const ms=simulateV2(fullData,[{code:'TR4',count:3}],{}),plain=simulateV2(noMs,[{code:'TR4',count:3}],{});
+  assert.ok(ms.lineDamage.area>plain.lineDamage.area);
+  assert.equal(fullData.heroes.find(h=>h.code==='TR4').forms[0].multishot.extra,6);
+  // chainTargets: bounce goes to the nearest unhit enemy of the previous hit; fork stays around the first target.
+  const P=(x)=>({x,y:0,hp:1});const a=P(0),b=P(100),c=P(250),far=P(2000);
+  const d=(m,q)=>Math.abs(m.x-q.x);
+  assert.deepEqual(chainTargets(a,[a,c,b,far],{targets:4,range:200,mode:'bounce'},true,d),[a,b,c]);
+  assert.deepEqual(chainTargets(a,[a,c,b,far],{targets:4,range:200,mode:'fork'},true,d),[a,b]);
+  // Distinct random picks never repeat a mob.
+  const seen=[];randomPicks([a,b,c],3,()=>0,m=>seen.push(m),true);assert.equal(new Set(seen).size,3);
+  // Chosen-ally buff: L8 외과수술 goes to one receiver (default the other hero, or the listed code).
+  const dflt=simulateV2(fullData,[{code:'TR4',count:2},{code:'L8'}],{});
+  assert.deepEqual(dflt.chosenBuffs,{'L8#0':['TR4']});
+  assert.equal(dflt.buffs.filter(x=>x.code==='TR4'&&x.aps>0).length,1);
+  const self=simulateV2(fullData,[{code:'TR4'},{code:'L8'}],{chosenBuffTargets:{L8:['L8']}});
+  assert.ok(self.buffs.find(x=>x.code==='L8').aps>0&&self.buffs.find(x=>x.code==='TR4').aps===0);
+  // Same non-stacking group (가속): L8 150% and S5 100% on one unit keep the stronger value with combined uptime.
+  const both=simulateV2(fullData,[{code:'TR4'},{code:'L8'},{code:'S5'}],{chosenBuffTargets:{L8:['TR4'],S5:['TR4']}});
+  const up=1-(1-12/50)*(1-7/50);
+  assert.ok(Math.abs(both.buffs.find(x=>x.code==='TR4').aps-1.5*up)<1e-9);
+  // Per-mob debuff: 우타 라이브 no longer changes the team factor, but its hits still raise magic damage on the hit mobs.
+  const noDbf=structuredClone(fullData);for(const e of noDbf.heroes.find(h=>h.code==='E9').events)delete e.mob_debuff;
+  assert.ok(simulateV2(fullData,[{code:'E9',count:3}],{}).sourceDamage.E9>simulateV2(noDbf,[{code:'E9',count:3}],{}).sourceDamage.E9);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs: passed');
