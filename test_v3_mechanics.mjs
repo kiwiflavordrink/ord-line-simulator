@@ -313,4 +313,13 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(stun.control.stunnedLineMobSeconds>simulateV2(fullData,team,pos).control.stunnedLineMobSeconds);
   assert.deepEqual(simulateV2(fullData,team,{externalSlow:1.02}).checkpoints,simulateV2(fullData,team,{}).checkpoints); // coverage model ignores it
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control: passed');
+// [수정 24] 단일 컨: 단(15%까지)과 끝(15%부터 처치)이 동시에 돈다.
+{
+  const run=sc=>simulateV2(fullData,[{code:'H17'}],{red:false,singleControl:sc});
+  assert.equal(run(null).totalLineKilled,0);
+  const two=run({to15:2.78,finish:2.83});
+  assert.ok(two.totalLineKilled>=8&&two.sourceDamage['단일 컨']>0);
+  // Without a 끝 stream fast enough, mobs stop at 15%: a very slow finish kills far fewer.
+  assert.ok(run({to15:2.78,finish:60}).totalLineKilled<two.totalLineKilled);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control: passed');

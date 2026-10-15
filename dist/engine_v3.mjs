@@ -222,6 +222,8 @@ export function simulateV2(data,composition,options={}){
   const customRate=clamp(custom.aps??5,0,100)*clamp(custom.chance??.15,0,1);
   const customFlat=clamp(custom.flat??0,0,1e10),customMax=clamp(custom.maxPct??0,0,1);
   const customCurrent=clamp(custom.currentPct??0,0,1),customLost=clamp(custom.lostPct??0,0,1);
+  const sc=options.singleControl;
+  const singleControl=sc&&sc.to15>0&&sc.finish>0?{to15:clamp(sc.to15,.1,120),finish:clamp(sc.finish,.1,120)}:null;
   const finish=options.finisher??{},finishMode=finish.mode??'off';
   const finishInterval=clamp(finish.interval??5,.5,60);
   const finishChance=clamp(finish.successChance??1,0,1);
@@ -783,6 +785,17 @@ export function simulateV2(data,composition,options={}){
         }
       }
 
+      // 단일 컨 (options.singleControl, 수정내역 24): two concurrent single-target streams on line mobs.
+      // 단: pushes the most-damaged mob above 15% down at 0.85 x max HP per `to15` seconds (e.g. 2단 = 루치 1기 시간 / 2).
+      // 끝: finishes the lowest mob at or below 15% at 0.15 x max HP per `finish` seconds (1끝 = 핸콕 1기 시간);
+      // with nothing at 15% it waits. Times come from the single tester, so resistances are already inside.
+      if(singleControl){
+        const reach=mobs.filter(m=>m.hp>0&&(!posModel||dist(m,spawnPt)<=engageRange));
+        const high=reach.filter(m=>m.hp>.15*m.maxhp).sort((a,b)=>a.hp/a.maxhp-b.hp/b.maxhp)[0];
+        if(high)deal(high,Math.min(high.hp-.15*high.maxhp+1,.85*high.maxhp/singleControl.to15*.1),'단일 컨','single','mixed');
+        const low=reach.filter(m=>m.hp>0&&m.hp<=.15*m.maxhp).sort((a,b)=>a.hp-b.hp)[0];
+        if(low)deal(low,.15*low.maxhp/singleControl.finish*.1,'단일 컨','single','mixed');
+      }
       if(finishMode==='damage'&&globalStep>0&&globalStep%Math.max(1,Math.round(finishInterval*10))===0){
         finisherAttempts++;
         successBank+=finishChance;

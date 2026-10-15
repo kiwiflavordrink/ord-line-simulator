@@ -141,7 +141,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','externalSlow','externalStuns','engageRange','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','externalSlow','externalStuns','singleControl','engageRange','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -163,6 +163,11 @@ function validateLine(raw,data,is){
       externalSlow:num(o,'externalSlow','line.options',is,{min:0,max:3}),
       engageRange:num(o,'engageRange','line.options',is,{min:100,max:3000})
     }));
+    if(o.singleControl!==undefined){
+      const p='line.options.singleControl',x=o.singleControl;
+      if(!isObj(x))is.error(p,'NOT_AN_OBJECT','{"to15": 초, "finish": 초} 형식이어야 합니다.');
+      else{onlyKeys(x,['to15','finish'],p,is);options.singleControl=compact({to15:num(x,'to15',p,is,{min:.1,max:120}),finish:num(x,'finish',p,is,{min:.1,max:120})});}
+    }
     if(o.externalStuns!==undefined){
       const p='line.options.externalStuns';
       if(!Array.isArray(o.externalStuns))is.error(p,'NOT_AN_ARRAY','[{"rate":초당 발동,"radius":범위,"normal":초,"hero":초}] 형식이어야 합니다.');
