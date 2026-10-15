@@ -227,7 +227,12 @@ export function simulateV2(data,composition,options={}){
     buffs.attack_pct+=curse.ally_attack??0;buffs.aps+=curse.ally_aps??0;
     u.buffs=buffs;
   }
-  const cut=clamp(options.cut??201,0,300),coverage=clamp(options.coverage??1,0,1);
+  // Heroes' own enemy armor auras (data hero.own_armor_cut, 2.323 buff_lines "방어력 감소 N", 수정내역 29): with
+  // options.heroArmorCuts they add to options.cut, once per distinct hero (copies share the aura's buff; different
+  // heroes' auras have different buffs and add). Off by default: options.cut (201) already stands for 풀깍.
+  const heroCut=options.heroArmorCuts?[...new Set(units.filter(u=>u.kind==='hero').map(u=>u.code))]
+    .reduce((a,code)=>a+(heroMap.get(code).own_armor_cut??0),0):0;
+  const cut=clamp((options.cut??201)+heroCut,0,300),coverage=clamp(options.coverage??1,0,1);
   const resourceMode=['start','empty','perRound'].includes(options.resourceMode)?options.resourceMode:
     options.fullResource===false?'empty':'start';
   const fullResource=resourceMode!=='empty',summons=options.summons!==false;
