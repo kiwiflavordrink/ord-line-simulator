@@ -155,10 +155,11 @@ export function simulateV2(data,composition,options={}){
   const heroAttack=(hero,form)=>{
     let attack=form.attack*(1+(red?.35:0)+(hero.attack_aura??0));
     if(hero.code==='Z2')attack+=60000;
-    if(hero.code==='TR11')attack*=1.45;
-    if(hero.code==='TR19')attack*=1.375;
     return attack;
   };
+  // Crit as an expected multiplier 1 + chance x (mult - 1). form.crit: basic-attack crit (target and
+  // splash); form.target_crit: '타격' crit on the attack target only; event.crit: skill crit.
+  const critEV=c=>c?1+c[0]*(c[1]-1):1;
   const eventDamage=(event,m,attack,extra)=>{
     let out=0;
     for(const [kind,flat,perc,mul=0] of event.parts){
@@ -271,9 +272,10 @@ export function simulateV2(data,composition,options={}){
         if(haste&&target&&target.ab>=haste.min_ab)aps*=1+haste.bonus;
         const attack=heroAttack(hero,form);
         if(target){
-          deal(target,attack*aps*form.rounds[String(target.round)]*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
+          const crit=critEV(form.crit);
+          deal(target,attack*crit*critEV(form.target_crit)*aps*form.rounds[String(target.round)]*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
           if(form.splash)for(const m of mobs)if(m!==target)
-            deal(m,attack*aps*form.rounds[String(m.round)]*pf(armor(m,extraArmor))*form.splash*.1*coverage,u.code,'area','physical');
+            deal(m,attack*crit*aps*form.rounds[String(m.round)]*pf(armor(m,extraArmor))*form.splash*.1*coverage,u.code,'area','physical');
         }
         for(const e of hero.events){
           if(!summons&&isSummon(e))continue;
@@ -301,7 +303,7 @@ export function simulateV2(data,composition,options={}){
           for(const m of targets)if(m.hp>0){
             const ev=e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
             const share=rate*.1*(m===target||single?1:coverage);
-            deal(m,eventDamage(ev,m,attack,extraArmor)*share,u.code,single?'single':'area','mixed');
+            deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
             // Armor break as an expected stack per step, like the supports (cap 75 in abAdd).
             if(m.hp>0&&e.ab)abAdd(m,e.ab*share);
             if(m.hp>0&&e.ab_target&&m===target)abAdd(m,e.ab_target*rate*.1);

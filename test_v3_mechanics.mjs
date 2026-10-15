@@ -101,4 +101,10 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
     assert.equal(ctx.damageContext({selected:['H16','I2']}).explosiveAmp,25);
   }
 }
-console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions: passed');
+// [수정 10] 크리티컬 기대값: 데이터 필드로 옮긴 TR11·TR19는 결과가 그대로, 크리를 빼면 약해진다.
+{
+  const tr20=simulateV2(data,[{code:'TR20'}],{});
+  const noCrit=structuredClone(data);for(const f of noCrit.heroes.find(x=>x.code==='TR20').forms)delete f.crit;
+  assert.ok(simulateV2(noCrit,[{code:'TR20'}],{}).sourceDamage.TR20<tr20.sourceDamage.TR20);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit: passed');
