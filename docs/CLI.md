@@ -125,12 +125,13 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `line.rounds[].special` | 60·65라 `boss`, 61~64라 `frenzy`. `result`: `killed` / `survived`(라운드 끝에 생존, 다음 라운드로 이월) / `unknown_round_failed` / `not_reached`. `killSecond`는 해당 라운드 시작 기준 초(광폭은 7.5초에 등장) |
 | `line.damage` | 라인 일반몹에 들어간 피해. `byCategory`(area·basic·finisher·magic·physical·fixed), `bySource`(유닛 코드별, `H2`는 레드포스호) |
 | `line.control` | 써니호 스킬 발동·스턴 시간 집계 (판정에는 미사용) |
+| `line.executions` | 영웅별 라인몹 제거 수 (I3 순속·패기발산) |
 | `line.totals`, `finisher`, `deletions`, `applied` | 생성·처치 수, 마무리 시도·처치, 삭제 횟수, 적용된 방깎·범위 적중·마법 배율 |
 | `single` | `to15Seconds`(100→15%), `killSeconds`, `finishFrom15Seconds`(15%→처치), `remainingAt3`, `damageBy3Seconds`, `reference.danRatio`(루치 기준 단), `reference.endRatio`(핸콕 기준 끝) |
 | `warnings` | 계산은 했지만 확인할 점 (상한 도달, 무시된 설정 등) |
 | `limitations` | 현재 모델의 계산상 한계. 항상 포함 |
 
-`line.damage.byCategory`의 `area`+`basic`+`finisher`가 합계이고, `magic`·`physical`·`fixed`는 그중 유형을 알 수 있는 부분만 따로 센 값이다(영웅 스킬은 `mixed`라 유형별 칸에 들어가지 않는다).
+`line.damage.byCategory`의 `area`+`basic`+`single`+`finisher`가 합계이고(`single`은 공격 대상에게만 들어간 단일 추가 피해), `magic`·`physical`·`fixed`는 그중 유형을 알 수 있는 부분만 따로 센 값이다(영웅 스킬은 `mixed`라 유형별 칸에 들어가지 않는다).
 
 ## 예시 시나리오
 
@@ -146,34 +147,34 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 
 ### 실제 출력 (발췌)
 
-`node cli/ordsim.mjs examples/line_basic.json`
+`node cli/ordsim.mjs examples/line_basic.json` (계산 수정 #1~#9 반영 후)
 
 ```json
 "line": {
   "clear": true,
   "verdict": "65라 종료까지 55기 미만 유지",
-  "final": {"remaining": 22, "lineRemaining": 22, "averageAb": 17.39884431818177},
+  "final": {"remaining": 24, "lineRemaining": 24, "averageAb": 17.915987499999947},
   "rounds": [
-    {"round": 60, "remaining": 10, "special": {"type": "boss", "result": "killed", "killSecond": 28.2}},
-    {"round": 61, "remaining": 2,  "special": {"type": "frenzy", "result": "killed", "killSecond": 9}},
-    {"round": 62, "remaining": 9,  "special": {"type": "frenzy", "result": "killed", "killSecond": 9}},
-    {"round": 63, "remaining": 9,  "special": {"type": "frenzy", "result": "killed", "killSecond": 9}},
-    {"round": 64, "remaining": 16, "special": {"type": "frenzy", "result": "killed", "killSecond": 9}},
-    {"round": 65, "remaining": 22, "special": {"type": "boss", "result": "killed", "killSecond": 30.9}}
+    {"round": 60, "remaining": 11, "special": {"type": "boss", "result": "killed", "killSecond": 5}},
+    {"round": 61, "remaining": 9,  "special": {"type": "frenzy", "result": "killed", "killSecond": 9.1}},
+    {"round": 62, "remaining": 17, "special": {"type": "frenzy", "result": "killed", "killSecond": 9.1}},
+    {"round": 63, "remaining": 17, "special": {"type": "frenzy", "result": "killed", "killSecond": 9.1}},
+    {"round": 64, "remaining": 24, "special": {"type": "frenzy", "result": "killed", "killSecond": 9.1}},
+    {"round": 65, "remaining": 24, "special": {"type": "boss", "result": "killed", "killSecond": 5.3}}
   ],
   "damage": {
-    "lineTotal": 28149775117.9802,
-    "bySource": {"D3": 3107918871.8533893, "TR19": 24057210018.264957, "H2": 984646227.8618543}
+    "lineTotal": 27478782160.07579,
+    "bySource": {"D3": 3637177215.882181, "TR19": 22696177071.64459, "H2": 1145427872.549017}
   },
-  "totals": {"lineSpawned": 210, "lineKilled": 188, "unitCount": 2}
+  "totals": {"lineSpawned": 210, "lineKilled": 186, "unitCount": 2}
 }
 ```
 
-`node cli/ordsim.mjs examples/line_low_cut_fail.json` — 61라 8.5초에 패배
+`node cli/ordsim.mjs examples/line_low_cut_fail.json` — 61라 9초에 패배
 
 ```json
 {"round": 60, "completed": true,  "remaining": 36, "special": {"type": "boss", "result": "survived"}},
-{"round": 61, "completed": false, "remaining": 55, "failedSecond": 8.5, "special": {"type": "frenzy", "result": "unknown_round_failed"}},
+{"round": 61, "completed": false, "remaining": 55, "failedSecond": 9, "special": {"type": "frenzy", "result": "unknown_round_failed"}},
 {"round": 62, "reached": false, "special": {"type": "frenzy", "result": "not_reached"}}
 ```
 
@@ -207,7 +208,10 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 ## 계산상 한계 (결과의 `limitations`)
 
 - 몹·영웅 기본 수치는 2.305 맵 추출값, 스킬은 2.323 ORDR 카드 설명 기반 근사다. 2.323 원본 스크립트 실행 검증이 아니다.
-- 라인은 data.json의 상위 영웅 31명과 보조 4·삭제 3종만 지원한다. 나머지 상위 영웅은 미등록이다.
+- 라인은 data.json의 상위 영웅 31명과 보조 4·조건형 3·삭제 3종만 지원한다. 나머지 상위 영웅은 미등록이다.
+- 자원은 60라 시작 시 1회 만충 후 연속으로 쌓인다(`resourceMode`로 변경 가능).
+- 아직 계산하지 않는 툴팁 효과(지속 방어력 감소, 아군 오라, 크리티컬 추가 피해, Z10 처형 등)는 `docs/수정내역.md`의 미적용 목록에 있다.
+- 확률 스킬·아머브레이크·처형은 발동 기대값으로 나누어 적용한다.
 - 단일 테스터는 단일·끝딜 유닛 10종만 지원한다.
 - 스턴·슬로우 등 제어, 몹 이동·위치·사거리는 구현되지 않았다. 범위 피해는 `coverage`로 근사한다.
 - 선택한 증폭 효과는 항상 걸려 있다고 가정한다. 발동 확률·지속시간·대상 조건은 판정하지 않는다.
@@ -218,7 +222,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 ## 테스트
 
 ```bash
-npm test            # test_single, test_support, test_v2, test_cli
+npm test            # test_single, test_support, test_v2, test_conditional, test_v3_mechanics, test_cli
 node test_cli.mjs   # CLI 결과 = 엔진 직접 호출 결과 확인
 ```
 
