@@ -24,4 +24,10 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.notDeepEqual(run([{code:'TR18',count:3}],{resourceMode:'perRound'}).checkpoints,
     run([{code:'TR18',count:3}]).checkpoints);
 }
-console.log('V3 mechanics: resource clock: passed');
+// [수정 2] TR23 특강 영구 몬스터포인트 폼.
+{
+  const tr23=data.heroes.find(h=>h.code==='TR23');
+  assert.equal(tr23.permanent_form,1);
+  assert.equal(tr23.forms[1].splash_radius,400);
+}
+console.log('V3 mechanics: resource clock, TR23 form: passed');

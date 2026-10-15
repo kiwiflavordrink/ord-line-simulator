@@ -253,12 +253,13 @@
    "name":"쵸파",
    "grade":"초월함",
    "focus":"물리 중심",
+   "permanent_form":1,
    "forms":[
     {"rawcode":"H091","attack":315502.0,"aps":7.016129088854567,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}},
     {"rawcode":"H0B6","attack":350502.0,"aps":3.624999913076563,"attack_type":"siege","splash":1,"splash_radius":400,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
    ],
    "events":[
-    {"code":"TR23","index":"1","rate":0.04677419392569711,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR23","index":"1","rate":0.04677419392569711,"rate_kind":"자원 150; 공격당 1+초당 0; 시작시 만충","parts":[],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"특강 시 영구 몬스터포인트 폼이라 럼블볼 폭주 변신 마나는 피해가 없는 자원 표식으로만 남김. 근거: 2.305 wts STRING 5134 (A0OO 특성강화) \"영구적으로 몬스터포인트 형태로 변신\""},
     {"code":"TR23","index":"2","rate":0.7016129088854567,"rate_kind":"공격당 0.1","parts":[["physical",1750000.0,[],1.75]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
    ],
    "url":"https://ordr.kr/character/TR23"
