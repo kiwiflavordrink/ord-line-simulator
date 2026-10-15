@@ -149,4 +149,14 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.equal(tr22.find(b=>b.code==='TR22').mana_regen,0);               // own regen already in its rates
   assert.equal(tr22.find(b=>b.code==='TR19').mana_regen,3);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras: passed');
+// [수정 16] 위치 모델(옵션): 기본값은 꺼짐, 스턴이 이동을 멈추게 해 결과를 바꾼다.
+{
+  assert.equal(simulateV2(data,[{code:'TR19'}],{}).positionModel,false);
+  const on=simulateV2(data,[{code:'TR29',count:2}],{positionModel:true});
+  assert.equal(on.positionModel,true);
+  assert.ok(on.control.stunnedLineMobSeconds>0);
+  const noStun=structuredClone(data);for(const e of noStun.heroes.find(h=>h.code==='TR29').events)delete e.stun;
+  const off=simulateV2(noStun,[{code:'TR29',count:2}],{positionModel:true});
+  assert.ok(off.remaining>on.remaining||!off.clear);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model: passed');

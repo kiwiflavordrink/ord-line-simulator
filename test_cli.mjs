@@ -42,7 +42,7 @@ function assertLine(out,direct){
   assert.deepEqual(out.finisher,{attempts:direct.finisherAttempts,kills:direct.finisherKills});
   assert.deepEqual(out.control,direct.control);
   assert.deepEqual(out.totals,{lineSpawned:direct.totalLineSpawned,lineKilled:direct.totalLineKilled,unitCount:direct.unitCount});
-  assert.deepEqual(out.applied,{cut:direct.cut,coverage:direct.coverage,magicFactor:direct.magicFactor,resourceMode:direct.resourceMode});
+  assert.deepEqual(out.applied,{cut:direct.cut,coverage:direct.coverage,magicFactor:direct.magicFactor,resourceMode:direct.resourceMode,positionModel:direct.positionModel});
 }
 function assertSingle(out,direct,refs){
   assert.equal(out.to15Seconds,direct.to15);

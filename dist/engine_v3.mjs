@@ -174,6 +174,54 @@ export function simulateV2(data,composition,options={}){
     return u.rngState/4294967296;
   };
   const deleteCounts={L12:0,D4:0,L19:0},executeCounts={};
+  // Position model (options.positionModel): every unit stands at the line spawn point; mobs walk the
+  // 2.305 waypoint loop (data.line_path). Each hero attacks only mobs within its attack range, AoE hits
+  // only mobs within the skill radius, stuns stop movement and slows reduce speed (floor MinUnitSpeed).
+  const lp=options.positionModel===true?data.line_path:null,posModel=!!lp;
+  const pathPts=lp?lp.loop:[],pathSeg=[];let pathLen=0;
+  for(let i=0;i<pathPts.length;i++){
+    const a=pathPts[i],b=pathPts[(i+1)%pathPts.length],len=Math.hypot(b[0]-a[0],b[1]-a[1]);
+    pathSeg.push({a,b,start:pathLen,len});pathLen+=len;
+  }
+  const spawnPt=lp?{x:lp.loop[0][0],y:lp.loop[0][1]}:null;
+  const place=m=>{
+    if(m.kind==='frenzy'&&lp.frenzy){
+      const [a,b]=lp.frenzy.shuttle,d=Math.hypot(b[0]-a[0],b[1]-a[1]),u=m.s%(2*d),f=(u<=d?u:2*d-u)/d;
+      m.x=a[0]+(b[0]-a[0])*f;m.y=a[1]+(b[1]-a[1])*f;return;
+    }
+    const u=((m.s%pathLen)+pathLen)%pathLen;
+    const seg=pathSeg.find(g=>u<=g.start+g.len)??pathSeg[pathSeg.length-1],f=(u-seg.start)/seg.len;
+    m.x=seg.a[0]+(seg.b[0]-seg.a[0])*f;m.y=seg.a[1]+(seg.b[1]-seg.a[1])*f;
+  };
+  const dist=(m,c)=>Math.hypot(m.x-c.x,m.y-c.y);
+  const enemySlowAuras=new Map();
+  if(posModel)for(const u of units)if(u.kind==='hero')for(const a of u.model.enemy_slow_auras??[])enemySlowAuras.set(a.id,a);
+  const slowOf=m=>{
+    let sum=0;
+    if(m.slows)for(const v of Object.values(m.slows))if(v.until>now)sum+=v.value;
+    for(const a of enemySlowAuras.values())if(dist(m,spawnPt)<=a.range)sum+=a.value;
+    return Math.min(1,sum);
+  };
+  const move=m=>{
+    if((m.stunnedUntil??0)>now)return;
+    const slow=slowOf(m),base=m.speed;
+    m.s+=(slow>0?Math.max(lp.min_speed,base*(1-slow)):base)*.1;place(m);
+  };
+  // Attack target in range: bosses and frenzy mobs first (players focus them), then the nearest line mob.
+  const pickTarget=range=>{
+    if(!posModel)return specials[0]??mobs[0]??null;
+    const near=list=>list.filter(m=>m.hp>0&&dist(m,spawnPt)<=range).sort((a,b)=>dist(a,spawnPt)-dist(b,spawnPt))[0];
+    return near(specials)??near(mobs)??null;
+  };
+  const stunFor=(m,st)=>m.kind==='line'?st.normal:m.kind==='boss'?(st.boss??st.hero??st.normal):(st.hero??st.normal);
+  const applyStun=(m,st)=>{const d=stunFor(m,st);if(d)m.stunnedUntil=Math.max(m.stunnedUntil??0,now+d);};
+  const applySlow=(m,sl,key)=>{
+    const d=m.kind==='line'?sl.duration:(sl.hero_duration??sl.duration);
+    const list=m.slows??={},cur=list[key];
+    if(!cur||cur.until<=now)list[key]={value:Math.min(1,sl.value),until:now+d};
+    else{cur.value=Math.max(cur.value,Math.min(1,sl.value));cur.until=Math.max(cur.until,now+d);}
+  };
+  const cov=posModel?1:coverage;
   const sourceDamage={};
   const lineDamage={area:0,basic:0,single:0,finisher:0,magic:0,physical:0,fixed:0};
   const mobs=[],specials=[],checkpoints=[],timeline=[];
@@ -247,14 +295,16 @@ export function simulateV2(data,composition,options={}){
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
     finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,
     buffs:units.map(u=>u.buffs?{code:u.code,...u.buffs}:null).filter(Boolean),unitCount:units.length,
-    magicFactor,cut,coverage,resourceMode});
+    magicFactor,cut,coverage,resourceMode,positionModel:posModel});
 
   for(const round of rounds){
     const [hp0,armor0]=data.rounds[String(round)];
     let spawned=0,specialKill=null;
     if(data.boss[String(round)]){
       const [hp,baseArmor]=data.boss[String(round)];
-      specials.push({hp,maxhp:hp,armor:baseArmor,ab:0,kind:'boss',round});
+      const boss={hp,maxhp:hp,armor:baseArmor,ab:0,kind:'boss',round};
+      if(posModel){boss.s=0;boss.speed=lp.boss_speed;place(boss);}
+      specials.push(boss);
     }
     for(let step=0;step<320;step++){
       const t=step*.1,globalT=(round-60)*32+t,globalStep=(round-60)*320+step;
@@ -262,11 +312,14 @@ export function simulateV2(data,composition,options={}){
       let newMob=null;
       if(step%5===0&&spawned<35){
         newMob={hp:hp0,maxhp:hp0,armor:armor0,ab:0,kind:'line',round};
+        if(posModel){newMob.s=0;newMob.speed=lp.mob_speed;place(newMob);}
         mobs.push(newMob);spawned++;totalLineSpawned++;
       }
       if(data.frenzy[String(round)]&&step===75){
         const hp=data.frenzy[String(round)];
-        specials.push({hp,maxhp:hp,armor:armor0+5,ab:0,kind:'frenzy',round});
+        const frenzy={hp,maxhp:hp,armor:armor0+5,ab:0,kind:'frenzy',round};
+        if(posModel){frenzy.s=0;frenzy.speed=lp.mob_speed;place(frenzy);}
+        specials.push(frenzy);
       }
       for(let i=mobs.length-1;i>=0;i--)if(mobs[i].hp<=0){mobs.splice(i,1);totalLineKilled++;}
       for(let i=specials.length-1;i>=0;i--)if(specials[i].hp<=0)specials.splice(i,1);
@@ -290,8 +343,12 @@ export function simulateV2(data,composition,options={}){
       const regen=((bossAura?500000:0)+(frenzyAura?1000000:0))*.1;
       if(regen)for(const m of mobs)m.hp=Math.min(m.maxhp,m.hp+regen);
       for(const s of specials)s.hp=Math.min(s.maxhp,s.hp+(s.kind==='boss'?550000:s.round===61?1045000:1000000)*.1);
-      const target=specials[0]??mobs[0]??null;
-      const aoeTargets=[...mobs,...specials.filter(s=>s===target)];
+      if(posModel)for(const m of [...mobs,...specials])if(m.hp>0)move(m);
+      // Supports, Red Force and conditional units: default range lp.support_range, splash lp.support_splash.
+      const globalTarget=pickTarget(lp?lp.support_range:0);
+      let target=globalTarget;
+      const aoeTargets=posModel?[...mobs,...specials].filter(m=>m===target||target&&dist(m,target)<=lp.support_splash)
+        :[...mobs,...specials.filter(s=>s===target)];
       const hit=m=>m===target?1:coverage;
 
       // Armor break is stored on each individual enemy and survives wave changes.
@@ -330,6 +387,7 @@ export function simulateV2(data,composition,options={}){
         }
         if(u.kind!=='hero'||!u.damage)continue;
         const hero=u.model,{form,transformed}=formAt(hero,globalT,t,resourceMode),baseAps=hero.forms[0].aps;
+        if(posModel)target=pickTarget(form.range??lp.support_range);
         let aps=form.aps;if(hero.code==='E10'&&transformed)aps=1/.11;
         // Attack-speed auras add to the form's bonus (aps x base cooldown - 1), capped at +400% in WC3.
         if(u.buffs.aps&&form.cooldown)aps=Math.min(5,aps*form.cooldown+u.buffs.aps)/form.cooldown;
@@ -366,8 +424,8 @@ export function simulateV2(data,composition,options={}){
         if(target){
           const crit=critEV(form.crit);
           deal(target,attack*crit*critEV(form.target_crit)*aps*form.rounds[String(target.round)]*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
-          if(form.splash)for(const m of mobs)if(m!==target)
-            deal(m,attack*crit*aps*form.rounds[String(m.round)]*pf(armor(m,extraArmor))*form.splash*.1*coverage,u.code,'area','physical');
+          if(form.splash)for(const m of mobs)if(m!==target&&(!posModel||dist(m,target)<=form.splash_radius))
+            deal(m,attack*crit*aps*form.rounds[String(m.round)]*pf(armor(m,extraArmor))*form.splash*.1*cov,u.code,'area','physical');
         }
         for(const e of hero.events){
           if(!summons&&isSummon(e))continue;
@@ -379,6 +437,9 @@ export function simulateV2(data,composition,options={}){
           if(e.initial&&(resourceMode==='perRound'&&step===0||resourceMode==='start'&&globalStep===0))rate+=10;
           if(!rate)continue;
           if(e.min_target_ab&&!(target&&target.ab>=e.min_target_ab))continue;
+          // Position model: a skill needs a target in range unless it is centred on the hero.
+          const center=posModel?(e.center==='self'?spawnPt:target):null;
+          if(posModel&&!center)continue;
           let targets;
           // Single-target kinds hit only the current attack target:
           // 'single' any target (boss_parts replaces parts against a boss), 'single_line' a line mob,
@@ -395,9 +456,10 @@ export function simulateV2(data,composition,options={}){
             case 'line_or_frenzy':targets=[...mobs,...specials.filter(s=>s.kind==='frenzy')];break;
             default:targets=[...mobs,...specials];
           }
+          if(posModel&&!single)targets=targets.filter(m=>m===target||dist(m,center)<=(e.radius??lp.default_radius));
           for(const m of targets)if(m.hp>0){
             const ev=e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
-            const share=rate*.1*(m===target||single?1:coverage);
+            const share=rate*.1*(m===target||single?1:cov);
             deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
             // Armor break as an expected stack per step, like the supports (cap 75 in abAdd).
             if(m.hp>0&&e.ab)abAdd(m,e.ab*share);
@@ -405,6 +467,18 @@ export function simulateV2(data,composition,options={}){
           }
           // execute_line: each proc removes the attack target if it is a line mob (I3 순속·패기발산).
           // Procs accumulate as an expected-value bank, like the finisher success bank.
+          // Stuns and slows (position model): each whole expected proc applies them to the hit mobs.
+          if(posModel&&(e.stun||e.slow)){
+            const bank=u.ccBank??={};
+            bank[e.index]=(bank[e.index]??0)+rate*.1;
+            while(bank[e.index]>=1-1e-9){
+              bank[e.index]-=1;
+              for(const m of targets)if(m.hp>0){
+                if(e.stun&&(!e.stun.single||m===target))applyStun(m,e.stun);
+                if(e.slow)applySlow(m,e.slow,u.code+':'+e.index);
+              }
+            }
+          }
           // armor_debuff: each whole proc applies the timed reduction to the skill's targets
           // (non-target mobs scaled by coverage).
           if(e.armor_debuff){
@@ -427,6 +501,7 @@ export function simulateV2(data,composition,options={}){
           }
         }
       }
+      target=globalTarget;
       // Conditional units use their own attack clocks. Gaban damages one target;
       // Sunny area stuns are measured, but movement/escape is not modeled here.
       for(const u of units){
@@ -543,7 +618,7 @@ export function simulateV2(data,composition,options={}){
       const aliveLines=mobs.filter(m=>m.hp>0);
       control.activeLineMobSeconds+=aliveLines.length*.1;
       const stunned=aliveLines.filter(m=>(m.stunnedUntil??0)>globalT).length;
-      control.stunnedLineMobSeconds+=stunned*.1*coverage;
+      control.stunnedLineMobSeconds+=stunned*.1*cov;
       if(stunned)control.stunFieldSeconds+=.1;
       if(step%10===9)timeline.push({second:(round-60)*32+(step+1)*.1,
         count:mobs.filter(m=>m.hp>0).length+specials.filter(s=>s.hp>0).length,round});
