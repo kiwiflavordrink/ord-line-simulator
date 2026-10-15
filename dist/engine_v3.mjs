@@ -112,7 +112,8 @@ function formAt(hero,g,t,mode){
     return {form:on?hero.forms[1]:base,transformed:on};
   }
   const windows={TR3:[4.5,150,.25],TR6:[7,130,.25],TR18:[3.5,95,.33],TR23:[4,150,0],I11:[11,0,0],E10:[2,100,0]};
-  const w=windows[hero.code];if(!w)return {form:base,transformed:false};
+  // hero.transform_window [duration s, mana cost, mana regen per s] (수정내역 27) for new heroes; mana +1 per attack.
+  const w=hero.transform_window??windows[hero.code];if(!w)return {form:base,transformed:false};
   let period=w[1]?w[0]+w[1]/(base.aps+w[2]):w[0]+1/(base.aps*.14);
   if(hero.code==='E10')period=w[0]+100/(base.aps*.2);
   const transformed=inWindow(w[0],period,g,t,mode,w[1]>0);
@@ -210,11 +211,19 @@ export function simulateV2(data,composition,options={}){
     for(const k of Object.keys(p.default)){out[k]=Math.min(left,Math.max(0,Math.floor(chosen[k]??0)));left-=out[k];}
     return out[kind]??0;
   };
-  const magicReduction=clamp(options.magicReduction??0,0,.35);
-  const magicAmp=clamp(options.magicAmp??0,0,.25);
-  const allAmp=clamp(options.allAmp??0,0,5);
-  const explosiveAmp=clamp(options.explosiveAmp??0,0,.25);
-  const normalOnlyExplosiveAmp=clamp(options.normalOnlyExplosiveAmp??0,0,.25);
+  // Team effects of heroes in the team (data hero.team_effects, 수정내역 27): 마방깎 levels, magic/explosive/all
+  // amplification. One copy of a hero applies them once; they add to the context options (same caps). Do not also
+  // tick the same effect in the web's effect list.
+  const teamFx={magic_cut_levels:0,magic_amp:0,explosive_amp:0,normal_only_explosive_amp:0,all_amp:0};
+  for(const code of new Set(units.filter(u=>u.kind==='hero').map(u=>u.code))){
+    const fx=heroMap.get(code).team_effects;
+    if(fx)for(const k of Object.keys(teamFx))teamFx[k]+=fx[k]??0;
+  }
+  const magicReduction=clamp((options.magicReduction??0)+teamFx.magic_cut_levels*.01,0,.35);
+  const magicAmp=clamp((options.magicAmp??0)+teamFx.magic_amp,0,.25);
+  const allAmp=clamp((options.allAmp??0)+teamFx.all_amp,0,5);
+  const explosiveAmp=clamp((options.explosiveAmp??0)+teamFx.explosive_amp,0,.25);
+  const normalOnlyExplosiveAmp=clamp((options.normalOnlyExplosiveAmp??0)+teamFx.normal_only_explosive_amp,0,.25);
   // A04Q: level L = 0.79 + 0.01 x L (16 = 0.95, 악몽 11 = 0.90); 워큐리 lowers the level, minimum level 1.
   const defenceFactor=clamp(.79+.01*Math.max(1,diff.magic_level-(curse.magic_levels??0))+magicReduction,.80,1.15);
   const magicFactor=defenceFactor*(1+magicAmp);
