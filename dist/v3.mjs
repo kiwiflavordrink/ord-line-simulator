@@ -95,6 +95,7 @@ function options(){const c=context();return {
   normalOnlyExplosiveAmp:c.normalOnlyExplosiveAmp/100,warcury:c.warcury,
   red:$('red-v2').checked,redDamage:$('red-v2').checked,fullResource:$('resource-v2').checked,summons:$('summons-v2').checked,
   frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
+  tr19Plants:{pea:val('tr19-pea'),snow:val('tr19-snow'),muk:val('tr19-muk')},
   customMagic:{aps:val('magic-aps'),chance:val('magic-chance')/100,flat:val('magic-flat'),
     maxPct:val('magic-max')/100,currentPct:val('magic-current')/100,lostPct:val('magic-lost')/100},
   finisher:{mode:$('finish-mode').value,interval:val('finish-interval'),successChance:val('finish-chance')/100,
@@ -255,6 +256,7 @@ function restore(){
   $('summons-v2').checked=params.get('summons')!=='0';
   $('franky-aura').checked=params.get('frankyAura')!=='0';
   $('sunny-stagger').checked=params.get('sunnyStagger')==='1';
+  for(const k of ['pea','snow','muk'])if(params.has('tr19'+k))$('tr19-'+k).value=params.get('tr19'+k);
 }
 function shareURL(){
   const u=new URL(location.href);u.search='';u.searchParams.set('team',JSON.stringify(team()));
@@ -268,6 +270,7 @@ function shareURL(){
   u.searchParams.set('summons',$('summons-v2').checked?'1':'0');
   u.searchParams.set('frankyAura',$('franky-aura').checked?'1':'0');
   u.searchParams.set('sunnyStagger',$('sunny-stagger').checked?'1':'0');
+  for(const k of ['pea','snow','muk'])u.searchParams.set('tr19'+k,$('tr19-'+k).value);
   for(const e of document.querySelectorAll('.amp-effect:checked'))u.searchParams.append('effect',e.value);
   u.searchParams.set('warcury',$('v3-warcury').checked?'1':'0');
   for(const [param,id] of [['customMamp','v3-custom-mamp'],['customMcut','v3-custom-mcut'],['customAll','v3-custom-all'],['customExplosive','v3-custom-explosive']])u.searchParams.set(param,$(id).value);

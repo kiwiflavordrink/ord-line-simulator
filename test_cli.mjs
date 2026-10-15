@@ -154,6 +154,7 @@ bad({line:{team:[{code:'TR19'}],options:{red:'yes'}}},'NOT_A_BOOLEAN');
 bad({line:{team:[{code:'TR19'}],options:{stun:true}}},'UNKNOWN_KEY','line.options.stun');
 bad({line:{team:[{code:'TR19'}],options:{finisher:{mode:'auto'}}}},'INVALID_VALUE');
 bad({line:{team:[{code:'TR19'}],options:{resourceMode:'always'}}},'INVALID_VALUE','line.options.resourceMode');
+bad({line:{team:[{code:'TR19'}],options:{tr19Plants:{pea:2,snow:1,muk:1}}}},'TOO_MANY_PLANTS','line.options.tr19Plants');
 bad({line:{team:[{code:'TR19'}]},context:{selected:['NOPE']}},'UNKNOWN_EFFECT');
 bad({single:{team:[{code:'TR19'}]}},'UNSUPPORTED_UNIT','single.team[0].code');
 bad({single:{team:[{code:'L9',count:7},{code:'L36',count:6}]}},'TOO_MANY_UNITS');

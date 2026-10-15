@@ -140,7 +140,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -152,6 +152,17 @@ function validateLine(raw,data,is){
       frankyAura:bool(o,'frankyAura','line.options',is),
       sunnyStagger:bool(o,'sunnyStagger','line.options',is)
     }));
+    if(o.tr19Plants!==undefined){
+      const t=o.tr19Plants,p='line.options.tr19Plants';
+      if(!isObj(t))is.error(p,'NOT_AN_OBJECT','객체여야 합니다.');
+      else{
+        onlyKeys(t,['pea','snow','muk'],p,is);
+        options.tr19Plants=compact({pea:num(t,'pea',p,is,{min:0,max:3,integer:true}),
+          snow:num(t,'snow',p,is,{min:0,max:3,integer:true}),muk:num(t,'muk',p,is,{min:0,max:3,integer:true})});
+        const total=Object.values(options.tr19Plants).reduce((a,b)=>a+b,0);
+        if(total>3)is.error(p,'TOO_MANY_PLANTS',`식물은 최대 3기입니다. (입력 ${total}기)`);
+      }
+    }
     if(o.customMagic!==undefined){
       const c=o.customMagic,p='line.options.customMagic';
       if(!isObj(c))is.error(p,'NOT_AN_OBJECT','객체여야 합니다.');

@@ -126,4 +126,11 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const base=simulateV2(data,[{code:'Z10'}],{}),boosted=simulateV2(easy,[{code:'Z10'}],{});
   assert.ok(boosted.lineDamage.single>base.lineDamage.single);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner: passed');
+// [수정 14] TR19 식물 배분: 기본(2/1/0)은 옵션 없음과 같고, 먹깨비는 처형을 만든다.
+{
+  const t=[{code:'TR19'}];
+  assert.deepEqual(simulateV2(data,t,{tr19Plants:{pea:2,snow:1,muk:0}}).checkpoints,simulateV2(data,t,{}).checkpoints);
+  assert.ok(simulateV2(data,t,{tr19Plants:{pea:0,snow:0,muk:3}}).executeCounts.TR19>0);
+  assert.equal(simulateV2(data,t,{tr19Plants:{pea:3,snow:3,muk:3}}).executeCounts.TR19,undefined); // capped at 3 peas
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants: passed');

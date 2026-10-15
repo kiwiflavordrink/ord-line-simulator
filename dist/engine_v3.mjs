@@ -35,7 +35,7 @@ const typeFor=(type,round,data)=>typeMatrix[type]?.[data.rounds[String(round)][2
 const clamp=(x,min,max)=>Math.min(max,Math.max(min,Number.isFinite(+x)?+x:min));
 const abAdd=(m,n)=>{m.ab=Math.min(75,m.ab+n);};
 const SINGLE_TARGETS=new Set(['single','single_line','target_special','boss','frenzy']);
-const isSummon=e=>/완두콩|백설콩|파견 해군|거인족|부유물|릴리스|아틀라스|요크/.test(String(e.index));
+const isSummon=e=>/완두콩|백설콩|먹깨비|파견 해군|거인족|부유물|릴리스|아틀라스|요크/.test(String(e.index));
 
 // Resource modes: 'start' = full mana once at the start of round 60 (2.305 has no
 // round-start mana refill; only cheat functions refill mana), 'empty' = no starting
@@ -103,6 +103,14 @@ export function simulateV2(data,composition,options={}){
   const sunnyStagger=options.sunnyStagger===true;
   for(const [index,u] of sunnyUnits.entries())u.openingDelay=sunnyStagger&&sunnyUnits.length>1?
     index*(100/(u.model.aps+(frankyLinked?5:0)))/sunnyUnits.length:0;
+  // TR19 수상한 씨앗 상자: plant counts per kind (option tr19Plants), at most hero.plants.max in total.
+  const plantCount=(hero,kind)=>{
+    const p=hero.plants;if(!p)return 1;
+    const chosen={...p.default,...(options.tr19Plants??{})};
+    let left=p.max;const out={};
+    for(const k of Object.keys(p.default)){out[k]=Math.min(left,Math.max(0,Math.floor(chosen[k]??0)));left-=out[k];}
+    return out[kind]??0;
+  };
   const magicReduction=clamp(options.magicReduction??0,0,.35);
   const magicAmp=clamp(options.magicAmp??0,0,.25);
   const warcury=options.warcury===true;
@@ -330,6 +338,7 @@ export function simulateV2(data,composition,options={}){
           if(!summons&&isSummon(e))continue;
           if(e.phase==='trans'&&!transformed||e.phase==='base'&&transformed||e.phase==='giant'&&!giant||e.phase==='nongiant'&&giant)continue;
           let rate=e.rate*(e.per_attack?aps/baseAps:1);
+          if(e.plant)rate*=plantCount(hero,e.plant);
           if(executing&&e.index===exe.boost_event)rate=aps;
           if(e.initial&&(resourceMode==='perRound'&&step===0||resourceMode==='start'&&globalStep===0))rate+=10;
           if(!rate)continue;
