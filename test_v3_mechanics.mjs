@@ -159,4 +159,26 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const off=simulateV2(noStun,[{code:'TR29',count:2}],{positionModel:true});
   assert.ok(off.remaining>on.remaining||!off.clear);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model: passed');
+// [수정 18] 난이도 이속, 같은 이감 오라는 최고값 하나, 확률 스턴은 시드로 고정, 소환수 스킬.
+{
+  assert.deepEqual(data.line_path.difficulty['신'],{speed_bonus:.5,slow_cap:1.02});
+  const pos={positionModel:true},team=[{code:'TR29',count:2}];
+  const slowMobs=structuredClone(data);slowMobs.line_path.difficulty['신'].speed_bonus=0;
+  assert.notDeepEqual(simulateV2(slowMobs,team,pos).checkpoints,simulateV2(data,team,pos).checkpoints);
+  const aura=(list)=>{const d=structuredClone(data);d.heroes.find(h=>h.code==='TR19').enemy_slow_auras=list;return simulateV2(d,[{code:'TR19'}],pos).checkpoints;};
+  const a={id:'X',range:900};
+  assert.deepEqual(aura([{...a,value:.3},{...a,value:.5}]),aura([{...a,value:.5}]));   // same id: highest only
+  assert.notDeepEqual(aura([{...a,value:.5},{...a,id:'Y',value:.5}]),aura([{...a,value:.5}])); // different ids add
+  const seeded=seed=>simulateV2(data,[{code:'I12',count:3}],{...pos,deletion:{seed}});
+  assert.deepEqual(seeded(7).checkpoints,seeded(7).checkpoints);
+  assert.ok(seeded(7).control.stunnedLineMobSeconds>0);
+  const e5=data.heroes.find(h=>h.code==='E5');
+  assert.ok(['파견 해적','이완코브'].every(i=>e5.events.some(e=>e.index===i))&&e5.enemy_armor_auras[0].value===11);
+  const noSummon=structuredClone(data),h=noSummon.heroes.find(x=>x.code==='E5');
+  h.events=h.events.filter(e=>!['파견 해적','이완코브'].includes(e.index));delete h.enemy_armor_auras;
+  assert.ok(simulateV2(data,[{code:'E5'}],{}).sourceDamage.E5>simulateV2(noSummon,[{code:'E5'}],{}).sourceDamage.E5);
+  const tr30=data.heroes.find(x=>x.code==='TR30').events.filter(e=>e.stun);
+  assert.ok(tr30.some(e=>e.index==='스턴 아틀라스 타격')&&tr30.some(e=>e.index==='스턴 릴리스 버블건'));
+  assert.ok(simulateV2(data,[{code:'TR30'}],pos).control.stunnedLineMobSeconds>0);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons: passed');

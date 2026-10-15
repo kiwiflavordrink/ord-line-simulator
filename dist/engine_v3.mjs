@@ -203,18 +203,29 @@ export function simulateV2(data,composition,options={}){
     m.x=seg.a[0]+(seg.b[0]-seg.a[0])*f;m.y=seg.a[1]+(seg.b[1]-seg.a[1])*f;
   };
   const dist=(m,c)=>Math.hypot(m.x-c.x,m.y-c.y);
+  // Same slow aura (id) never stacks: the highest value applies. Different auras add.
   const enemySlowAuras=new Map();
-  if(posModel)for(const u of units)if(u.kind==='hero')for(const a of u.model.enemy_slow_auras??[])enemySlowAuras.set(a.id,a);
+  if(posModel)for(const u of units)if(u.kind==='hero')for(const a of u.model.enemy_slow_auras??[])
+    if(!(enemySlowAuras.get(a.id)?.value>=a.value))enemySlowAuras.set(a.id,a);
+  // Difficulty (2.305 난이도 문구, 신·악몽): "모든 적 유닛들의 이동속도가 50% 증가".
+  const difficulty=lp?lp.difficulty[options.difficulty==='악몽'?'악몽':'신']:null;
+  // Every unit is bunched at the spawn point, so one engage range applies to all (user decision).
+  const engageRange=lp?clamp(options.engageRange??lp.engage_range,100,3000):0;
+  // Stuns and slows proc randomly (seeded) so stun chains can leak; damage stays an expected value.
+  let ccState=(clamp(Math.floor((options.deletion??{}).seed??202323),0,2147483647)^0x5bd1e995)>>>0||1;
+  const ccRandom=()=>{ccState^=ccState<<13;ccState^=ccState>>>17;ccState^=ccState<<5;ccState>>>=0;return ccState/4294967296;};
+  const ccProcs=rate=>{let n=0;const p=1-Math.exp(-rate*.1);while(n<20&&ccRandom()<p)n++;return n;};
   const slowOf=m=>{
     let sum=0;
     if(m.slows)for(const v of Object.values(m.slows))if(v.until>now)sum+=v.value;
     for(const a of enemySlowAuras.values())if(dist(m,spawnPt)<=a.range)sum+=a.value;
-    return Math.min(1,sum);
+    return sum;
   };
+  // Speed = base x (1 + difficulty bonus - slow), slow capped at difficulty.slow_cap, floor MinUnitSpeed.
   const move=m=>{
     if((m.stunnedUntil??0)>now)return;
-    const slow=slowOf(m),base=m.speed;
-    m.s+=(slow>0?Math.max(lp.min_speed,base*(1-slow)):base)*.1;place(m);
+    const slow=Math.min(slowOf(m),difficulty.slow_cap);
+    m.s+=Math.max(lp.min_speed,m.speed*(1+difficulty.speed_bonus-slow))*.1;place(m);
   };
   // Attack target in range: bosses and frenzy mobs first (players focus them), then the nearest line mob.
   const pickTarget=range=>{
@@ -240,8 +251,16 @@ export function simulateV2(data,composition,options={}){
   const casts=new Map(units.map((u,i)=>[i,u.kind==='support'?supportCastSchedule(u.code,fullResource):[]]));
   // Timed armor reductions per mob: one entry per debuff key (same skill refreshes, different skills add).
   let now=0;
+  // Enemy armor auras of temporary summons (data enemy_armor_auras): value x probability that at least
+  // one summon is present, 1 - exp(-chance x attacks per second x duration). Same id applies once.
+  const armorAuras=new Map();
+  for(const u of units)if(u.kind==='hero')for(const a of u.model.enemy_armor_auras??[]){
+    const up=a.uptime?1-Math.exp(-a.uptime.proc*u.model.forms[0].aps*a.uptime.duration):1;
+    const prev=armorAuras.get(a.id);armorAuras.set(a.id,{...a,eff:a.value*(1-(1-up)*(prev?1-prev.eff/a.value:1))});
+  }
   const debuffSum=m=>{
     let sum=0;
+    for(const a of armorAuras.values())if(!posModel||dist(m,spawnPt)<=a.range)sum+=a.eff;
     if(m.debuffs)for(const d of Object.values(m.debuffs))if(d.until>now)sum+=d.value;
     if(m.huntSingle>0)sum+=Math.min(145,70+5*m.huntSingle);
     if(m.huntArea>0)sum+=Math.min(30,3*m.huntArea);
@@ -353,8 +372,8 @@ export function simulateV2(data,composition,options={}){
       if(regen)for(const m of mobs)m.hp=Math.min(m.maxhp,m.hp+regen);
       for(const s of specials)s.hp=Math.min(s.maxhp,s.hp+(s.kind==='boss'?550000:s.round===61?1045000:1000000)*.1);
       if(posModel)for(const m of [...mobs,...specials])if(m.hp>0)move(m);
-      // Supports, Red Force and conditional units: default range lp.support_range, splash lp.support_splash.
-      const globalTarget=pickTarget(lp?lp.support_range:0);
+      // Supports, Red Force and conditional units: engage range (default lp.engage_range), splash lp.support_splash.
+      const globalTarget=pickTarget(engageRange);
       let target=globalTarget;
       const aoeTargets=posModel?[...mobs,...specials].filter(m=>m===target||target&&dist(m,target)<=lp.support_splash)
         :[...mobs,...specials.filter(s=>s===target)];
@@ -384,11 +403,8 @@ export function simulateV2(data,composition,options={}){
           }
         }
         if(cast&&u.ab&&u.code==='D3')for(const m of aoeTargets)if(m.hp>0)abAdd(m,s.abCast*hit(m));
-        if(posModel&&target&&u.damage)for(const [k,sk] of (SUPPORT_STUNS[u.code]??[]).entries()){
-          const bank=u.ccBank??={};
-          bank[k]=(bank[k]??0)+(sk.on==='cast'?(cast?1:0):s.aps*sk.chance*.1);
-          while(bank[k]>=1-1e-9){
-            bank[k]-=1;
+        if(posModel&&target&&u.damage)for(const sk of SUPPORT_STUNS[u.code]??[]){
+          for(let k=sk.on==='cast'?(cast?1:0):ccProcs(s.aps*sk.chance);k>0;k--){
             for(const m of sk.stun.single?[target]:[...mobs,...specials].filter(m=>dist(m,target)<=sk.radius))if(m.hp>0)applyStun(m,sk.stun);
           }
         }
@@ -404,7 +420,7 @@ export function simulateV2(data,composition,options={}){
         }
         if(u.kind!=='hero'||!u.damage)continue;
         const hero=u.model,{form,transformed}=formAt(hero,globalT,t,resourceMode),baseAps=hero.forms[0].aps;
-        if(posModel)target=pickTarget(form.range??lp.support_range);
+        if(posModel)target=pickTarget(hero.own_range?form.range:engageRange);
         let aps=form.aps;if(hero.code==='E10'&&transformed)aps=1/.11;
         // Attack-speed auras add to the form's bonus (aps x base cooldown - 1), capped at +400% in WC3.
         if(u.buffs.aps&&form.cooldown)aps=Math.min(5,aps*form.cooldown+u.buffs.aps)/form.cooldown;
@@ -486,10 +502,7 @@ export function simulateV2(data,composition,options={}){
           // Procs accumulate as an expected-value bank, like the finisher success bank.
           // Stuns and slows (position model): each whole expected proc applies them to the hit mobs.
           if(posModel&&(e.stun||e.slow)){
-            const bank=u.ccBank??={};
-            bank[e.index]=(bank[e.index]??0)+rate*.1;
-            while(bank[e.index]>=1-1e-9){
-              bank[e.index]-=1;
+            for(let k=ccProcs(rate);k>0;k--){
               for(const m of targets)if(m.hp>0){
                 if(e.stun&&(!e.stun.single||m===target))applyStun(m,e.stun);
                 if(e.slow)applySlow(m,e.slow,u.code+':'+e.index);
@@ -525,7 +538,7 @@ export function simulateV2(data,composition,options={}){
         if(u.kind!=='conditional')continue;
         const spec=u.model,attacks=spec.aps*.1;
         u.attackBank+=attacks;
-        const inReach=m=>m.hp>0&&(!posModel||dist(m,spawnPt)<=lp.support_range);
+        const inReach=m=>m.hp>0&&(!posModel||dist(m,spawnPt)<=engageRange);
         const normal=mobs.find(inReach),single=normal??specials.find(inReach);
         if(u.code==='I8'){
           while(u.attackBank>=1-1e-9){
@@ -544,7 +557,7 @@ export function simulateV2(data,composition,options={}){
             deal(single,.0425*proc,u.code,'single','physical');
             deal(single,.45*350_000*pf(armor(single,extraArmor)),u.code,'single','physical');
             // 타격 45%: single 3 s stun (hero 1.5 s, 2.305 bash ratio 0.5) in the position model.
-            if(posModel){u.stunBank=(u.stunBank??0)+.45;if(u.stunBank>=1){u.stunBank-=1;applyStun(single,{normal:3,hero:1.5});}}
+            if(posModel&&ccRandom()<.45)applyStun(single,{normal:3,hero:1.5});
             if(u.energy>=45&&globalT+1e-8>=u.nextCast){
               // 참격: 일반 50% / 보스 10% (frenzy mobs are neither boss nor story, so 일반).
               deal(single,(single.kind==='boss'?.1:.5)*single.maxhp,u.code,'single','fixed');

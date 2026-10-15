@@ -352,7 +352,9 @@
     {"code":"TR30","index":"15 요크","rate":0.58,"rate_kind":"1.72414초마다","parts":[["physical",375000.0,[],0.0],["magic",375000.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":"수정내역 16: 범위 575, 중심 target, 스턴 2.75초(보스·광폭 0.55초). 근거 - 공격시 10% 확률로 575범위 375,000 물리 데미지 + 375,000 마법 데미지 / ▶ 해당 범위 2.75초 스턴 [war3map.j:46936-46952 AKA(1,100)<=10, 더미 e0FK(A001 AUin aare=575) dreadlordinferno at 공격 대상 위치 + 575범위 피해] src 2.323","radius":575,"center":"target","stun":{"normal":2.75,"hero":0.55,"single":false}},
     {"code":"TR30","index":"아틀라스 평타","rate":2.74,"rate_kind":"0.364964초마다","parts":[["explosive",90974.34000000001,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":"수정내역 16: 범위 400, 중심 target. 근거 - 400범위 공격력의 45% 폭발형 데미지 [w3a A035(ACce 클리브) aare=425 nca1=0.55 (H0AE) [2.305 425, 2.323 400 사용]] src 2.323","radius":400,"center":"target"},
     {"code":"TR30","index":"7 릴리스 보스","rate":0.759,"rate_kind":"1.31752초마다","parts":[["magic",0.0,[["max",0.02]],0.0]],"phase":null,"target":"boss","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 릴리스 \"공격시 11% 확률로 475범위 22만 마법 데미지 ▶ 보스 : 단일 적 전체체력 2% 추가 마법 데미지\"","center":"target"},
-    {"code":"TR30","index":"7 릴리스 광폭","rate":0.759,"rate_kind":"1.31752초마다","parts":[["magic",0.0,[["max",0.044]],0.0]],"phase":null,"target":"frenzy","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 릴리스 \"▶ 광폭화 : 단일 적 전체체력 4.4% 추가 마법 데미지\"","center":"target"}
+    {"code":"TR30","index":"7 릴리스 광폭","rate":0.759,"rate_kind":"1.31752초마다","parts":[["magic",0.0,[["max",0.044]],0.0]],"phase":null,"target":"frenzy","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 릴리스 \"▶ 광폭화 : 단일 적 전체체력 4.4% 추가 마법 데미지\"","center":"target"},
+    {"code":"TR30","index":"스턴 릴리스 버블건","rate":1.5191891,"rate_kind":"릴리스 공격(초당 6.905)당 0.22","parts":[],"phase":null,"target":"single","stun":{"normal":0.75,"hero":0.75,"single":true},"source":"2.323 툴팁 수치 + 2.305 소환수 구조","note":"수정내역 18: 근거 릴리스 \"공격시 22% 확률로 22만 물리 데미지 ▶ 단일 적 0.75초 스턴 (저항무시)\", 2.305 w3a A033 AHbh adur 0.75 ahdu 0.75, 릴리스 공속은 data forms H0AB"},
+    {"code":"TR30","index":"스턴 아틀라스 타격","rate":0.6847825,"rate_kind":"아틀라스 공격(초당 2.739)당 0.25","parts":[],"phase":null,"target":"single","stun":{"normal":1,"hero":0.5,"single":true},"source":"2.323 툴팁 수치 + 2.305 소환수 구조","note":"수정내역 18: 근거 아틀라스 \"공격 시 25%의 확률로 타격 ▶ 단일 적 1초 스턴 및 2.5배 크리티컬\", 2.305 w3a A044 AHbh adur 1.0 ahdu 0.5, 아틀라스 공속은 data forms H0AE"}
    ],
    "url":"https://ordr.kr/character/TR30",
    "enemy_slow_auras":[{"id":"A05G","value":0.4,"range":825,"note":"2.323"}]
@@ -401,13 +403,16 @@
    "grade":"영원한",
    "focus":"물리 중심",
    "auras":[{"id":"A0NL","kind":"attack_flat","value":10000,"targets":"all","note":"2.323 \"주변 유닛의 공격력을 1만(강화시 최대 1만 5,000) 증가\", 2.305 A0NL"},{"id":"A0NK","kind":"aps","value":0.6,"targets":"all","note":"2.323 \"주변 유닛의 공격속도를 60%(강화시 최대 65%) 증가\", 2.305 A0NK"},{"id":"E5 33%","kind":"attack_pct","value":0.33,"targets":"all","note":"2.323 \"공격시 4.5% 확률로 750범위 아군 유닛 4.5초간 공격력 33% 증가\"","uptime":{"proc":0.045,"duration":4.5}}],
+   "enemy_armor_auras":[{"id":"A0DF","value":11,"range":850,"uptime":{"proc":0.0425,"duration":4},"note":"수정내역 18: 이완코브(h076) 소환 중 적 방어력 감소 오라 2.305 w3a A0DF AHad Had1 −11, 850범위. 유지율 = 1−exp(−0.0425×공속×4). Ainf(호르몬 열매, 아군 1기 공격 +45%)는 대상 1기라 미반영"}],
    "forms":[
     {"rawcode":"h05A","attack":132501.0,"aps":4.804878105956271,"attack_type":"pierce","splash":0,"splash_radius":0,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9},"cooldown":0.82,"range":625}
    ],
    "events":[
     {"code":"E5","index":"파견 해군","rate":0.8684817176515962,"rate_kind":"공격당 0.18075","parts":[["physical",49207.5,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 16: 범위 325, 중심 target. 근거 ▶ 공격 시 5% 확률로 '변화된' 등급의 325범위 기본공격 피해량의 90% 물리 데미지를 주는 파견 해군 3초간 소환 [war3map.j:77745-77748 5% h077 3초 소환·대상 공격; w3u h077 ua1w=missile(2.305는 스플래시 아님)] src 2.323","radius":325,"center":"target"},
     {"code":"E5","index":"거인족","rate":1.3247337230807794,"rate_kind":"공격당 0.275706","parts":[["physical",181499.67000000004,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 16: 범위 400, 중심 target. 근거 ▶ 공격 시 2.55% 확률로 '초월함' 등급의 400범위 스플래시, 20% 확률 + 1.5배 크리티컬을 가진 거인족 4초간 소환 [war3map.j:77754-77757 51/2000 h079 4초 소환; w3u h079 ua1w=msplash ua1f=400; A0NM AHbh adur=0 ahdu=0(크리만)] src 2.323","radius":400,"center":"target"},
-    {"code":"E5","index":"스턴 타격","rate":0.3733390288328023,"rate_kind":"공격당 0.0777","parts":[],"per_attack":true,"stun":{"normal":7.77,"hero":7.77,"single":true},"center":"target","target":"single","source":"2.323 툴팁 수치 + 2.305 스턴 구조","note":"수정내역 16: 피해 이벤트가 없는 스턴. 근거 - 공격시 7.77% 확률로 타격 / ▶ 단일 적 7.77초 스턴 및 333만 3,333 + 7.77배 물리데미지 [w3a A0N4 AHbh Hbh1=7.77 Hbh2=7.77 Hbh3=3333333 adur=7.77 ahdu=7.77 (h05A uabi)]"}
+    {"code":"E5","index":"스턴 타격","rate":0.3733390288328023,"rate_kind":"공격당 0.0777","parts":[],"per_attack":true,"stun":{"normal":7.77,"hero":7.77,"single":true},"center":"target","target":"single","source":"2.323 툴팁 수치 + 2.305 스턴 구조","note":"수정내역 16: 피해 이벤트가 없는 스턴. 근거 - 공격시 7.77% 확률로 타격 / ▶ 단일 적 7.77초 스턴 및 333만 3,333 + 7.77배 물리데미지 [w3a A0N4 AHbh Hbh1=7.77 Hbh2=7.77 Hbh3=3333333 adur=7.77 ahdu=7.77 (h05A uabi)]"},
+    {"code":"E5","index":"파견 해적","rate":0.9609756211912542,"rate_kind":"공격당 0.09 × 3초 ÷ 쿨 1.35","parts":[["physical",158625.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 소환수 구조","note":"수정내역 18: 근거 \"공격 시 9% 확률로 '전설적인' 등급의 단일 공격기능을 가진 파견 해적 3초간 소환\". 2.305 w3u h078 공격력 117,500 단일, 공격 쿨 미지정이라 라이플맨 기본 1.35초 [추정]. 레드 1.35 포함(해군·거인족 이벤트와 같은 방식). 소환 중 기대 공격 횟수 = 확률 × 3초 ÷ 쿨"},
+    {"code":"E5","index":"이완코브","rate":0.9388842276006507,"rate_kind":"공격당 0.0425 × 4초 ÷ 쿨 0.87","parts":[["physical",40500.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 소환수 구조","note":"수정내역 18: 근거 \"공격 시 4.25% 확률로 '히든' 이완코브 4초간 소환\". 2.305 w3u h076 공격력 30,000 쿨 0.87"}
    ],
    "url":"https://ordr.kr/character/E5",
    "enemy_slow_auras":[{"id":"A0N3","value":0.25,"range":800,"note":"2.323"}]
@@ -525,8 +530,7 @@
     {"code":"I5","index":"7","rate":0.7524999487151725,"rate_kind":"공격당 0.21","parts":[["magic",30000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 16: 범위 325, 중심 target. 근거 ▶ 325범위 3만 + (2,500 x 공격속도 아이템 중첩 수) 마법데미지 [war3map.j:11782·11788 Doe GroupEnum 325 at 대상 위치(Vs+1); 레전더리 450 war3map.j:11809] src 2.323","radius":325,"center":"target"},
     {"code":"I5","index":"10","rate":3.5833330891198685,"rate_kind":"공격당 1","parts":[["physical",0.0,[],1.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 16: 범위 400, 중심 target. 근거 - 괴물의 후계자 :: 400범위 기본 공격의 100% 추가 물리데미지 [war3map.j:11758 Doe UnitDamagePointLoc 400 at 대상 위치] src 2.323","radius":400,"center":"target"}
    ],
-   "url":"https://ordr.kr/character/I5",
-   "enemy_slow_auras":[{"id":"A0WV","value":0.2,"range":800,"note":"2.323 툴팁 '주변 800범위 이동속도 20% 감소 추가' + w3a A0WV(Aasl) Slo1 -0.2 aare800"}]
+   "url":"https://ordr.kr/character/I5"
   },
   {
    "code":"I9",
@@ -595,5 +599,5 @@
  "rounds":{"60":[112921500,170,"normal"],"61":[123189783,176,"large"],"62":[128068400,181,"fort"],"63":[141582700,184,"large"],"64":[150652700,180,"hero"],"65":[147024700,181,"hero"]},
  "frenzy":{"61":123189783,"62":128068400,"63":141582700,"64":150652700},
  "boss":{"60":[105187500,327],"65":[112158750,350]},
- "line_path":{"loop":[[-4960.0,5632.0],[-4992.0,3456.0],[-2560.0,3456.0],[-2560.0,5632.0]],"mob_speed":300,"boss_speed":245,"min_speed":89,"frenzy":{"shuttle":[[-5184,5632],[-5184.0,3456.0]]},"support_range":700,"support_splash":300,"default_radius":450,"note":"2.305: 라인몹 Fq 중심 생성(j:36687-36704), 이동 Fq→Oq→Zq→Hq→Fq (j:56919·80949·67931·79253), 이속 300 (보스 245, w3u o02C/o02B), MinUnitSpeed 89 (war3mapMisc). 광폭은 oq↔sq 왕복 (j:49756·23613). 모든 유닛은 라인몹 생성 지점(Fq)에 둔다 (사용자 결정). support_range·support_splash·default_radius는 [추정]: 보조·레드포스호·조건형 유닛의 사거리와 범위 자료가 없는 이벤트의 기본값."}
+ "line_path":{"loop":[[-4960.0,5632.0],[-4992.0,3456.0],[-2560.0,3456.0],[-2560.0,5632.0]],"mob_speed":300,"boss_speed":245,"min_speed":89,"frenzy":{"shuttle":[[-5184,5632],[-5184.0,3456.0]]},"support_splash":300,"default_radius":450,"note":"2.305: 라인몹 Fq 중심 생성(j:36687-36704), 이동 Fq→Oq→Zq→Hq→Fq (j:56919·80949·67931·79253), 이속 300 (보스 245, w3u o02C/o02B), MinUnitSpeed 89 (war3mapMisc). 광폭은 oq↔sq 왕복 (j:49756·23613). 모든 유닛은 라인몹 생성 지점(Fq)에 둔다 (사용자 결정). support_splash·default_radius는 [추정]: 보조·레드포스호·조건형 유닛의 범위 자료가 없는 이벤트의 기본값. / 수정내역 18: 난이도 이속 +50%는 2.305 난이도 선택 문구(신 ne==5, 악몽 ne==6: \"모든 적 유닛들의 이동속도가 50% 증가\", j:36755-36905). 이감 최대 102%는 사용자(커뮤니티) 기준 신 값이며 악몽도 같다고 가정 [추정]. engage_range 650은 모든 유닛을 생성 지점에 뭉쳐 두므로 사거리 차이를 무시한 공통 교전 반경(2.305 상위 사거리 중앙값)이다 [추정, 옵션 engageRange].","difficulty":{"신":{"speed_bonus":0.5,"slow_cap":1.02},"악몽":{"speed_bonus":0.5,"slow_cap":1.02}},"engage_range":650}
 }

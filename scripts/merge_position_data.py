@@ -49,7 +49,10 @@ for group in ('g1', 'g2', 'g3', 'g4'):
             continue  # supports / conditional units are hard-coded in the engine
         if info.get('enemy_slow_auras'):
             hero['enemy_slow_auras'] = [{'id': a['id'], 'value': a['value'], 'range': a['range'],
-                                        'note': short(a.get('src') or a.get('note'), 200)} for a in info['enemy_slow_auras']]
+                                        'note': short(a.get('src') or a.get('note'), 200)} for a in info['enemy_slow_auras']
+                                       if a['id'] != 'A0WV']  # 수정내역 18: I5 A0WV는 아이템 유니크 조건이라 제외
+            if not hero['enemy_slow_auras']:
+                del hero['enemy_slow_auras']
         by_index = {e['index']: e for e in hero['events']}
         for index, f in (info.get('events') or {}).items():
             e = by_index.get(index)
@@ -103,11 +106,15 @@ data['line_path'] = {
     'loop': loop,
     'mob_speed': 300, 'boss_speed': 245, 'min_speed': 89,
     'frenzy': {'shuttle': [[berserk['x'], berserk['y']], [-5184.0, 3456.0]]},
-    'support_range': 700, 'support_splash': 300, 'default_radius': 450,
+    'support_splash': 300, 'default_radius': 450, 'engage_range': 650,
+    'difficulty': {'신': {'speed_bonus': 0.5, 'slow_cap': 1.02}, '악몽': {'speed_bonus': 0.5, 'slow_cap': 1.02}},
     'note': ('2.305: 라인몹 Fq 중심 생성(j:36687-36704), 이동 Fq→Oq→Zq→Hq→Fq (j:56919·80949·67931·79253), '
              '이속 300 (보스 245, w3u o02C/o02B), MinUnitSpeed 89 (war3mapMisc). 광폭은 oq↔sq 왕복 (j:49756·23613). '
-             '모든 유닛은 라인몹 생성 지점(Fq)에 둔다 (사용자 결정). support_range·support_splash·default_radius는 [추정]: '
-             '보조·레드포스호·조건형 유닛의 사거리와 범위 자료가 없는 이벤트의 기본값.')}
+             '모든 유닛은 라인몹 생성 지점(Fq)에 둔다 (사용자 결정). support_splash·default_radius는 [추정]: '
+             '보조·레드포스호·조건형 유닛의 범위 자료가 없는 이벤트의 기본값. / 수정내역 18: 난이도 이속 +50%는 2.305 난이도 선택 문구'
+             '(신 ne==5, 악몽 ne==6: "모든 적 유닛들의 이동속도가 50% 증가", j:36755-36905). 이감 최대 102%는 사용자(커뮤니티) 기준 신 값이며 '
+             '악몽도 같다고 가정 [추정]. engage_range 650은 모든 유닛을 생성 지점에 뭉쳐 두므로 사거리 차이를 무시한 공통 교전 반경'
+             '(2.305 상위 사거리 중앙값)이다 [추정, 옵션 engageRange].')}
 
 path.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
 print('added stun events:', len(added)); [print('  +', a) for a in added]

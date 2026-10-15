@@ -155,6 +155,8 @@ bad({line:{team:[{code:'TR19'}],options:{red:'yes'}}},'NOT_A_BOOLEAN');
 bad({line:{team:[{code:'TR19'}],options:{stun:true}}},'UNKNOWN_KEY','line.options.stun');
 bad({line:{team:[{code:'TR19'}],options:{finisher:{mode:'auto'}}}},'INVALID_VALUE');
 bad({line:{team:[{code:'TR19'}],options:{resourceMode:'always'}}},'INVALID_VALUE','line.options.resourceMode');
+bad({line:{team:[{code:'TR19'}],options:{difficulty:'지옥'}}},'INVALID_VALUE','line.options.difficulty');
+bad({line:{team:[{code:'TR19'}],options:{engageRange:50}}},'OUT_OF_RANGE','line.options.engageRange');
 bad({line:{team:[{code:'TR19'}],options:{tr19Plants:{pea:2,snow:1,muk:1}}}},'TOO_MANY_PLANTS','line.options.tr19Plants');
 bad({line:{team:[{code:'TR19'}],options:{buffTargets:{I4:'TR19'}}}},'NOT_AN_ARRAY');
 bad({line:{team:[{code:'TR19'}]},context:{selected:['NOPE']}},'UNKNOWN_EFFECT');

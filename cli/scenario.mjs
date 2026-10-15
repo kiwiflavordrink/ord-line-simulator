@@ -25,13 +25,14 @@ export const LIMITATIONS=[
   {id:'map-2305-approximation',text:'몹 HP·방어, 영웅 공격력·공속은 2.305 맵 추출값이고 스킬 수치는 2.323 ORDR 카드 설명을 얹은 근사다. 2.323 원본 스크립트를 실행 검증한 결과가 아니다.'},
   {id:'heroes-not-registered',text:'라인 계산은 dist/data.json에 등록된 물리 중심·물리·마법 혼합 상위 영웅 31명과 보조 4종(L7·L23·L25·D3), 조건형 3종(I8·TR28·H15), 삭제 3종(L12·D4·L19)만 지원한다. 그 밖의 상위 영웅은 미등록이며 임의 수치를 만들지 않는다.'},
   {id:'single-units-limited',text:'65라 단일 테스터는 엔진에 정의된 단일·끝딜 유닛 10종만 지원한다.'},
-  {id:'no-stun-or-movement',text:'스턴·슬로우 등 제어 효과, 몹 이동 경로와 위치, 사거리는 구현되지 않았다(써니호 스턴은 line.control에 시간만 집계하고 판정에는 쓰지 않는다). 범위 피해는 coverage(범위 적중률)로 근사하고 타깃은 보스·광폭이 있으면 그쪽, 없으면 가장 먼저 나온 몹이다.'},
+  {id:'no-stun-or-movement',text:'기본(coverage) 모델에는 스턴·슬로우, 몹 이동 경로와 위치, 사거리가 없다(써니호 스턴은 line.control에 시간만 집계). 범위 피해는 coverage(범위 적중률)로 근사하고 타깃은 보스·광폭이 있으면 그쪽, 없으면 가장 먼저 나온 몹이다. 이동·스턴은 line.options.positionModel로 켠다.'},
   {id:'resource-start',text:'자원은 60라 시작 시 1회 만충 후 연속으로 쌓인다(2.305 맵에 라운드 시작 마나 회복 없음). line.options.resourceMode로 empty·perRound(이전 모델)를 고를 수 있다.'},
   {id:'unmodeled-effects',text:'아직 계산하지 않는 툴팁 효과: 스턴·이동, 아군 공격력·공속 오라와 대상 지정 버프(I4·I11·E5·Z6 등), 소환수 크리티컬(TR30 아틀라스·E5 거인족), Z10 처형·참수, TR19 먹깨비 처형, I4 카무사리, 프랑키 장군. 목록과 근거는 docs/수정내역.md.'},
   {id:'expected-value-procs',text:'확률 스킬·아머브레이크·처형은 발동 기대값으로 매 0.1초 나누어 적용한다. 실제 발동 순서와 운에 따른 편차는 없다.'},
   {id:'effects-always-on',text:'context.selected의 증폭·마방 감소 효과는 대상에 계속 붙어 있다고 가정한다. 발동 확률, 지속시간, 범위·대상 조건을 자동 판정하지 않는다.'},
   {id:'amp-combination-order',text:'서로 다른 저항·증폭 단계(A04Q 마방, A04R 마법 증폭, 모든 피해 증폭)의 결합 순서는 실측되지 않아 곱셈으로 가정한다.'},
   {id:'line-damage-scope',text:'line.damage의 피해량은 라인 일반몹에 실제로 들어간 양(초과 피해 제외)만 집계한다. 보스·광폭에 들어간 피해량은 엔진이 집계하지 않으므로 처치 여부와 처치 시각으로만 보고한다.'},
+  {id:'position-model',text:'positionModel을 켜면 모든 유닛을 라인몹 생성 지점에 두고 교전 거리(engageRange, 기본 650 [추정])안의 몹만 친다. 난이도 이속 +50%는 2.305 신·악몽 선택 문구, 이감 상한 102%는 사용자 제보(악몽도 같다고 가정). 스턴·이속 감소는 시드에 따른 확률 발동이라 결과가 시드마다 다르다.'},
   {id:'not-a-clear-guarantee',text:'clear는 모델상 55기 미만 유지 여부이며 실제 게임 클리어를 보장하지 않는다.'}
 ];
 
@@ -140,7 +141,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','engageRange','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -151,7 +152,9 @@ function validateLine(raw,data,is){
       summons:bool(o,'summons','line.options',is),
       frankyAura:bool(o,'frankyAura','line.options',is),
       sunnyStagger:bool(o,'sunnyStagger','line.options',is),
-      positionModel:bool(o,'positionModel','line.options',is)
+      positionModel:bool(o,'positionModel','line.options',is),
+      difficulty:oneOf(o,'difficulty','line.options',is,['신','악몽']),
+      engageRange:num(o,'engageRange','line.options',is,{min:100,max:3000})
     }));
     if(o.buffTargets!==undefined){
       const b=o.buffTargets,p='line.options.buffTargets';

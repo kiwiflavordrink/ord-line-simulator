@@ -98,7 +98,9 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `summons` | bool | true | 소환 범위 피해 포함 |
 | `frankyAura` | bool | true | 프랑키가 써니호 700범위 안에 있어 써니호 마나 +5/초 |
 | `sunnyStagger` | bool | false | 써니호 여러 기의 스킬 시점을 균등 분산 |
-| `positionModel` | bool | false | 위치 모델: 모든 유닛을 라인몹 생성 지점에 두고 이동·사거리·범위·스턴·이속 감소를 계산 (켜면 `coverage` 무시) |
+| `positionModel` | bool | false | 위치 모델: 모든 유닛을 라인몹 생성 지점에 두고 이동·사거리·범위·스턴·이속 감소를 계산 (켜면 `coverage` 무시). 스턴·이속 감소는 `deletion.seed`로 정해지는 확률 발동 |
+| `difficulty` | `신` · `악몽` | `신` | 위치 모델의 난이도: 둘 다 2.305 문구 기준 몹 이속 +50%, 이감 상한 102% |
+| `engageRange` | 100~3000 | 650 | 위치 모델의 교전 거리. 비비 영원처럼 자기 사거리를 쓰는 유닛 외에는 모두 이 거리 안의 몹을 친다 [추정] |
 | `buffTargets` | `{소스 코드: [받는 코드…]}` | 조합 전체 | 아군 오라·버프를 받을 유닛 제한. 지정하지 않은 소스는 조합 전체가 받는다 |
 | `tr19Plants` | `{pea, snow, muk}` 정수, 합 3 이하 | 2 / 1 / 0 | TR19 특강 식물 배분: 완두콩·백설콩·먹깨비 |
 | `customMagic.aps` / `.chance` | 0~100 / 0~1 | 5 / 0.15 | `MAGIC_CUSTOM`의 초당 공격·발동 확률 |
