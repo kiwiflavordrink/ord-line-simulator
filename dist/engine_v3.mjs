@@ -70,6 +70,23 @@ const scaleParts=(parts,k)=>parts.map(([kind,flat,perc,mul=0])=>[kind,flat*k,per
 // Stack scenarios (수정내역 28): hero.stack.variants {zero, half, max} override events by index ({removed:true}
 // drops one), and may replace auras, forms or team_effects. options.stackLevel picks the level for every hero
 // ('max' default = the stored data), options.stackLevels {code: level} per hero.
+// 특강 on/off (수정내역 28): hero.trait {current:'on'|'off', other:{events, add_events, forms, auras, ...}} — data
+// holds `current`; asking for the other state applies `other` (event overrides by index, {removed:true} drops one,
+// add_events appends, any other key replaces the hero field). options.trait 'on'|'off' for every hero,
+// options.traits {code: 'on'|'off'} per hero; unset keeps each hero's stored state.
+export function traitVariant(hero,want){
+  const t=hero.trait;
+  if(!t||!want||want===t.current)return hero;
+  const o=t.other??{},events=[];
+  for(const e of hero.events){
+    const x=o.events?.[e.index];
+    if(x?.removed)continue;
+    events.push(x?{...e,...x}:e);
+  }
+  const out={...hero,events:[...events,...(o.add_events??[])]};
+  for(const [k,v] of Object.entries(o))if(!['events','add_events','note'].includes(k))out[k]=v;
+  return out;
+}
 export function stackVariant(hero,level){
   const v=hero.stack?.variants?.[level];
   if(!v||level==='max')return hero;
@@ -150,7 +167,8 @@ function supportCastSchedule(code,full){
 export function simulateV2(data,composition,options={}){
   const stackLevelOf=code=>['zero','half','max'].includes(options.stackLevels?.[code])?options.stackLevels[code]:
     ['zero','half','max'].includes(options.stackLevel)?options.stackLevel:'max';
-  const heroMap=new Map(data.heroes.map(h=>[h.code,stackVariant(h,stackLevelOf(h.code))]));
+  const traitOf=code=>['on','off'].includes(options.traits?.[code])?options.traits[code]:['on','off'].includes(options.trait)?options.trait:null;
+  const heroMap=new Map(data.heroes.map(h=>[h.code,stackVariant(traitVariant(h,traitOf(h.code)),stackLevelOf(h.code))]));
   // Difficulty (data.difficulties: 2.305 structure, 2.323 common HP/regen) and 오로성 (data.gorosei, 2.323 values).
   // The legacy option warcury=true selects 워큐리. 지옥 has no 오로성.
   const diffName=['지옥','신','악몽'].includes(options.difficulty)?options.difficulty:'신';
