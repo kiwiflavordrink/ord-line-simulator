@@ -94,6 +94,14 @@ function supportCastSchedule(code,full){
 
 export function simulateV2(data,composition,options={}){
   const heroMap=new Map(data.heroes.map(h=>[h.code,h]));
+  // Difficulty (data.difficulties: 2.305 structure, 2.323 common HP/regen) and 오로성 (data.gorosei, 2.323 values).
+  // The legacy option warcury=true selects 워큐리. 지옥 has no 오로성.
+  const diffName=['지옥','신','악몽'].includes(options.difficulty)?options.difficulty:'신';
+  const diff=data.difficulties?.[diffName]??{rounds:data.rounds,boss:data.boss,frenzy:data.frenzy,defeat:55,magic_level:16,
+    speed:{aura:0,line_flat:0},frenzy_aura:{armor:5,regen:1000000},stun_resist:true,common:{hp:0,regen:0},gorosei:true};
+  const goroWanted=options.gorosei??(options.warcury===true?'워큐리':null);
+  const goroName=diff.gorosei&&(data.gorosei?data.gorosei[goroWanted]:goroWanted==='워큐리')?goroWanted:null;
+  const curse=goroName?(data.gorosei?.[goroName]?.[diffName]??{armor:10,magic_levels:10}):{};
   const units=[];
   for(const item of composition){
     const count=clamp(Math.floor(item.count??1),1,6);
@@ -130,6 +138,8 @@ export function simulateV2(data,composition,options={}){
     }
     const buffs={attack_pct:0,attack_flat:0,aps:0,mana_regen:0};
     for(const {a,miss} of byId.values())buffs[a.kind]+=a.value*(1-miss);
+    // 새턴 A13G (ACac) and 나스쥬로 A13E are enemy-side auras on every allied unit; they add like other auras.
+    buffs.attack_pct+=curse.ally_attack??0;buffs.aps+=curse.ally_aps??0;
     u.buffs=buffs;
   }
   const cut=clamp(options.cut??201,0,300),coverage=clamp(options.coverage??1,0,1);
@@ -153,11 +163,11 @@ export function simulateV2(data,composition,options={}){
   };
   const magicReduction=clamp(options.magicReduction??0,0,.35);
   const magicAmp=clamp(options.magicAmp??0,0,.25);
-  const warcury=options.warcury===true;
   const allAmp=clamp(options.allAmp??0,0,5);
   const explosiveAmp=clamp(options.explosiveAmp??0,0,.25);
   const normalOnlyExplosiveAmp=clamp(options.normalOnlyExplosiveAmp??0,0,.25);
-  const defenceFactor=clamp(.95-(warcury?.10:0)+magicReduction,.80,1.15);
+  // A04Q: level L = 0.79 + 0.01 x L (16 = 0.95, 악몽 11 = 0.90); 워큐리 lowers the level, minimum level 1.
+  const defenceFactor=clamp(.79+.01*Math.max(1,diff.magic_level-(curse.magic_levels??0))+magicReduction,.80,1.15);
   const magicFactor=defenceFactor*(1+magicAmp);
   const custom=options.customMagic??{};
   const customRate=clamp(custom.aps??5,0,100)*clamp(custom.chance??.15,0,1);
@@ -207,8 +217,6 @@ export function simulateV2(data,composition,options={}){
   const enemySlowAuras=new Map();
   if(posModel)for(const u of units)if(u.kind==='hero')for(const a of u.model.enemy_slow_auras??[])
     if(!(enemySlowAuras.get(a.id)?.value>=a.value))enemySlowAuras.set(a.id,a);
-  // Difficulty (2.305 난이도 문구, 신·악몽): "모든 적 유닛들의 이동속도가 50% 증가".
-  const difficulty=lp?lp.difficulty[options.difficulty==='악몽'?'악몽':'신']:null;
   // Every unit is bunched at the spawn point, so one engage range applies to all (user decision).
   const engageRange=lp?clamp(options.engageRange??lp.engage_range,100,3000):0;
   // Stuns and slows proc randomly (seeded) so stun chains can leak; damage stays an expected value.
@@ -221,11 +229,14 @@ export function simulateV2(data,composition,options={}){
     for(const a of enemySlowAuras.values())if(dist(m,spawnPt)<=a.range)sum+=a.value;
     return sum;
   };
-  // Speed = base x (1 + difficulty bonus - slow), slow capped at difficulty.slow_cap, floor MinUnitSpeed.
+  // WC3: speed = (base + flat bonuses) x (1 + sum of % modifiers), clamped to [MinUnitSpeed, MaxUnitSpeed].
+  // Flat: R024 (line and frenzy, not bosses). %: difficulty aura AUau, 나스쥬로 A13F, minus every slow.
+  // 신: (300 + 87) x (1.25 - slow) reaches 89 at slow 102% (ORDR's 신 slow target).
   const move=m=>{
     if((m.stunnedUntil??0)>now)return;
-    const slow=Math.min(slowOf(m),difficulty.slow_cap);
-    m.s+=Math.max(lp.min_speed,m.speed*(1+difficulty.speed_bonus-slow))*.1;place(m);
+    const base=m.speed+(m.kind==='boss'?0:diff.speed.line_flat);
+    const pct=1+diff.speed.aura+(curse.enemy_speed??0)-slowOf(m);
+    m.s+=clamp(base*pct,lp.min_speed,lp.max_speed??490)*.1;place(m);
   };
   // Attack target in range: bosses and frenzy mobs first (players focus them), then the nearest line mob.
   const pickTarget=range=>{
@@ -233,13 +244,14 @@ export function simulateV2(data,composition,options={}){
     const near=list=>list.filter(m=>m.hp>0&&dist(m,spawnPt)<=range).sort((a,b)=>dist(a,spawnPt)-dist(b,spawnPt))[0];
     return near(specials)??near(mobs)??null;
   };
-  const stunFor=(m,st)=>m.kind==='line'?st.normal:m.kind==='boss'?(st.boss??st.hero??st.normal):(st.hero??st.normal);
+  // Bosses and frenzy mobs carry A08Q (Resistant Skin) only on 신·악몽 (R01R); 지옥 takes the normal duration.
+  const stunFor=(m,st)=>m.kind==='line'||!diff.stun_resist?st.normal:m.kind==='boss'?(st.boss??st.hero??st.normal):(st.hero??st.normal);
   const applyStun=(m,st)=>{const d=stunFor(m,st);if(d)m.stunnedUntil=Math.max(m.stunnedUntil??0,now+d);};
+  // One buff id holds one slow: the last application replaces value and duration (WC3 same-buff rule).
+  // Thunder Clap (AHtc) copies without a custom buff all share BHtc (data slow.buff), so they overwrite each other.
   const applySlow=(m,sl,key)=>{
-    const d=m.kind==='line'?sl.duration:(sl.hero_duration??sl.duration);
-    const list=m.slows??={},cur=list[key];
-    if(!cur||cur.until<=now)list[key]={value:Math.min(1,sl.value),until:now+d};
-    else{cur.value=Math.max(cur.value,Math.min(1,sl.value));cur.until=Math.max(cur.until,now+d);}
+    const d=m.kind==='line'||!diff.stun_resist?sl.duration:(sl.hero_duration??sl.duration);
+    (m.slows??={})[sl.buff??key]={value:sl.value,until:now+d};
   };
   const cov=posModel?1:coverage;
   const sourceDamage={};
@@ -273,9 +285,9 @@ export function simulateV2(data,composition,options={}){
     if(!cur||cur.until<=now)list[d.key]={value,until};
     else{cur.value=Math.max(cur.value,value);cur.until=Math.max(cur.until,until);}
   };
-  const armor=(m,extra)=>m.armor+(warcury?10:0)+(m.kind==='line'?extra:0)-cut-m.ab-debuffSum(m);
+  const armor=(m,extra)=>m.armor+(curse.armor??0)+(m.kind==='line'?extra:0)-cut-m.ab-debuffSum(m);
   const factor=(kind,m,extra)=>kind==='physical'?pf(armor(m,extra)):kind==='magic'?magicFactor:
-    kind==='explosive'?1+Math.min(.25,explosiveAmp+(m.kind==='line'?normalOnlyExplosiveAmp:0)):1;
+    kind==='explosive'?1+Math.min(.25,explosiveAmp+(m.kind==='line'?normalOnlyExplosiveAmp:0))+(curse.explosive??0):1;
   const deal=(m,amount,source,scope,kind)=>{
     if(!m||m.hp<=0||!Number.isFinite(amount)||amount<=0)return;
     amount*=1+allAmp;
@@ -323,13 +335,14 @@ export function simulateV2(data,composition,options={}){
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
     finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,
     buffs:units.map(u=>u.buffs?{code:u.code,...u.buffs}:null).filter(Boolean),unitCount:units.length,
-    magicFactor,cut,coverage,resourceMode,positionModel:posModel});
+    magicFactor,cut,coverage,resourceMode,positionModel:posModel,difficulty:diffName,gorosei:goroName??'없음'});
 
   for(const round of rounds){
-    const [hp0,armor0]=data.rounds[String(round)];
+    const [lineHp,armor0]=diff.rounds[String(round)];
+    const hp0=lineHp+diff.common.hp+(curse.line_hp??0);
     let spawned=0,specialKill=null;
-    if(data.boss[String(round)]){
-      const [hp,baseArmor]=data.boss[String(round)];
+    if(diff.boss[String(round)]){
+      const [bossHp,baseArmor]=diff.boss[String(round)],hp=bossHp+diff.common.hp+(curse.boss_hp??0);
       const boss={hp,maxhp:hp,armor:baseArmor,ab:0,kind:'boss',round};
       if(posModel){boss.s=0;boss.speed=lp.boss_speed;place(boss);}
       specials.push(boss);
@@ -343,21 +356,21 @@ export function simulateV2(data,composition,options={}){
         if(posModel){newMob.s=0;newMob.speed=lp.mob_speed;place(newMob);}
         mobs.push(newMob);spawned++;totalLineSpawned++;
       }
-      if(data.frenzy[String(round)]&&step===75){
-        const hp=data.frenzy[String(round)];
-        const frenzy={hp,maxhp:hp,armor:armor0+5,ab:0,kind:'frenzy',round};
+      if(diff.frenzy[String(round)]&&step===75){
+        const hp=diff.frenzy[String(round)]+diff.common.hp+(curse.line_hp??0);
+        const frenzy={hp,maxhp:hp,armor:armor0+(diff.frenzy_aura?.armor??0),ab:0,kind:'frenzy',round};
         if(posModel){frenzy.s=0;frenzy.speed=lp.mob_speed;place(frenzy);}
         specials.push(frenzy);
       }
       for(let i=mobs.length-1;i>=0;i--)if(mobs[i].hp<=0){mobs.splice(i,1);totalLineKilled++;}
       for(let i=specials.length-1;i>=0;i--)if(specials[i].hp<=0)specials.splice(i,1);
-      if(mobs.length+specials.length>=55){
+      if(mobs.length+specials.length>=diff.defeat){
         timeline.push({second:globalT,count:mobs.length+specials.length,round});
         return result(false,round,+t.toFixed(1));
       }
       const active=specials.find(s=>s.round===round);
       const bossAura=specials.some(s=>s.kind==='boss'),frenzyAura=specials.some(s=>s.kind==='frenzy');
-      const extraArmor=(bossAura?10:0)+(frenzyAura?5:0);
+      const extraArmor=(bossAura?10:0)+(frenzyAura?diff.frenzy_aura?.armor??0:0);
       if(newMob)for(const u of units){
         if(u.kind!=='hero'||!u.damage)continue;
         const hero=u.model,form=formAt(hero,globalT,t,resourceMode).form;
@@ -368,9 +381,13 @@ export function simulateV2(data,composition,options={}){
           if(e.armor_debuff&&newMob.hp>0)applyDebuff(newMob,e.armor_debuff,e.on_spawn);
         }
       }
-      const regen=((bossAura?500000:0)+(frenzyAura?1000000:0))*.1;
-      if(regen)for(const m of mobs)m.hp=Math.min(m.maxhp,m.hp+regen);
-      for(const s of specials)s.hp=Math.min(s.maxhp,s.hp+(s.kind==='boss'?550000:s.round===61?1045000:1000000)*.1);
+      // Regen per second: unit base (w3u uhpr, 61라 45,000), boss aura 500,000, frenzy aura (신 1,000,000,
+      // 악몽 1,200,000, 지옥 none), difficulty common regen and 새턴 on every enemy.
+      const enemyRegen=diff.common.regen+(curse.regen??0),frenzyRegen=diff.frenzy_aura?.regen??0;
+      const unitRegen=r=>data.round_regen?.[String(r)]??0;
+      const regen=(bossAura?500000:0)+(frenzyAura?frenzyRegen:0)+enemyRegen;
+      for(const m of mobs){const g=(regen+unitRegen(m.round))*.1;if(g)m.hp=Math.min(m.maxhp,m.hp+g);}
+      for(const s of specials)s.hp=Math.min(s.maxhp,s.hp+((s.kind==='boss'?550000:frenzyRegen+unitRegen(s.round))+enemyRegen)*.1);
       if(posModel)for(const m of [...mobs,...specials])if(m.hp>0)move(m);
       // Supports, Red Force and conditional units: engage range (default lp.engage_range), splash lp.support_splash.
       const globalTarget=pickTarget(engageRange);

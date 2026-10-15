@@ -3,7 +3,11 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {simulateV2} from './dist/engine_v3.mjs';
 
-const data=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
+const fullData=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
+// Blocks 1-18 check mechanisms on the 신 baseline they were written for: no 2.323 common HP/regen (#19)
+// and no 61라 unit regen. Block 19 uses fullData.
+const data=structuredClone(fullData);
+data.difficulties['신'].common={hp:0,regen:0};delete data.round_regen;
 const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
 
 // [수정 1] 자원·변신 시계: 60라 시작 시 1회 만충 후 연속 시간.
@@ -161,9 +165,9 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
 }
 // [수정 18] 난이도 이속, 같은 이감 오라는 최고값 하나, 확률 스턴은 시드로 고정, 소환수 스킬.
 {
-  assert.deepEqual(data.line_path.difficulty['신'],{speed_bonus:.5,slow_cap:1.02});
+  assert.deepEqual(data.difficulties['신'].speed,{aura:.25,line_flat:87});   // #19 replaced the +50% text
   const pos={positionModel:true},team=[{code:'TR29',count:2}];
-  const slowMobs=structuredClone(data);slowMobs.line_path.difficulty['신'].speed_bonus=0;
+  const slowMobs=structuredClone(data);slowMobs.difficulties['신'].speed={aura:0,line_flat:0};
   assert.notDeepEqual(simulateV2(slowMobs,team,pos).checkpoints,simulateV2(data,team,pos).checkpoints);
   const aura=(list)=>{const d=structuredClone(data);d.heroes.find(h=>h.code==='TR19').enemy_slow_auras=list;return simulateV2(d,[{code:'TR19'}],pos).checkpoints;};
   const a={id:'X',range:900};
@@ -181,4 +185,30 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(tr30.some(e=>e.index==='스턴 아틀라스 타격')&&tr30.some(e=>e.index==='스턴 릴리스 버블건'));
   assert.ok(simulateV2(data,[{code:'TR30'}],pos).control.stunnedLineMobSeconds>0);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons: passed');
+// [수정 19] 난이도(지옥·신·악몽)와 오로성: 몹 수치·패배 기준·마방·이속 공식·BHtc 이감 덮어쓰기·아군 저주.
+{
+  const D=fullData.difficulties;
+  assert.deepEqual(D['신'].rounds,fullData.rounds);assert.deepEqual(D['신'].boss,fullData.boss);
+  assert.deepEqual([D['지옥'].defeat,D['신'].defeat,D['악몽'].defeat],[70,55,50]);
+  assert.ok(D['악몽'].rounds['65'][0]>D['신'].rounds['65'][0]&&D['지옥'].rounds['65'][0]<D['신'].rounds['65'][0]);
+  // 신 102% slow target: (300 + 87) x (1.25 - 1.02) is MinUnitSpeed 89.
+  assert.ok(Math.abs((300+D['신'].speed.line_flat)*(1+D['신'].speed.aura-1.02)-89)<0.1);
+  const r=(o,team=[{code:'TR19'}])=>simulateV2(fullData,team,o);
+  assert.deepEqual([r({}).difficulty,r({}).gorosei],['신','없음']);
+  assert.equal(r({warcury:true}).gorosei,'워큐리');                           // legacy checkbox
+  assert.equal(r({difficulty:'지옥',gorosei:'새턴'}).gorosei,'없음');           // 지옥 has no 오로성
+  const mf=o=>r(o).magicFactor;
+  assert.ok(Math.abs(mf({})-.95)<1e-9&&Math.abs(mf({difficulty:'악몽'})-.90)<1e-9);
+  assert.ok(Math.abs(mf({gorosei:'워큐리'})-.85)<1e-9&&Math.abs(mf({difficulty:'악몽',gorosei:'워큐리'})-.80)<1e-9);
+  const tr19=o=>r(o).buffs.find(b=>b.code==='TR19');
+  assert.ok(Math.abs(tr19({gorosei:'새턴'}).attack_pct+.2)<1e-9&&Math.abs(tr19({gorosei:'나스쥬로',difficulty:'악몽'}).aps+.15)<1e-9);
+  // Harder difficulties keep more mobs alive; the 2.323 common HP/regen makes 신 harder than the old baseline.
+  const left=o=>r(o,[{code:'TR29',count:2}]).timeline.reduce((a,p)=>a+p.count,0);
+  assert.ok(left({difficulty:'지옥'})<left({})&&left({})<=left({difficulty:'악몽'}));
+  assert.ok(simulateV2(data,[{code:'TR29',count:2}],{}).timeline.reduce((a,p)=>a+p.count,0)<=left({}));
+  // Thunder Clap slows share BHtc: tagging them as separate buffs changes the position-model result.
+  const sep=structuredClone(fullData);for(const h of sep.heroes)for(const e of h.events)if(e.slow)delete e.slow.buff;
+  const team=[{code:'I4'},{code:'TR22'},{code:'E12'}],pos={positionModel:true};
+  assert.notDeepEqual(simulateV2(sep,team,pos).timeline,simulateV2(fullData,team,pos).timeline);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성: passed');

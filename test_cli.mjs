@@ -42,7 +42,7 @@ function assertLine(out,direct){
   assert.deepEqual(out.finisher,{attempts:direct.finisherAttempts,kills:direct.finisherKills});
   assert.deepEqual(out.control,direct.control);
   assert.deepEqual(out.totals,{lineSpawned:direct.totalLineSpawned,lineKilled:direct.totalLineKilled,unitCount:direct.unitCount});
-  assert.deepEqual(out.applied,{cut:direct.cut,coverage:direct.coverage,magicFactor:direct.magicFactor,resourceMode:direct.resourceMode,positionModel:direct.positionModel});
+  assert.deepEqual(out.applied,{cut:direct.cut,coverage:direct.coverage,magicFactor:direct.magicFactor,resourceMode:direct.resourceMode,positionModel:direct.positionModel,difficulty:direct.difficulty,gorosei:direct.gorosei});
 }
 function assertSingle(out,direct,refs){
   assert.equal(out.to15Seconds,direct.to15);
@@ -155,7 +155,8 @@ bad({line:{team:[{code:'TR19'}],options:{red:'yes'}}},'NOT_A_BOOLEAN');
 bad({line:{team:[{code:'TR19'}],options:{stun:true}}},'UNKNOWN_KEY','line.options.stun');
 bad({line:{team:[{code:'TR19'}],options:{finisher:{mode:'auto'}}}},'INVALID_VALUE');
 bad({line:{team:[{code:'TR19'}],options:{resourceMode:'always'}}},'INVALID_VALUE','line.options.resourceMode');
-bad({line:{team:[{code:'TR19'}],options:{difficulty:'지옥'}}},'INVALID_VALUE','line.options.difficulty');
+bad({line:{team:[{code:'TR19'}],options:{difficulty:'어려움'}}},'INVALID_VALUE','line.options.difficulty');
+bad({line:{team:[{code:'TR19'}],options:{gorosei:'마즈'}}},'INVALID_VALUE','line.options.gorosei');
 bad({line:{team:[{code:'TR19'}],options:{engageRange:50}}},'OUT_OF_RANGE','line.options.engageRange');
 bad({line:{team:[{code:'TR19'}],options:{tr19Plants:{pea:2,snow:1,muk:1}}}},'TOO_MANY_PLANTS','line.options.tr19Plants');
 bad({line:{team:[{code:'TR19'}],options:{buffTargets:{I4:'TR19'}}}},'NOT_AN_ARRAY');

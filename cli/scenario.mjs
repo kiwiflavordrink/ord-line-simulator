@@ -32,7 +32,8 @@ export const LIMITATIONS=[
   {id:'effects-always-on',text:'context.selected의 증폭·마방 감소 효과는 대상에 계속 붙어 있다고 가정한다. 발동 확률, 지속시간, 범위·대상 조건을 자동 판정하지 않는다.'},
   {id:'amp-combination-order',text:'서로 다른 저항·증폭 단계(A04Q 마방, A04R 마법 증폭, 모든 피해 증폭)의 결합 순서는 실측되지 않아 곱셈으로 가정한다.'},
   {id:'line-damage-scope',text:'line.damage의 피해량은 라인 일반몹에 실제로 들어간 양(초과 피해 제외)만 집계한다. 보스·광폭에 들어간 피해량은 엔진이 집계하지 않으므로 처치 여부와 처치 시각으로만 보고한다.'},
-  {id:'position-model',text:'positionModel을 켜면 모든 유닛을 라인몹 생성 지점에 두고 교전 거리(engageRange, 기본 650 [추정])안의 몹만 친다. 난이도 이속 +50%는 2.305 신·악몽 선택 문구, 이감 상한 102%는 사용자 제보(악몽도 같다고 가정). 스턴·이속 감소는 시드에 따른 확률 발동이라 결과가 시드마다 다르다.'},
+  {id:'difficulty',text:'line.options.difficulty(지옥·신·악몽, 기본 신)가 몹 HP·방어·마방·재생·패배 기준(70·55·50)·광폭 오라·보스 스턴 저항을 정한다. 구조와 지옥·악몽 배율은 2.305 맵, 공통 HP·재생과 오로성 수치는 2.323 ORDR 툴팁이다. 지옥·악몽 방어는 신 값 + 2.305 udup×레벨 차이로 계산했다(방어 공식 미검증). line.options.gorosei(기본 없음)로 오로성을 고른다. 새턴·나스쥬로의 아군 공격력·공속 감소는 data.json 영웅에만 적용하고 보조·조건형 유닛에는 적용하지 않는다.'},
+  {id:'position-model',text:'positionModel을 켜면 모든 유닛을 라인몹 생성 지점에 두고 교전 거리(engageRange, 기본 650 [추정]) 안의 몹만 친다. 이속 = (기본 + 고정 보너스) × (1 + 난이도 오라 + 나스쥬로 − 이감 합), 89~490(WC3 규칙, ORDR 신 이감 목표 102%와 일치). 같은 버프를 쓰는 이감(천둥 기반 BHtc)은 마지막에 맞은 것 하나만 적용된다. 스턴·이속 감소는 시드에 따른 확률 발동이라 결과가 시드마다 다르다.'},
   {id:'not-a-clear-guarantee',text:'clear는 모델상 55기 미만 유지 여부이며 실제 게임 클리어를 보장하지 않는다.'}
 ];
 
@@ -141,7 +142,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','engageRange','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','engageRange','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -153,7 +154,8 @@ function validateLine(raw,data,is){
       frankyAura:bool(o,'frankyAura','line.options',is),
       sunnyStagger:bool(o,'sunnyStagger','line.options',is),
       positionModel:bool(o,'positionModel','line.options',is),
-      difficulty:oneOf(o,'difficulty','line.options',is,['신','악몽']),
+      difficulty:oneOf(o,'difficulty','line.options',is,['지옥','신','악몽']),
+      gorosei:oneOf(o,'gorosei','line.options',is,['없음','나스쥬로','워큐리','새턴']),
       engageRange:num(o,'engageRange','line.options',is,{min:100,max:3000})
     }));
     if(o.buffTargets!==undefined){
@@ -308,7 +310,7 @@ function lineReport(r,data,includeTimeline){
     executions:r.executeCounts,
     control:r.control,
     buffs:r.buffs,
-    applied:{cut:r.cut,coverage:r.coverage,magicFactor:r.magicFactor,resourceMode:r.resourceMode,positionModel:r.positionModel},
+    applied:{cut:r.cut,coverage:r.coverage,magicFactor:r.magicFactor,resourceMode:r.resourceMode,positionModel:r.positionModel,difficulty:r.difficulty,gorosei:r.gorosei},
     ...(includeTimeline?{timeline:r.timeline}:{})
   };
 }

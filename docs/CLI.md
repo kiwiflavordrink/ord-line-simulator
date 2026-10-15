@@ -99,7 +99,8 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `frankyAura` | bool | true | 프랑키가 써니호 700범위 안에 있어 써니호 마나 +5/초 |
 | `sunnyStagger` | bool | false | 써니호 여러 기의 스킬 시점을 균등 분산 |
 | `positionModel` | bool | false | 위치 모델: 모든 유닛을 라인몹 생성 지점에 두고 이동·사거리·범위·스턴·이속 감소를 계산 (켜면 `coverage` 무시). 스턴·이속 감소는 `deletion.seed`로 정해지는 확률 발동 |
-| `difficulty` | `신` · `악몽` | `신` | 위치 모델의 난이도: 둘 다 2.305 문구 기준 몹 이속 +50%, 이감 상한 102% |
+| `difficulty` | `지옥` · `신` · `악몽` | `신` | 난이도: 몹 HP·방어·마방·재생·패배 기준(70·55·50)·광폭 오라·보스 스턴 저항, 위치 모델 이속. 구조는 2.305, 공통 HP·재생은 2.323 툴팁 (수정내역 19) |
+| `gorosei` | `없음` · `나스쥬로` · `워큐리` · `새턴` | `없음` | 오로성(신·악몽만, 지옥이면 무시). 2.323 수치. `context.warcury: true`는 `워큐리`와 같다 |
 | `engageRange` | 100~3000 | 650 | 위치 모델의 교전 거리. 비비 영원처럼 자기 사거리를 쓰는 유닛 외에는 모두 이 거리 안의 몹을 친다 [추정] |
 | `buffTargets` | `{소스 코드: [받는 코드…]}` | 조합 전체 | 아군 오라·버프를 받을 유닛 제한. 지정하지 않은 소스는 조합 전체가 받는다 |
 | `tr19Plants` | `{pea, snow, muk}` 정수, 합 3 이하 | 2 / 1 / 0 | TR19 특강 식물 배분: 완두콩·백설콩·먹깨비 |
@@ -131,7 +132,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `line.damage` | 라인 일반몹에 들어간 피해. `byCategory`(area·basic·finisher·magic·physical·fixed), `bySource`(유닛 코드별, `H2`는 레드포스호) |
 | `line.control` | 써니호 스킬 발동·스턴 시간 집계 (판정에는 미사용) |
 | `line.executions` | 영웅별 라인몹 제거 수 (I3 순속·패기발산) |
-| `line.totals`, `finisher`, `deletions`, `applied` | 생성·처치 수, 마무리 시도·처치, 삭제 횟수, 적용된 방깎·범위 적중·마법 배율 |
+| `line.totals`, `finisher`, `deletions`, `applied` | 생성·처치 수, 마무리 시도·처치, 삭제 횟수, 적용된 방깎·범위 적중·마법 배율·자원 방식·위치 모델·난이도·오로성 |
 | `single` | `to15Seconds`(100→15%), `killSeconds`, `finishFrom15Seconds`(15%→처치), `remainingAt3`, `damageBy3Seconds`, `reference.danRatio`(루치 기준 단), `reference.endRatio`(핸콕 기준 끝) |
 | `warnings` | 계산은 했지만 확인할 점 (상한 도달, 무시된 설정 등) |
 | `limitations` | 현재 모델의 계산상 한계. 항상 포함 |

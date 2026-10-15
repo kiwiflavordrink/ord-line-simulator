@@ -15,7 +15,7 @@ function context(){return damageContext({
   selected:[...document.querySelectorAll('.amp-effect:checked')].map(e=>e.value),
   customMagicAmp:val('v3-custom-mamp'),customMagicCut:val('v3-custom-mcut'),
   customAllAmp:val('v3-custom-all'),customExplosiveAmp:val('v3-custom-explosive'),
-  warcury:$('v3-warcury').checked
+  warcury:$('v3-gorosei').value==='워큐리'
 });}
 function syncEffects(){
   const c=context();
@@ -39,9 +39,11 @@ function setupEffects(){
     }
     $('v3-effect-list').appendChild(box);
   }
-  for(const [param,id] of [['warcury','v3-warcury'],['customMamp','v3-custom-mamp'],['customMcut','v3-custom-mcut'],['customAll','v3-custom-all'],['customExplosive','v3-custom-explosive']]){
+  if(params.get('warcury')==='1')$('v3-gorosei').value='워큐리';
+  if(['없음','나스쥬로','워큐리','새턴'].includes(params.get('gorosei')))$('v3-gorosei').value=params.get('gorosei');
+  for(const [param,id] of [['customMamp','v3-custom-mamp'],['customMcut','v3-custom-mcut'],['customAll','v3-custom-all'],['customExplosive','v3-custom-explosive']]){
     if(!params.has(param))continue;
-    if(param==='warcury')$(id).checked=params.get(param)==='1';else $(id).value=params.get(param);
+    $(id).value=params.get(param);
   }
   $('v3-effect-settings').addEventListener('input',syncEffects);
   syncEffects();
@@ -129,7 +131,7 @@ const val=id=>Number($(id).value)||0;
 function options(){const c=context();return {
   cut:val('cut-v2'),coverage:val('coverage-v2')/100,magicReduction:c.magicCut/100,magicAmp:c.magicAmp/100,
   allAmp:c.allAmp/100,explosiveAmp:c.generalExplosiveAmp/100,
-  normalOnlyExplosiveAmp:c.normalOnlyExplosiveAmp/100,warcury:c.warcury,
+  normalOnlyExplosiveAmp:c.normalOnlyExplosiveAmp/100,gorosei:$('v3-gorosei').value,
   red:$('red-v2').checked,redDamage:$('red-v2').checked,fullResource:$('resource-v2').checked,summons:$('summons-v2').checked,
   frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
   tr19Plants:{pea:val('tr19-pea'),snow:val('tr19-snow'),muk:val('tr19-muk')},
@@ -259,7 +261,7 @@ function singleShareURL(){
   url.searchParams.set('singleTrials',$('single-trials').value);url.searchParams.set('singleSeed',$('single-seed').value);
   url.searchParams.delete('effect');
   for(const e of document.querySelectorAll('.amp-effect:checked'))url.searchParams.append('effect',e.value);
-  url.searchParams.set('warcury',$('v3-warcury').checked?'1':'0');
+  url.searchParams.delete('warcury');url.searchParams.set('gorosei',$('v3-gorosei').value);
   for(const [param,id] of [['customMamp','v3-custom-mamp'],['customMcut','v3-custom-mcut'],['customAll','v3-custom-all'],['customExplosive','v3-custom-explosive']])url.searchParams.set(param,$(id).value);
   url.hash='single-tester';history.replaceState(null,'',url);return url.href;
 }
@@ -296,7 +298,7 @@ function restore(){
   $('franky-aura').checked=params.get('frankyAura')!=='0';
   $('sunny-stagger').checked=params.get('sunnyStagger')==='1';
   $('position-v3').checked=params.get('position')==='1';
-  if(['신','악몽'].includes(params.get('difficulty')))$('difficulty-v3').value=params.get('difficulty');
+  if(['지옥','신','악몽'].includes(params.get('difficulty')))$('difficulty-v3').value=params.get('difficulty');
   for(const k of ['pea','snow','muk'])if(params.has('tr19'+k))$('tr19-'+k).value=params.get('tr19'+k);
   try{for(const [src,tgts] of Object.entries(JSON.parse(params.get('buffTargets')||'{}')))for(const t of data.heroes.map(h=>h.code))(buffState[src]??={})[t]=tgts.includes(t);}catch{}
 }
@@ -317,7 +319,7 @@ function shareURL(){
   for(const k of ['pea','snow','muk'])u.searchParams.set('tr19'+k,$('tr19-'+k).value);
   const bt=buffTargets();if(Object.keys(bt).length)u.searchParams.set('buffTargets',JSON.stringify(bt));
   for(const e of document.querySelectorAll('.amp-effect:checked'))u.searchParams.append('effect',e.value);
-  u.searchParams.set('warcury',$('v3-warcury').checked?'1':'0');
+  u.searchParams.delete('warcury');u.searchParams.set('gorosei',$('v3-gorosei').value);
   for(const [param,id] of [['customMamp','v3-custom-mamp'],['customMcut','v3-custom-mcut'],['customAll','v3-custom-all'],['customExplosive','v3-custom-explosive']])u.searchParams.set(param,$(id).value);
   history.replaceState(null,'',u);return u.href;
 }
