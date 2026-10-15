@@ -198,7 +198,6 @@
    "name":"우솝",
    "grade":"초월함",
    "focus":"물리 중심",
-   "permanent_form":1,
    "forms":[
     {"rawcode":"H09B","attack":88502.0,"aps":8.365385054043074,"attack_type":"pierce","splash":1,"splash_radius":300,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}},
     {"rawcode":"H09C","attack":121057.0,"aps":9.062500345365462,"attack_type":"pierce","splash":1,"splash_radius":400,"rounds":{"60":0.75,"61":1.25,"62":1,"63":1.25,"64":0.9,"65":0.9}}

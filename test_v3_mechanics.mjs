@@ -30,4 +30,11 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.equal(tr23.permanent_form,1);
   assert.equal(tr23.forms[1].splash_radius,400);
 }
-console.log('V3 mechanics: resource clock, TR23 form: passed');
+// [수정 3] TR19는 저격왕 기본 폼 H09B(300 스플래시).
+{
+  const tr19=data.heroes.find(h=>h.code==='TR19');
+  assert.equal(tr19.permanent_form,undefined);
+  assert.equal(tr19.forms[0].rawcode,'H09B');
+  assert.equal(tr19.forms[0].splash_radius,300);
+}
+console.log('V3 mechanics: resource clock, TR23 form, TR19 form: passed');
