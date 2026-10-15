@@ -10,6 +10,17 @@ export const DELETERS={
   L19:{name:'슈가 전설',cooldown:85,proc:1,mode:'active'}
 };
 
+// 2.305 object-data full upgrades, paired with the 2.323 ORDR cards.
+// These need individual targeting/resource clocks and cannot use the generic AoE hero events.
+export const CONDITIONAL_UNITS={
+  I8:{name:'스코퍼가반 불멸',attack:407502,aps:17.916666558,attackType:'pierce',
+    url:'https://ordr.kr/character/I8'},
+  TR28:{name:'프랑키 초월',attack:135502,aps:5.800000091,attackType:'siege',
+    url:'https://ordr.kr/character/TR28'},
+  H15:{name:'써니호 히든',attack:34226,aps:8,attackType:'normal',
+    url:'https://ordr.kr/character/H15'}
+};
+
 const rounds=[60,61,62,63,64,65];
 const pf=a=>a>=0?1/(1+.02*a):2-Math.pow(.98,-a);
 const typeMatrix={
@@ -57,12 +68,21 @@ export function simulateV2(data,composition,options={}){
     if(heroMap.has(item.code))for(let i=0;i<count;i++)units.push({kind:'hero',code:item.code,model:heroMap.get(item.code),damage:item.damage!==false});
     else if(SUPPORTS[item.code])for(let i=0;i<count;i++)units.push({kind:'support',code:item.code,model:SUPPORTS[item.code],damage:item.damage!==false,ab:item.ab!==false});
     else if(DELETERS[item.code])for(let i=0;i<count;i++)units.push({kind:'deleter',code:item.code,model:DELETERS[item.code],damage:item.damage!==false,nextAttack:1/(DELETERS[item.code].aps||1),nextReady:0});
+    else if(CONDITIONAL_UNITS[item.code])for(let i=0;i<count;i++)units.push({kind:'conditional',code:item.code,
+      model:CONDITIONAL_UNITS[item.code],damage:item.damage!==false,energy:0,
+      attackBank:0,nextCast:0});
     else if(item.code==='MAGIC_CUSTOM')for(let i=0;i<count;i++)units.push({kind:'magic',code:'MAGIC_CUSTOM',damage:item.damage!==false});
   }
   if(!units.length)throw new Error('조합에 유닛을 한 기 이상 넣어 주세요.');
   const cut=clamp(options.cut??201,0,300),coverage=clamp(options.coverage??1,0,1);
   const fullResource=options.fullResource!==false,summons=options.summons!==false;
+  for(const u of units)if(u.kind==='conditional')u.energy=fullResource?(u.code==='I8'?45:u.code==='H15'?100:150):0;
   const red=options.red!==false,redDamage=red&&options.redDamage!==false;
+  const frankyLinked=options.frankyAura!==false&&units.some(u=>u.code==='TR28');
+  const sunnyUnits=units.filter(u=>u.code==='H15');
+  const sunnyStagger=options.sunnyStagger===true;
+  for(const [index,u] of sunnyUnits.entries())u.openingDelay=sunnyStagger&&sunnyUnits.length>1?
+    index*(100/(u.model.aps+(frankyLinked?5:0)))/sunnyUnits.length:0;
   const magicReduction=clamp(options.magicReduction??0,0,.35);
   const magicAmp=clamp(options.magicAmp??0,0,.25);
   const warcury=options.warcury===true;
@@ -83,7 +103,7 @@ export function simulateV2(data,composition,options={}){
   const finishType=finish.damageType??'magic';
   const deleteOptions=options.deletion??{};
   const deleteSeed=clamp(Math.floor(deleteOptions.seed??202323),0,2147483647);
-  for(const [index,u] of units.entries())if(u.kind==='deleter'){
+  for(const [index,u] of units.entries())if(u.kind==='deleter'||u.code==='H15'){
     let hash=0;
     for(const ch of u.code)hash=(Math.imul(hash,31)+ch.charCodeAt(0))>>>0;
     u.rngState=(deleteSeed^hash^Math.imul(index+1,0x9e3779b9))>>>0||1;
@@ -96,8 +116,10 @@ export function simulateV2(data,composition,options={}){
   };
   const deleteCounts={L12:0,D4:0,L19:0};
   const sourceDamage={};
-  const lineDamage={area:0,basic:0,finisher:0,magic:0,physical:0,fixed:0};
+  const lineDamage={area:0,basic:0,single:0,finisher:0,magic:0,physical:0,fixed:0};
   const mobs=[],specials=[],checkpoints=[],timeline=[];
+  const control={sunnyCasts:0,sunnyProcExpected:0,frankyAuraSeconds:0,
+    activeLineMobSeconds:0,stunnedLineMobSeconds:0,stunFieldSeconds:0};
   let totalLineSpawned=0,totalLineKilled=0,finisherAttempts=0,finisherKills=0,successBank=0;
   const casts=new Map(units.map((u,i)=>[i,u.kind==='support'?supportCastSchedule(u.code,fullResource):[]]));
   const armor=(m,extra)=>m.armor+(warcury?10:0)+(m.kind==='line'?extra:0)-cut-m.ab;
@@ -130,7 +152,7 @@ export function simulateV2(data,composition,options={}){
     averageAb:mobs.length?mobs.reduce((a,m)=>a+m.ab,0)/mobs.length:0});
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
-    finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,unitCount:units.length,
+    finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,control,unitCount:units.length,
     magicFactor,cut,coverage});
 
   for(const round of rounds){
@@ -246,6 +268,63 @@ export function simulateV2(data,composition,options={}){
             deal(m,eventDamage(e,m,attack,extraArmor)*rate*.1*(m===target||e.target==='frenzy'?1:coverage),u.code,'area','mixed');
         }
       }
+      // Conditional units use their own attack clocks. Gaban damages one target;
+      // Sunny area stuns are measured, but movement/escape is not modeled here.
+      for(const u of units){
+        if(u.kind!=='conditional')continue;
+        const spec=u.model,attacks=spec.aps*.1;
+        u.attackBank+=attacks;
+        const normal=mobs.find(m=>m.hp>0),single=normal??specials.find(s=>s.hp>0);
+        if(u.code==='I8'){
+          while(u.attackBank>=1-1e-9){
+            u.attackBank-=1;
+            if(!single||!u.damage)continue;
+            u.energy=Math.min(45,u.energy+1);
+            single.ab=Math.max(single.ab,single.kind==='line'?60:70);
+            const basic=spec.attack*(red?1.35:1)*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor));
+            deal(single,basic,u.code,'single','physical');
+            deal(single,.55*5.25*basic,u.code,'single','fixed');
+            const proc=(8_750_000*1.25+(single.kind==='line'?.2*single.maxhp:0))*pf(armor(single,extraArmor));
+            deal(single,.0425*proc,u.code,'single','physical');
+            deal(single,.45*350_000*pf(armor(single,extraArmor)),u.code,'single','physical');
+            if(u.energy>=45&&globalT+1e-8>=u.nextCast){
+              deal(single,(single.kind==='line'?.5:.1)*single.maxhp,u.code,'single','fixed');
+              u.energy-=45;u.nextCast=globalT+2.5;
+            }
+          }
+        }else if(u.code==='TR28'){
+          while(u.attackBank>=1-1e-9){u.attackBank-=1;if(single)u.energy=Math.min(150,u.energy+1);}
+          if(!u.damage)continue;
+          if(single)deal(single,spec.attack*attacks*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
+          const missiles=frankyLinked&&sunnyUnits.length?2+sunnyUnits.length:0;
+          for(const m of aoeTargets)if(m.hp>0){
+            deal(m,(spec.aps*.05*460_000+spec.aps*.08*250_000*missiles)*.1*magicFactor*hit(m),u.code,'area','magic');
+          }
+          if(single&&u.energy>=150){
+            u.energy-=150;
+            for(const m of aoeTargets)if(m.hp>0)deal(m,500_000*magicFactor*hit(m),u.code,'area','magic');
+          }
+        }else if(u.code==='H15'){
+          if(frankyLinked)u.energy=Math.min(100,u.energy+.5);
+          while(u.attackBank>=1-1e-9){
+            u.attackBank-=1;
+            if(!single)continue;
+            u.energy=Math.min(100,u.energy+1);
+            if(u.damage)deal(single,spec.attack*typeFor(spec.attackType,single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
+            const cast=frankyLinked&&globalT+1e-8>=u.openingDelay&&u.energy>=100;
+            const proc=!frankyLinked&&random(u)<.1;
+            if(!u.damage||!cast&&!proc)continue;
+            if(cast){u.energy-=100;control.sunnyCasts++;}
+            else control.sunnyProcExpected++;
+            const duration=cast?3:1.2,flat=cast?1_850_000:200_000;
+            for(const m of aoeTargets)if(m.hp>0){
+              deal(m,(flat+(m.kind==='frenzy'?.45*m.maxhp:0))*magicFactor*hit(m),u.code,'area','magic');
+              if(m.kind==='line')m.stunnedUntil=Math.max(m.stunnedUntil??0,globalT+duration);
+            }
+          }
+        }
+      }
+      if(frankyLinked&&sunnyUnits.length)control.frankyAuraSeconds+=.1;
       if(redDamage&&target){
         const hiddenAps=5.625,hiddenAttack=67806.45;
         deal(target,hiddenAttack*hiddenAps*1.05*pf(armor(target,extraArmor))*(target.kind==='boss'?2.2:1)*.1,'H2','basic','physical');
@@ -297,6 +376,11 @@ export function simulateV2(data,composition,options={}){
         }
       }
       if(active&&active.hp<=0)specialKill=+t.toFixed(1);
+      const aliveLines=mobs.filter(m=>m.hp>0);
+      control.activeLineMobSeconds+=aliveLines.length*.1;
+      const stunned=aliveLines.filter(m=>(m.stunnedUntil??0)>globalT).length;
+      control.stunnedLineMobSeconds+=stunned*.1*coverage;
+      if(stunned)control.stunFieldSeconds+=.1;
       if(step%10===9)timeline.push({second:(round-60)*32+(step+1)*.1,
         count:mobs.filter(m=>m.hp>0).length+specials.filter(s=>s.hp>0).length,round});
     }

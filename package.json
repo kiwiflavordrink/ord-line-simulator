@@ -12,7 +12,7 @@
   },
   "scripts": {
     "sim": "node cli/ordsim.mjs",
-    "test": "node test_single.mjs && node test_support.mjs && node test_v2.mjs && node test_cli.mjs",
+    "test": "node test_single.mjs && node test_support.mjs && node test_v2.mjs && node test_conditional.mjs && node test_cli.mjs",
     "test:cli": "node test_cli.mjs",
     "test:legacy-engine": "node test_engine.mjs",
     "serve": "python3 -m http.server 8000 -d dist"

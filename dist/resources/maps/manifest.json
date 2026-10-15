@@ -1,0 +1,85 @@
+[
+  {
+    "id": "s2-2305-cheat",
+    "name": "ORDR_S2_2.305_cheat.w3x",
+    "description": "2.305 치트 버전: 오브젝트·JASS 추출이 가능한 비교 기준",
+    "bytes": 130471348,
+    "sha256": "85dc9794cdd5d59593fded81f6c0f8f0dac7d27f7cab0145e2c600828d5e1d92",
+    "parts": [
+      {
+        "filename": "s2-2305-cheat.part01",
+        "bytes": 20971520,
+        "sha256": "995004dc678b44f4ab8c49fe681777e2eebb48a224816317d46bb369f0759926"
+      },
+      {
+        "filename": "s2-2305-cheat.part02",
+        "bytes": 20971520,
+        "sha256": "981ec5732ca7b1ffd1b89b05030802e212f33381c1254f85c28ecee87ecef006"
+      },
+      {
+        "filename": "s2-2305-cheat.part03",
+        "bytes": 20971520,
+        "sha256": "16d6009a5e8809aaf3378df2bc1537abade7eb8e183df88ae606c5352d180888"
+      },
+      {
+        "filename": "s2-2305-cheat.part04",
+        "bytes": 20971520,
+        "sha256": "93e3393376601150c6a19783e7706955ba83f1cc377221a98b2a3b9990c2484a"
+      },
+      {
+        "filename": "s2-2305-cheat.part05",
+        "bytes": 20971520,
+        "sha256": "4ee0fa2e976f5251ddad59a5dffc3ff8d143b2d4d25b38c724e6633c56325085"
+      },
+      {
+        "filename": "s2-2305-cheat.part06",
+        "bytes": 20971520,
+        "sha256": "724d6fe1f44fc9984ce7ac2402fad86834e7799d717d3d03ec28f18feb700d20"
+      },
+      {
+        "filename": "s2-2305-cheat.part07",
+        "bytes": 4642228,
+        "sha256": "72620ea3a10306939a275eb5e8249eb20859fb20d4c8cd7c24633c37634053c5"
+      }
+    ]
+  },
+  {
+    "id": "s2-2323-original",
+    "name": "ORDR_S2_2.323[R].w3x",
+    "description": "사용자가 제공한 2.323 원본: 보호된 아카이브",
+    "bytes": 119514351,
+    "sha256": "eac74a90a967473196c84446b880387857f50a828083c0e1b5fc02b325663535",
+    "parts": [
+      {
+        "filename": "s2-2323-original.part01",
+        "bytes": 20971520,
+        "sha256": "02ddc804ec8aee114151ffdac1bfad93f700bb394a777ace50aa451915619878"
+      },
+      {
+        "filename": "s2-2323-original.part02",
+        "bytes": 20971520,
+        "sha256": "639a4d1ff7de8977f4b9c2b56c70330de908ff39c0bd349cb71ba7d88a814fd0"
+      },
+      {
+        "filename": "s2-2323-original.part03",
+        "bytes": 20971520,
+        "sha256": "6f9aeeaf9a0fdc811f0d5e81eba73cc0ed2e86fed92e75449ada4bebaf610f0b"
+      },
+      {
+        "filename": "s2-2323-original.part04",
+        "bytes": 20971520,
+        "sha256": "b2d3c3461803d09e5541bc0046f9283bd5c188e747c45545a68286f5455a7bed"
+      },
+      {
+        "filename": "s2-2323-original.part05",
+        "bytes": 20971520,
+        "sha256": "60b61d6a39b4f3d4d3e4a29ddc38af720338afc0abe157a9c92685f08f86b269"
+      },
+      {
+        "filename": "s2-2323-original.part06",
+        "bytes": 14656751,
+        "sha256": "8e8e0013aa05174bdf9d86e70e2b8b2f8b0ff72e742eb7af8e9bf2e56c5a4591"
+      }
+    ]
+  }
+]

@@ -38,6 +38,7 @@ function assertLine(out,direct){
   assert.deepEqual(out.damage.bySource,direct.sourceDamage);
   assert.deepEqual(out.deletions,direct.deleteCounts);
   assert.deepEqual(out.finisher,{attempts:direct.finisherAttempts,kills:direct.finisherKills});
+  assert.deepEqual(out.control,direct.control);
   assert.deepEqual(out.totals,{lineSpawned:direct.totalLineSpawned,lineKilled:direct.totalLineKilled,unitCount:direct.unitCount});
   assert.deepEqual(out.applied,{cut:direct.cut,coverage:direct.coverage,magicFactor:direct.magicFactor});
 }
@@ -108,6 +109,14 @@ function assertReportShape(r){
   const r=fromFile('combined.json');
   assert.equal(r.status,0,r.stderr);assertLine(r.json.line,line);assertSingle(r.json.single,single,refs);
 }
+// 5b. Conditional units (Gaban, Franky, Sunny) with their placement options.
+{
+  const direct=simulateV2(data,[{code:'TR28',count:1},{code:'H15',count:2},{code:'I8',count:1}],
+    lineOpts(damageContext({}),{frankyAura:true,sunnyStagger:true}));
+  const r=fromFile('line_conditional.json');
+  assert.equal(r.status,0,r.stderr);assertLine(r.json.line,direct);
+  assert.ok(direct.control.sunnyCasts>0&&direct.lineDamage.single>0);
+}
 // 6. --timeline passes the engine timeline through unchanged.
 {
   const direct=simulateV2(data,[{code:'TR19',count:1},{code:'D3',count:1}],lineOpts(damageContext({}),{}));
@@ -158,4 +167,4 @@ bad({single:{team:[{code:'L9'}],trials:50}},'OUT_OF_RANGE','single.trials');
   assert.equal(r.status,0);
   assert.deepEqual(r.json.line.heroes.map(h=>h.code),data.heroes.map(h=>h.code));
 }
-console.log('CLI: 5 example scenarios match direct engine calls, stdin, timeline, input errors, unit list: passed');
+console.log('CLI: 6 example scenarios match direct engine calls, stdin, timeline, input errors, unit list: passed');

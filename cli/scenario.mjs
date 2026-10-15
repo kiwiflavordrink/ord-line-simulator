@@ -5,7 +5,7 @@
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {SUPPORTS} from '../dist/engine.mjs';
-import {simulateV2,DELETERS} from '../dist/engine_v3.mjs';
+import {simulateV2,DELETERS,CONDITIONAL_UNITS} from '../dist/engine_v3.mjs';
 import {SINGLE_MOB,SINGLE_UNITS,simulateSingle,referenceSingle} from '../dist/engine_single_v3.mjs';
 import {EFFECTS,damageContext} from '../dist/v3_effects.mjs';
 
@@ -23,9 +23,9 @@ const EFFECT_CODES=new Set(EFFECTS.map(e=>e.code));
 
 export const LIMITATIONS=[
   {id:'map-2305-approximation',text:'몹 HP·방어, 영웅 공격력·공속은 2.305 맵 추출값이고 스킬 수치는 2.323 ORDR 카드 설명을 얹은 근사다. 2.323 원본 스크립트를 실행 검증한 결과가 아니다.'},
-  {id:'heroes-not-registered',text:'라인 계산은 dist/data.json에 등록된 물리 중심·물리·마법 혼합 상위 영웅 31명과 보조 4종(L7·L23·L25·D3), 삭제 3종(L12·D4·L19)만 지원한다. 그 밖의 상위 영웅은 미등록이며 임의 수치를 만들지 않는다.'},
+  {id:'heroes-not-registered',text:'라인 계산은 dist/data.json에 등록된 물리 중심·물리·마법 혼합 상위 영웅 31명과 보조 4종(L7·L23·L25·D3), 조건형 3종(I8·TR28·H15), 삭제 3종(L12·D4·L19)만 지원한다. 그 밖의 상위 영웅은 미등록이며 임의 수치를 만들지 않는다.'},
   {id:'single-units-limited',text:'65라 단일 테스터는 엔진에 정의된 단일·끝딜 유닛 10종만 지원한다.'},
-  {id:'no-stun-or-movement',text:'스턴·슬로우 등 제어 효과, 몹 이동 경로와 위치, 사거리는 구현되지 않았다. 범위 피해는 coverage(범위 적중률)로 근사하고 타깃은 보스·광폭이 있으면 그쪽, 없으면 가장 먼저 나온 몹이다.'},
+  {id:'no-stun-or-movement',text:'스턴·슬로우 등 제어 효과, 몹 이동 경로와 위치, 사거리는 구현되지 않았다(써니호 스턴은 line.control에 시간만 집계하고 판정에는 쓰지 않는다). 범위 피해는 coverage(범위 적중률)로 근사하고 타깃은 보스·광폭이 있으면 그쪽, 없으면 가장 먼저 나온 몹이다.'},
   {id:'effects-always-on',text:'context.selected의 증폭·마방 감소 효과는 대상에 계속 붙어 있다고 가정한다. 발동 확률, 지속시간, 범위·대상 조건을 자동 판정하지 않는다.'},
   {id:'amp-combination-order',text:'서로 다른 저항·증폭 단계(A04Q 마방, A04R 마법 증폭, 모든 피해 증폭)의 결합 순서는 실측되지 않아 곱셈으로 가정한다.'},
   {id:'line-damage-scope',text:'line.damage의 피해량은 라인 일반몹에 실제로 들어간 양(초과 피해 제외)만 집계한다. 보스·광폭에 들어간 피해량은 엔진이 집계하지 않으므로 처치 여부와 처치 시각으로만 보고한다.'},
@@ -44,6 +44,7 @@ export function supportedUnits(data){
       heroes:data.heroes.map(h=>({code:h.code,name:h.name,grade:h.grade,focus:h.focus})),
       supports:Object.entries(SUPPORTS).map(([code,s])=>({code,name:s.name})),
       deleters:Object.entries(DELETERS).map(([code,d])=>({code,name:d.name})),
+      conditional:Object.entries(CONDITIONAL_UNITS).map(([code,c])=>({code,name:c.name})),
       custom:[{code:'MAGIC_CUSTOM',name:'사용자 정의 범위 마법 (line.options.customMagic 사용)'}]
     },
     single:SINGLE_UNITS.map(u=>({code:u.code,name:u.name,role:u.role})),
@@ -86,7 +87,7 @@ const compact=o=>Object.fromEntries(Object.entries(o).filter(([,v])=>v!==undefin
 function unsupportedMessage(code,data,where){
   const hints=[];
   if(where==='line'&&SINGLE_BY_CODE.has(code))hints.push('이 코드는 single.team(65라 단일 테스터)에서만 지원됩니다.');
-  if(where==='single'&&(data.heroes.some(h=>h.code===code)||SUPPORTS[code]||DELETERS[code]))hints.push('이 코드는 line.team(60~65라 조합)에서만 지원됩니다.');
+  if(where==='single'&&(data.heroes.some(h=>h.code===code)||SUPPORTS[code]||DELETERS[code]||CONDITIONAL_UNITS[code]))hints.push('이 코드는 line.team(60~65라 조합)에서만 지원됩니다.');
   if(EFFECT_CODES.has(code))hints.push('증폭·마방 감소 효과로는 context.selected에 넣을 수 있습니다.');
   const base=where==='line'
     ?`미지원: '${code}'는 현재 data.json(${data.version})과 라인 엔진에 등록되지 않은 유닛입니다. 임의 수치를 만들지 않습니다.`
@@ -124,7 +125,7 @@ function validateLine(raw,data,is){
     if(!isObj(item)){is.error(p,'NOT_AN_OBJECT','{"code": "...", "count": 1} 형식이어야 합니다.');return;}
     onlyKeys(item,['code','count','damage','ab'],p,is);
     if(typeof item.code!=='string'||!item.code){is.error(`${p}.code`,'MISSING_CODE','유닛 코드 문자열이 필요합니다.');return;}
-    const known=heroCodes.has(item.code)||SUPPORTS[item.code]||DELETERS[item.code]||item.code==='MAGIC_CUSTOM';
+    const known=heroCodes.has(item.code)||SUPPORTS[item.code]||DELETERS[item.code]||CONDITIONAL_UNITS[item.code]||item.code==='MAGIC_CUSTOM';
     if(!known){is.error(`${p}.code`,'UNSUPPORTED_UNIT',unsupportedMessage(item.code,data,'line'));return;}
     const count=num(item,'count',p,is,{min:1,max:6,integer:true});
     const damage=bool(item,'damage',p,is),ab=bool(item,'ab',p,is);
@@ -136,14 +137,16 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','summons','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','summons','frankyAura','sunnyStagger','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
       red:bool(o,'red','line.options',is),
       redDamage:bool(o,'redDamage','line.options',is),
       fullResource:bool(o,'fullResource','line.options',is),
-      summons:bool(o,'summons','line.options',is)
+      summons:bool(o,'summons','line.options',is),
+      frankyAura:bool(o,'frankyAura','line.options',is),
+      sunnyStagger:bool(o,'sunnyStagger','line.options',is)
     }));
     if(o.customMagic!==undefined){
       const c=o.customMagic,p='line.options.customMagic';
@@ -273,6 +276,7 @@ function lineReport(r,data,includeTimeline){
     totals:{lineSpawned:r.totalLineSpawned,lineKilled:r.totalLineKilled,unitCount:r.unitCount},
     finisher:{attempts:r.finisherAttempts,kills:r.finisherKills},
     deletions:r.deleteCounts,
+    control:r.control,
     applied:{cut:r.cut,coverage:r.coverage,magicFactor:r.magicFactor},
     ...(includeTimeline?{timeline:r.timeline}:{})
   };

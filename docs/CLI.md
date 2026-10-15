@@ -77,6 +77,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 
 - `dist/data.json`의 영웅 31명 (`--list-units`의 `line.heroes`)
 - 보조 `L7` `L23` `L25` `D3` — `ab: false`면 암브(방깎) 효과 제외, `damage: false`면 피해 제외
+- 조건형 `I8`(스코퍼가반 불멸) `TR28`(프랑키 초월) `H15`(써니호 히든)
 - 삭제 `L12` `D4` `L19`
 - `MAGIC_CUSTOM` — `options.customMagic`으로 정의하는 가상 범위 마법 유닛
 
@@ -94,6 +95,8 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `redDamage` | bool | `red`와 같음 | 레드포스호 직접 피해 (웹은 `red`와 함께 켜고 끔) |
 | `fullResource` | bool | true | 시작 자원 만충 |
 | `summons` | bool | true | 소환 범위 피해 포함 |
+| `frankyAura` | bool | true | 프랑키가 써니호 700범위 안에 있어 써니호 마나 +5/초 |
+| `sunnyStagger` | bool | false | 써니호 여러 기의 스킬 시점을 균등 분산 |
 | `customMagic.aps` / `.chance` | 0~100 / 0~1 | 5 / 0.15 | `MAGIC_CUSTOM`의 초당 공격·발동 확률 |
 | `customMagic.flat` | 0~1e10 | 0 | 1회·몹당 마법 피해 (웹 기본은 1,000,000) |
 | `customMagic.maxPct` / `.currentPct` / `.lostPct` | 0~1 | 0 | HP 비례 피해 |
@@ -120,6 +123,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `line.rounds[]` | 라운드별 `remaining`(보스·광폭 포함 잔존 수), `lineRemaining`, 이전 라운드 이월 수, 평균 암브, `special` 처리 결과 |
 | `line.rounds[].special` | 60·65라 `boss`, 61~64라 `frenzy`. `result`: `killed` / `survived`(라운드 끝에 생존, 다음 라운드로 이월) / `unknown_round_failed` / `not_reached`. `killSecond`는 해당 라운드 시작 기준 초(광폭은 7.5초에 등장) |
 | `line.damage` | 라인 일반몹에 들어간 피해. `byCategory`(area·basic·finisher·magic·physical·fixed), `bySource`(유닛 코드별, `H2`는 레드포스호) |
+| `line.control` | 써니호 스킬 발동·스턴 시간 집계 (판정에는 미사용) |
 | `line.totals`, `finisher`, `deletions`, `applied` | 생성·처치 수, 마무리 시도·처치, 삭제 횟수, 적용된 방깎·범위 적중·마법 배율 |
 | `single` | `to15Seconds`(100→15%), `killSeconds`, `finishFrom15Seconds`(15%→처치), `remainingAt3`, `damageBy3Seconds`, `reference.danRatio`(루치 기준 단), `reference.endRatio`(핸콕 기준 끝) |
 | `warnings` | 계산은 했지만 확인할 점 (상한 도달, 무시된 설정 등) |
@@ -136,6 +140,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `examples/line_amp_finisher.json` | 워큐리·마법 증폭·폭발형 증폭, 모리아 삭제, 5초 마무리 |
 | `examples/single_lucci_hancock.json` | 루치 + 핸콕 단일 테스터 |
 | `examples/combined.json` | 같은 context로 라인과 단일 동시 계산 |
+| `examples/line_conditional.json` | 조건형 프랑키·써니호·가반, 프랑키 오라·써니호 시점 분산 |
 | `examples/invalid_unsupported.json` | 미지원 영웅·범위 초과 → 종료 코드 2 |
 
 ### 실제 출력 (발췌)

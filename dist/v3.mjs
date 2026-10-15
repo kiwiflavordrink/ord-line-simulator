@@ -1,5 +1,5 @@
 import {SUPPORTS} from './engine.mjs';
-import {simulateV2,DELETERS} from './engine_v3.mjs';
+import {simulateV2,DELETERS,CONDITIONAL_UNITS} from './engine_v3.mjs';
 import {SINGLE_MOB,SINGLE_UNITS,simulateSingle,referenceSingle} from './engine_single_v3.mjs';
 import {EFFECTS,damageContext} from './v3_effects.mjs';
 
@@ -47,7 +47,7 @@ function setupEffects(){
   syncEffects();
 }
 const nameOf=code=>code==='H2'?'레드포스호 히든':code==='MAGIC_CUSTOM'?'직접 입력 마딜':code==='단일 마무리'?code:
-  data.heroes.find(h=>h.code===code)?.name??SUPPORTS[code]?.name??DELETERS[code]?.name??code;
+  data.heroes.find(h=>h.code===code)?.name??SUPPORTS[code]?.name??DELETERS[code]?.name??CONDITIONAL_UNITS[code]?.name??code;
 
 function unitSelect(value){
   const sel=document.createElement('select');sel.className='unit-select';sel.setAttribute('aria-label','조합 유닛');
@@ -58,10 +58,12 @@ function unitSelect(value){
   }
   const g=document.createElement('optgroup');g.label='보조딜 · 암브';sel.appendChild(g);
   for(const [code,s] of Object.entries(SUPPORTS)){const o=document.createElement('option');o.value=code;o.textContent=s.name;g.appendChild(o);}
+  const cg=document.createElement('optgroup');cg.label='조건형 · 마나 · 스턴';sel.appendChild(cg);
+  for(const [code,s] of Object.entries(CONDITIONAL_UNITS)){const o=document.createElement('option');o.value=code;o.textContent=s.name;cg.appendChild(o);}
   const dg=document.createElement('optgroup');dg.label='삭제 · 별도 집계';sel.appendChild(dg);
   for(const [code,s] of Object.entries(DELETERS)){const o=document.createElement('option');o.value=code;o.textContent=s.name;dg.appendChild(o);}
   const o=document.createElement('option');o.value='MAGIC_CUSTOM';o.textContent='직접 입력 마딜';sel.appendChild(o);
-  sel.value=value&&([...data.heroes.map(h=>h.code),...Object.keys(SUPPORTS),...Object.keys(DELETERS),'MAGIC_CUSTOM'].includes(value))?value:'TR19';
+  sel.value=value&&([...data.heroes.map(h=>h.code),...Object.keys(SUPPORTS),...Object.keys(DELETERS),...Object.keys(CONDITIONAL_UNITS),'MAGIC_CUSTOM'].includes(value))?value:'TR19';
   return sel;
 }
 
@@ -92,6 +94,7 @@ function options(){const c=context();return {
   allAmp:c.allAmp/100,explosiveAmp:c.generalExplosiveAmp/100,
   normalOnlyExplosiveAmp:c.normalOnlyExplosiveAmp/100,warcury:c.warcury,
   red:$('red-v2').checked,redDamage:$('red-v2').checked,fullResource:$('resource-v2').checked,summons:$('summons-v2').checked,
+  frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
   customMagic:{aps:val('magic-aps'),chance:val('magic-chance')/100,flat:val('magic-flat'),
     maxPct:val('magic-max')/100,currentPct:val('magic-current')/100,lostPct:val('magic-lost')/100},
   finisher:{mode:$('finish-mode').value,interval:val('finish-interval'),successChance:val('finish-chance')/100,
@@ -129,6 +132,10 @@ function render(){
     $('v2-finish').textContent=`${r.finisherAttempts} / ${r.finisherKills}`;
     $('v2-without').textContent=without.clear?`${without.remaining}기`:`${without.failedRound}라 패배`;
     $('v2-deleted').textContent=fmt(Object.values(r.deleteCounts).reduce((a,b)=>a+b,0));
+    $('v3-sunny-casts').textContent=fmt(r.control.sunnyCasts);
+    $('v3-stun-uptime').textContent=r.control.activeLineMobSeconds?
+      `${(100*r.control.stunnedLineMobSeconds/r.control.activeLineMobSeconds).toFixed(1)}%`:'—';
+    $('v3-gaban-single').textContent=fmt(r.lineDamage.single);
     const deletionBody=$('v2-deletions');deletionBody.innerHTML='';
     for(const [code,count] of Object.entries(r.deleteCounts))if(chosen.some(u=>u.code===code)){
       const tr=document.createElement('tr');for(const s of [nameOf(code),`${count}기`,`${opts.deletion[`${code}Cooldown`]}초`,code==='L19'?'액티브':`${fmt(opts.deletion[`${code}Proc`]*100)}%`]){const td=document.createElement('td');td.textContent=s;tr.appendChild(td);}deletionBody.appendChild(tr);
@@ -246,6 +253,8 @@ function restore(){
   if(['magic','physical','fixed','explosive'].includes(params.get('finishType')))$('finish-type').value=params.get('finishType');
   $('red-v2').checked=params.get('red')!=='0';$('resource-v2').checked=params.get('resource')!=='0';
   $('summons-v2').checked=params.get('summons')!=='0';
+  $('franky-aura').checked=params.get('frankyAura')!=='0';
+  $('sunny-stagger').checked=params.get('sunnyStagger')==='1';
 }
 function shareURL(){
   const u=new URL(location.href);u.search='';u.searchParams.set('team',JSON.stringify(team()));
@@ -257,6 +266,8 @@ function shareURL(){
   u.searchParams.set('finishMode',$('finish-mode').value);u.searchParams.set('finishType',$('finish-type').value);
   u.searchParams.set('red',$('red-v2').checked?'1':'0');u.searchParams.set('resource',$('resource-v2').checked?'1':'0');
   u.searchParams.set('summons',$('summons-v2').checked?'1':'0');
+  u.searchParams.set('frankyAura',$('franky-aura').checked?'1':'0');
+  u.searchParams.set('sunnyStagger',$('sunny-stagger').checked?'1':'0');
   for(const e of document.querySelectorAll('.amp-effect:checked'))u.searchParams.append('effect',e.value);
   u.searchParams.set('warcury',$('v3-warcury').checked?'1':'0');
   for(const [param,id] of [['customMamp','v3-custom-mamp'],['customMcut','v3-custom-mcut'],['customAll','v3-custom-all'],['customExplosive','v3-custom-explosive']])u.searchParams.set(param,$(id).value);

@@ -1,0 +1,12 @@
+{
+  "name": "조건형 프랑키·써니호·가반",
+  "description": "프랑키 초월 1기, 써니호 히든 2기(스킬 시점 분산), 스코퍼가반 불멸 1기",
+  "line": {
+    "team": [
+      {"code": "TR28", "count": 1},
+      {"code": "H15", "count": 2},
+      {"code": "I8", "count": 1}
+    ],
+    "options": {"frankyAura": true, "sunnyStagger": true}
+  }
+}
