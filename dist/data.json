@@ -1393,6 +1393,96 @@
    "assumptions":["I10 제트: 스매시 블래스터(직선)를 공격 대상 중심 330범위로 근사한다."],
    "unmodeled":["특성강화(A11C) 스매시 버스터·차지 봄버, 공속 제한 +130%: trait_lines 없음.","스매시 블래스터의 직선(영웅→대상 방향 최대 약 1155) 기하.","C_0909_체(A0QQ 2000범위 순간이동, 수동): 피해 없음."],
    "source_group":"docs/마딜_근거/g6.md"
+  },
+  {
+   "code":"L5",
+   "name":"라분",
+   "grade":"전설",
+   "focus":"마법 중심 · 스턴",
+   "url":"https://ordr.kr/character/L5",
+   "forms":[
+    {"rawcode":"h02Q","attack":60001.5,"aps":1.6165413012222356,"attack_type":"siege","splash":1,"splash_radius":250,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"cooldown":1.3300000429153442,"range":420,"note":"수정내역 27 [2.305 기준]: w3u h02Q ua1b 27500, 1d2(평균 1.5), ua1c 1.33, ua1r 420, siege, upgr R01J (gba1 0.35, gmo1 0.04, gba2 2500, gmo2 1500, 21단계; A0AE 툴팁 '공격력 증가폭 1500, 기본 공속 35%, 증가폭 4%') → 공격력 27500+1.5+2500+20×1500 = 60,001.5, 공속 (1+1.15)/1.33 = 1.6165. 자기 우정 오라(+10%)는 auras로 엔진이 더한다. 스플래시: 2.323 툴팁 \"◎ 기본공격 250범위 스플래시\"(2.305 A0AE 툴팁도 '기본 공격 250범위 스플래쉬'). 그러나 2.305 w3u h02Q에는 ua1f·msplash가 없다(ua1w missile) — 툴팁을 따라 splash 1/250 [추정: 2.305 오브젝트와 불일치]. 라운드 계수 siege."}
+   ],
+   "attack_uptime":0.7497535778359476,
+   "auras":[{"id":"A0AD","kind":"aps","value":0.1,"targets":"all","note":"2.323 버프 \"공격속도 증가 10%\", 2.305 w3a A0AD(AOae Oae2 0.17, aare 600, atar self·friend) 아군·자신. 수치는 2.323."}],
+   "events":[
+    {"code":"L5","index":"박치기","rate":0.36788362916424777,"rate_kind":"공격당 0.3035 (27% 판정, 직전 박치기 뒤 7번째 공격은 확정: 1/Σ0.73^k(k=0..6)=0.3035) × 행동불능 유지율 0.7498","parts":[["magic",175000.0,[],0.0]],"phase":null,"per_attack":true,"radius":575,"center":"target","stun":{"normal":2.25,"hero":0.45,"single":false},"source":"2.323 툴팁 수치 + 2.305 구조","note":"수정내역 27: 근거 [툴팁 L5] \"박치기 :: 공격시 27% 확률로 ▶ 7번째 타격 시 반드시 박치기 발동 ▶ 575범위 ▶ 17만 5,000 마법데미지 ▶ 단일 적에게 30만 x 배수 (라인x1 / 보스x2 / 스토리x3) 추가 마법데미지 ▶ 해당 범위 2.25초 스턴 ▶ 페널티 : 박치기 발동 후 0.65초간 행동불능에 빠집니다.\" [2.305 rlM j:77332-77371] 공격 피해 이벤트마다 UserData+1, ==7 또는 AKA(1,100)<=27 → 0으로 리셋, 더미 e041(A15E AUin aare 575, adur 2.25 / ahdu 0.45) dreadlordinferno at 공격 대상 위치, oCM 575범위 17.5만 NORMAL·UNIVERSAL=마법(j:77361), BlzPauseUnitEx 0.65초(j:77358·77362·77367)."},
+    {"code":"L5","index":"박치기 단일","rate":0.36788362916424777,"rate_kind":"박치기와 같은 rate","parts":[["magic",300000.0,[],0.0]],"boss_parts":[["magic",600000.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","center":"target","source":"2.323 툴팁 수치 + 2.305 구조","note":"수정내역 27: 근거 [툴팁 L5] \"▶ 단일 적에게 30만 x 배수 (라인x1 / 보스x2 / 스토리x3) 추가 마법데미지\". [2.305 j:77360] 3000×GetUnitPointValue(대상) SIEGE·UNIVERSAL(2.305는 폭발형; 2.323 툴팁 '마법'을 따름). 보스 upoi 200(w3u o02C·o02B) = ×2 → 60만. 광폭은 라인 배수 ×1 [추정: 광폭 유닛 point value 미확인]."}
+   ],
+   "assumptions":["L5 라분: 박치기 기대 발동 = 공격당 1/Σ0.73^k(7번째 확정), 발동마다 0.65초 행동불능을 attack_uptime과 이벤트 rate에 반영(자기 오라 포함 공속 기준, 일시정지 동안 공격 쿨이 멈춘다고 봄) [추정].","L5 라분: 기본공격 250 스플래시는 2.323·2.305 툴팁 문구로 넣었다. 2.305 w3u에는 스플래시 필드가 없다 [추정]."],
+   "unmodeled":["박치기 단일 스토리 ×3(스토리 몹 없음).","2.305에서 박치기 단일 피해 주체는 플레이어 더미(yh), 0.65초 행동불능 중 위치 모델 사거리 처리 없음(유지율로만 근사).","스플래시 250: 2.305 w3u에 스플래시 필드가 없다 — 툴팁 문구로 넣음."],
+   "source_group":"docs/유닛_근거/x1.md"
+  },
+  {
+   "code":"L9",
+   "name":"루치",
+   "grade":"전설",
+   "focus":"마법 중심 · 단일",
+   "url":"https://ordr.kr/character/L9",
+   "forms":[
+    {"rawcode":"h02R","attack":28001.5,"aps":7.596154124779119,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"cooldown":0.5199999809265137,"range":500,"note":"수정내역 27 [2.305 기준]: w3u h02R ua1b 6250, 1d2(평균 1.5), ua1c 0.52, ua1r 500, siege, missile(스플래시 없음), upgr R000 (gba1 1.95, gmo1 0.05, gba2 7250, gmo2 725, 21단계) → 공격력 6250+1.5+7250+20×725 = 28,001.5, 공속 (1+2.95)/0.52 = 7.5962. 65라 단일 테스터(engine_single_v3.mjs SINGLE_UNITS L9: attack 28002, aps 7.5962, siege)와 같은 값."}
+   ],
+   "events":[
+    {"code":"L9","index":"육왕건","rate":0.9115384949734943,"rate_kind":"공격당 0.12","parts":[["magic",100000.0,[],0.0]],"phase":null,"per_attack":true,"radius":315,"center":"target","source":"2.323 툴팁 수치 + 2.305 구조","note":"수정내역 27: 근거 [툴팁 L9] \"육왕건 :: 공격시 12% 확률로 ▶ 315범위 ▶ 10만 마법데미지\". [2.305 wNe j:82349-82378] AKA(1,100)<=12 → oCM 315범위 at 공격 대상 위치 10만 ×V6e(1,1) NORMAL·UNIVERSAL=마법(j:82363)."},
+    {"code":"L9","index":"육왕건 단일","rate":0.9115384949734943,"rate_kind":"육왕건과 같은 rate","parts":[["magic",517500.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","center":"target","source":"2.323 툴팁 수치 + 2.305 구조","note":"수정내역 27: 근거 [툴팁 L9] \"▶ 단일 적 34만 5,000(x1~2) 마법 데미지\". [2.305 j:82362] AyM(대상, 345000, V6e(1,2)) NORMAL·UNIVERSAL=마법, 보스 포함. x1~2 기대값 1.5 → 51만 7,500(단일 테스터와 같음)."},
+    {"code":"L9","index":"육왕건 라인 현재체력","rate":0.9115384949734943,"rate_kind":"육왕건과 같은 rate","parts":[["magic",0.0,[["current",0.34]],0.0]],"phase":null,"per_attack":true,"target":"single_line","center":"target","source":"2.323 툴팁 수치 + 2.305 구조","note":"수정내역 27: 근거 [툴팁 L9] \"▶ 대상이 라인몬스터일 경우 현재체력 34%의 추가 마법 데미지\" (ORDR 패치 2.310 \"라인몹대상 현재 체력비례 30% 폭발 데미지 -> 34% 마법 데미지\"). [2.305 j:82365-82369] 대상이 A902(보스)·A911·A903(광폭)·A904가 아닐 때만 → single_line(광폭 제외). 단일 테스터의 hp*=1-.34*MAGIC와 같은 규칙."},
+    {"code":"L9","index":"육식","rate":1.1394231187168677,"rate_kind":"공격당 0.15","parts":[["magic",250000.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","center":"target","stun":{"normal":0.6,"hero":0.3,"single":true},"source":"2.323 툴팁 수치 + 2.305 구조","note":"수정내역 27: 근거 [툴팁 L9] \"육식 Lv4 :: 공격시 15% 확률로 단일 적 25만 마법데미지 ▶ 스턴 0.6초\". [2.305 w3a A0AB] AHbh Hbh1 15, Hbh3 250000, adur 0.6 / ahdu 0.3. 2.305는 배쉬 추가 피해(물리)지만 2.323 툴팁 '마법'과 단일 테스터를 따라 마법."}
+   ],
+   "assumptions":["L9 루치: 육식 피해 타입은 2.323 툴팁(마법), 2.305 AHbh 구조로는 물리 추가 피해다."],
+   "unmodeled":["2.300 이전 '육왕건 10% 여진' 버그(수정됨) — 해당 없음."],
+   "source_group":"docs/유닛_근거/x1.md"
+  },
+  {
+   "code":"L37",
+   "name":"후지토라",
+   "grade":"전설",
+   "focus":"마법·물리 혼합 · 스턴 · 이감",
+   "url":"https://ordr.kr/character/L37",
+   "forms":[
+    {"rawcode":"h031","attack":226851.0,"aps":3.326315831213447,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8},"cooldown":0.949999988079071,"range":625,"note":"수정내역 27 [2.305 기준]: w3u h031 ua1b 200000, 1d1(평균 1), ua1c 0.95, ua1r 625, siege, missile(스플래시 없음), upgr R01X (gba1 0.76, gmo1 0.07, gba2 9850, gmo2 850, 21단계; A05L 툴팁 '공격력 증가폭 850, 기본 공속 76%, 증가폭 7%') → 공격력 200000+1+9850+20×850 = 226,851, 공속 (1+0.76+1.40)/0.95 = 3.3263. 라운드 계수 siege."}
+   ],
+   "events":[
+    {"code":"L37","index":"중력검","rate":0.46568421636988266,"rate_kind":"공격당 0.14","parts":[["magic",192500.0,[],0.0]],"phase":null,"per_attack":true,"radius":450,"center":"target","stun":{"normal":2.4,"hero":0.58,"single":false},"source":"2.323 툴팁 수치 + 2.305 구조","note":"수정내역 27: 근거 [툴팁 L37] \"중력검 :: 공격시 14% 확률로 ▶ 450범위 ▶ 19만 2,500 마법데미지 ▶ 단일 적 2.5배의 추가 물리데미지 ▶ 해당 범위 2.4초 스턴 ▶ 해당 범위 마법방어력 1% 감소\" [2.305 ufe j:80237-80274] AKA(1,100)<=14 → 더미 e05X(A15T AUin aare 450, adur 2.4 / ahdu 0.58) dreadlordinferno at 공격 대상 위치, GroupEnum 450 at 대상 위치 → PEA(j:38715-38718): 19.25만 NORMAL·UNIVERSAL=마법 + bne(+1, A04Q 레벨)."},
+    {"code":"L37","index":"중력검 단일","rate":0.46568421636988266,"rate_kind":"중력검과 같은 rate","parts":[["physical",481250.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","center":"target","source":"2.323 툴팁 수치 + 2.305 구조","note":"수정내역 27: 근거 [툴팁 L37] \"▶ 단일 적 2.5배의 추가 물리데미지\" = 19.25만×2.5. [2.305 j:80250] AyM(대상, 481250) CHAOS·NORMAL=물리, 보스·광폭 포함(분기 없음)."}
+   ],
+   "enemy_slow_auras":[{"id":"A05K","value":0.25,"range":850,"note":"2.323 버프 \"이동속도 감소 25%\" (ORDR 패치 2.300 24%→25%), 2.305 w3a A05K AOae Oae1 −0.25, aare 850, atar enemies."}],
+   "team_effects":{"magic_cut_levels":1,"note":"수정내역 27: [툴팁 L37] \"▶ 해당 범위 마법방어력 1% 감소\". [2.305 PEA j:38717] 중력검에 맞은 적마다 bne(+1) = A04Q 레벨 +1, 발동마다 누적(A04Q 최대 36레벨). 엔진 team_effects는 조합 전체 상수라 1회분(1레벨)만 넣었다. v3_effects EFFECTS에 없는 항목(코드 L37_CUT 제안)."},
+   "assumptions":["L37 후지토라: 중력검 마방 −1%는 발동마다 맞은 적에게 누적되지만 1회분(1레벨)만 조합 전체에 적용."],
+   "unmodeled":["중력검 마방 −1%의 발동마다 누적(대상별 A04Q 레벨 +1, 최대 36): 엔진은 조합 상수 1레벨만."],
+   "source_group":"docs/유닛_근거/x1.md"
+  },
+  {
+   "code":"H6",
+   "name":"모비딕호",
+   "grade":"히든",
+   "focus":"이감 보조(평타만)",
+   "url":"https://ordr.kr/character/H6",
+   "forms":[
+    {"rawcode":"h03Q","attack":43003.5,"aps":2.7692308708055524,"attack_type":"hero","splash":0,"splash_radius":0,"rounds":{"60":1.05,"61":1.05,"62":1.05,"63":1.05,"64":1.05,"65":1.05},"cooldown":1.2999999523162842,"range":650,"note":"수정내역 27 [2.305 기준]: w3u h03Q ua1b 27777, 1d2(평균 1.5), ua1c 1.3, ua1r 650, ua1t hero, missile, upgr R001 (gba1 1.6, gmo1 0.05, gba2 725, gmo2 725, 21단계) → 공격력 27777+1.5+725+20×725 = 43,003.5, 공속 (1+2.6)/1.3 = 2.7692. A0C0(Aroc, aare 650, Efk1 피해 0, Efk3 3; 2.305 툴팁 '기본 공격시 5명의 적 동시 공격')은 넣지 않았다(unmodeled). 라운드 계수 hero."}
+   ],
+   "events":[
+   ],
+   "enemy_slow_auras":[{"id":"A0C1","value":0.4,"range":925,"note":"2.323 버프 \"이동속도 감소 40%\", 2.305 w3a A0C1 '흰수염의 전언' AOae Oae1 −0.4, aare 925, atar enemies."}],
+   "assumptions":["H6 모비딕호: 2.305에 공격 트리거가 없다(aGM 등록 없음, j:90895-90997 확인). 피해는 평타만, 다중 공격(A0C0)은 미적용."],
+   "unmodeled":["A0C0 해적선 다중 공격(2.305 툴팁 5명, w3a Efk3 3, Efk1 피해 0): WC3 Aroc 다중 대상 피해 규칙 미확인, 2.323 카드에 없음.","A0C2 아군 체력 재생 1.25(800): 시뮬레이터에 아군 체력 없음."],
+   "source_group":"docs/유닛_근거/x1.md"
+  },
+  {
+   "code":"H9",
+   "name":"방주맥심",
+   "grade":"히든",
+   "focus":"마법 중심 · 마방깎·폭발 증폭",
+   "url":"https://ordr.kr/character/H9",
+   "forms":[
+    {"rawcode":"h03X","attack":35226.5,"aps":5.62500012572855,"attack_type":"normal","splash":0,"splash_radius":0,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1},"cooldown":0.6399999856948853,"range":700,"note":"수정내역 27 [2.305 기준]: w3u h03X ua1b 20000, 1d2(평균 1.5), ua1c 0.64, ua1r 700, ua1t normal, missile, umpm 150, umpr 미설정(재생 0), upgr R001 (gba1 1.6, gmo1 0.05, gba2 725, gmo2 725) → 공격력 20000+1.5+725+20×725 = 35,226.5, 공속 (1+2.6)/0.64 = 5.6250. A0BH(Aroc, Efk3 1, 2.305 툴팁 '기본 공격시 4명의 적 동시 공격')는 넣지 않았다. 라운드 계수 normal(Z2와 같음)."}
+   ],
+   "events":[
+    {"code":"H9","index":"뇌영","rate":0.03725165646177848,"rate_kind":"자원 150; 공격당 1+초당 0; 마나==150인 공격에 시전(그 공격은 마나 0) → 151공격마다 1회; 시작시 만충","parts":[["magic",2150000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"resource_cost":150,"radius":800,"center":"target","stun":{"normal":1.2,"hero":0.24,"single":false},"source":"2.323 툴팁 수치 + 2.305 구조","note":"수정내역 27: 근거 [툴팁 H9] \"마나 150소모, 800범위 215만 마법데미지 ▶ 해당 범위 1.2초 스턴 및 마법방어력 감소 10% + 폭발형 데미지 증폭 10%\" [2.305 LPe j:21965-22000] 마나==150이면 마나 0, 더미 e03P(A15D AUin aare 600, adur 1.2 / ahdu 0.24) dreadlordinferno at 공격 대상 위치, GroupEnum(600) at 대상 위치 → ETA(j:12753-12757): bne(+10 A04Q), fDe(+10 A11S), 215만 NORMAL·UNIVERSAL=마법. 아니면 마나 +1. 범위는 2.323 800(ORDR 패치 2.314 '뇌영 범위 600 -> 800')."}
+   ],
+   "team_effects":{"magic_cut_levels":10,"explosive_amp":0.1,"effects_codes":["H9","H9_EXP"],"note":"수정내역 27: [툴팁 H9] \"마법방어력 감소 10% + 폭발형 데미지 증폭 10%\". [2.305 ETA j:12753-12757] 뇌영에 맞은 적마다 A04Q +10, A11S +10 레벨(영구 누적, A04Q 최대 36 = +20). 뇌영이 약 27초마다 800범위라 1회분만 넣음(E9와 같은 처리). v3_effects.mjs EFFECTS의 H9(magicCut 10)·H9_EXP(explosiveAmp 10)와 같은 효과 — 영웅 team_effects로 넣으면 웹에서 두 체크박스를 함께 켜면 중복."},
+   "assumptions":["H9 방주맥심: 뇌영 rate = 공속/151(마나 150 충전 + 시전 공격 1회). 마방깎·폭발 증폭은 1회분 상수(누적 미반영).","H9 방주맥심: 2.305 쿠릉쿠릉 열매(A0BH: 14% 600범위 20만 마법 + 3초 이감 30%, LPe j:21988-21993)는 2.323 ORDR 카드에 없어 넣지 않았다."],
+   "unmodeled":["뇌영 마방깎·폭발 증폭의 대상별 영구 누적(+10/회, A04Q 최대 +20).","쿠릉쿠릉 열매(2.305 A0BH, 14% 600범위 20만 마법 + 이감 30% 3초 BHtc 계열 A0BV): 2.323 ORDR 카드에 없음 — 삭제 여부 미확인.","A0BH 다중 공격(2.305 툴팁 4명)."],
+   "source_group":"docs/유닛_근거/x1.md"
   }
  ],
  "rounds":{"60":[112921500,170,"normal"],"61":[123189783,176,"large"],"62":[128068400,171,"fort"],"63":[141582700,184,"large"],"64":[150652700,180,"hero"],"65":[147024700,181,"hero"]},

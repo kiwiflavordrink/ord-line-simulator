@@ -324,7 +324,7 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
 }
 // [수정 27] 마딜 상위 30명: 모두 숫자 결과, 팀 효과(마방깎·증폭), 체력 자원, 라인 대상 조건.
 {
-  const added=fullData.heroes.filter(h=>h.source_group);
+  const added=fullData.heroes.filter(h=>h.source_group?.startsWith('docs/마딜_근거'));
   assert.equal(added.length,30);
   for(const h of added)for(const pos of [false,true]){
     const r=simulateV2(fullData,[{code:h.code,count:1}],{positionModel:pos});
