@@ -17,6 +17,15 @@ export const SUPPORT_AURAS={
   L7:[{id:'L7',kind:'attack_pct',value:.25,targets:'all',note:'2.323 버프 "공격력 증가 25%"'}]
 };
 
+// Stuns of the hard-coded support units for the position model (2.323 tooltip numbers; hero
+// durations from the 2.305 dummy abilities, see docs/수정내역.md #17).
+export const SUPPORT_STUNS={
+  L7:[{on:'cast',radius:800,stun:{normal:3,hero:.6},note:'패기발산 "적 중심 800범위 ▶ 해당 범위 3초 스턴"'},
+    {on:'attack',chance:.12,stun:{normal:.6,hero:.3,single:true},note:'"공격시 12% 확률로 단일 적 8만 물리데미지 및 0.6초 스턴"'}],
+  L23:[{on:'attack',chance:.10,radius:525,stun:{normal:3,hero:.6},note:'바닷물 가두기 "공격시 10% 확률로 ▶ 525범위 ▶ 해당 범위 3초 스턴"'}],
+  D3:[{on:'attack',chance:.15,radius:500,stun:{normal:.95,hero:.19},note:'빙귀 "공격시 15% 확률로 ▶ 500범위 ▶ 해당 범위 0.95초 스턴"'}]
+};
+
 export const CONDITIONAL_UNITS={
   I8:{name:'스코퍼가반 불멸',attack:407502,aps:17.916666558,attackType:'pierce',
     url:'https://ordr.kr/character/I8'},
@@ -375,6 +384,14 @@ export function simulateV2(data,composition,options={}){
           }
         }
         if(cast&&u.ab&&u.code==='D3')for(const m of aoeTargets)if(m.hp>0)abAdd(m,s.abCast*hit(m));
+        if(posModel&&target&&u.damage)for(const [k,sk] of (SUPPORT_STUNS[u.code]??[]).entries()){
+          const bank=u.ccBank??={};
+          bank[k]=(bank[k]??0)+(sk.on==='cast'?(cast?1:0):s.aps*sk.chance*.1);
+          while(bank[k]>=1-1e-9){
+            bank[k]-=1;
+            for(const m of sk.stun.single?[target]:[...mobs,...specials].filter(m=>dist(m,target)<=sk.radius))if(m.hp>0)applyStun(m,sk.stun);
+          }
+        }
       }
 
       for(const u of units){
@@ -508,7 +525,8 @@ export function simulateV2(data,composition,options={}){
         if(u.kind!=='conditional')continue;
         const spec=u.model,attacks=spec.aps*.1;
         u.attackBank+=attacks;
-        const normal=mobs.find(m=>m.hp>0),single=normal??specials.find(s=>s.hp>0);
+        const inReach=m=>m.hp>0&&(!posModel||dist(m,spawnPt)<=lp.support_range);
+        const normal=mobs.find(inReach),single=normal??specials.find(inReach);
         if(u.code==='I8'){
           while(u.attackBank>=1-1e-9){
             u.attackBank-=1;
@@ -525,6 +543,8 @@ export function simulateV2(data,composition,options={}){
             const proc=(8_750_000*1.25+(single.kind==='line'?.2*single.maxhp:0))*pf(armor(single,extraArmor));
             deal(single,.0425*proc,u.code,'single','physical');
             deal(single,.45*350_000*pf(armor(single,extraArmor)),u.code,'single','physical');
+            // 타격 45%: single 3 s stun (hero 1.5 s, 2.305 bash ratio 0.5) in the position model.
+            if(posModel){u.stunBank=(u.stunBank??0)+.45;if(u.stunBank>=1){u.stunBank-=1;applyStun(single,{normal:3,hero:1.5});}}
             if(u.energy>=45&&globalT+1e-8>=u.nextCast){
               // 참격: 일반 50% / 보스 10% (frenzy mobs are neither boss nor story, so 일반).
               deal(single,(single.kind==='boss'?.1:.5)*single.maxhp,u.code,'single','fixed');
