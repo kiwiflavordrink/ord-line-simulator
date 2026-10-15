@@ -1,7 +1,7 @@
 // Focused checks for v3 calculation fixes. Each block names the change in docs/수정내역.md.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {simulateV2} from './dist/engine_v3.mjs';
+import {simulateV2,alabastaEvents} from './dist/engine_v3.mjs';
 import {simulateSingle,singleConditions,SINGLE_MOB} from './dist/engine_single_v3.mjs';
 
 const fullData=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
@@ -239,4 +239,24 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.deepEqual([singleConditions(fullData,{gorosei:'새턴'}).attackPct,singleConditions(fullData,{gorosei:'새턴'}).explosive],[-.2,-.07]);
   assert.equal(singleConditions(fullData,{difficulty:'지옥',gorosei:'새턴'}).gorosei,'없음');
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오: passed');
+// [수정 21] E6 비비 영원: 알라바스타 레벨, 랜덤 대상, 보스·광폭 전용 수치, 공격 가동률, 이동사격.
+{
+  const e6=fullData.heroes.find(h=>h.code==='E6');
+  assert.equal(e6.forms[0].attack,187001);assert.equal(e6.own_range,true);
+  // Level 10 rebuilt from level_formula equals the stored default parts.
+  const mob={maxhp:1e8,hp:6e7};
+  const tot=parts=>parts.reduce((a,[,f,p,mul=0])=>a+f+p.reduce((b,[bs,r])=>b+r*(bs==='max'?mob.maxhp:bs==='current'?mob.hp:mob.maxhp-mob.hp),0),0);
+  alabastaEvents(e6,10).forEach((e,i)=>assert.ok(Math.abs(tot(e.parts)-tot(e6.events[i].parts))<1e-3));
+  const idx=L=>alabastaEvents(e6,L).map(e=>e.index);
+  assert.ok(!idx(4).includes('이동사격')&&!idx(6).includes('헤드샷 강화 라인')&&idx(7).includes('헤드샷 강화 라인'));
+  assert.ok(!alabastaEvents(e6,10,false).some(e=>e.index==='이동사격'));
+  assert.ok(alabastaEvents(e6,10,false).find(e=>e.index==='3연사 라인').rate<e6.events.find(e=>e.index==='3연사 라인').rate);
+  const killed=o=>simulateV2(fullData,[{code:'E6'}],o).totalLineKilled;
+  assert.ok(killed({e6AlabastaLevel:10})>killed({e6AlabastaLevel:5})&&killed({e6AlabastaLevel:5})>killed({e6AlabastaLevel:1}));
+  // Random picks spread damage over every living enemy (no coverage): a lower coverage does not reduce 난사.
+  const nansaOnly=structuredClone(fullData),h=nansaOnly.heroes.find(x=>x.code==='E6');
+  h.events=h.events.filter(e=>e.index==='난사');h.alabasta=null;
+  const d=o=>simulateV2(nansaOnly,[{code:'E6'}],o).sourceDamage.E6;
+  assert.ok(d({})>0&&Math.abs(d({coverage:.5})-d({}))<1e-6*d({}));
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6: passed');

@@ -53,6 +53,33 @@ const typeFor=(type,round,data)=>typeMatrix[type]?.[data.rounds[String(round)][2
 const clamp=(x,min,max)=>Math.min(max,Math.max(min,Number.isFinite(+x)?+x:min));
 const abAdd=(m,n)=>{m.ab=Math.min(75,m.ab+n);};
 const SINGLE_TARGETS=new Set(['single','single_line','target_special','boss','frenzy']);
+// E6 알라바스타 건 level (hero.alabasta): data events hold the default level; level_formula rebuilds parts for
+// another level. per_level parts are multiplied by the level; per_hit parts by the hit count (hits_by_level
+// raises it from that level on); level_mul scales the line parts by (1 + k x level); min_level drops the
+// event below that level. Without 이동사격 (option off or level < 5) the 3연사/웨스턴 rates use
+// rate_without_move_shot and 이동사격 itself is dropped (docs/수정내역.md 21).
+const scaleParts=(parts,k)=>parts.map(([kind,flat,perc,mul=0])=>[kind,flat*k,perc.map(([b,r])=>[b,r*k]),mul*k]);
+export function alabastaEvents(hero,level,moveShot=true){
+  const a=hero.alabasta;if(!a)return hero.events;
+  const L=Math.round(clamp(level??a.default,a.min,a.max)),shot=moveShot&&L>=5;
+  const out=[];
+  for(const e of hero.events){
+    const lf=e.level_formula;
+    if(lf?.min_level&&L<lf.min_level)continue;
+    if(e.index==='이동사격'&&!shot)continue;
+    const ev={...e};
+    if(!shot&&e.rate_without_move_shot!=null)ev.rate=e.rate_without_move_shot;
+    if(lf?.per_hit_parts||lf?.per_hit_parts_per_level){
+      let hits=lf.hits;for(const [lv,h] of Object.entries(lf.hits_by_level??{}))if(L>=Number(lv))hits=h;
+      ev.parts=scaleParts([...(lf.per_hit_parts??[]),...scaleParts(lf.per_hit_parts_per_level??[],L)],hits);
+    }else if(lf?.parts||lf?.parts_per_level){
+      ev.parts=[...(lf.parts??[]),...scaleParts(lf.parts_per_level??[],L)];
+      if(lf.level_mul)ev.parts=scaleParts(ev.parts,1+lf.level_mul*L);
+    }
+    out.push(ev);
+  }
+  return out;
+}
 const isSummon=e=>/완두콩|백설콩|먹깨비|파견 해군|거인족|부유물|릴리스|아틀라스|요크/.test(String(e.index));
 
 // Resource modes: 'start' = full mana once at the start of round 60 (2.305 has no
@@ -112,7 +139,11 @@ export function simulateV2(data,composition,options={}){
   const units=[];
   for(const item of composition){
     const count=clamp(Math.floor(item.count??1),1,6);
-    if(heroMap.has(item.code))for(let i=0;i<count;i++)units.push({kind:'hero',code:item.code,model:heroMap.get(item.code),damage:item.damage!==false});
+    if(heroMap.has(item.code)){
+      const model=heroMap.get(item.code);
+      const events=model.alabasta?alabastaEvents(model,options.e6AlabastaLevel,options.e6MoveShot!==false):model.events;
+      for(let i=0;i<count;i++)units.push({kind:'hero',code:item.code,model,events,damage:item.damage!==false});
+    }
     else if(SUPPORTS[item.code])for(let i=0;i<count;i++)units.push({kind:'support',code:item.code,model:{...SUPPORTS[item.code],aps:allyAps(SUPPORTS[item.code].aps,BASE_COOLDOWN[item.code])},damage:item.damage!==false,ab:item.ab!==false});
     else if(DELETERS[item.code])for(let i=0;i<count;i++)units.push({kind:'deleter',code:item.code,model:DELETERS[item.code],damage:item.damage!==false,nextAttack:1/(DELETERS[item.code].aps||1),nextReady:0});
     else if(CONDITIONAL_UNITS[item.code])for(let i=0;i<count;i++)units.push({kind:'conditional',code:item.code,
@@ -390,7 +421,7 @@ export function simulateV2(data,composition,options={}){
         if(u.kind!=='hero'||!u.damage)continue;
         const hero=u.model,form=formAt(hero,globalT,t,resourceMode).form;
         const attack=heroAttack(u,form);
-        for(const e of hero.events)if(e.on_spawn&& (summons||!isSummon(e))){
+        for(const e of u.events)if(e.on_spawn&& (summons||!isSummon(e))){
           deal(newMob,e.on_spawn*eventDamage(e,newMob,attack,extraArmor),hero.code,'area','mixed');
           if(e.ab&&newMob.hp>0)abAdd(newMob,e.ab*e.on_spawn);
           if(e.armor_debuff&&newMob.hp>0)applyDebuff(newMob,e.armor_debuff,e.on_spawn);
@@ -488,11 +519,13 @@ export function simulateV2(data,composition,options={}){
         const attack=heroAttack(u,form);
         if(target){
           const crit=critEV(form.crit);
-          deal(target,attack*crit*critEV(form.target_crit)*aps*form.rounds[String(target.round)]*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
+          // attack_uptime: share of time the hero attacks (E6 난사 channels 1.27 s per cast).
+          const up=hero.attack_uptime??1;
+          deal(target,attack*crit*critEV(form.target_crit)*aps*up*form.rounds[String(target.round)]*pf(armor(target,extraArmor))*.1,u.code,'basic','physical');
           if(form.splash)for(const m of mobs)if(m!==target&&(!posModel||dist(m,target)<=form.splash_radius))
-            deal(m,attack*crit*aps*form.rounds[String(m.round)]*pf(armor(m,extraArmor))*form.splash*.1*cov,u.code,'area','physical');
+            deal(m,attack*crit*aps*up*form.rounds[String(m.round)]*pf(armor(m,extraArmor))*form.splash*.1*cov,u.code,'area','physical');
         }
-        for(const e of hero.events){
+        for(const e of u.events){
           if(!summons&&isSummon(e))continue;
           if(e.phase==='trans'&&!transformed||e.phase==='base'&&transformed||e.phase==='giant'&&!giant||e.phase==='nongiant'&&giant)continue;
           let rate=e.rate*(e.per_attack?aps/baseAps:1);
@@ -519,12 +552,17 @@ export function simulateV2(data,composition,options={}){
             case 'line':targets=mobs;break;
             case 'special':targets=specials;break;
             case 'line_or_frenzy':targets=[...mobs,...specials.filter(s=>s.kind==='frenzy')];break;
+            // 'random': picks independent draws (with replacement) among living enemies, in the position model
+            // only those within pick_range of the hero; expected share per enemy = picks / count, no coverage.
+            case 'random':targets=[...mobs,...specials].filter(m=>m.hp>0&&(!posModel||dist(m,spawnPt)<=(e.pick_range??engageRange)));break;
             default:targets=[...mobs,...specials];
           }
-          if(posModel&&!single)targets=targets.filter(m=>m===target||dist(m,center)<=(e.radius??lp.default_radius));
+          const random=e.target==='random';
+          if(posModel&&!single&&!random)targets=targets.filter(m=>m===target||dist(m,center)<=(e.radius??lp.default_radius));
           for(const m of targets)if(m.hp>0){
-            const ev=e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
-            const share=rate*.1*(m===target||single?1:cov);
+            // boss_parts replace parts against a boss; nonline_parts against a boss or frenzy (E6 "보스").
+            const ev=e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
+            const share=random?rate*.1*(e.picks??1)/targets.length:rate*.1*(m===target||single?1:cov);
             deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
             // Armor break as an expected stack per step, like the supports (cap 75 in abAdd).
             if(m.hp>0&&e.ab)abAdd(m,e.ab*share);

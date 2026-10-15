@@ -135,7 +135,7 @@ function options(){const c=context();return {
   red:$('red-v2').checked,redDamage:$('red-v2').checked,fullResource:$('resource-v2').checked,summons:$('summons-v2').checked,
   frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
   tr19Plants:{pea:val('tr19-pea'),snow:val('tr19-snow'),muk:val('tr19-muk')},
-  buffTargets:buffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,
+  buffTargets:buffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,e6AlabastaLevel:val('e6-level'),e6MoveShot:$('e6-moveshot').checked,
   customMagic:{aps:val('magic-aps'),chance:val('magic-chance')/100,flat:val('magic-flat'),
     maxPct:val('magic-max')/100,currentPct:val('magic-current')/100,lostPct:val('magic-lost')/100},
   finisher:{mode:$('finish-mode').value,interval:val('finish-interval'),successChance:val('finish-chance')/100,
@@ -312,6 +312,8 @@ function restore(){
   $('position-v3').checked=params.get('position')==='1';
   if(params.get('armor')==='map')$('armor-model-v3').value='map';
   $('leo-v3').checked=params.get('leo')==='1';
+  if(params.has('e6'))$('e6-level').value=params.get('e6');
+  $('e6-moveshot').checked=params.get('e6shot')!=='0';
   if(['지옥','신','악몽'].includes(params.get('difficulty')))$('difficulty-v3').value=params.get('difficulty');
   for(const k of ['pea','snow','muk'])if(params.has('tr19'+k))$('tr19-'+k).value=params.get('tr19'+k);
   try{for(const [src,tgts] of Object.entries(JSON.parse(params.get('buffTargets')||'{}')))for(const t of data.heroes.map(h=>h.code))(buffState[src]??={})[t]=tgts.includes(t);}catch{}
@@ -331,6 +333,7 @@ function shareURL(){
   u.searchParams.set('position',$('position-v3').checked?'1':'0');
   u.searchParams.set('difficulty',$('difficulty-v3').value);
   u.searchParams.set('armor',$('armor-model-v3').value);u.searchParams.set('leo',$('leo-v3').checked?'1':'0');
+  u.searchParams.set('e6',$('e6-level').value);u.searchParams.set('e6shot',$('e6-moveshot').checked?'1':'0');
   for(const k of ['pea','snow','muk'])u.searchParams.set('tr19'+k,$('tr19-'+k).value);
   const bt=buffTargets();if(Object.keys(bt).length)u.searchParams.set('buffTargets',JSON.stringify(bt));
   for(const e of document.querySelectorAll('.amp-effect:checked'))u.searchParams.append('effect',e.value);
