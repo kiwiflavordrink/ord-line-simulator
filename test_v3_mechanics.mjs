@@ -76,4 +76,12 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const tr22=simulateV2(data,[{code:'TR22'}],{}),flat=simulateV2(strip('TR22',['ab_scaling']),[{code:'TR22'}],{});
   assert.ok(tr22.sourceDamage.TR22>flat.sourceDamage.TR22);
 }
-console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds, boss lines, hero armor break: passed');
+// [수정 6a·6b] 공격력 오라 가산, 절대쿨·자원 발동률.
+{
+  const h=c=>data.heroes.find(x=>x.code===c),ev=(c,i)=>h(c).events.find(e=>e.index===i);
+  assert.equal(h('I11').attack_aura,-0.75);
+  assert.ok(Math.abs(ev('I3','6').rate-1/(3.5+1/(0.025*h('I3').forms[0].aps)))<1e-12);
+  assert.ok(Math.abs(ev('Z6','1').rate-(h('Z6').forms[0].aps*(1+5/3)+10/8)/55)<1e-12);
+  assert.equal(ev('TR6','2').phase,'trans');
+}
+console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds, boss lines, hero armor break, auras and rates: passed');

@@ -26,7 +26,7 @@
     {"rawcode":"h08Q","attack":504446.0,"aps":0.8555555641651152,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
    ],
    "events":[
-    {"code":"Z6","index":"1","rate":0.015555555712093005,"rate_kind":"자원 55; 공격당 1+초당 0; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",0.0,[["lost",0.1]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 10. 근거 \"해당 범위 3초 스턴, 아머브레이크 10\"","ab":10},
+    {"code":"Z6","index":"1","rate":0.06420875462618741,"rate_kind":"자원 55; 공격당 1+3타마다 5+8초마다 10; 시작시 만충","parts":[["magic",2500000.0,[],0.0],["physical",0.0,[["lost",0.1]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 10. 근거 \"해당 범위 3초 스턴, 아머브레이크 10\" / 수정내역 6b: rate 0.0156→0.0642. 근거 \"기본 공격 3회 적중시 발동 … 마나 5 획득\", \"… 마나 10 획득(절대쿨타임 8초)\"","ab":10},
     {"code":"Z6","index":"3","rate":0.2851851880550384,"rate_kind":"공격당 0.333333","parts":[["physical",0.0,[],5.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"Z6","index":"4","rate":0.125,"rate_kind":"8초마다","parts":[["physical",3500000.0,[],0.0],["physical",0.0,[["lost",0.06]],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""}
    ],
@@ -41,9 +41,9 @@
     {"rawcode":"h07I","attack":147501.5,"aps":4.754098185654198,"attack_type":"siege","splash":0,"splash_radius":0,"rounds":{"60":1,"61":0.75,"62":1.25,"63":0.75,"64":0.8,"65":0.8}}
    ],
    "events":[
-    {"code":"Z8","index":"1","rate":5.348360458860973,"rate_kind":"공격당 1.125","parts":[["physical",100000.0,[],0.75]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"Z8","index":"1","rate":2.0612343297974927,"rate_kind":"초당 2.85/17회 발동 × 1.5초 × 최대 공속 5/0.61","parts":[["physical",100000.0,[],0.75]],"phase":null,"per_attack":false,"source":"2.323 툴팁 수치 + 2.305 공속 상한 구조","note":"수정내역 6b: rate 5.3484→2.0612. 근거 \"체력 35 이상일 때 공격시 15% 확률로 체력 17 소모, 1.5초간 공격속도 최대 … 공격시마다 415범위\", \"◎ 체력 재생 2.85\". 체력 재생이 발동을 제한(초당 2.85/17회). 최대 공속은 2.305 w3u h07I ua1c 0.61과 WC3 공속 상한 +400%로 5/0.61"},
     {"code":"Z8","index":"3","rate":0.6655737459915877,"rate_kind":"공격당 0.14","parts":[["magic",375000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"Z8","index":"4","rate":0,"rate_kind":"신규 몹당 0.2 확률","parts":[["physical",450000.0,[],0.0]],"on_spawn":0.2,"source":"2.323 툴팁 수기","note":"수정내역 5: ab 6. 근거 \"스킬 발동시 아머브레이크 6\"","ab":6}
+    {"code":"Z8","index":"4","rate":0,"rate_kind":"신규 몹당 0.2 확률","parts":[["physical",450000.0,[],0.0],["physical",4500000.0,[],0.0]],"on_spawn":0.2,"source":"2.323 툴팁 수기","note":"수정내역 5: ab 6. 근거 \"스킬 발동시 아머브레이크 6\" / 수정내역 6b: 단일 450만 추가. 근거 \"500범위 45만 물리 데미지, 단일 적에게는 450만 물리 데미지\" (접근한 몹이 단일 대상)","ab":6}
    ],
    "url":"https://ordr.kr/character/Z8"
   },
@@ -122,7 +122,7 @@
     {"rawcode":"H0BO","attack":220502.0,"aps":5.6493508783092965,"attack_type":"normal","splash":1,"splash_radius":400,"rounds":{"60":1.25,"61":1,"62":0.75,"63":1,"64":1,"65":1}}
    ],
    "events":[
-    {"code":"TR6","index":"2","rate":0.3333333333333333,"rate_kind":"3초마다","parts":[["physical",1812500.0,[],0.0]],"phase":null,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR6","index":"2","rate":0.42857142857142855,"rate_kind":"변신 1회당 3틱 (변신 7초 동안 분산)","parts":[["physical",1812500.0,[],0.0]],"phase":"trans","source":"2.323 툴팁 수치 + 2.305 변신 시전 구조","note":"수정내역 6b: rate 0.3333(상시)→변신 중 0.4286. 근거 2.323 \"1초마다 초당 145만(x1~1.5) … 지속시간 3초\", 2.305 wts:18801 \"숲인간으로 변신후 삼림화 시전\""},
     {"code":"TR6","index":"3","rate":0.25892858359278503,"rate_kind":"공격당 0.05","parts":[["physical",937500.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR6","index":"4","rate":0.7767857507783551,"rate_kind":"공격당 0.15","parts":[["physical",875000.0,[],0.0],["magic",200000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""}
    ],
@@ -139,7 +139,7 @@
    "events":[
     {"code":"TR8","index":"1","rate":0.0715460546567541,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5312500.0,[["max",0.015]],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 5: ab 7. 근거 \"해당 범위 2.15초 스턴 ▶ 아머브레이크 7\"","ab":7},
     {"code":"TR8","index":"2","rate":2.0032895303891145,"rate_kind":"공격당 0.175","parts":[["magic",32500.0,[],0.0],["physical",32500.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR8","index":"3","rate":0.14309210931350821,"rate_kind":"공격당 0.0125","parts":[["magic",1235000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
+    {"code":"TR8","index":"3","rate":0.11443604336658013,"rate_kind":"공격당 0.0125, 절대쿨 1.75초","parts":[["magic",1235000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 6b: rate 0.1431→0.1144. 근거 \"기간트 개틀링 :: 공격시 1.25% 확률 … ▶ 1.75초의 절대쿨다운\""},
     {"code":"TR8","index":"2 단일 추가","rate":2.0032895303891145,"rate_kind":"공격당 0.175 / 공격 대상 단일 추가","parts":[["fixed",32500.0,[],2.5]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기 + 2.305 단일 대상 구조","target":"single","note":"수정내역 4a: 광폭 전용에서 공격 대상 전체(라인·보스·광폭)로. 근거 \"▶ 단일 적 기본 공격 피해량의 250% + 3만 2,500의 추가 고정데미지\""},
     {"code":"TR8","index":"1 단일 2배","rate":0.0715460546567541,"rate_kind":"자원 160; 공격당 1+초당 0; 시작시 만충","parts":[["magic",5312500.0,[["max",0.015]],0.0]],"phase":null,"per_attack":true,"initial":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 \"▶ 단일적에게는 2배의 마법데미지를 입힘\" (마나 160 스킬). 이벤트 1과 같은 피해를 공격 대상에 한 번 더"}
    ],
@@ -194,7 +194,7 @@
     {"code":"TR18","index":"3","rate":0.545454546070296,"rate_kind":"공격당 0.15","parts":[["fixed",350000.0,[],3.75]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR18","index":"6","rate":1.2727272741640239,"rate_kind":"공격당 0.35","parts":[["magic",215000.0,[],1.15]],"phase":"base","per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"TR18","index":"6T","rate":3.6363636404686397,"rate_kind":"공격당 1","parts":[["magic",215000.0,[],1.15]],"phase":"trans","per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"TR18","index":"7","rate":0.04175119621545936,"rate_kind":"자원 95; 공격당 1+초당 0.33; 시작시 만충","parts":[["magic",3750000.0,[],0.0],["physical",9000000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":""},
+    {"code":"TR18","index":"7","rate":0.04175119621545936,"rate_kind":"자원 95; 공격당 1+초당 0.33; 시작시 만충","parts":[["magic",3750000.0,[],0.0],["physical",10800000.0,[],0.0]],"phase":null,"per_attack":true,"initial":true,"source":"2.323 툴팁+2.305 자원 규칙","note":"수정내역 6b: 물리 900만→1080만. 근거 특강 신족 백사구 \"첫타 250만(x1~2) 마법 … 후속타 80만(x1~2) × 9 물리\"; 마법과 같이 x1~2 기대값 1.5 (80만×1.5×9)"},
     {"code":"TR18","index":"6 단일 추가","rate":1.2727272741640239,"rate_kind":"공격당 0.35","parts":[["magic",268750.0,[],1.4375]],"phase":"base","per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 미환인 \"▶ 단일 적은 125% 추가 피해를 입습니다.\". (21만 5,000 + 115%)×1.25"},
     {"code":"TR18","index":"6T 단일 추가","rate":3.6363636404686397,"rate_kind":"공격당 1","parts":[["magic",268750.0,[],1.4375]],"phase":"trans","per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 미환인 \"▶ 단일 적은 125% 추가 피해를 입습니다.\" (변신 중)"}
    ],
@@ -450,9 +450,9 @@
     {"code":"I3","index":"2","rate":7.413793106106033,"rate_kind":"공격당 1","parts":[["physical",0.0,[],1.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I3","index":"4","rate":0.3706896553053017,"rate_kind":"공격당 0.05","parts":[["magic",300000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
     {"code":"I3","index":"5","rate":0.5931034484884827,"rate_kind":"공격당 0.08","parts":[["magic",100000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"I3","index":"6","rate":0.18534482765265084,"rate_kind":"공격당 0.025","parts":[["physical",1750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":""},
-    {"code":"I3","index":"6 광폭 단일","rate":0.18534482765265084,"rate_kind":"공격당 0.025 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["max",0.18]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":"광폭 전용 유지. 근거 \"▶ 대상이 광폭화 유닛일 경우 전체체력 18%의 추가 물리데미지\""},
-    {"code":"I3","index":"6 단일 추가","rate":0.18534482765265084,"rate_kind":"공격당 0.025","parts":[["physical",787500.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 순속 \"▶ 단일 적 스킬 피해량의 45% 추가 물리데미지\". 140만×1.25×0.45"},
+    {"code":"I3","index":"6","rate":0.11241830067803857,"rate_kind":"공격당 0.025, 절대쿨 3.5초","parts":[["physical",1750000.0,[],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","note":"수정내역 6b: rate 0.1853→0.1124. 근거 \"순속 :: 공격시 2.5% 확률로 … (절대쿨다운 3.5초)\"; 1/(3.5 + 1/(0.025×공속))"},
+    {"code":"I3","index":"6 광폭 단일","rate":0.11241830067803857,"rate_kind":"공격당 0.025, 절대쿨 3.5초 / 광폭 전용 단일 추가","parts":[["physical",0.0,[["max",0.18]],0.0]],"phase":null,"per_attack":true,"source":"2.323 툴팁 수기","target":"frenzy","note":"광폭 전용 유지. 근거 \"▶ 대상이 광폭화 유닛일 경우 전체체력 18%의 추가 물리데미지\" / 수정내역 6b: rate 0.1853→0.1124. 근거 \"순속 :: 공격시 2.5% 확률로 … (절대쿨다운 3.5초)\"; 1/(3.5 + 1/(0.025×공속))"},
+    {"code":"I3","index":"6 단일 추가","rate":0.11241830067803857,"rate_kind":"공격당 0.025, 절대쿨 3.5초","parts":[["physical",787500.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 순속 \"▶ 단일 적 스킬 피해량의 45% 추가 물리데미지\". 140만×1.25×0.45 / 수정내역 6b: rate 0.1853→0.1124. 근거 \"순속 :: 공격시 2.5% 확률로 … (절대쿨다운 3.5초)\"; 1/(3.5 + 1/(0.025×공속))"},
     {"code":"I3","index":"타격","rate":1.1120689659159049,"rate_kind":"공격당 0.15","parts":[["physical",102500.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 \"공격시 15% 확률로 타격 ▶ 단일 적 0.6초 스턴 및 10만 2,500의 물리데미지\""},
     {"code":"I3","index":"4 단일 추가","rate":0.3706896553053017,"rate_kind":"공격당 0.05","parts":[["magic",200000.0,[],0.0]],"phase":null,"per_attack":true,"target":"single","source":"2.323 툴팁 수치 + 2.305 단일 대상 구조","note":"수정내역 4b. 근거 \"공격시 5% 확률로 (분신도 사용), 550범위 30만 마법데미지 ▶ 단일 적 추가 20만 마법데미지\""}
    ],
