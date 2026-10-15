@@ -1,7 +1,7 @@
 // Focused checks for v3 calculation fixes. Each block names the change in docs/수정내역.md.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {simulateV2,alabastaEvents,randomPicks} from './dist/engine_v3.mjs';
+import {simulateV2,alabastaEvents,randomPicks,stackVariant} from './dist/engine_v3.mjs';
 import {simulateSingle,singleConditions,SINGLE_MOB} from './dist/engine_single_v3.mjs';
 
 const fullData=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
@@ -353,4 +353,27 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   for(const pm of [false,true])for(const n of [1,3]){const r=simulateV2(fullData,[{code:'TR21',count:n}],{positionModel:pm});
     assert.ok(Object.values(r.sourceDamage).every(Number.isFinite)&&r.sourceDamage.TR21>0);}
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics: passed');
+// [수정 29] 전 유닛 등록: 모든 유닛이 두 모델에서 돈다, 영웅 방깎 오라(heroArmorCuts), 추가 스택(extra_stacks·rate_mul).
+{
+  const units=fullData.heroes.filter(h=>h.source_group?.startsWith('docs/유닛_근거'));
+  assert.ok(units.length>=170);
+  for(const h of units){
+    assert.ok(h.events.every(e=>/근거/.test(e.note)),h.code);
+    const r=simulateV2(fullData,[{code:h.code,count:1}],{positionModel:true,heroArmorCuts:true});
+    assert.ok(Number.isFinite(r.remaining)&&Object.values(r.sourceDamage).every(Number.isFinite),h.code);
+  }
+  // own_armor_cut adds to options.cut once per distinct hero (copies share one aura).
+  assert.equal(simulateV2(fullData,[{code:'L22',count:2}],{cut:0,heroArmorCuts:true}).cut,30);
+  assert.equal(simulateV2(fullData,[{code:'L22'},{code:'L24'}],{cut:0,heroArmorCuts:true}).cut,63);
+  assert.equal(simulateV2(fullData,[{code:'L22'}],{cut:0}).cut,0);
+  // TR24 버프 수: extra stack scales the 분신 rate on top of the 군함 백 level (rate_mul) and replaces parts.
+  const tr24=fullData.heroes.find(h=>h.code==='TR24');
+  const ev=(lv,ex)=>stackVariant(tr24,lv,ex).events.find(e=>e.index==='콤비네이션 분신 평타').rate;
+  const mul=(.05+.0023*22)/(.05+.0023*3);
+  assert.ok(Math.abs(ev('zero','max')/ev('zero',undefined)-mul)<1e-9);
+  assert.ok(Math.abs(ev('max','max')/ev('max',undefined)-mul)<1e-9);
+  // I5 불릿: stored data is the 30-charge (max) state; zero has fewer events' damage.
+  const i5=fullData.heroes.find(h=>h.code==='I5');
+  assert.equal(i5.stack.max,30);assert.deepEqual(i5.stack.variants.max,{});
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks: passed');

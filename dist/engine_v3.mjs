@@ -88,17 +88,29 @@ export function traitVariant(hero,want){
 // drops one) and replace any other hero field they carry (auras, forms, team_effects, attack_uptime …).
 // options.stackLevel picks the level for every hero, options.stackLevels {code: level} per hero; unset keeps the
 // stored data (which may sit between levels, e.g. one application of a per-enemy debuff).
-export function stackVariant(hero,level){
-  const v=hero.stack?.variants?.[level];
-  if(!v)return hero;
-  const events=[];
-  for(const e of hero.events){
-    const o=v.events?.[e.index];
-    if(o?.removed)continue;
-    events.push(o?{...e,...o}:e);
-  }
-  const out={...hero,events};
-  for(const [k,x] of Object.entries(v))if(!['events','note','options'].includes(k))out[k]=x;
+export function stackVariant(hero,level,extraLevels){
+  // hero.stack: the main user-set stack; hero.extra_stacks: further independent stacks (수정내역 29, e.g. TR24 버프 수
+  // on top of 군함 백). Their event overrides may scale a rate (rate_mul) instead of replacing it, so they combine
+  // with the main stack's rate. extraLevels: level per extra stack (array) or one level for all.
+  const apply=(h,v)=>{
+    if(!v)return h;
+    const events=[];
+    for(const e of h.events){
+      const o=v.events?.[e.index];
+      if(o?.removed)continue;
+      if(!o){events.push(e);continue;}
+      const {rate_mul,...rest}=o;
+      events.push({...e,...rest,...(rate_mul!=null?{rate:e.rate*rate_mul}:{})});
+    }
+    const out={...h,events};
+    for(const [k,x] of Object.entries(v))if(!['events','note','options'].includes(k))out[k]=x;
+    return out;
+  };
+  let out=apply(hero,hero.stack?.variants?.[level]);
+  (hero.extra_stacks??[]).forEach((st,i)=>{
+    const l=Array.isArray(extraLevels)?extraLevels[i]:extraLevels;
+    out=apply(out,st.variants?.[l]);
+  });
   return out;
 }
 export function alabastaEvents(hero,level,moveShot=true){
@@ -170,7 +182,9 @@ export function simulateV2(data,composition,options={}){
   const stackLevelOf=code=>['zero','half','max'].includes(options.stackLevels?.[code])?options.stackLevels[code]:
     ['zero','half','max'].includes(options.stackLevel)?options.stackLevel:null;
   const traitOf=code=>['on','off'].includes(options.traits?.[code])?options.traits[code]:['on','off'].includes(options.trait)?options.trait:null;
-  const heroMap=new Map(data.heroes.map(h=>[h.code,stackVariant(traitVariant(h,traitOf(h.code)),stackLevelOf(h.code))]));
+  // Extra stacks follow options.extraStackLevels[code] (level or array of levels), else the hero's stack level.
+  const extraLevelsOf=code=>options.extraStackLevels?.[code]??stackLevelOf(code);
+  const heroMap=new Map(data.heroes.map(h=>[h.code,stackVariant(traitVariant(h,traitOf(h.code)),stackLevelOf(h.code),extraLevelsOf(h.code))]));
   // Difficulty (data.difficulties: 2.305 structure, 2.323 common HP/regen) and 오로성 (data.gorosei, 2.323 values).
   // The legacy option warcury=true selects 워큐리. 지옥 has no 오로성.
   const diffName=['지옥','신','악몽'].includes(options.difficulty)?options.difficulty:'신';
