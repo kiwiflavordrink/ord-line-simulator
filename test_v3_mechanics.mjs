@@ -55,4 +55,12 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const weakBoss=probe('single',fixed,[['fixed',1,[],0]]),strongBoss=probe('single',fixed,[['fixed',1e9,[],0]]);
   assert.ok(strongBoss.checkpoints[0].specialKillSecond<(weakBoss.checkpoints[0].specialKillSecond??99));
 }
-console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds: passed');
+// [수정 4b] TR19 저격 보스 추가 피해: 보스 이벤트를 빼면 60라 보스 처치가 늦어진다.
+{
+  const without=structuredClone(data);
+  const h=without.heroes.find(x=>x.code==='TR19');h.events=h.events.filter(e=>e.target!=='boss');
+  const withBoss=simulateV2(data,[{code:'TR19'}],{}),noBoss=simulateV2(without,[{code:'TR19'}],{});
+  assert.ok(withBoss.checkpoints[0].specialKillSecond<(noBoss.checkpoints[0].specialKillSecond??99));
+  assert.ok(data.heroes.flatMap(x=>x.events).every(e=>e.target!=='single'||/근거/.test(e.note)));
+}
+console.log('V3 mechanics: resource clock, TR23 form, TR19 form, single-target kinds, boss lines: passed');
