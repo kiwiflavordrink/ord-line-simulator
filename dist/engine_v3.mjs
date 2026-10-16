@@ -664,6 +664,8 @@ export function simulateV2(data,composition,options={}){
         for(let i=1;i<ss.length;i++){const g=ss[i]-ss[i-1];H.gaps++;H.gapSum+=g;H.gapSq+=g*g;if(g<25)H.piled++;}
         // Stun leaks: share of in-zone mobs stunned now; a leak = an in-zone mob free (not stunned) for 1 s or more in a row.
         // A stun episode ends when a stunned mob is seen free; it leaked if the mob stays free 1 s or more.
+        // Leaving the range resets the record, so a mob coming back after a lap starts fresh.
+        for(const m of mobs)if(!inZone.includes(m)){m.inStun=false;m.wasStunned=false;m.freeRun=0;}
         for(const m of inZone){
           if((m.stunnedUntil??0)>now){H.stunned++;if(!m.inStun){m.inStun=true;H.episodes++;}m.freeRun=0;}
           else{H.free++;m.inStun=false;m.freeRun=(m.freeRun??0)+.5;if(m.freeRun===1&&m.wasStunned)H.leaks++;}
