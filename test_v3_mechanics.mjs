@@ -426,4 +426,13 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const r=simulateV2(fullData,[{code:'L13'}],{positionModel:true,controlOnly:['L13']});
   assert.equal(r.sourceDamage.L13??0,0);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs: passed');
+// [수정 33] 홀딩 진단: 풀이감만이면 생성 간격(0.5초 × 최저 이속 89 = 44.5)대로 고른 직선, 범위 스턴을 얹으면 겹침이 생긴다.
+{
+  const o={positionModel:true,red:false,redDamage:false,externalSlow:1.02,holding:{radius:600,noDefeat:true,window:[4,16]}};
+  const even=simulateV2(fullData,[{code:'H17',damage:false}],o).holding;
+  assert.ok(Math.abs(even.gapMean-44.5)<1&&even.gapCV<.01&&even.piled===0);
+  const stun=simulateV2(fullData,[{code:'L13'}],{...o,controlOnly:['L13']}).holding;
+  assert.ok(stun.inZone>even.inZone&&stun.piled>.2);
+  assert.equal(simulateV2(fullData,[{code:'L13'}],{}).holding,null);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe: passed');

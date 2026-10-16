@@ -505,6 +505,7 @@ export function simulateV2(data,composition,options={}){
     kind==='explosive'?1+Math.min(.25,explosiveAmp+(m.dbf?.explosive_amp??0)+(m.kind==='line'?normalOnlyExplosiveAmp:0))+(curse.explosive??0):1;
   // options.controlOnly [codes] (수정내역 32): those units deal no damage but keep stuns and slows (control evaluation).
   const controlOnly=new Set(options.controlOnly??[]);
+  const holdStat={samples:0,count:0,share:0,gaps:0,gapSum:0,gapSq:0,piled:0};
   const deal=(m,amount,source,scope,kind)=>{
     if(!m||m.hp<=0||!Number.isFinite(amount)||amount<=0||controlOnly.has(source))return;
     amount*=1+allAmp+(m.dbf?.all_amp??0);
@@ -550,6 +551,8 @@ export function simulateV2(data,composition,options={}){
     averageAb:mobs.length?mobs.reduce((a,m)=>a+m.ab,0)/mobs.length:0});
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
+    holding:holdStat.samples?(()=>{const H=holdStat,m=H.gaps?H.gapSum/H.gaps:0,v=H.gaps?H.gapSq/H.gaps-m*m:0;
+      return {radius:options.holding.radius??600,inZone:H.count/H.samples,share:H.share/H.samples,gapMean:m,gapCV:m?Math.sqrt(Math.max(0,v))/m:0,piled:H.gaps?H.piled/H.gaps:0};})():null,
     chosenBuffs:Object.fromEntries([...oneReceivers].map(([i,got])=>[`${units[i].code}#${units.slice(0,i).filter(x=>x.code===units[i].code).length}`,[...got].map(j=>units[j].code)])),
     finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,lowerCounts,
     justiceLog:Object.fromEntries(units.map((u,i)=>[u.code+'#'+i,u.justiceLog]).filter(x=>x[1])),
@@ -599,7 +602,7 @@ export function simulateV2(data,composition,options={}){
       }
       for(let i=mobs.length-1;i>=0;i--)if(mobs[i].hp<=0){mobs.splice(i,1);totalLineKilled++;}
       for(let i=specials.length-1;i>=0;i--)if(specials[i].hp<=0)specials.splice(i,1);
-      if(mobs.length+specials.length>=diff.defeat){
+      if(!options.holding?.noDefeat&&mobs.length+specials.length>=diff.defeat){
         timeline.push({second:globalT,count:mobs.length+specials.length,round});
         return result(false,round,+t.toFixed(1));
       }
@@ -649,6 +652,16 @@ export function simulateV2(data,composition,options={}){
       for(const m of mobs){const g=(regen+unitRegen(m.level??m.round))*.1;if(g)m.hp=Math.min(m.maxhp,m.hp+g);}
       for(const s of specials)s.hp=Math.min(s.maxhp,s.hp+((s.kind==='boss'?550000:frenzyRegen+unitRegen(s.round))+enemyRegen)*.1);
       if(posModel)for(const m of [...mobs,...specials])if(m.hp>0)move(m);
+      // options.holding {radius, noDefeat} (수정내역 33): every 0.5 s, line mobs within `radius` of the units (the main
+      // dealer's skill range): count, share of all line mobs, and how evenly they are spaced along the path (gap mean,
+      // coefficient of variation, share of gaps under 25 = piled on one spot). Even spacing = a held straight line.
+      if(posModel&&options.holding&&step%5===0&&globalT>=(options.holding.window?.[0]??0)&&globalT<=(options.holding.window?.[1]??1e9)){
+        const H=holdStat;const R=options.holding.radius??600;
+        const inZone=mobs.filter(m=>m.hp>0&&dist(m,spawnPt)<=R);
+        H.samples++;H.count+=inZone.length;H.share+=mobs.length?inZone.length/mobs.length:0;
+        const ss=inZone.map(m=>((m.s%pathLen)+pathLen)%pathLen).map(u=>u>pathLen/2?u-pathLen:u).sort((a,b)=>a-b);
+        for(let i=1;i<ss.length;i++){const g=ss[i]-ss[i-1];H.gaps++;H.gapSum+=g;H.gapSq+=g*g;if(g<25)H.piled++;}
+      }
       // Supports, Red Force and conditional units: engage range (default lp.engage_range), splash lp.support_splash.
       const globalTarget=pickTarget(engageRange);
       let target=globalTarget;
