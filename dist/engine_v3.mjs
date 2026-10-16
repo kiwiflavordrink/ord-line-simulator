@@ -505,7 +505,7 @@ export function simulateV2(data,composition,options={}){
     kind==='explosive'?1+Math.min(.25,explosiveAmp+(m.dbf?.explosive_amp??0)+(m.kind==='line'?normalOnlyExplosiveAmp:0))+(curse.explosive??0):1;
   // options.controlOnly [codes] (수정내역 32): those units deal no damage but keep stuns and slows (control evaluation).
   const controlOnly=new Set(options.controlOnly??[]);
-  const holdStat={samples:0,count:0,share:0,gaps:0,gapSum:0,gapSq:0,piled:0,stunned:0,free:0,leaks:0,episodes:0};
+  const holdStat={samples:0,count:0,share:0,gaps:0,gapSum:0,gapSq:0,piled:0,stunned:0,free:0,leaks:0,episodes:0,exits:0,dwell:0};
   const deal=(m,amount,source,scope,kind)=>{
     if(!m||m.hp<=0||!Number.isFinite(amount)||amount<=0||controlOnly.has(source))return;
     amount*=1+allAmp+(m.dbf?.all_amp??0);
@@ -553,7 +553,8 @@ export function simulateV2(data,composition,options={}){
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
     holding:holdStat.samples?(()=>{const H=holdStat,m=H.gaps?H.gapSum/H.gaps:0,v=H.gaps?H.gapSq/H.gaps-m*m:0;
       return {radius:options.holding.radius??600,inZone:H.count/H.samples,share:H.share/H.samples,gapMean:m,gapCV:m?Math.sqrt(Math.max(0,v))/m:0,piled:H.gaps?H.piled/H.gaps:0,
-        stunnedShare:H.stunned+H.free?H.stunned/(H.stunned+H.free):0,leakChance:H.episodes?H.leaks/H.episodes:0};})():null,
+        stunnedShare:H.stunned+H.free?H.stunned/(H.stunned+H.free):0,leakChance:H.episodes?H.leaks/H.episodes:0,
+        exitsPerMin:H.exits/(H.samples*.5/60),dwellMean:H.exits?H.dwell/H.exits:0};})():null,
     chosenBuffs:Object.fromEntries([...oneReceivers].map(([i,got])=>[`${units[i].code}#${units.slice(0,i).filter(x=>x.code===units[i].code).length}`,[...got].map(j=>units[j].code)])),
     finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,lowerCounts,
     justiceLog:Object.fromEntries(units.map((u,i)=>[u.code+'#'+i,u.justiceLog]).filter(x=>x[1])),
@@ -664,6 +665,13 @@ export function simulateV2(data,composition,options={}){
         for(let i=1;i<ss.length;i++){const g=ss[i]-ss[i-1];H.gaps++;H.gapSum+=g;H.gapSq+=g*g;if(g<25)H.piled++;}
         // Stun leaks: share of in-zone mobs stunned now; a leak = an in-zone mob free (not stunned) for 1 s or more in a row.
         // A stun episode ends when a stunned mob is seen free; it leaked if the mob stays free 1 s or more.
+        // Range exits (사용자 기준 "샘 = 범위 이탈"): a mob seen in range at the last sample and outside now has left;
+        // dwell = time from entering (or spawning) in range to leaving.
+        for(const m of mobs){
+          const inside=inZone.includes(m);
+          if(inside&&!m.inRange){m.inRange=true;m.enterT=now;}
+          else if(!inside&&m.inRange){m.inRange=false;H.exits++;H.dwell+=now-m.enterT;}
+        }
         // Leaving the range resets the record, so a mob coming back after a lap starts fresh.
         for(const m of mobs)if(!inZone.includes(m)){m.inStun=false;m.wasStunned=false;m.freeRun=0;}
         for(const m of inZone){

@@ -25,10 +25,13 @@ for(let i=0;i<STUN.length;i++)for(let j=i;j<STUN.length;j++){
   const rs=seeds.map(seed=>simulateV2(data,team,{...opt,controlOnly:Object.keys(cnt),deletion:{seed}}).holding);
   const a=k=>rs.reduce((x,r)=>x+r[k],0)/rs.length;
   rows.push({pair,procsPerSec:R,theoryFree:Math.exp(-S),theoryLeak:Math.exp(-R),theoryBossFree:Math.exp(-B),
-    simStunned:a('stunnedShare'),simLeak:a('leakChance'),inZone:a('inZone'),piled:a('piled')});
+    simStunned:a('stunnedShare'),simLeak:a('leakChance'),exitsPerMin:a('exitsPerMin'),dwell:a('dwellMean'),inZone:a('inZone'),piled:a('piled')});
 }
-rows.sort((a,b)=>a.simLeak-b.simLeak);
+rows.sort((a,b)=>a.exitsPerMin-b.exitsPerMin);
+const baseRs=seeds.map(seed=>simulateV2(data,[{code:slowUnit}],{...opt,controlOnly:[slowUnit],deletion:{seed}}).holding);
+const baseline={exitsPerMin:baseRs.reduce((x,r)=>x+r.exitsPerMin,0)/baseRs.length,dwell:baseRs.reduce((x,r)=>x+r.dwellMean,0)/baseRs.length};
 const p=x=>(x*100).toFixed(0).padStart(3)+'%';
 console.log(`창 ${windowSec.join('~')}초, 시드 ${seeds.length}. 이감 ${name(slowUnit)} 포함. 시뮬: 스턴 유지 / 스턴 끝난 뒤 1초 이상 샐 확률 | 이론: 라인 샐 확률 e^-R, 라인 무스턴 시간, 보스·광폭 무스턴 시간`);
-for(const r of rows)console.log(`시뮬 유지${p(r.simStunned)} 샘${p(r.simLeak)} | 이론 샘${p(r.theoryLeak)} 무스턴${p(r.theoryFree)} 보스무스턴${p(r.theoryBossFree)} | 범위안 ${r.inZone.toFixed(1)} | ${r.pair.map(name).join(' + ')}`);
-if(out)writeFileSync(out,JSON.stringify({slowUnit,window:windowSec,seeds:seeds.length,rows},null,1)+'\n');
+console.log(`스턴 없음(${name(slowUnit)}만): 이탈 ${baseline.exitsPerMin.toFixed(1)}/분, 체류 ${baseline.dwell.toFixed(1)}초`);
+for(const r of rows)console.log(`이탈 ${r.exitsPerMin.toFixed(1).padStart(5)}/분 체류 ${r.dwell.toFixed(1).padStart(5)}초 | 유지${p(r.simStunned)} 샘${p(r.simLeak)} | 이론 샘${p(r.theoryLeak)} 무스턴${p(r.theoryFree)} 보스무스턴${p(r.theoryBossFree)} | 범위안 ${r.inZone.toFixed(1)} | ${r.pair.map(name).join(' + ')}`);
+if(out)writeFileSync(out,JSON.stringify({slowUnit,window:windowSec,seeds:seeds.length,baseline,rows},null,1)+'\n');
