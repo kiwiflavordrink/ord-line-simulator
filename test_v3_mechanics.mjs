@@ -433,6 +433,9 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(Math.abs(even.gapMean-44.5)<1&&even.gapCV<.01&&even.piled===0);
   const stun=simulateV2(fullData,[{code:'L13'}],{...o,controlOnly:['L13']}).holding;
   assert.ok(stun.inZone>even.inZone&&stun.piled>.2);
+  // Stun leaks: stunned share and the chance a stun episode ends with 1 s or more free; no stuns = 0.
+  assert.ok(stun.stunnedShare>0&&stun.stunnedShare<1&&stun.leakChance>=0&&stun.leakChance<=1);
+  assert.equal(even.stunnedShare,0);
   assert.equal(simulateV2(fullData,[{code:'L13'}],{}).holding,null);
 }
 console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe: passed');

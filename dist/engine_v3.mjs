@@ -505,7 +505,7 @@ export function simulateV2(data,composition,options={}){
     kind==='explosive'?1+Math.min(.25,explosiveAmp+(m.dbf?.explosive_amp??0)+(m.kind==='line'?normalOnlyExplosiveAmp:0))+(curse.explosive??0):1;
   // options.controlOnly [codes] (수정내역 32): those units deal no damage but keep stuns and slows (control evaluation).
   const controlOnly=new Set(options.controlOnly??[]);
-  const holdStat={samples:0,count:0,share:0,gaps:0,gapSum:0,gapSq:0,piled:0};
+  const holdStat={samples:0,count:0,share:0,gaps:0,gapSum:0,gapSq:0,piled:0,stunned:0,free:0,leaks:0,episodes:0};
   const deal=(m,amount,source,scope,kind)=>{
     if(!m||m.hp<=0||!Number.isFinite(amount)||amount<=0||controlOnly.has(source))return;
     amount*=1+allAmp+(m.dbf?.all_amp??0);
@@ -552,7 +552,8 @@ export function simulateV2(data,composition,options={}){
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
     holding:holdStat.samples?(()=>{const H=holdStat,m=H.gaps?H.gapSum/H.gaps:0,v=H.gaps?H.gapSq/H.gaps-m*m:0;
-      return {radius:options.holding.radius??600,inZone:H.count/H.samples,share:H.share/H.samples,gapMean:m,gapCV:m?Math.sqrt(Math.max(0,v))/m:0,piled:H.gaps?H.piled/H.gaps:0};})():null,
+      return {radius:options.holding.radius??600,inZone:H.count/H.samples,share:H.share/H.samples,gapMean:m,gapCV:m?Math.sqrt(Math.max(0,v))/m:0,piled:H.gaps?H.piled/H.gaps:0,
+        stunnedShare:H.stunned+H.free?H.stunned/(H.stunned+H.free):0,leakChance:H.episodes?H.leaks/H.episodes:0};})():null,
     chosenBuffs:Object.fromEntries([...oneReceivers].map(([i,got])=>[`${units[i].code}#${units.slice(0,i).filter(x=>x.code===units[i].code).length}`,[...got].map(j=>units[j].code)])),
     finisherAttempts,finisherKills,lineDamage,sourceDamage,deleteCounts,executeCounts,control,lowerCounts,
     justiceLog:Object.fromEntries(units.map((u,i)=>[u.code+'#'+i,u.justiceLog]).filter(x=>x[1])),
@@ -661,6 +662,13 @@ export function simulateV2(data,composition,options={}){
         H.samples++;H.count+=inZone.length;H.share+=mobs.length?inZone.length/mobs.length:0;
         const ss=inZone.map(m=>((m.s%pathLen)+pathLen)%pathLen).map(u=>u>pathLen/2?u-pathLen:u).sort((a,b)=>a-b);
         for(let i=1;i<ss.length;i++){const g=ss[i]-ss[i-1];H.gaps++;H.gapSum+=g;H.gapSq+=g*g;if(g<25)H.piled++;}
+        // Stun leaks: share of in-zone mobs stunned now; a leak = an in-zone mob free (not stunned) for 1 s or more in a row.
+        // A stun episode ends when a stunned mob is seen free; it leaked if the mob stays free 1 s or more.
+        for(const m of inZone){
+          if((m.stunnedUntil??0)>now){H.stunned++;if(!m.inStun){m.inStun=true;H.episodes++;}m.freeRun=0;}
+          else{H.free++;m.inStun=false;m.freeRun=(m.freeRun??0)+.5;if(m.freeRun===1&&m.wasStunned)H.leaks++;}
+          if(m.inStun)m.wasStunned=true;
+        }
       }
       // Supports, Red Force and conditional units: engage range (default lp.engage_range), splash lp.support_splash.
       const globalTarget=pickTarget(engageRange);
