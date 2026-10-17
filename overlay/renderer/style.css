@@ -1,0 +1,29 @@
+:root{--bg:rgba(12,14,20,.82);--card:rgba(255,255,255,.06);--fg:#e8ecf3;--muted:#9aa4b5;--ok:#5ad19a;--bad:#ff7a7a;--warn:#ffd166;--acc:#7cb8ff}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{margin:0;background:transparent;color:var(--fg);font:12px/1.45 "Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;overflow:hidden}
+#panel{position:absolute;inset:0;background:var(--bg);border:1px solid rgba(255,255,255,.12);border-radius:8px;overflow:auto;padding:0 8px 8px}
+header{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px 0;background:var(--bg);-webkit-app-region:drag;z-index:1}
+header .tools{-webkit-app-region:no-drag;display:flex;gap:2px}
+#status{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+button,select,input{font:inherit;color:var(--fg);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:1px 6px}
+button{cursor:pointer}button:hover{background:rgba(255,255,255,.16)}
+select option{background:#1b1f29}
+.card{background:var(--card);border-radius:6px;padding:6px 8px;margin-top:6px}
+h2{margin:0 0 4px;font-size:12px;color:var(--acc);display:flex;gap:6px;align-items:center}
+h2 select{max-width:220px}
+#settings label{display:flex;gap:6px;align-items:center;margin:4px 0}
+.path{color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl;text-align:left}
+.hint,.muted{color:var(--muted)}
+.big{font-size:20px;font-weight:700}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+table{border-collapse:collapse;width:100%}
+td,th{padding:1px 4px;text-align:left;white-space:nowrap}th{color:var(--muted);font-weight:400}
+td.num,th.num{text-align:right}
+.chips span{display:inline-block;background:rgba(255,255,255,.08);border-radius:3px;padding:0 5px;margin:1px 2px 1px 0}
+.add{display:flex;gap:4px;margin-bottom:4px}.add input{flex:1;min-width:0}
+.hand-row{display:flex;justify-content:space-between;align-items:center;padding:1px 0}
+.hand-row .n{display:flex;gap:2px;align-items:center}
+.click{cursor:pointer}.click:hover{color:var(--acc)}
+body.compact .full,body.compact #settings,body.compact #scenarioBar{display:none!important}
+body.through #panel{border-color:rgba(124,184,255,.35)}

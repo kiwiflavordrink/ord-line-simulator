@@ -15,13 +15,30 @@ export const SINGLE_UNITS=[
   {code:'L36',name:'핸콕 전설',role:'끝딜',aps:(1+2.95)/.76,attack:48751,type:'hero',source:'https://ordr.kr/character/L36'}
 ];
 const BY_CODE=new Map(SINGLE_UNITS.map(u=>[u.code,u]));
+// 2.305 base attack cooldowns (w3u ua1c), used only for the 나스쥬로 attack-speed penalty:
+// h02R L9 .52, h034 L16 .45, h03E L31 .57, h055 H13 .6, h07L H19 .7, h05S T1 .61, h033 L6 .88,
+// h044 H5 .67, h09V D6 1.15, h032 L36 .76.
+const SINGLE_COOLDOWN={L9:.52,L16:.45,L31:.57,H13:.6,H19:.7,T1:.61,L6:.88,H5:.67,D6:1.15,L36:.76};
+// Difficulty and 오로성 for the 65라 line mob (data.json difficulties/gorosei, docs/수정내역.md 19·20).
+// Returns the mob HP/armor and the allied penalties; the default (신, 없음) differs from SINGLE_MOB only by
+// the 2.323 common HP (+500만).
+export function singleConditions(data,{difficulty='신',gorosei='없음'}={}){
+  const diff=data.difficulties?.[difficulty]??data.difficulties['신'];
+  const curse=diff.gorosei?data.gorosei?.[gorosei]?.[difficulty]??{}:{};
+  const [hp,armor]=diff.rounds['65'];
+  return {difficulty,gorosei:diff.gorosei&&data.gorosei?.[gorosei]?gorosei:'없음',
+    hp:hp+diff.common.hp+(curse.line_hp??0),armor:armor+(curse.armor??0),
+    magicLevelShift:diff.magic_level-16-(curse.magic_levels??0),explosive:curse.explosive??0,
+    attackPct:curse.ally_attack??0,apsBonus:curse.ally_aps??0};
+}
 const hBuffAps=(1+2.95+.45)/.76;
 function rng(seed){let s=seed>>>0;return()=>{s+=0x6D2B79F5;let t=s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
 function hit(unit,hp,r,at,state,context){
+  const MAXHP=context.maxHp??SINGLE_MOB.hp;
   const MAGIC=context.magic*context.all;
   const PHYSICAL=(1/(1+.02*Math.max(0,context.armor)))*context.all;
-  const EXPLOSIVE=context.explosive*context.all;
-  const basic=unit.attack*TYPE[unit.type]*PHYSICAL;
+  const EXPLOSIVE=(context.explosive+(context.explosivePenalty??0))*context.all;
+  const basic=unit.attack*(1+(context.attackPct??0))*TYPE[unit.type]*PHYSICAL;
   hp-=basic;
   switch(unit.code){
     case 'L9':
@@ -57,8 +74,8 @@ function hit(unit,hp,r,at,state,context){
     case 'D6':hp-=100000*MAGIC;hp*=1-.11*EXPLOSIVE;break; // 2.323 ORDR card; patch history conflicts; elbow excluded
     case 'L36':{
       const active=at<state.buffUntil-1e-10;
-      if(active){hp-=.07*SINGLE_MOB.hp*EXPLOSIVE;hp-=(85000+1.25*basic)*MAGIC;}
-      else if(r()<.10){hp-=375000*MAGIC;hp-=.05*SINGLE_MOB.hp*EXPLOSIVE;}
+      if(active){hp-=.07*MAXHP*EXPLOSIVE;hp-=(85000+1.25*basic)*MAGIC;}
+      else if(r()<.10){hp-=375000*MAGIC;hp-=.05*MAXHP*EXPLOSIVE;}
       if(r()<.20)hp-=150000*1.05*PHYSICAL;
       if(!active&&r()<.08)state.buffUntil=at+.4;
       const remaining=Math.max(0,state.buffUntil-at);
@@ -82,34 +99,44 @@ function expand(team){
   return units;
 }
 function run(units,r,startHp,context){
-  let hp=startHp,to15=startHp<=.15*SINGLE_MOB.hp?0:null,to3=null,at=0;
+  const maxHp=context.maxHp??SINGLE_MOB.hp;
+  let hp=startHp,to15=startHp<=.15*maxHp?0:null,to3=null,at=0;
   const state=units.map(unit=>({next:1/unit.aps,buffUntil:0}));
   for(let attacks=0;hp>0&&attacks<12000;attacks++){
     let ix=0;for(let j=1;j<state.length;j++)if(state[j].next<state[ix].next)ix=j;
     const s=state[ix],unit=units[ix];at=s.next;
     if(to3===null&&at>3)to3=Math.max(0,hp);
     hp=hit(unit,hp,r,at,s,context);
-    if(to15===null&&hp<=.15*SINGLE_MOB.hp)to15=at;
+    if(to15===null&&hp<=.15*maxHp)to15=at;
   }
   if(hp>0)throw new Error('12000회 공격 안에 처치하지 못했습니다.');
   return {to15,kill:at,hpAt3:to3??0};
 }
-export function simulateSingle(team,{trials=3000,seed=202323,context={}}={}){
+export function simulateSingle(team,{trials=3000,seed=202323,context={},conditions=null}={}){
   context={magic:.95,all:1,explosive:1,armor:181,...context};
-  const units=expand(team);
+  let units=expand(team);
+  if(conditions){
+    // conditions = singleConditions(...): mob HP/armor replace 65라 신 181; A04Q level shift rescales the magic
+    // factor; 새턴 attack/explosive and 나스쥬로 aps (min(5, aps x cooldown + bonus) / cooldown) apply to units.
+    const level=context.level??16,shifted=Math.min(36,Math.max(1,level+conditions.magicLevelShift));
+    context={...context,maxHp:conditions.hp,armor:context.armor-SINGLE_MOB.armor+conditions.armor,
+      magic:context.magic*(.79+.01*shifted)/(.79+.01*level),explosivePenalty:conditions.explosive,attackPct:conditions.attackPct};
+    if(conditions.apsBonus)units=units.map(u=>({...u,aps:Math.max(.01,Math.min(5,u.aps*SINGLE_COOLDOWN[u.code]+conditions.apsBonus))/SINGLE_COOLDOWN[u.code]}));
+  }
   if(!Number.isInteger(trials)||trials<100||trials>20000)throw new Error('반복 횟수는 100~20,000회로 입력해 주세요.');
   if(!Number.isInteger(seed)||seed<0||seed>2147483647)throw new Error('시드는 0~2,147,483,647 범위로 입력해 주세요.');
   const r=rng(seed),result={to15:0,kill:0,remainingAt3:0,finishFrom15:0};
   for(let i=0;i<trials;i++){
-    const full=run(units,r,SINGLE_MOB.hp,context),finish=run(units,r,.15*SINGLE_MOB.hp,context);
+    const maxHp=context.maxHp??SINGLE_MOB.hp;
+    const full=run(units,r,maxHp,context),finish=run(units,r,.15*maxHp,context);
     result.to15+=full.to15;result.kill+=full.kill;
     result.remainingAt3+=full.hpAt3;result.finishFrom15+=finish.kill;
   }
   for(const key of Object.keys(result))result[key]/=trials;
   return {...result,trials,seed,count:units.length,team};
 }
-export function referenceSingle({trials=3000,seed=202323,context={}}={}){
-  const lucci=simulateSingle([{code:'L9',count:1}],{trials,seed,context});
-  const hancock=simulateSingle([{code:'L36',count:1}],{trials,seed,context});
+export function referenceSingle({trials=3000,seed=202323,context={},conditions=null}={}){
+  const lucci=simulateSingle([{code:'L9',count:1}],{trials,seed,context,conditions});
+  const hancock=simulateSingle([{code:'L36',count:1}],{trials,seed,context,conditions});
   return {lucci,hancock};
 }

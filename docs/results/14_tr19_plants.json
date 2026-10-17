@@ -1,0 +1,1390 @@
+{
+ "data": "2.305 원시 공격 + 2.323 ORDR 툴팁",
+ "options": {},
+ "rows": {
+  "Z2x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 10,
+   "remaining": 55,
+   "rounds": [
+    35
+   ],
+   "specialKill": [
+    24.6
+   ]
+  },
+  "Z2x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 12,
+   "rounds": [
+    0,
+    3,
+    15,
+    12,
+    14,
+    12
+   ],
+   "specialKill": [
+    10.9,
+    13.2,
+    13.8,
+    13.9,
+    14.1,
+    12.1
+   ]
+  },
+  "Z6x1": {
+   "clear": false,
+   "failedRound": 63,
+   "failedSecond": 13.5,
+   "remaining": 55,
+   "rounds": [
+    36,
+    35,
+    35
+   ],
+   "specialKill": [
+    null,
+    18.5,
+    18.3
+   ]
+  },
+  "Z6x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    18.1,
+    13.9,
+    13.8,
+    14.6,
+    14.5,
+    25.2
+   ]
+  },
+  "Z8x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 8.5,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "Z8x3": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 16.5,
+   "remaining": 55,
+   "rounds": [
+    35
+   ],
+   "specialKill": [
+    29.4
+   ]
+  },
+  "Z9x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 9,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "Z9x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 19,
+   "rounds": [
+    4,
+    7,
+    10,
+    16,
+    18,
+    19
+   ],
+   "specialKill": [
+    17.9,
+    13.9,
+    14.5,
+    14.7,
+    15.3,
+    22
+   ]
+  },
+  "Z10x1": {
+   "clear": false,
+   "failedRound": 62,
+   "failedSecond": 9.5,
+   "remaining": 55,
+   "rounds": [
+    35,
+    35
+   ],
+   "specialKill": [
+    29.8,
+    19.4
+   ]
+  },
+  "Z10x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 6,
+   "rounds": [
+    0,
+    0,
+    7,
+    6,
+    8,
+    6
+   ],
+   "specialKill": [
+    11.7,
+    15,
+    15.7,
+    15.6,
+    15.8,
+    14.5
+   ]
+  },
+  "TR3x1": {
+   "clear": false,
+   "failedRound": 64,
+   "failedSecond": 17,
+   "remaining": 55,
+   "rounds": [
+    33,
+    33,
+    34,
+    35
+   ],
+   "specialKill": [
+    null,
+    18.1,
+    17.5,
+    17.4
+   ]
+  },
+  "TR3x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    15.2,
+    13.6,
+    13.5,
+    12.8,
+    14.9,
+    21.4
+   ]
+  },
+  "TR4x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 8.5,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "TR4x3": {
+   "clear": false,
+   "failedRound": 65,
+   "failedSecond": 16.5,
+   "remaining": 55,
+   "rounds": [
+    30,
+    31,
+    33,
+    34,
+    34
+   ],
+   "specialKill": [
+    26.1,
+    16,
+    16.8,
+    16.8,
+    16.8
+   ]
+  },
+  "TR6x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 9.5,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "TR6x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 7,
+   "rounds": [
+    13,
+    12,
+    14,
+    13,
+    9,
+    7
+   ],
+   "specialKill": [
+    22,
+    14.6,
+    15.5,
+    15.4,
+    15.5,
+    27.8
+   ]
+  },
+  "TR8x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 9.5,
+   "remaining": 55,
+   "rounds": [
+    35
+   ],
+   "specialKill": [
+    22.1
+   ]
+  },
+  "TR8x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 23,
+   "rounds": [
+    9,
+    14,
+    17,
+    23,
+    24,
+    23
+   ],
+   "specialKill": [
+    7,
+    13.4,
+    12.9,
+    14.1,
+    14.1,
+    12.7
+   ]
+  },
+  "TR9x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 9,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "TR9x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 20,
+   "rounds": [
+    1,
+    5,
+    9,
+    16,
+    17,
+    20
+   ],
+   "specialKill": [
+    17.8,
+    13,
+    13.8,
+    13.9,
+    14,
+    23.2
+   ]
+  },
+  "TR11x1": {
+   "clear": false,
+   "failedRound": 64,
+   "failedSecond": 14.5,
+   "remaining": 55,
+   "rounds": [
+    25,
+    30,
+    23,
+    33
+   ],
+   "specialKill": [
+    30.9,
+    14.5,
+    14.4,
+    15.1
+   ]
+  },
+  "TR11x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    14.6,
+    10.7,
+    10.6,
+    11.1,
+    11,
+    17.9
+   ]
+  },
+  "TR18x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 9.5,
+   "remaining": 55,
+   "rounds": [
+    34
+   ],
+   "specialKill": [
+    21.3
+   ]
+  },
+  "TR18x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 18,
+   "rounds": [
+    0,
+    4,
+    6,
+    12,
+    15,
+    18
+   ],
+   "specialKill": [
+    5,
+    14.2,
+    14.4,
+    14.5,
+    12.7,
+    8.2
+   ]
+  },
+  "TR19x1": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 34,
+   "rounds": [
+    22,
+    14,
+    25,
+    30,
+    34,
+    34
+   ],
+   "specialKill": [
+    3.9,
+    9.1,
+    9.1,
+    9.2,
+    9,
+    5.5
+   ]
+  },
+  "TR19x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    1.3,
+    8,
+    8.1,
+    8.1,
+    8,
+    1.9
+   ]
+  },
+  "TR20x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 13.5,
+   "remaining": 55,
+   "rounds": [
+    34
+   ],
+   "specialKill": [
+    28.7
+   ]
+  },
+  "TR20x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 2,
+   "rounds": [
+    0,
+    0,
+    0,
+    2,
+    3,
+    2
+   ],
+   "specialKill": [
+    12.4,
+    10.7,
+    11.2,
+    11.3,
+    11.8,
+    15.9
+   ]
+  },
+  "TR22x1": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 34,
+   "rounds": [
+    20,
+    28,
+    24,
+    33,
+    33,
+    34
+   ],
+   "specialKill": [
+    22.3,
+    16.6,
+    16.4,
+    17.2,
+    17.4,
+    24.8
+   ]
+  },
+  "TR22x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    9.2,
+    11.9,
+    12,
+    12.7,
+    12.7,
+    10.8
+   ]
+  },
+  "TR23x1": {
+   "clear": false,
+   "failedRound": 62,
+   "failedSecond": 10.5,
+   "remaining": 55,
+   "rounds": [
+    34,
+    34
+   ],
+   "specialKill": [
+    26.2,
+    17.8
+   ]
+  },
+  "TR23x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 1,
+   "rounds": [
+    0,
+    0,
+    0,
+    2,
+    2,
+    1
+   ],
+   "specialKill": [
+    11.9,
+    13.3,
+    12.7,
+    14,
+    14.1,
+    13.4
+   ]
+  },
+  "TR27x1": {
+   "clear": false,
+   "failedRound": 65,
+   "failedSecond": 9.5,
+   "remaining": 55,
+   "rounds": [
+    32,
+    33,
+    34,
+    34,
+    35
+   ],
+   "specialKill": [
+    18.3,
+    17.2,
+    17.7,
+    17.8,
+    18.4
+   ]
+  },
+  "TR27x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    6.3,
+    12.7,
+    13.2,
+    13.3,
+    13.9,
+    8.8
+   ]
+  },
+  "TR29x1": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 34,
+   "rounds": [
+    0,
+    17,
+    11,
+    23,
+    21,
+    34
+   ],
+   "specialKill": [
+    25.3,
+    17.1,
+    16.7,
+    17.9,
+    17.9,
+    31.7
+   ]
+  },
+  "TR29x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    7.3,
+    12.6,
+    12.2,
+    13.3,
+    13.3,
+    13.4
+   ]
+  },
+  "TR30x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 9.5,
+   "remaining": 55,
+   "rounds": [
+    35
+   ],
+   "specialKill": [
+    20.2
+   ]
+  },
+  "TR30x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 23,
+   "rounds": [
+    7,
+    12,
+    16,
+    22,
+    24,
+    23
+   ],
+   "specialKill": [
+    6.7,
+    11.7,
+    12,
+    12,
+    12,
+    10.4
+   ]
+  },
+  "E1x1": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 34,
+   "rounds": [
+    12,
+    13,
+    18,
+    25,
+    26,
+    34
+   ],
+   "specialKill": [
+    29.6,
+    15.8,
+    16.3,
+    16.5,
+    16.6,
+    null
+   ]
+  },
+  "E1x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    13,
+    11.8,
+    11.8,
+    12.2,
+    12.3,
+    17.3
+   ]
+  },
+  "E2x1": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 34,
+   "rounds": [
+    12,
+    13,
+    18,
+    25,
+    26,
+    34
+   ],
+   "specialKill": [
+    29.6,
+    15.8,
+    16.3,
+    16.5,
+    16.6,
+    null
+   ]
+  },
+  "E2x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    13,
+    11.8,
+    11.8,
+    12.2,
+    12.3,
+    17.3
+   ]
+  },
+  "E5x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 8.5,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "E5x3": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 8.5,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "E10x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 11,
+   "remaining": 55,
+   "rounds": [
+    33
+   ],
+   "specialKill": [
+    17.8
+   ]
+  },
+  "E10x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 2,
+   "rounds": [
+    3,
+    10,
+    0,
+    20,
+    21,
+    2
+   ],
+   "specialKill": [
+    4.9,
+    11.7,
+    12.2,
+    12.2,
+    12.3,
+    10
+   ]
+  },
+  "E12x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 11.5,
+   "remaining": 55,
+   "rounds": [
+    34
+   ],
+   "specialKill": [
+    24.9
+   ]
+  },
+  "E12x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 1,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    2,
+    1
+   ],
+   "specialKill": [
+    8.9,
+    10.7,
+    10.8,
+    11.1,
+    11.1,
+    14.3
+   ]
+  },
+  "I1x1": {
+   "clear": false,
+   "failedRound": 65,
+   "failedSecond": 14,
+   "remaining": 55,
+   "rounds": [
+    33,
+    31,
+    32,
+    34,
+    34
+   ],
+   "specialKill": [
+    31,
+    15.3,
+    15,
+    16.1,
+    15.9
+   ]
+  },
+  "I1x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    13.5,
+    11.3,
+    11,
+    11.8,
+    11.8,
+    20.4
+   ]
+  },
+  "I3x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 13,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "I3x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 3,
+   "rounds": [
+    0,
+    0,
+    0,
+    1,
+    2,
+    3
+   ],
+   "specialKill": [
+    16.9,
+    11,
+    11.4,
+    11.5,
+    11.7,
+    20.6
+   ]
+  },
+  "I4x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 11,
+   "remaining": 55,
+   "rounds": [
+    34
+   ],
+   "specialKill": [
+    28.2
+   ]
+  },
+  "I4x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 4,
+   "rounds": [
+    0,
+    0,
+    0,
+    3,
+    4,
+    4
+   ],
+   "specialKill": [
+    12.3,
+    11.5,
+    11.8,
+    12.2,
+    12.3,
+    16
+   ]
+  },
+  "I5x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 9,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "I5x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 11,
+   "rounds": [
+    0,
+    0,
+    1,
+    6,
+    7,
+    11
+   ],
+   "specialKill": [
+    20.5,
+    13,
+    12.3,
+    13.9,
+    13.8,
+    25.3
+   ]
+  },
+  "I9x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 9.5,
+   "remaining": 55,
+   "rounds": [
+    35
+   ],
+   "specialKill": [
+    28.8
+   ]
+  },
+  "I9x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 16,
+   "rounds": [
+    3,
+    7,
+    9,
+    14,
+    17,
+    16
+   ],
+   "specialKill": [
+    12.7,
+    13.5,
+    14.3,
+    14.3,
+    14.4,
+    16.4
+   ]
+  },
+  "I11x1": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 33,
+   "rounds": [
+    16,
+    25,
+    29,
+    33,
+    34,
+    33
+   ],
+   "specialKill": [
+    12.5,
+    16.2,
+    16.3,
+    16.8,
+    17,
+    16.1
+   ]
+  },
+  "I11x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    4.3,
+    12,
+    12.1,
+    12.5,
+    12.7,
+    6.8
+   ]
+  },
+  "I12x1": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 31,
+   "rounds": [
+    15,
+    18,
+    22,
+    27,
+    27,
+    31
+   ],
+   "specialKill": [
+    22.9,
+    16.3,
+    16.6,
+    16.9,
+    16.9,
+    24.8
+   ]
+  },
+  "I12x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    9.6,
+    12,
+    12.2,
+    12.5,
+    12.5,
+    11
+   ]
+  },
+  "I8x1": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    24.8,
+    17.7,
+    21.8,
+    19.7,
+    24.2,
+    28
+   ]
+  },
+  "I8x3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 0,
+   "rounds": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "specialKill": [
+    2.5,
+    7.7,
+    7.9,
+    7.8,
+    7.7,
+    2.8
+   ]
+  },
+  "TR28x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 8.5,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "TR28x3": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 9,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "H15x1": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 8.5,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "H15x3": {
+   "clear": false,
+   "failedRound": 61,
+   "failedSecond": 8.5,
+   "remaining": 55,
+   "rounds": [
+    36
+   ],
+   "specialKill": [
+    null
+   ]
+  },
+  "TR19+L7": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 23,
+   "rounds": [
+    14,
+    6,
+    15,
+    19,
+    25,
+    23
+   ],
+   "specialKill": [
+    3.8,
+    9.1,
+    9.1,
+    9.1,
+    9,
+    5.5
+   ]
+  },
+  "TR19+L23": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 27,
+   "rounds": [
+    16,
+    10,
+    18,
+    22,
+    28,
+    27
+   ],
+   "specialKill": [
+    3.8,
+    9.1,
+    9.1,
+    9.1,
+    9,
+    5.4
+   ]
+  },
+  "TR19+L25": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 33,
+   "rounds": [
+    18,
+    12,
+    21,
+    26,
+    33,
+    33
+   ],
+   "specialKill": [
+    3.9,
+    9.1,
+    9.1,
+    9.1,
+    9,
+    5.5
+   ]
+  },
+  "TR19+D3": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 22,
+   "rounds": [
+    11,
+    6,
+    14,
+    17,
+    23,
+    22
+   ],
+   "specialKill": [
+    3.7,
+    9.1,
+    9.1,
+    9.1,
+    9,
+    5.3
+   ]
+  },
+  "TR19+L12": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 33,
+   "rounds": [
+    22,
+    14,
+    25,
+    30,
+    33,
+    33
+   ],
+   "specialKill": [
+    3.9,
+    9.1,
+    9.1,
+    9.2,
+    9,
+    5.5
+   ]
+  },
+  "TR19+D4": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 33,
+   "rounds": [
+    22,
+    14,
+    25,
+    30,
+    33,
+    33
+   ],
+   "specialKill": [
+    3.9,
+    9.1,
+    9.1,
+    9.2,
+    9,
+    5.5
+   ]
+  },
+  "TR19+L19": {
+   "clear": true,
+   "failedRound": null,
+   "failedSecond": null,
+   "remaining": 34,
+   "rounds": [
+    22,
+    14,
+    25,
+    30,
+    34,
+    34
+   ],
+   "specialKill": [
+    3.9,
+    9.1,
+    9.1,
+    9.2,
+    9,
+    5.5
+   ]
+  }
+ }
+}

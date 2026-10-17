@@ -1,0 +1,8 @@
+{
+  "name": "방깎 부족 패배 예시",
+  "description": "사보 초월 단독, 고정 방깎 80, 범위 적중 70%로 낮춘 경우",
+  "line": {
+    "team": [{"code": "TR11", "count": 1}],
+    "options": {"cut": 80, "coverage": 0.7}
+  }
+}
