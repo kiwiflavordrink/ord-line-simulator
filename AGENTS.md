@@ -8,6 +8,7 @@ Claude Code(클라우드·로컬)와 Codex Cloud가 함께 쓰는 지침이다. 
   - `engine_v3.mjs`(`simulateV2`, 60~65라 조합), `engine_single_v3.mjs`(`simulateSingle`, 65라 단일), `v3_effects.mjs`(`damageContext`), `data.json`(영웅·몹 수치).
   - `v2.*`, `index.html`/`app.mjs`, `engine.mjs`, `engine_v2.mjs`는 기존 URL과 테스트를 위해 유지한다.
 - `cli/` — 엔진을 그대로 호출하는 Node.js CLI(`ordsim`). 형식은 `docs/CLI.md`.
+- `overlay/` — 게임 화면 위 오버레이(Electron, Windows). `dist/advisor.mjs`·`dist/planner.mjs`를 호출하고, ORD_JHelper Data는 사용자 PC에서 읽는다(재배포 불가라 저장소에 넣지 않는다). `overlay/README.md`.
 - `dist/data_legacy.json` — v1·v2 화면과 그 테스트가 쓰는 수정 전 데이터(main `aa6ff9d`와 동일). v3 계산 수정은 `dist/data.json`에만 한다.
 - `scripts/hero_results.mjs`, `scripts/diff_results.mjs` — 수정 전후 결과 스냅샷(`docs/results/`)과 차이 표. `scripts/format_data_json.py` — data.json을 이벤트 한 줄씩으로 정렬(값 불변).
 - `examples/` — CLI 시나리오 예시. `test_cli.mjs`가 사용한다.
