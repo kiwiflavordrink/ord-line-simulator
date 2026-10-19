@@ -35,8 +35,11 @@ assert.equal(simulateV2(data,[{code:'Z2',count:3}],{difficulty:'신'}).remaining
 {
   const H17=data.heroes.find(h=>h.code==='H17').events.find(e=>e.index==='스킬');
   assert.deepEqual(H17.story_parts,[['magic',625000,[],0]]);
-  const noStory=structuredClone(data);delete noStory.heroes.find(h=>h.code==='H17').events.find(e=>e.index==='스킬').story_parts;
-  assert.ok(storyKillTime(data,['H17'],5)<storyKillTime(noStory,['H17'],5),'story 150% bonus counts');
+  // Without the story line a story would take the boss line (1000%); with a plain 25만 line it would be slower.
+  const bossLine=structuredClone(data);delete bossLine.heroes.find(h=>h.code==='H17').events.find(e=>e.index==='스킬').story_parts;
+  const plain=structuredClone(data);plain.heroes.find(h=>h.code==='H17').events.find(e=>e.index==='스킬').story_parts=[['magic',250000,[],0]];
+  const t=storyKillTime(data,['H17'],5);
+  assert.ok(storyKillTime(bossLine,['H17'],5)<t&&t<storyKillTime(plain,['H17'],5),'story 150% line, not the boss 1000% line');
   assert.equal(data.heroes.find(h=>h.code==='L18').events.find(e=>e.index==='사람사람열매 보스 추가').story_hits,true);
   const noHit=structuredClone(data);delete noHit.heroes.find(h=>h.code==='L18').events.find(e=>e.index==='사람사람열매 보스 추가').story_hits;
   assert.ok(storyKillTime(data,['L18'],6)<storyKillTime(noHit,['L18'],6));
@@ -45,8 +48,7 @@ assert.equal(simulateV2(data,[{code:'Z2',count:3}],{difficulty:'신'}).remaining
   // 슈가 전설 brings No.31: faster than 슈가 alone.
   const d=dataAtUpgrade(data,()=>99);
   assert.ok(d.heroes.some(h=>h.code==='L19T'));
-  assert.ok(storyKillTime(data,['L19'],5)<storyKillTime(data,['L19S'].map(c=>({code:c})).map(x=>x.code==='L19S'?{code:'L19S'}:x),5)||true);
-  const r=simulateV2(d,[{code:'L19S'}],{red:false,story:{hp:5e6,armor:75,regen:0,seconds:600}}).story.second;
+  const r=simulateV2(d,[{code:'L19S'}],{red:false,cut:0,heroArmorCuts:true,story:{hp:4456200*1.27,armor:75,regen:0,seconds:600}}).story.second;
   assert.ok(storyKillTime(data,['L19'],5)<r,'No.31 adds story damage');
 }
 console.log('Story: stages, HP scaling, upgrade levels, story mode, percent-HP exclusion, tooltip story lines, 슈가 toy: passed');
