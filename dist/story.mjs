@@ -24,12 +24,18 @@ export function dataAtUpgrade(data,level){
     const u=f.attack_upgrade;if(!u)continue;
     f.attack=Math.max(1,f.attack-upgradeBonus(u,u.max_level)+upgradeBonus(u,level(h.grade,h)));
   }
-  // 슈가 전설 (engine deleter L19) cannot turn a story into a toy; on a story it only attacks: 2.305 w3u h037
-  // ua1b 21000 + 1d3, cd 0.73, normal, R000 upgrade, plus 하비하비열매 "공격시 10% 확률로 500범위 50만 물리" (2.323).
-  if(!d.heroes.some(h=>h.code==='L19S'))d.heroes.push({code:'L19S',name:'슈가 전설(스토리)',grade:'전설',
-    forms:[{rawcode:'h037',attack:21002+upgradeBonus({first:7250,per_level:725,max_level:21},level('전설')),aps:1/.73,attack_type:'normal',
-      splash:0,splash_radius:0,rounds:{60:1,61:1,62:1,63:1,64:1,65:1},cooldown:.73,range:650}],
-    events:[{code:'L19S',index:'하비하비열매',rate:.1/.73,per_attack:true,parts:[['physical',500000,[],0]],radius:500,center:'target'}]});
+  // 슈가 전설 (engine deleter L19, 수정내역 39): 장난감화 cannot target a story; the player uses it on the line and
+  // brings the toy. On a story: L19S = 슈가 itself (w3u h037 ua1b 21000 + 1d3, cd 0.73, normal, R000; 하비하비열매
+  // "공격시 10% 확률로 500범위 50만 물리" self-destruct toy h06P), L19T = 장난감 No.31 (w3u h06N ua1b 185000, cd 0.39,
+  // siege, R000). No.31 presence: 장난감화 30 s per 85 s cooldown + "공격시 0.8% 확률로 4.5초" = 30/85 + 1.37x0.008x4.5.
+  const R000={first:7250,per_level:725,max_level:21},L=level('전설');
+  const normal={60:1.25,61:1,62:.75,63:1,64:1,65:1},siege={60:1,61:.75,62:1.25,63:.75,64:.8,65:.8};
+  if(!d.heroes.some(h=>h.code==='L19S'))d.heroes.push(
+    {code:'L19S',name:'슈가 전설(스토리)',grade:'전설',forms:[{rawcode:'h037',attack:21002+upgradeBonus(R000,L),aps:1/.73,attack_type:'normal',
+      splash:0,splash_radius:0,rounds:normal,cooldown:.73,range:650}],
+      events:[{code:'L19S',index:'하비하비열매',rate:.1/.73,per_attack:true,parts:[['physical',500000,[],0]],radius:500,center:'target'}]},
+    {code:'L19T',name:'장난감 No.31',grade:'전설',attack_uptime:30/85+(1/.73)*.008*4.5,forms:[{rawcode:'h06N',attack:185000+upgradeBonus(R000,L),
+      aps:1/.39,attack_type:'siege',splash:0,splash_radius:0,rounds:siege,cooldown:.39,range:460}],events:[]});
   return d;
 }
 
@@ -41,14 +47,16 @@ const SUPPORT_UPGRADE={L7:{first:7250,per_level:725,max_level:21}};
 export function storyKillTime(data,team,stage,{difficulty='신',players=1,level=null,seconds=600,...opts}={}){
   const s=data.stories.stages[stage-1];
   if(!s)throw new Error(`스토리 ${stage}단계가 없습니다.`);
-  const d=level?dataAtUpgrade(data,level):data;
+  const d=dataAtUpgrade(data,level??(()=>99));
   const saved={};
   if(level)for(const [code,u] of Object.entries(SUPPORT_UPGRADE)){
     saved[code]=SUPPORTS[code].attack;
     SUPPORTS[code].attack-=upgradeBonus(u,u.max_level)-upgradeBonus(u,level(SUPPORTS[code].grade??'전설'));
   }
   try{
-    const r=simulateV2(d,team.map(t=>typeof t==='string'?{code:t}:t),{difficulty,red:false,redDamage:false,cut:0,heroArmorCuts:true,...opts,
+    // 슈가 전설 on a story = itself + the No.31 toy it brings (above).
+    const units=team.flatMap(t=>{const x=typeof t==='string'?{code:t}:t;return x.code==='L19'||x.code==='L19S'?[{...x,code:'L19S'},{...x,code:'L19T'}]:[x];});
+    const r=simulateV2(d,units,{difficulty,red:false,redDamage:false,cut:0,heroArmorCuts:true,...opts,
       story:{hp:s.hp*storyHpMultiplier(data,difficulty,players,stage),armor:s.armor,regen:s.regen,seconds}});
     return r.story.killed?r.story.second:Infinity;
   }finally{for(const [code,a] of Object.entries(saved))SUPPORTS[code].attack=a;}

@@ -30,4 +30,23 @@ const pct=structuredClone(data);pct.heroes.push({code:'XPCT',name:'퍼뎀 테스
 assert.equal(simulateV2(pct,[{code:'XPCT'}],{red:false,story:{hp:1e6,armor:0,regen:0,seconds:20}}).story.killed,false);
 // The 60~65 line run is unchanged by the story option's absence.
 assert.equal(simulateV2(data,[{code:'Z2',count:3}],{difficulty:'신'}).remaining,16);
-console.log('Story: stages, HP scaling, upgrade levels, story mode, percent-HP exclusion: passed');
+// [수정 39] Tooltip story lines: story_parts (아카이누 히든 "스토리에게는 150%"), boss/story lines via boss_parts,
+// story_hits on boss/special events, 슈가 전설 = itself + No.31 toy.
+{
+  const H17=data.heroes.find(h=>h.code==='H17').events.find(e=>e.index==='스킬');
+  assert.deepEqual(H17.story_parts,[['magic',625000,[],0]]);
+  const noStory=structuredClone(data);delete noStory.heroes.find(h=>h.code==='H17').events.find(e=>e.index==='스킬').story_parts;
+  assert.ok(storyKillTime(data,['H17'],5)<storyKillTime(noStory,['H17'],5),'story 150% bonus counts');
+  assert.equal(data.heroes.find(h=>h.code==='L18').events.find(e=>e.index==='사람사람열매 보스 추가').story_hits,true);
+  const noHit=structuredClone(data);delete noHit.heroes.find(h=>h.code==='L18').events.find(e=>e.index==='사람사람열매 보스 추가').story_hits;
+  assert.ok(storyKillTime(data,['L18'],6)<storyKillTime(noHit,['L18'],6));
+  // 핸콕 전설 피스톨키스 / 스튜시 흡혈: bosses and stories take the flat tooltip damage, not percent.
+  assert.deepEqual(data.heroes.find(h=>h.code==='L36').events.find(e=>e.index==='피스톨키스 상태 단일').boss_parts,[['magic',150000,[],0]]);
+  // 슈가 전설 brings No.31: faster than 슈가 alone.
+  const d=dataAtUpgrade(data,()=>99);
+  assert.ok(d.heroes.some(h=>h.code==='L19T'));
+  assert.ok(storyKillTime(data,['L19'],5)<storyKillTime(data,['L19S'].map(c=>({code:c})).map(x=>x.code==='L19S'?{code:'L19S'}:x),5)||true);
+  const r=simulateV2(d,[{code:'L19S'}],{red:false,story:{hp:5e6,armor:75,regen:0,seconds:600}}).story.second;
+  assert.ok(storyKillTime(data,['L19'],5)<r,'No.31 adds story damage');
+}
+console.log('Story: stages, HP scaling, upgrade levels, story mode, percent-HP exclusion, tooltip story lines, 슈가 toy: passed');

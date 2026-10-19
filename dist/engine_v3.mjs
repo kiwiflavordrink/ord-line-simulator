@@ -563,12 +563,17 @@ export function simulateV2(data,composition,options={}){
   // Crit as an expected multiplier 1 + chance x (mult - 1). form.crit: basic-attack crit (target and
   // splash); form.target_crit: '타격' crit on the attack target only; event.crit: skill crit.
   const critEV=c=>c?1+c[0]*(c[1]-1):1;
+  // Story target (수정내역 39): the tooltip's story damage (story_parts), else its boss/story line (boss_parts, then
+  // nonline_parts), keeping their percent parts; otherwise the normal parts without percent-HP damage.
+  const storyEvent=e=>e.story_parts?{...e,parts:e.story_parts,keep_percent:true}:e.boss_parts?{...e,parts:e.boss_parts,keep_percent:true}:
+    e.nonline_parts?{...e,parts:e.nonline_parts,keep_percent:true}:e;
   const eventDamage=(event,m,attack,extra)=>{
     let out=0;
     for(const [kind,flat,perc,mul=0] of event.parts){
       let raw=flat+mul*attack;
-      // Story units take no percent-HP damage (user report: "단일 현퍼뎀의 경우도 보스나 스토리에는 퍼뎀이 들어가지 않거든").
-      if(m.kind!=='story')for(const [basis,ratio] of perc){
+      // Story units take no percent-HP damage unless the tooltip gives story damage (event.keep_percent, 수정내역 39;
+      // user: "단일 현퍼뎀의 경우도 보스나 스토리에는 퍼뎀이 들어가지 않거든").
+      if(m.kind!=='story'||event.keep_percent)for(const [basis,ratio] of perc){
         const hp=basis==='max'?m.maxhp:basis==='current'?Math.max(0,m.hp):m.maxhp-Math.max(0,m.hp);
         raw+=ratio*hp;
       }
@@ -936,8 +941,8 @@ export function simulateV2(data,composition,options={}){
             case 'single':targets=target?[target]:[];break;
             case 'multishot':targets=target?[target,...(u.msTargets??[])]:[];break;
             case 'single_line':targets=target?.kind==='line'?[target]:[];break;
-            case 'target_special':targets=target&&(target.kind==='boss'||target.kind==='frenzy')?[target]:[];break;
-            case 'boss':targets=target?.kind==='boss'?[target]:[];break;
+            case 'target_special':targets=target&&(target.kind==='boss'||target.kind==='frenzy'||target.kind==='story'&&e.story_hits)?[target]:[];break;
+            case 'boss':targets=target&&(target.kind==='boss'||target.kind==='story'&&e.story_hits)?[target]:[];break;
             case 'frenzy':targets=target?.kind==='frenzy'?[target]:[];break;
             case 'line':targets=mobs;break;
             case 'special':targets=specials;break;
@@ -954,7 +959,7 @@ export function simulateV2(data,composition,options={}){
             const bank=u.randomBank??={};
             bank[e.index]=(bank[e.index]??0)+rate*.1;
             for(;bank[e.index]>=1;bank[e.index]--)randomPicks(targets,e.picks??1,pickRandom,m=>{
-              const ev=e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e;
+              const ev=m.kind==='story'?storyEvent(e):e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e;
               deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit),u.code,'area','mixed');
               if(e.mob_debuff&&m.hp>0)mobDebuff(m,e.mob_debuff,1);
             },e.distinct===true);
@@ -966,7 +971,7 @@ export function simulateV2(data,composition,options={}){
             bank[e.index]=(bank[e.index]??0)+rate*.1;
             for(;bank[e.index]>=1;bank[e.index]--){
               chainTargets(target,[...mobs,...specials],e.chain,posModel,dist).forEach((m,k)=>{
-                const ev=e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e;
+                const ev=m.kind==='story'?storyEvent(e):e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e;
                 deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit)*(e.chain.factor??1)**k,u.code,k?'area':'single','mixed');
                 if(posModel&&e.stun&&m.hp>0)applyStun(m,e.stun);
                 if(e.mob_debuff&&m.hp>0)mobDebuff(m,e.mob_debuff,1);
@@ -979,7 +984,7 @@ export function simulateV2(data,composition,options={}){
           if(e.requires_stack!=null)targets=targets.filter(m=>(m.stk?.[hero.age_stack?.key]??0)===e.requires_stack);
           for(const m of targets)if(m.hp>0){
             // boss_parts replace parts against a boss; nonline_parts against a boss or frenzy (E6 "보스").
-            let ev=e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
+            let ev=m.kind==='story'?storyEvent(e):e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
             const ns=nut?.skill?.[e.index];
             if(ns)ev={...ev,parts:[...ev.parts,[ns.kind,ns.flat*(ns.basis==='cast'?(u.castS??nst.S):nst.S),[],0]]};
             const share=rate*.1*(m===target||single?1:cov);
