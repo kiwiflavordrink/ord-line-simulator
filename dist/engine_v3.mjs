@@ -234,6 +234,15 @@ export function simulateV2(data,composition,options={}){
     const sc=u.model.level_growth?.scale?.[e.index];
     return sc?{...e,parts:sc.map(([kind,base,per])=>[kind,base+per*u.level,[],0])}:e;
   };
+  // Green Blood (그린블러드, 수정내역 36): options.greenBlood = code of one 전설/히든 hero in the team (one per player).
+  // 2.305 war3map.j:78517-78525 adds A134 (display) + A13C (AIsx 공속 +30%) to a unit with A912/A07N (전설/히든), else
+  // "전설/히든 유닛에만 적용 가능". BNA (j:7590-7628) every 3 s: enemies within 825 of the unit take IfA (j:19155)
+  // 40만 + max HP 0.4% CHAOS·UNIVERSAL (fixed), and dummy e0BN casts A13B 지옥불 (aare 825, adur 1.2, ahdu 0.24) = stun.
+  // Values match the 2.305 tooltip (STRING 3281); 2.323 has no tooltip for it [2.305 기준].
+  const GREEN_BLOOD_EVENT={index:'그린블러드 진력해방',rate:1/3,per_attack:false,parts:[['fixed',400000,[['max',.004]],0]],
+    radius:825,center:'self',stun:{normal:1.2,hero:.24},source:'2.305 war3map.j:7590-7628, :19155, w3a A13B/A13C'};
+  const gbCode=options.greenBlood??null;
+  let gbState=gbCode?{code:gbCode,applied:false,reason:'조합에 없음'}:null;
   const units=[];
   for(const item of composition){
     const count=clamp(Math.floor(item.count??1),1,6);
@@ -241,7 +250,14 @@ export function simulateV2(data,composition,options={}){
       const model=heroMap.get(item.code);
       const events=model.alabasta?alabastaEvents(model,options.e6AlabastaLevel,options.e6MoveShot!==false):model.events;
       const level=model.level_growth?levelStartOf(model):undefined;
-      for(let i=0;i<count;i++)units.push({kind:'hero',code:item.code,model,events,damage:item.damage!==false,level,levelStart:level});
+      for(let i=0;i<count;i++){
+        let ev=events,gb=false;
+        if(gbCode===item.code&&!gbState.applied){
+          if(['전설','히든'].includes(model.grade)){ev=[...events,GREEN_BLOOD_EVENT];gb=true;gbState={code:gbCode,applied:true};}
+          else gbState={code:gbCode,applied:false,reason:`전설/히든 유닛에만 적용 (${model.grade})`};
+        }
+        units.push({kind:'hero',code:item.code,model,events:ev,damage:item.damage!==false,level,levelStart:level,greenBlood:gb});
+      }
     }
     else if(SUPPORTS[item.code])for(let i=0;i<count;i++)units.push({kind:'support',code:item.code,model:{...SUPPORTS[item.code],aps:allyAps(SUPPORTS[item.code].aps,BASE_COOLDOWN[item.code])},damage:item.damage!==false,ab:item.ab!==false});
     else if(DELETERS[item.code])for(let i=0;i<count;i++)units.push({kind:'deleter',code:item.code,model:DELETERS[item.code],damage:item.damage!==false,nextAttack:1/(DELETERS[item.code].aps||1),nextReady:0});
@@ -297,6 +313,7 @@ export function simulateV2(data,composition,options={}){
     for(const {a,miss} of byId.values())buffs[a.kind]+=a.value*(1-miss);
     // 새턴 A13G (ACac) and 나스쥬로 A13E are enemy-side auras on every allied unit; they add like other auras.
     buffs.attack_pct+=curse.ally_attack??0;buffs.aps+=curse.ally_aps??0;
+    if(u.greenBlood)buffs.aps+=.3;   // A13C AIsx Isx1 0.30
     u.buffs=buffs;
   }
   // Heroes' own enemy armor auras (data hero.own_armor_cut, 2.323 buff_lines "방어력 감소 N", 수정내역 29): with
@@ -578,6 +595,7 @@ export function simulateV2(data,composition,options={}){
     assumptions:[...new Set(units.flatMap(u=>u.kind==='hero'?u.model.assumptions??[]:[]))],
     nutrients:Object.fromEntries(Object.entries(nutrients).map(([k,v])=>[k,+v.S.toFixed(2)])),
     // Skill level of each growing hero copy (level_growth): start at round 60 and expected level at the end.
+    greenBlood:gbState&&!gbState.applied&&gbState.reason==='조합에 없음'&&SUPPORTS[gbCode]?{code:gbCode,applied:false,reason:'엔진 내장 보조 유닛은 미지원'}:gbState,
     levels:Object.fromEntries(units.map((u,i)=>[u,i]).filter(([u])=>u.level!=null).map(([u,i])=>[u.code+'#'+i,{start:u.levelStart,end:+u.level.toFixed(2)}]))});
 
   // Mob values actually used per round (difficulty, 2.323 common HP, 오로성, armor model) for reports.

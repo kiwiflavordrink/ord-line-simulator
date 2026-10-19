@@ -455,4 +455,21 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const g=fullData.heroes.find(h=>h.code==='Z2').level_growth;
   assert.equal(g.chance,.02);assert.deepEqual(g.proc_events,['3','4','4 특수 확률 증가']);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth: passed');
+// [수정 36] 그린블러드: 전설/히든 1기에 공속 +30%와 3초마다 825 범위 40만 + 최대 체력 0.4% 고정 피해. 제한 등급은 거부.
+// 카타쿠리 특강: 접근 스킬이 라인몹에도 100%.
+{
+  const t=[{code:'L37'},{code:'Z2'}];
+  const off=simulateV2(fullData,t,{difficulty:'신'}),on=simulateV2(fullData,t,{difficulty:'신',greenBlood:'L37'});
+  assert.equal(off.greenBlood,null);assert.deepEqual(on.greenBlood,{code:'L37',applied:true});
+  assert.ok(Math.abs(on.buffs.find(b=>b.code==='L37').aps-.3)<1e-12);
+  assert.ok(on.sourceDamage.L37>off.sourceDamage.L37);
+  const bad=simulateV2(fullData,t,{difficulty:'신',greenBlood:'Z2'});
+  assert.equal(bad.greenBlood.applied,false);assert.equal(bad.sourceDamage.Z2,off.sourceDamage.Z2);
+  assert.equal(simulateV2(fullData,t,{greenBlood:'H18'}).greenBlood.reason,'조합에 없음');
+  // Only one copy gets it.
+  const two=simulateV2(fullData,[{code:'L37',count:2}],{greenBlood:'L37'});
+  assert.equal(two.buffs.filter(b=>b.aps>=.3-1e-12).length,1);
+  const k0=simulateV2(fullData,[{code:'Z8',count:2}],{difficulty:'지옥'}),k1=simulateV2(fullData,[{code:'Z8',count:2}],{difficulty:'지옥',traits:{Z8:'on'}});
+  assert.ok(k1.sourceDamage.Z8>k0.sourceDamage.Z8&&k1.remaining<k0.remaining);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait: passed');

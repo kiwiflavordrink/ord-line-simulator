@@ -57,7 +57,8 @@
    ],
    "url":"https://ordr.kr/character/Z8",
    "own_armor_cut":30,
-   "own_armor_cut_source":"수정내역 29: 근거 [툴팁 Z8 buff_lines] \"방어력 감소 30\" (특강 미적용 카드)"
+   "own_armor_cut_source":"수정내역 29: 근거 [툴팁 Z8 buff_lines] \"방어력 감소 30\" (특강 미적용 카드)",
+   "trait":{"current":"off","other":{"events":{"4":{"on_approach":{"line":1,"special":1}}},"note":"수정내역 36: 특강 적용. 2.305 war3map.j:44139-44158 TKe(특성포인트 4)가 A0RM·A0RO를 2레벨로 올린다. j:79472 접근 스킬은 A0RM==2 이면 라인몹에도 100% 발동(평소 20%). 2.323 툴팁에는 카타쿠리 특강 문장이 없다 [2.305 기준]."},"unmodeled_other":["A0RO 2레벨: 15% 공속 최대 스킬의 블러드러스트 더미 2레벨(j:68368)과 공격 피해 후 추가 연출·타격(j:54882)의 크기는 확인하지 못해 넣지 않았다."],"evidence":"2.305 war3map.j:44139-44158, :79472, :54882, :68368"}
   },
   {
    "code":"Z9",

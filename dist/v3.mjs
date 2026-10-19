@@ -173,7 +173,7 @@ function options(){const c=context(true);return {
   frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
   tr19Plants:{pea:val('tr19-pea'),snow:val('tr19-snow'),muk:val('tr19-muk')},
   buffTargets:buffTargets(),chosenBuffTargets:chosenBuffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,heroArmorCuts:$('hero-cuts-v3').checked,executeTarget:$('execute-v3').value,
-  ...($('stack-v3').value!=='data'?{stackLevel:$('stack-v3').value}:{}),...($('trait-v3').value!=='data'?{trait:$('trait-v3').value}:{}),e6AlabastaLevel:val('e6-level'),e6MoveShot:$('e6-moveshot').checked,tr6Nutrients:val('tr6-nutrients'),...($('z2-level').value!==''?{z2Level:val('z2-level')}:{}),
+  ...($('stack-v3').value!=='data'?{stackLevel:$('stack-v3').value}:{}),...($('trait-v3').value!=='data'?{trait:$('trait-v3').value}:{}),e6AlabastaLevel:val('e6-level'),e6MoveShot:$('e6-moveshot').checked,tr6Nutrients:val('tr6-nutrients'),...($('z2-level').value!==''?{z2Level:val('z2-level')}:{}),...($('green-blood').value?{greenBlood:$('green-blood').value}:{}),
   customMagic:{aps:val('magic-aps'),chance:val('magic-chance')/100,flat:val('magic-flat'),
     maxPct:val('magic-max')/100,currentPct:val('magic-current')/100,lostPct:val('magic-lost')/100},
   finisher:{mode:$('finish-mode').value,interval:val('finish-interval'),successChance:val('finish-chance')/100,
@@ -194,8 +194,20 @@ function renderChart(result){
   svg.innerHTML=`<title>60~65라 생존 몹 수</title>${grid}${dividers}<polyline points="${pts}" fill="none" stroke="${result.clear?'#66d5b1':'#f07470'}" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round"/>`;
 }
 
+// Green Blood target choices: 전설/히든 heroes in the team (2.305 rule, 수정내역 36).
+let greenBloodWanted=null;
+function syncGreenBlood(){
+  const sel=$('green-blood'),want=greenBloodWanted??sel.value;greenBloodWanted=null;
+  const codes=[...new Set(team().map(t=>t.code))].filter(c=>['전설','히든'].includes(data.heroes.find(h=>h.code===c)?.grade));
+  const sig=codes.join(',');
+  if(sel.dataset.sig!==sig){
+    sel.dataset.sig=sig;sel.innerHTML='<option value="">없음</option>';
+    for(const c of codes){const o=document.createElement('option');o.value=c;o.textContent=nameOf(c);sel.appendChild(o);}
+  }
+  sel.value=codes.includes(want)?want:'';
+}
 function render(){markTeamEffects();
-  if(data)syncBuffPanel();
+  if(data){syncBuffPanel();syncGreenBlood();}
   if(!data)return;
   $('finish-damage-settings').hidden=$('finish-mode').value!=='damage';
   const chosen=team(),opts=options();
@@ -363,6 +375,7 @@ function restore(){
   if(params.has('e6'))$('e6-level').value=params.get('e6');
   if(params.has('tr6'))$('tr6-nutrients').value=params.get('tr6');
   if(params.has('z2'))$('z2-level').value=params.get('z2');
+  if(params.has('gb'))greenBloodWanted=params.get('gb');
   $('e6-moveshot').checked=params.get('e6shot')!=='0';
   if(['지옥','신','악몽'].includes(params.get('difficulty')))$('difficulty-v3').value=params.get('difficulty');
   for(const k of ['pea','snow','muk'])if(params.has('tr19'+k))$('tr19-'+k).value=params.get('tr19'+k);
@@ -385,7 +398,7 @@ function shareURL(){
   u.searchParams.set('difficulty',$('difficulty-v3').value);
   u.searchParams.set('armor',$('armor-model-v3').value);u.searchParams.set('leo',$('leo-v3').checked?'1':'0');
   u.searchParams.set('heroCuts',$('hero-cuts-v3').checked?'1':'0');u.searchParams.set('stack',$('stack-v3').value);u.searchParams.set('trait',$('trait-v3').value);u.searchParams.set('execute',$('execute-v3').value);
-  u.searchParams.set('e6',$('e6-level').value);u.searchParams.set('tr6',$('tr6-nutrients').value);if($('z2-level').value!=='')u.searchParams.set('z2',$('z2-level').value);else u.searchParams.delete('z2');u.searchParams.set('e6shot',$('e6-moveshot').checked?'1':'0');
+  u.searchParams.set('e6',$('e6-level').value);u.searchParams.set('tr6',$('tr6-nutrients').value);if($('z2-level').value!=='')u.searchParams.set('z2',$('z2-level').value);else u.searchParams.delete('z2');if($('green-blood').value)u.searchParams.set('gb',$('green-blood').value);else u.searchParams.delete('gb');u.searchParams.set('e6shot',$('e6-moveshot').checked?'1':'0');
   for(const k of ['pea','snow','muk'])u.searchParams.set('tr19'+k,$('tr19-'+k).value);
   const bt=buffTargets();if(Object.keys(bt).length)u.searchParams.set('buffTargets',JSON.stringify(bt));
   const cb=chosenBuffTargets();if(Object.keys(cb).length)u.searchParams.set('chosenBuffs',JSON.stringify(cb));
