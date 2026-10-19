@@ -472,4 +472,10 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const k0=simulateV2(fullData,[{code:'Z8',count:2}],{difficulty:'지옥'}),k1=simulateV2(fullData,[{code:'Z8',count:2}],{difficulty:'지옥',traits:{Z8:'on'}});
   assert.ok(k1.sourceDamage.Z8>k0.sourceDamage.Z8&&k1.remaining<k0.remaining);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait: passed');
+// [수정 37] 엔진 내장 보조의 자기 방깎 오라(L7 레일리 20, L25 울티 27)도 heroArmorCuts에 들어간다.
+{
+  assert.equal(simulateV2(fullData,[{code:'L7'},{code:'Z2'}],{heroArmorCuts:true,cut:0}).cut,58);
+  assert.equal(simulateV2(fullData,[{code:'L25'}],{heroArmorCuts:true,cut:0}).cut,27);
+  assert.equal(simulateV2(fullData,[{code:'L7'}],{cut:0}).cut,0,'off by default');
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras: passed');

@@ -29,6 +29,8 @@ export const SUPPORT_STUNS={
 // 2.305 base attack cooldowns (w3u ua1c) for units whose aps is a fixed theory value: supports
 // h03A L7 .58, h039 L23 .75, h03S L25 1.02, h0CI D3 .85; conditional h04F I8 .24, H08Y TR28 .75,
 // h03L H15 .45; Red Force hidden h03U .64. Used only for the 나스쥬로 attack-speed penalty (수정내역 20).
+// Own enemy armor auras of engine-built supports (2.323 buff_lines), used with options.heroArmorCuts (수정내역 37).
+export const SUPPORT_ARMOR_CUTS={L7:20,L25:27};
 const BASE_COOLDOWN={L7:.58,L23:.75,L25:1.02,D3:.85,I8:.24,TR28:.75,H15:.45,H2:.64};
 export const CONDITIONAL_UNITS={
   I8:{name:'스코퍼가반 불멸',attack:407502,aps:17.916666558,attackType:'pierce',
@@ -319,8 +321,10 @@ export function simulateV2(data,composition,options={}){
   // Heroes' own enemy armor auras (data hero.own_armor_cut, 2.323 buff_lines "방어력 감소 N", 수정내역 29): with
   // options.heroArmorCuts they add to options.cut, once per distinct hero (copies share the aura's buff; different
   // heroes' auras have different buffs and add). Off by default: options.cut (201) already stands for 풀깍.
-  const heroCut=options.heroArmorCuts?[...new Set(units.filter(u=>u.kind==='hero').map(u=>u.code))]
-    .reduce((a,code)=>a+(heroMap.get(code).own_armor_cut??0),0):0;
+  // Engine-built supports carry their own armor auras too (수정내역 37, 2.323 buff_lines: L7 레일리 "방어력 감소 20",
+  // L25 울티 "방어력 감소 27").
+  const heroCut=options.heroArmorCuts?[...new Set(units.filter(u=>u.kind==='hero'||u.kind==='support').map(u=>u.code))]
+    .reduce((a,code)=>a+(heroMap.get(code)?.own_armor_cut??SUPPORT_ARMOR_CUTS[code]??0),0):0;
   const cut=clamp((options.cut??201)+heroCut,0,300),coverage=clamp(options.coverage??1,0,1);
   const resourceMode=['start','empty','perRound'].includes(options.resourceMode)?options.resourceMode:
     options.fullResource===false?'empty':'start';
