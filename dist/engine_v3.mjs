@@ -533,7 +533,13 @@ export function simulateV2(data,composition,options={}){
   };
   const mobDebuff=(m,dbf,share)=>{
     const d=m.dbf??={};
-    for(const [k,v] of Object.entries(dbf))if(k!=='note')d[k]=Math.min(MOB_DEBUFF_CAP[k]??1,(d[k]??0)+v*share);
+    // dbf.nonstack [keys] (수정내역 41): a single-instance buff ("다른 속공과 중복되지 않습니다") — the expected share of
+    // having been hit at least once, at most v, instead of adding per hit.
+    for(const [k,v] of Object.entries(dbf)){
+      if(k==='note'||k==='nonstack')continue;
+      if(dbf.nonstack?.includes(k)){const h=m.dbfHit??={};h[k]=Math.min(1,(h[k]??0)+share);d[k]=Math.max(d[k]??0,Math.min(MOB_DEBUFF_CAP[k]??1,v*h[k]));}
+      else d[k]=Math.min(MOB_DEBUFF_CAP[k]??1,(d[k]??0)+v*share);
+    }
   };
   const factor=(kind,m,extra)=>kind==='physical'?pf(armor(m,extra)):kind==='magic'?mobMagic(m):
     kind==='explosive'?1+Math.min(.25,explosiveAmp+(m.dbf?.explosive_amp??0)+(m.kind==='line'?normalOnlyExplosiveAmp:0))+(curse.explosive??0):1;
@@ -901,6 +907,16 @@ export function simulateV2(data,composition,options={}){
           }
           if(!rate)continue;
           if(e.min_target_ab&&!(target&&target.ab>=e.min_target_ab))continue;
+          // min_hit {damage, ignore_on} (수정내역 41, L10 원혼 폭발 "단일 적에게 36만 이상의 피해를 가할시 (방어력계산포함)"):
+          // fires only for basic hits on the attack target that reach `damage` after type and armor (crit included);
+          // targets of a kind in ignore_on (보스·광폭) skip the condition.
+          if(e.min_hit&&!(target&&(e.min_hit.ignore_on??[]).includes(target.kind))){
+            if(!target)continue;
+            const hit=attack*form.rounds[String(target.typeRound??target.round)]*pf(armor(target,extraArmor)),[cc,cm]=form.crit??[0,1];
+            const frac=(hit>=e.min_hit.damage?1-cc:0)+(hit*cm>=e.min_hit.damage?cc:0);
+            if(!frac)continue;
+            rate*=frac;
+          }
           if(e.when_target==='line'&&target?.kind!=='line')continue;   // fires only while attacking a line mob
           // Position model: a skill needs a target in range unless it is centred on the hero.
           const center=posModel?(e.center==='self'?spawnPt:target):null;

@@ -55,4 +55,12 @@ assert.equal(simulateV2(data,[{code:'Z2',count:3}],{difficulty:'신'}).remaining
   const r=simulateV2(d,[{code:'L19S'}],{red:false,cut:0,heroArmorCuts:true,story:{hp:4456200*1.27,armor:75,regen:0,seconds:600}}).story.second;
   assert.ok(storyKillTime(data,['L19'],5)<r,'No.31 adds story damage');
 }
-console.log('Story: stages, HP scaling, upgrade levels, story mode, tooltip percent rule, tooltip story lines, 슈가 toy: passed');
+// [수정 41] 루피 나이트메어 원혼 폭발 needs a 36만+ hit (crit only at 마린포드 armor 129); 검은수염 크로우즈 all-damage
+// amp does not stack.
+{
+  const x=structuredClone(data);for(const e of x.heroes.find(h=>h.code==='L10').events)delete e.min_hit;
+  assert.ok(storyKillTime(data,['L10'],8,{level:()=>12})>storyKillTime(x,['L10'],8,{level:()=>12})*1.5,'condition limits procs on a story');
+  const y=structuredClone(data);delete y.heroes.find(h=>h.code==='L1').events.find(e=>e.index==='크로우즈').mob_debuff.nonstack;
+  assert.ok(storyKillTime(data,['L1'],8)>storyKillTime(y,['L1'],8),'non-stacking amp is weaker than stacking');
+}
+console.log('Story: stages, HP scaling, upgrade levels, story mode, tooltip percent rule, tooltip story lines, 슈가 toy, 원혼 폭발 condition, crows amp: passed');
