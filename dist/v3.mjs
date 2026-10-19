@@ -173,7 +173,7 @@ function options(){const c=context(true);return {
   frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
   tr19Plants:{pea:val('tr19-pea'),snow:val('tr19-snow'),muk:val('tr19-muk')},
   buffTargets:buffTargets(),chosenBuffTargets:chosenBuffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,heroArmorCuts:$('hero-cuts-v3').checked,executeTarget:$('execute-v3').value,
-  ...($('stack-v3').value!=='data'?{stackLevel:$('stack-v3').value}:{}),...($('trait-v3').value!=='data'?{trait:$('trait-v3').value}:{}),e6AlabastaLevel:val('e6-level'),e6MoveShot:$('e6-moveshot').checked,tr6Nutrients:val('tr6-nutrients'),
+  ...($('stack-v3').value!=='data'?{stackLevel:$('stack-v3').value}:{}),...($('trait-v3').value!=='data'?{trait:$('trait-v3').value}:{}),e6AlabastaLevel:val('e6-level'),e6MoveShot:$('e6-moveshot').checked,tr6Nutrients:val('tr6-nutrients'),...($('z2-level').value!==''?{z2Level:val('z2-level')}:{}),
   customMagic:{aps:val('magic-aps'),chance:val('magic-chance')/100,flat:val('magic-flat'),
     maxPct:val('magic-max')/100,currentPct:val('magic-current')/100,lostPct:val('magic-lost')/100},
   finisher:{mode:$('finish-mode').value,interval:val('finish-interval'),successChance:val('finish-chance')/100,
@@ -362,6 +362,7 @@ function restore(){
   if(['on','off'].includes(params.get('trait')))$('trait-v3').value=params.get('trait');
   if(params.has('e6'))$('e6-level').value=params.get('e6');
   if(params.has('tr6'))$('tr6-nutrients').value=params.get('tr6');
+  if(params.has('z2'))$('z2-level').value=params.get('z2');
   $('e6-moveshot').checked=params.get('e6shot')!=='0';
   if(['지옥','신','악몽'].includes(params.get('difficulty')))$('difficulty-v3').value=params.get('difficulty');
   for(const k of ['pea','snow','muk'])if(params.has('tr19'+k))$('tr19-'+k).value=params.get('tr19'+k);
@@ -384,7 +385,7 @@ function shareURL(){
   u.searchParams.set('difficulty',$('difficulty-v3').value);
   u.searchParams.set('armor',$('armor-model-v3').value);u.searchParams.set('leo',$('leo-v3').checked?'1':'0');
   u.searchParams.set('heroCuts',$('hero-cuts-v3').checked?'1':'0');u.searchParams.set('stack',$('stack-v3').value);u.searchParams.set('trait',$('trait-v3').value);u.searchParams.set('execute',$('execute-v3').value);
-  u.searchParams.set('e6',$('e6-level').value);u.searchParams.set('tr6',$('tr6-nutrients').value);u.searchParams.set('e6shot',$('e6-moveshot').checked?'1':'0');
+  u.searchParams.set('e6',$('e6-level').value);u.searchParams.set('tr6',$('tr6-nutrients').value);if($('z2-level').value!=='')u.searchParams.set('z2',$('z2-level').value);else u.searchParams.delete('z2');u.searchParams.set('e6shot',$('e6-moveshot').checked?'1':'0');
   for(const k of ['pea','snow','muk'])u.searchParams.set('tr19'+k,$('tr19-'+k).value);
   const bt=buffTargets();if(Object.keys(bt).length)u.searchParams.set('buffTargets',JSON.stringify(bt));
   const cb=chosenBuffTargets();if(Object.keys(cb).length)u.searchParams.set('chosenBuffs',JSON.stringify(cb));

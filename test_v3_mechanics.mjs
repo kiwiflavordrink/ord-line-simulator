@@ -438,4 +438,21 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.equal(even.stunnedShare,0);
   assert.equal(simulateV2(fullData,[{code:'L13'}],{}).holding,null);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe: passed');
+// [수정 35] Z2 전설의 후예 레벨 성장: 시작 20은 그대로(이전 고정 20과 같음), 낮은 시작 레벨은 발동마다 2%씩 오르고
+// 공격력·스킬 피해가 레벨을 따른다. 스택 zero/half는 시작 1/10.
+{
+  const t=[{code:'Z2',count:3}];
+  const r20=simulateV2(fullData,t,{difficulty:'신'}),r10=simulateV2(fullData,t,{difficulty:'신',z2Level:10});
+  assert.equal(r20.remaining,16);
+  assert.deepEqual(r20.levels['Z2#0'],{start:20,end:20});
+  const lv=r10.levels['Z2#0'];
+  assert.equal(lv.start,10);assert.ok(lv.end>11&&lv.end<14,'about +2 levels over rounds 60-65');
+  assert.ok(r10.sourceDamage.Z2<r20.sourceDamage.Z2);
+  assert.equal(simulateV2(fullData,t,{difficulty:'신',stackLevel:'half'}).levels['Z2#0'].start,10);
+  assert.equal(simulateV2(fullData,t,{difficulty:'신',stackLevel:'zero'}).levels['Z2#0'].start,1);
+  assert.equal(simulateV2(fullData,t,{difficulty:'신',z2Level:5,stackLevel:'max'}).levels['Z2#0'].start,5,'z2Level wins over the stack level');
+  // Growth rate: (8% + 10%) procs per attack x 2% per proc.
+  const g=fullData.heroes.find(h=>h.code==='Z2').level_growth;
+  assert.equal(g.chance,.02);assert.deepEqual(g.proc_events,['3','4','4 특수 확률 증가']);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth: passed');

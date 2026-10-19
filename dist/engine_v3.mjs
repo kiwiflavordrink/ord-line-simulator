@@ -222,13 +222,26 @@ export function simulateV2(data,composition,options={}){
   const curse=goroName?(data.gorosei?.[goroName]?.[diffName]??{armor:10,magic_levels:10}):{};
   // 나스쥬로 attack-speed penalty on any allied unit: WC3 aps = min(5, aps x cooldown + bonus) / cooldown.
   const allyAps=(aps,cooldown)=>curse.ally_aps&&cooldown?Math.max(0,Math.min(5,aps*cooldown+curse.ally_aps))/cooldown:aps;
+  // Skill level growth (hero.level_growth, 수정내역 35: Z2 전설의 후예). Start level at round 60: options.levelStart
+  // {code: level}, else options[growth.option] (z2Level), else the stack level (zero/half/max -> stack_levels), else
+  // growth.default. Each copy then gains chance x (proc rate) expected levels while it fights, up to growth.max.
+  const levelStartOf=hero=>{
+    const g=hero.level_growth,st=stackLevelOf(hero.code);
+    const v=options.levelStart?.[hero.code]??options[g.option]??(st?g.stack_levels?.[st]:null)??g.default;
+    return clamp(Number(v)||g.min,g.min,g.max);
+  };
+  const levelEvent=(e,u)=>{
+    const sc=u.model.level_growth?.scale?.[e.index];
+    return sc?{...e,parts:sc.map(([kind,base,per])=>[kind,base+per*u.level,[],0])}:e;
+  };
   const units=[];
   for(const item of composition){
     const count=clamp(Math.floor(item.count??1),1,6);
     if(heroMap.has(item.code)){
       const model=heroMap.get(item.code);
       const events=model.alabasta?alabastaEvents(model,options.e6AlabastaLevel,options.e6MoveShot!==false):model.events;
-      for(let i=0;i<count;i++)units.push({kind:'hero',code:item.code,model,events,damage:item.damage!==false});
+      const level=model.level_growth?levelStartOf(model):undefined;
+      for(let i=0;i<count;i++)units.push({kind:'hero',code:item.code,model,events,damage:item.damage!==false,level,levelStart:level});
     }
     else if(SUPPORTS[item.code])for(let i=0;i<count;i++)units.push({kind:'support',code:item.code,model:{...SUPPORTS[item.code],aps:allyAps(SUPPORTS[item.code].aps,BASE_COOLDOWN[item.code])},damage:item.damage!==false,ab:item.ab!==false});
     else if(DELETERS[item.code])for(let i=0;i<count;i++)units.push({kind:'deleter',code:item.code,model:DELETERS[item.code],damage:item.damage!==false,nextAttack:1/(DELETERS[item.code].aps||1),nextReady:0});
@@ -519,11 +532,11 @@ export function simulateV2(data,composition,options={}){
   };
   // Command Aura (ACac) bonuses add before multiplying base attack in WC3: Red Force A0BC +35%
   // plus the hero's own aura (data attack_aura: I11 A0Q1 -75%, E1/E2 A0UD +25%).
-  // TR11/TR19 multipliers are crit expectations; Z2 +60000 is bonus damage outside the aura.
+  // TR11/TR19 multipliers are crit expectations; Z2 +3000 x 전설의 후예 level is bonus damage outside the aura.
   const heroAttack=(u,form)=>{
     const hero=u.model,b=u.buffs;
     let attack=form.attack*(1+(red?.35:0)+b.attack_pct)+b.attack_flat;
-    if(hero.code==='Z2')attack+=60000;
+    if(hero.level_growth)attack+=hero.level_growth.attack_per_level*u.level;
     return attack;
   };
   // Crit as an expected multiplier 1 + chance x (mult - 1). form.crit: basic-attack crit (target and
@@ -563,7 +576,9 @@ export function simulateV2(data,composition,options={}){
     // Unresolved model assumptions of the heroes in the team (data hero.assumptions), shown by the web and CLI.
     mobTable,
     assumptions:[...new Set(units.flatMap(u=>u.kind==='hero'?u.model.assumptions??[]:[]))],
-    nutrients:Object.fromEntries(Object.entries(nutrients).map(([k,v])=>[k,+v.S.toFixed(2)]))});
+    nutrients:Object.fromEntries(Object.entries(nutrients).map(([k,v])=>[k,+v.S.toFixed(2)])),
+    // Skill level of each growing hero copy (level_growth): start at round 60 and expected level at the end.
+    levels:Object.fromEntries(units.map((u,i)=>[u,i]).filter(([u])=>u.level!=null).map(([u,i])=>[u.code+'#'+i,{start:u.levelStart,end:+u.level.toFixed(2)}]))});
 
   // Mob values actually used per round (difficulty, 2.323 common HP, 오로성, armor model) for reports.
   const mobTable={};
@@ -618,7 +633,8 @@ export function simulateV2(data,composition,options={}){
         if(u.kind!=='hero'||!u.damage)continue;
         const hero=u.model,form=formAt(hero,globalT,t,resourceMode).form;
         const attack=heroAttack(u,form);
-        for(const e of u.events){
+        for(const e0 of u.events){
+          const e=u.level==null?e0:levelEvent(e0,u);
           if(!summons&&isSummon(e))continue;
           if(e.on_spawn&&m===newMob){
             deal(newMob,e.on_spawn*eventDamage(e,newMob,attack,extraArmor),hero.code,'area','mixed');
@@ -810,7 +826,8 @@ export function simulateV2(data,composition,options={}){
             }
           }
         }
-        for(const e of u.events){
+        for(const e0 of u.events){
+          const e=u.level==null?e0:levelEvent(e0,u);
           if(!summons&&isSummon(e))continue;
           if(e.phase==='trans'&&!transformed||e.phase==='base'&&transformed||e.phase==='giant'&&!giant||e.phase==='nongiant'&&giant)continue;
           let rate=e.rate*(e.per_attack?aps/baseAps:1);
@@ -849,6 +866,11 @@ export function simulateV2(data,composition,options={}){
           const center=posModel?(e.center==='self'?spawnPt:target):null;
           if(posModel&&!center)continue;
           if(e.when_target_stack!=null&&(target?.stk?.[hero.age_stack?.key]??0)!==e.when_target_stack)continue;
+          // Level growth: a proc of a listed skill (needs an attack target; 'target_special' only on a boss/frenzy)
+          // levels up with growth.chance (expected value).
+          const lg=hero.level_growth;
+          if(lg&&u.level<lg.max&&lg.proc_events.includes(e.index)&&target&&(e.target!=='target_special'||target.kind!=='line'))
+            u.level=Math.min(lg.max,u.level+rate*.1*lg.chance);
           // MECH-B: stack_target (TR17 철저한 정의, 2.305 j:76404-76422 + oLM j:72651-72716): on the first whole
           // attack on a boss/frenzy after `cooldown` s, cast with multiplier mult (same target as this hero's
           // last proc: +step, else 1). area_parts hit radius around the target, parts the target, frenzy_parts x1.

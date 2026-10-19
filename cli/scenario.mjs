@@ -143,7 +143,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','externalSlow','externalStuns','singleControl','engageRange','heroArmorCuts','executeTarget','chosenBuffTargets','stackLevel','stackLevels','extraStackLevels','trait','traits','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','z2Level','externalSlow','externalStuns','singleControl','engageRange','heroArmorCuts','executeTarget','chosenBuffTargets','stackLevel','stackLevels','extraStackLevels','trait','traits','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -162,6 +162,7 @@ function validateLine(raw,data,is){
       e6AlabastaLevel:num(o,'e6AlabastaLevel','line.options',is,{min:1,max:10,integer:true}),
       e6MoveShot:bool(o,'e6MoveShot','line.options',is),
       tr6Nutrients:num(o,'tr6Nutrients','line.options',is,{min:0,max:80,integer:true}),
+      z2Level:num(o,'z2Level','line.options',is,{min:1,max:20,integer:true}),
       externalSlow:num(o,'externalSlow','line.options',is,{min:0,max:3}),
       engageRange:num(o,'engageRange','line.options',is,{min:100,max:3000}),
       heroArmorCuts:bool(o,'heroArmorCuts','line.options',is),
