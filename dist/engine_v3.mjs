@@ -563,17 +563,16 @@ export function simulateV2(data,composition,options={}){
   // Crit as an expected multiplier 1 + chance x (mult - 1). form.crit: basic-attack crit (target and
   // splash); form.target_crit: '타격' crit on the attack target only; event.crit: skill crit.
   const critEV=c=>c?1+c[0]*(c[1]-1):1;
-  // Story target (수정내역 39): the tooltip's story damage (story_parts), else its boss/story line (boss_parts, then
-  // nonline_parts), keeping their percent parts; otherwise the normal parts without percent-HP damage.
-  const storyEvent=e=>e.story_parts?{...e,parts:e.story_parts,keep_percent:true}:e.boss_parts?{...e,parts:e.boss_parts,keep_percent:true}:
-    e.nonline_parts?{...e,parts:e.nonline_parts,keep_percent:true}:e;
+  // Story target (수정내역 39·40): the tooltip's story damage (story_parts), else its boss/story line (boss_parts, then
+  // nonline_parts), else the tooltip damage as written, percent parts included (user: area percent skills such as
+  // 시라호시 초월 apply as the tooltip says; single percent skills carry their own boss/story lines).
+  const storyEvent=e=>e.story_parts?{...e,parts:e.story_parts}:e.boss_parts?{...e,parts:e.boss_parts}:
+    e.nonline_parts?{...e,parts:e.nonline_parts}:e;
   const eventDamage=(event,m,attack,extra)=>{
     let out=0;
     for(const [kind,flat,perc,mul=0] of event.parts){
       let raw=flat+mul*attack;
-      // Story units take no percent-HP damage unless the tooltip gives story damage (event.keep_percent, 수정내역 39;
-      // user: "단일 현퍼뎀의 경우도 보스나 스토리에는 퍼뎀이 들어가지 않거든").
-      if(m.kind!=='story'||event.keep_percent)for(const [basis,ratio] of perc){
+      for(const [basis,ratio] of perc){
         const hp=basis==='max'?m.maxhp:basis==='current'?Math.max(0,m.hp):m.maxhp-Math.max(0,m.hp);
         raw+=ratio*hp;
       }

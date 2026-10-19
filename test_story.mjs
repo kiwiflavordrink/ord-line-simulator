@@ -24,10 +24,14 @@ assert.equal(r.story.killed,true);assert.equal(r.totalLineSpawned,0);
 const t0=storyKillTime(data,['L13'],4,{level:()=>0}),t21=storyKillTime(data,['L13'],4,{level:()=>21});
 assert.ok(t21<t0,'upgrades shorten the kill');
 assert.equal(storyKillTime(data,['C6'],12,{seconds:60}),Infinity);
-// Percent-HP parts do not hit a story (user rule; 2.305 skills check the story marker A904).
+// Percent-HP parts apply to a story as the tooltip says unless an event has a story/boss line (수정내역 40, user:
+// "이런 퍼뎀은 그냥 튤팁 뎀지 적용", e.g. 시라호시 초월). A story_parts line replaces them (시류 히든 "스토리 제외").
 const pct=structuredClone(data);pct.heroes.push({code:'XPCT',name:'퍼뎀 테스트',grade:'전설',forms:[{attack:1,aps:1,attack_type:'normal',splash:0,splash_radius:0,
   rounds:{60:1,61:1,62:1,63:1,64:1,65:1},cooldown:1,range:600}],events:[{index:'p',rate:1,parts:[['fixed',0,[['max',.5]],0]],target:'single'}]});
+assert.equal(simulateV2(pct,[{code:'XPCT'}],{red:false,story:{hp:1e6,armor:0,regen:0,seconds:20}}).story.killed,true);
+pct.heroes.at(-1).events[0].story_parts=[['fixed',0,[],0]];
 assert.equal(simulateV2(pct,[{code:'XPCT'}],{red:false,story:{hp:1e6,armor:0,regen:0,seconds:20}}).story.killed,false);
+assert.deepEqual(data.heroes.find(h=>h.code==='H14').events.find(e=>e.index==='혈우').story_parts,[['magic',2250000,[],0]]);
 // The 60~65 line run is unchanged by the story option's absence.
 assert.equal(simulateV2(data,[{code:'Z2',count:3}],{difficulty:'신'}).remaining,16);
 // [수정 39] Tooltip story lines: story_parts (아카이누 히든 "스토리에게는 150%"), boss/story lines via boss_parts,
@@ -51,4 +55,4 @@ assert.equal(simulateV2(data,[{code:'Z2',count:3}],{difficulty:'신'}).remaining
   const r=simulateV2(d,[{code:'L19S'}],{red:false,cut:0,heroArmorCuts:true,story:{hp:4456200*1.27,armor:75,regen:0,seconds:600}}).story.second;
   assert.ok(storyKillTime(data,['L19'],5)<r,'No.31 adds story damage');
 }
-console.log('Story: stages, HP scaling, upgrade levels, story mode, percent-HP exclusion, tooltip story lines, 슈가 toy: passed');
+console.log('Story: stages, HP scaling, upgrade levels, story mode, tooltip percent rule, tooltip story lines, 슈가 toy: passed');
