@@ -23,11 +23,13 @@
     <input id="helperFiles" type="file" webkitdirectory hidden>
     <label>입력
       <select id="source">
+        <option value="memory">게임에서 자동 읽기</option>
         <option value="manual">직접 입력</option>
         <option value="log">헬퍼 기록 파일 감시</option>
         <option value="scenario">시나리오 재생</option>
       </select>
     </label>
+    <label data-for="memory">플레이어 자리 <select id="memPlayer"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option></select> <span id="memLog" class="path">-</span></label>
     <label data-for="log">기록 파일 <span id="logFile" class="path">-</span> <button id="pickLog">찾기</button></label>
     <label data-for="scenario">시나리오 <span id="scenarioFile" class="path">-</span> <button id="pickScenario">찾기</button></label>
     <input id="scenarioInput" type="file" accept=".json" hidden>

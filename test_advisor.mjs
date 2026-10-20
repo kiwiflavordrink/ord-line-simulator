@@ -76,3 +76,13 @@ snap=parseHelperText(['{"note":"no units"}',JSON.stringify({observation:{state:{
 assert.equal(snap.difficulty,'신');assert.equal(snap.round,61);assert.equal(snap.units[0].rawcode,'Z20h','newest JSON line with a unit list');
 assert.equal(parseHelperText('garbage'),null);
 console.log('test_advisor: log parser ok');
+
+// --- memscan live file (tools/memscan/memscan.ps1 -Watch, 수정내역 43): helper-style reversed rawcodes + Code ------
+{
+  const live={Source:'memscan',Status:'빠름',Units:[{Rawcode:'500h',Code:'h005',Count:2,Owner:0,Name:'|cff20b2aa버기|r - |cff00ff00흔함|r'},
+    {Rawcode:'A10h',Code:'h01A',Count:1,Owner:0,Name:'|c00b7b7f7크로커다일|r - |cff0080ff특별|r'}]};
+  assert.deepEqual(handFromUnits(live.Units,0),{h005:2,h01A:1},'memscan live units -> hand');
+  assert.deepEqual(handFromUnits(live.Units,1),{},'other player slot');
+  assert.equal(parseHelperText(JSON.stringify(live)).units.length,2,'log parser also accepts the live file');
+  console.log('test_advisor: memscan live ok');
+}

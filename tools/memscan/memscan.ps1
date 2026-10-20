@@ -16,6 +16,9 @@ param(
   [string]$Note = '',
   [switch]$Hand,
   [int]$Player = 0,
+  [switch]$Watch,
+  [int]$Interval = 3,
+  [int]$Rescan = 90,
   [string]$Out = (Join-Path ([Environment]::GetFolderPath('Desktop')) 'ordr_memscan.json')
 )
 
@@ -99,46 +102,71 @@ public static class OrdrMemScan {
   // ("|cff20b2aa나미|r - |cff00ff00흔함|r"). Fields found with two scans around a combine (나미+상디 -> 로빈):
   //   -24 int owner player (0 = 플레이어 1, 7 = 선택창 표시용, 5/6 = 적, 27 = 중립); -88 two ints = (-1,-1) and
   //   -48 int = 0x11 once removed; -56 int 0x64e live, 0x445/0x645 removed.
-  public static string Hand(int pid) {
+  // Reads unit records in one region. Owned = owner == player, not removed (-48 != 0x11, -88 != -1).
+  static void HandRegion(IntPtr h, MBI64 m, int player, bool full, List<string> rows, Dictionary<string, int> counts,
+                         Dictionary<string, string> names, HashSet<ulong> mine, ref long scanned) {
+    const int CHUNK = 16 * 1024 * 1024, PAD = 128;
+    for (ulong off = 0; off < m.RegionSize; off += (ulong)CHUNK) {
+      ulong start = off >= PAD ? off - PAD : 0;
+      int len = (int)Math.Min((ulong)CHUNK + 2 * PAD, m.RegionSize - start);
+      var buf = new byte[len]; IntPtr read;
+      if (!ReadProcessMemory(h, (IntPtr)(long)(m.BaseAddress + start), buf, (IntPtr)len, out read)) continue;
+      int n = (int)read; scanned += n;
+      int from = (int)(off - start);
+      for (int i = from; i + 14 <= n && i < from + CHUNK; i += 8) {
+        if (buf[i+4] != 0x7c || buf[i+5] != 0x63) continue;  // "|c" + 8 hex color (a locked unit uses alpha 00)
+        bool ok = i >= 96;
+        for (int k = 6; k < 14 && ok; k++) { byte c = buf[i+k]; ok = (c >= 0x30 && c <= 0x39) || (c >= 0x61 && c <= 0x66) || (c >= 0x41 && c <= 0x46); }
+        for (int k = 0; k < 4 && ok; k++) { byte c = buf[i+k]; ok = (c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x5a) || (c >= 0x61 && c <= 0x7a); }
+        if (!ok || BitConverter.ToInt64(buf, i - 72) != 1) continue;   // real unit records have 1 here; text matches do not
+        int owner = BitConverter.ToInt32(buf, i - 24), st = BitConverter.ToInt32(buf, i - 48), a = BitConverter.ToInt32(buf, i - 88);
+        string code = new string(new char[] { (char)buf[i+3], (char)buf[i+2], (char)buf[i+1], (char)buf[i] });
+        bool owned = owner == player && st != 0x11 && a != -1;
+        if (owner == player) mine.Add(m.BaseAddress);
+        if (!owned && !full) continue;
+        int e = i + 4; while (e < n && buf[e] != 0 && e < i + 200) e++;
+        var nc = Encoding.UTF8.GetString(buf, i + 4, e - i - 4).ToCharArray();
+        for (int k = 0; k < nc.Length; k++) if (nc[k] < (char)0x20) nc[k] = ' ';
+        string name = new string(nc).Replace("\\", "\\\\").Replace("\"", "\\\"");
+        if (owned) { int c0; counts.TryGetValue(code, out c0); counts[code] = c0 + 1; names[code] = name; }
+        if (full) rows.Add("{\"code\":\"" + code + "\",\"addr\":\"0x" + (m.BaseAddress + start + (ulong)i).ToString("x") +
+          "\",\"owner\":" + owner + ",\"state\":" + st + ",\"f56\":" + BitConverter.ToInt32(buf, i - 56) +
+          ",\"a\":" + a + ",\"b\":" + BitConverter.ToInt32(buf, i - 84) +
+          ",\"name\":\"" + name + "\",\"before\":\"" + Hex(buf, i - 96, 96) + "\"}");
+      }
+    }
+  }
+
+  // bases: "" = walk all memory; else comma-separated region bases from an earlier call (fast re-read).
+  // full: also return every record with its raw bytes (diagnostics). Hand entries use the helper's reversed rawcode.
+  public static string Hand(int pid, int player, string bases, bool full) {
     IntPtr h = OpenProcess(QUERY | VM_READ, false, pid);
     if (h == IntPtr.Zero) return "{\"error\":\"OpenProcess failed " + Marshal.GetLastWin32Error() + "\"}";
-    var rows = new List<string>(); long scanned = 0; ulong addr = 0; const int CHUNK = 16 * 1024 * 1024, PAD = 128;
-    while (addr < 0x7FFFFFFFFFFF) {
+    var rows = new List<string>(); var counts = new Dictionary<string, int>(); var names = new Dictionary<string, string>();
+    var mine = new HashSet<ulong>(); long scanned = 0; int size = Marshal.SizeOf(typeof(MBI64));
+    var list = new List<ulong>();
+    if (!string.IsNullOrEmpty(bases)) foreach (var t in bases.Split(',')) if (t.Length > 0) list.Add(Convert.ToUInt64(t.Replace("0x", ""), 16));
+    ulong addr = 0;
+    for (int idx = 0; ; idx++) {
       MBI64 m;
-      if (VirtualQueryEx(h, (IntPtr)(long)addr, out m, (IntPtr)Marshal.SizeOf(typeof(MBI64))) == IntPtr.Zero) break;
-      ulong next = m.BaseAddress + m.RegionSize; if (next <= addr) break;
+      if (list.Count > 0) { if (idx >= list.Count) break; addr = list[idx]; }
+      else if (addr >= 0x7FFFFFFFFFFF) break;
+      if (VirtualQueryEx(h, (IntPtr)(long)addr, out m, (IntPtr)size) == IntPtr.Zero) { if (list.Count > 0) continue; break; }
+      ulong next = m.BaseAddress + m.RegionSize;
       bool rw = m.State == MEM_COMMIT && (m.Protect & 0x101) == 0 && (m.Protect & (0x04 | 0x08 | 0x40 | 0x80)) != 0;
-      if (rw) {
-        for (ulong off = 0; off < m.RegionSize; off += (ulong)CHUNK) {
-          ulong start = off >= PAD ? off - PAD : 0;
-          int len = (int)Math.Min((ulong)CHUNK + 2 * PAD, m.RegionSize - start);
-          var buf = new byte[len]; IntPtr read;
-          if (!ReadProcessMemory(h, (IntPtr)(long)(m.BaseAddress + start), buf, (IntPtr)len, out read)) continue;
-          int n = (int)read; scanned += n;
-          int from = (int)(off - start);
-          for (int i = from + (int)((8 - (long)(m.BaseAddress + off) % 8) % 8); i + 8 <= n && i < from + CHUNK; i += 8) {
-            if (buf[i+4] != 0x7c || buf[i+5] != 0x63 || i + 14 > n) continue;  // "|c" + 8 hex color (locked units use alpha 00)
-            bool hex = true;
-            for (int k = 6; k < 14; k++) { byte c = buf[i+k]; if (!((c >= 0x30 && c <= 0x39) || (c >= 0x61 && c <= 0x66) || (c >= 0x41 && c <= 0x46))) hex = false; }
-            if (!hex) continue;
-            bool ok = true;
-            for (int k = 0; k < 4; k++) { byte c = buf[i+k]; if (!((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x5a) || (c >= 0x61 && c <= 0x7a))) ok = false; }
-            if (!ok || i < 96) continue;
-            int e = i + 4; while (e < n && buf[e] != 0 && e < i + 200) e++;
-            string name = Encoding.UTF8.GetString(buf, i + 4, e - i - 4).Replace("\\", "\\\\").Replace("\"", "\\\"");
-            var nc = name.ToCharArray(); for (int k = 0; k < nc.Length; k++) if (nc[k] < (char)0x20) nc[k] = ' '; name = new string(nc);
-            string code = new string(new char[] { (char)buf[i+3], (char)buf[i+2], (char)buf[i+1], (char)buf[i] });
-            rows.Add("{\"code\":\"" + code + "\",\"addr\":\"0x" + (m.BaseAddress + start + (ulong)i).ToString("x") +
-              "\",\"owner\":" + BitConverter.ToInt32(buf, i - 24) + ",\"state\":" + BitConverter.ToInt32(buf, i - 48) + ",\"f56\":" + BitConverter.ToInt32(buf, i - 56) +
-              ",\"a\":" + BitConverter.ToInt32(buf, i - 88) + ",\"b\":" + BitConverter.ToInt32(buf, i - 84) +
-              ",\"name\":\"" + name + "\",\"before\":\"" + Hex(buf, i - 96, 96) + "\"}");
-          }
-        }
-      }
-      addr = next;
+      if (rw) HandRegion(h, m, player, full, rows, counts, names, mine, ref scanned);
+      if (list.Count == 0) { if (next <= addr) break; addr = next; }
     }
     CloseHandle(h);
-    return "{\"bytesScanned\":" + scanned + ",\"units\":[" + string.Join(",", rows.ToArray()) + "]}";
+    var hand = new List<string>();
+    foreach (var kv in counts) {
+      var r = kv.Key.ToCharArray(); Array.Reverse(r);
+      hand.Add("{\"Rawcode\":\"" + new string(r) + "\",\"Code\":\"" + kv.Key + "\",\"Count\":" + kv.Value + ",\"Owner\":" + player +
+               ",\"Name\":\"" + names[kv.Key] + "\"}");
+    }
+    var reg = new List<string>(); foreach (var b in mine) reg.Add("\"0x" + b.ToString("x") + "\"");
+    return "{\"bytesScanned\":" + scanned + ",\"regions\":[" + string.Join(",", reg.ToArray()) + "],\"hand\":[" +
+      string.Join(",", hand.ToArray()) + "],\"units\":[" + string.Join(",", rows.ToArray()) + "]}";
   }
 }
 '@
@@ -146,24 +174,52 @@ public static class OrdrMemScan {
 $Codes = @($Codes | ForEach-Object { $_ -split '[,\s]+' } | Where-Object { $_.Length -eq 4 })
 Add-Type -TypeDefinition $src -Language CSharp
 
-$proc = Get-Process | Where-Object { $_.ProcessName -like "$Process*" } | Select-Object -First 1
+function Find-Game { Get-Process | Where-Object { $_.ProcessName -like "$Process*" } | Select-Object -First 1 }
+function Strip($n) { $n -replace '\|c[0-9a-fA-F]{8}','' -replace '\|r','' }
+
+if ($Watch) {
+  # Live hand for the overlay: full scan, then re-read only the regions holding this player's records every
+  # $Interval seconds; full scan again every $Rescan seconds (new units may land in a new region) or when the game
+  # restarts. Writes {Source,Time,Status,Units:[{Rawcode,Code,Count,Owner,Name}]} to $Out (temp file + rename).
+  $tmp = "$Out.tmp"; $bases = ''; $lastFull = [DateTime]::MinValue; $pid0 = 0
+  function Put($status, $units) {
+    $o = '{"Source":"memscan","Time":"' + (Get-Date -Format o) + '","Status":' + (ConvertTo-Json $status) + ',"Units":' + $units + '}'
+    [IO.File]::WriteAllText($tmp, $o, (New-Object Text.UTF8Encoding $false)); Move-Item -Force $tmp $Out
+  }
+  while ($true) {
+    $proc = Find-Game
+    if (-not $proc) { Put '게임 없음' '[]'; $bases = ''; Start-Sleep -Seconds 5; continue }
+    if ($proc.Id -ne $pid0) { $pid0 = $proc.Id; $bases = '' }
+    $full = (-not $bases) -or (((Get-Date) - $lastFull).TotalSeconds -ge $Rescan)
+    if ($full -and -not $bases) { Put '전체 스캔 중' '[]' }
+    $json = [OrdrMemScan]::Hand($proc.Id, $Player, $(if ($full) { '' } else { $bases }), $false)
+    $obj = $json | ConvertFrom-Json
+    if ($obj.error) { Put $obj.error '[]'; Start-Sleep -Seconds 5; continue }
+    if ($full) { $lastFull = Get-Date; $bases = ($obj.regions -join ',') }
+    $units = ConvertTo-Json -Compress -InputObject @($obj.hand)
+    if (-not $units -or $units -eq 'null') { $units = '[]' }
+    Put $(if ($full) { '전체' } else { '빠름' }) $units
+    Write-Host ("{0:HH:mm:ss} {1} {2}종" -f (Get-Date), $(if ($full) { '전체' } else { '빠름' }), @($obj.hand).Count)
+    Start-Sleep -Seconds $Interval
+  }
+}
+
+$proc = Find-Game
 if (-not $proc) { Write-Host "워크래프트 III 프로세스를 찾지 못했습니다. 게임을 켠 상태에서 실행하세요." ; exit 1 }
 $ver = try { $proc.MainModule.FileVersionInfo.FileVersion } catch { 'unknown' }
 Write-Host ("프로세스: {0} (PID {1}), 버전: {2}" -f $proc.ProcessName, $proc.Id, $ver)
-Write-Host ("찾는 코드: {0}  — 읽기 전용으로 스캔합니다. 1~3분 걸릴 수 있습니다." -f ($Codes -join ', '))
-$json = if ($Hand) { [OrdrMemScan]::Hand($proc.Id) } else { [OrdrMemScan]::Scan($proc.Id, $Codes, $Context, $MaxHits) }
-$meta = '{"tool":"ordr-memscan 1","time":"' + (Get-Date -Format o) + '","process":"' + $proc.ProcessName + '","version":"' +
+if ($Hand) { Write-Host "보유 패를 읽기 전용으로 스캔합니다. 1~3분 걸릴 수 있습니다." }
+else { Write-Host ("찾는 코드: {0}  — 읽기 전용으로 스캔합니다. 1~3분 걸릴 수 있습니다." -f ($Codes -join ', ')) }
+$json = if ($Hand) { [OrdrMemScan]::Hand($proc.Id, $Player, '', $true) } else { [OrdrMemScan]::Scan($proc.Id, $Codes, $Context, $MaxHits) }
+$meta = '{"tool":"ordr-memscan 2","time":"' + (Get-Date -Format o) + '","process":"' + $proc.ProcessName + '","version":"' +
         $ver + '","note":' + (ConvertTo-Json $Note) + ',"result":'
 [IO.File]::WriteAllText($Out, $meta + $json + '}', [Text.Encoding]::UTF8)
 Write-Host "저장: $Out"
 $obj = $json | ConvertFrom-Json
 if ($obj.error) { Write-Host $obj.error }
 elseif ($Hand) {
-  $mine = @($obj.units | Where-Object { $_.owner -eq $Player -and $_.state -ne 17 -and $_.a -ne -1 })
-  $live = $mine
-  Write-Host ("유닛 기록 {0}개, 플레이어 {1}번 유닛 {2}개:" -f @($obj.units).Count, ($Player + 1), $live.Count)
-  $live | Group-Object code | Sort-Object Count -Descending | ForEach-Object {
-    $n = ($_.Group[0].name -replace '\|c[0-9a-fA-F]{8}','' -replace '\|r','')
-    Write-Host ("  {0,-5} x{1}  {2}" -f $_.Name, $_.Count, $n) }
+  $list = @($obj.hand | Sort-Object Count -Descending)
+  Write-Host ("유닛 기록 {0}개, 플레이어 {1}번 보유 {2}종:" -f @($obj.units).Count, ($Player + 1), $list.Count)
+  foreach ($u in $list) { Write-Host ("  {0,-5} x{1}  {2}" -f $u.Code, $u.Count, (Strip $u.Name)) }
 }
 else { foreach ($c in $Codes) { Write-Host ("  {0}: {1}곳" -f $c, $obj.codes.$c.count) } }

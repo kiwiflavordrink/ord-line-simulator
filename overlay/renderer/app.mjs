@@ -63,9 +63,9 @@ function fillUnitLists(){
 }
 
 // --- inputs: manual, log, scenario ---------------------------------------------------------------------------------
-function setSnapshot(snap,label){
+function setSnapshot(snap,label,owner=0){
   if(!snap)return;
-  state.hand=handFromUnits(snap.units,0);
+  state.hand=handFromUnits(snap.units,owner);
   state.meta={difficulty:snap.difficulty,round:snap.round,goal:snap.goal??state.settings.goal??null,gold:snap.gold,lumber:snap.lumber,label};
   if(snap.goal)$('goalSelect').value=snap.goal;
   analyze();
@@ -78,6 +78,27 @@ async function readLog(){
     if(snap)setSnapshot(snap,'헬퍼 기록');else status('기록 파일에서 유닛 목록을 찾지 못했습니다');
   }catch(e){status('기록 파일을 읽지 못했습니다: '+e.message);}
 }
+// Live hand from game memory: main.js runs tools/memscan/memscan.ps1 -Watch, which rewrites a JSON file every few
+// seconds ({Status, Time, Units:[{Rawcode(reversed), Count, Owner, Name}]}). Polled here (the file is replaced, not appended).
+let liveTimer=null,liveFile=null,liveTime=null;
+async function startMemory(){
+  stopMemory();
+  const r=await api.memStart(+state.settings.memPlayer||0);
+  if(r.error){status(r.error);return;}
+  liveFile=r.file;liveTime=null;
+  liveTimer=setInterval(readLive,2000);readLive();
+}
+function stopMemory(){clearInterval(liveTimer);liveTimer=null;liveFile=null;api?.memStop();}
+async function readLive(){
+  if(!liveFile||!(await api.exists(liveFile)))return;
+  let j;try{j=JSON.parse((await api.readFile(liveFile)).replace(/^\uFEFF/,''));}catch{return;}
+  if(j.Time===liveTime)return;liveTime=j.Time;
+  for(const u of j.Units??[]){const code=reverseRawcode(u.Rawcode),n=String(u.Name??'').replace(/\|c[0-9a-fA-F]{8}|\|r/g,'').replace(/ - .*$/,'').trim();
+    if(n&&!state.names.has(code)&&!state.codeNames.has(code))state.codeNames.set(code,n);}
+  const owner=+state.settings.memPlayer||0;
+  setSnapshot({units:j.Units??[],difficulty:null,round:null,goal:null},`게임 메모리 (${j.Status??'-'})`,owner);
+}
+
 function loadScenario(json){
   state.frames=json?.Frames??json?.frames??[];
   $('frame').innerHTML=state.frames.map((f,i)=>`<option value="${i}">${i+1}. ${esc(f.Name??f.Id)}</option>`).join('');
@@ -97,6 +118,8 @@ function applySource(){
   for(const el of document.querySelectorAll('[data-for]'))el.hidden=el.dataset.for!==src;
   $('scenarioBar').hidden=src!=='scenario';
   if(api&&state.settings.logFile)api.unwatch(state.settings.logFile);
+  if(src!=='memory'&&liveTimer)stopMemory();
+  if(src==='memory'){if(api)startMemory();else status('게임 자동 읽기는 오버레이 앱(Windows)에서만 됩니다.');}
   if(src==='log'&&api&&state.settings.logFile){api.watch(state.settings.logFile);readLog();}
   if(src==='manual'){state.hand={...(state.settings.manualHand??{})};state.meta={label:'직접 입력',goal:state.settings.goal??null};analyze();}
   if(src==='scenario'&&api&&state.settings.scenarioFile)api.readFile(state.settings.scenarioFile).then(t=>loadScenario(JSON.parse(t))).catch(e=>status(e.message));
@@ -204,6 +227,7 @@ $('btnCompact').onclick=()=>document.body.classList.toggle('compact');
 $('btnClick').onclick=()=>api?.setClickThrough(true);
 $('btnQuit').onclick=()=>api?api.quit():window.close();
 $('source').onchange=async e=>{await saveSettings({source:e.target.value});applySource();};
+$('memPlayer').onchange=async e=>{await saveSettings({memPlayer:+e.target.value});if((state.settings.source??'manual')==='memory')startMemory();};
 $('difficulty').onchange=async e=>{await saveSettings({difficulty:e.target.value});analyze();status();};
 $('growthCut').onchange=async e=>{await saveSettings({growthCut:+e.target.value||0});analyze();};
 $('goalSelect').onchange=async e=>{await saveSettings({goal:e.target.value||null});state.meta.goal=e.target.value||null;analyze();};
@@ -242,6 +266,7 @@ $('pickScenario').onclick=async()=>{
 };
 $('scenarioInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;$('scenarioFile').textContent=f.name;loadScenario(JSON.parse(await f.text()));};
 api?.onFileChanged(f=>{if(f===state.settings.logFile){clearTimeout(logTimer);logTimer=setTimeout(readLog,300);}});
+api?.onMemLog?.(t=>{const el=$('memLog');if(el)el.textContent=t.split(/\r?\n/).at(-1);});
 api?.onMode(m=>document.body.classList.toggle('through',m.clickThrough));
 api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
 
@@ -253,6 +278,7 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   worker.postMessage({type:'data',data});
   $('difficulty').value=state.settings.difficulty??'auto';
   $('growthCut').value=state.settings.growthCut??0;
+  $('memPlayer').value=String(state.settings.memPlayer??0);
   $('helperDir').textContent=state.settings.helperDir??'-';
   $('logFile').textContent=state.settings.logFile??'-';
   $('scenarioFile').textContent=state.settings.scenarioFile??'-';
