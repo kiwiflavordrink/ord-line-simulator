@@ -7,12 +7,10 @@
 
 ## 실행
 
-1. 게임을 켜고 ORDR에 들어가 유닛을 몇 개 가진 상태로 둔다(흔함 여러 개 + 희귀 이상 1~2개가 좋다).
-2. 이 폴더의 `memscan.ps1`을 받아 PowerShell에서:
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File memscan.ps1 -Codes h006,h00A,h02U
-   ```
-   `-Codes`에는 지금 가진 유닛의 코드를 넣는다(예: 해군 칼병 h006, 후쿠로 h00A, 검은수염 전설 h02U). 코드는 `dist/data.json`의 `forms[].rawcode`나 헬퍼 카탈로그(뒤집힌 표기)를 보면 된다.
-3. 바탕화면에 `ordr_memscan.json`이 생긴다. 이 파일과 **그때 가진 유닛과 개수**(예: 칼병 11, 후쿠로 1, 검은수염 전설 1)를 함께 보낸다.
+1. 이 폴더의 `memscan.bat`과 `memscan.ps1`을 **같은 폴더**에 받는다.
+2. 원랜디 게임 중(유닛을 가진 상태)에 `memscan.bat`을 더블클릭한다. 지금 가진 유닛 코드를 쉼표로 입력한다(Enter만 누르면 칼병·나미·쵸파). 코드는 창에 나오고, 나머지는 `dist/data.json`의 `forms[].rawcode`에 있다.
+3. 1~3분 뒤 바탕화면에 `ordr_memscan.json`이 생긴다. 이 파일과 **그때 가진 유닛과 개수**를 함께 보낸다. `OpenProcess failed`가 나오면 bat을 우클릭 → 관리자 권한으로 실행.
+
+PowerShell에서 직접: `powershell -ExecutionPolicy Bypass -File memscan.ps1 -Codes h006,h001,h008`
 
 결과 파일에는 코드가 나온 주소와 그 앞뒤 96바이트만 들어간다. 계정·채팅 같은 정보는 찾지 않는다.

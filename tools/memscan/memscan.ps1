@@ -16,7 +16,7 @@ param(
   [string]$Out = (Join-Path ([Environment]::GetFolderPath('Desktop')) 'ordr_memscan.json')
 )
 
-$src = @"
+$src = @'
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -93,18 +93,19 @@ public static class OrdrMemScan {
     return sb.ToString();
   }
 }
-"@
+'@
 # With -File, 'h006,h00A' arrives as one string: split it.
 $Codes = @($Codes | ForEach-Object { $_ -split '[,\s]+' } | Where-Object { $_.Length -eq 4 })
 Add-Type -TypeDefinition $src -Language CSharp
 
 $proc = Get-Process | Where-Object { $_.ProcessName -like "$Process*" } | Select-Object -First 1
 if (-not $proc) { Write-Host "워크래프트 III 프로세스를 찾지 못했습니다. 게임을 켠 상태에서 실행하세요." ; exit 1 }
-Write-Host ("프로세스: {0} (PID {1}), 버전: {2}" -f $proc.ProcessName, $proc.Id, $proc.MainModule.FileVersionInfo.FileVersion)
+$ver = try { $proc.MainModule.FileVersionInfo.FileVersion } catch { 'unknown' }
+Write-Host ("프로세스: {0} (PID {1}), 버전: {2}" -f $proc.ProcessName, $proc.Id, $ver)
 Write-Host ("찾는 코드: {0}  — 읽기 전용으로 스캔합니다. 1~3분 걸릴 수 있습니다." -f ($Codes -join ', '))
 $json = [OrdrMemScan]::Scan($proc.Id, $Codes, $Context, $MaxHits)
 $meta = '{"tool":"ordr-memscan 1","time":"' + (Get-Date -Format o) + '","process":"' + $proc.ProcessName + '","version":"' +
-        $proc.MainModule.FileVersionInfo.FileVersion + '","result":'
+        $ver + '","result":'
 [IO.File]::WriteAllText($Out, $meta + $json + '}', [Text.Encoding]::UTF8)
 Write-Host "저장: $Out"
 $obj = $json | ConvertFrom-Json
