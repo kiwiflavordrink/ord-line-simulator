@@ -157,7 +157,7 @@ $obj = $json | ConvertFrom-Json
 if ($obj.error) { Write-Host $obj.error }
 elseif ($Hand) {
   $mine = @($obj.units | Where-Object { $_.owner -eq $Player -and $_.state -ne 17 -and $_.a -ne -1 })
-  $live = @($mine | Where-Object { $_.b -lt 100000 }); $odd = @($mine | Where-Object { $_.b -ge 100000 })
+  $live = $mine
   Write-Host ("유닛 기록 {0}개, 플레이어 {1}번 유닛 {2}개:" -f @($obj.units).Count, ($Player + 1), $live.Count)
   $live | Group-Object code | Sort-Object Count -Descending | ForEach-Object {
     $n = ($_.Group[0].name -replace '\|c[0-9a-fA-F]{8}','' -replace '\|r','')
