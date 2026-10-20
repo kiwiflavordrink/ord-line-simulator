@@ -15,6 +15,7 @@ param(
   [string]$Process = 'Warcraft III',
   [string]$Note = '',
   [switch]$Hand,
+  [int]$Player = 0,
   [string]$Out = (Join-Path ([Environment]::GetFolderPath('Desktop')) 'ordr_memscan.json')
 )
 
@@ -96,8 +97,8 @@ public static class OrdrMemScan {
   }
   // Hand mode (수정내역 42): a unit record holds the type id followed directly by its colored name string
   // ("|cff20b2aa나미|r - |cff00ff00흔함|r"). Fields found with two scans around a combine (나미+상디 -> 로빈):
-  //   -48 int state: 0x46/0x47/0x49.. = a placed unit, 0x48 = per-type template (one per type, not owned),
-  //       0x11 = removed; -88 two ints = (-1,-1) once removed; -56 int 0x64e live, 0x445/0x645 removed.
+  //   -24 int owner player (0 = 플레이어 1, 7 = 선택창 표시용, 5/6 = 적, 27 = 중립); -88 two ints = (-1,-1) and
+  //   -48 int = 0x11 once removed; -56 int 0x64e live, 0x445/0x645 removed.
   public static string Hand(int pid) {
     IntPtr h = OpenProcess(QUERY | VM_READ, false, pid);
     if (h == IntPtr.Zero) return "{\"error\":\"OpenProcess failed " + Marshal.GetLastWin32Error() + "\"}";
@@ -122,9 +123,10 @@ public static class OrdrMemScan {
             if (!ok || i < 96) continue;
             int e = i + 4; while (e < n && buf[e] != 0 && e < i + 200) e++;
             string name = Encoding.UTF8.GetString(buf, i + 4, e - i - 4).Replace("\\", "\\\\").Replace("\"", "\\\"");
+            var nc = name.ToCharArray(); for (int k = 0; k < nc.Length; k++) if (nc[k] < (char)0x20) nc[k] = ' '; name = new string(nc);
             string code = new string(new char[] { (char)buf[i+3], (char)buf[i+2], (char)buf[i+1], (char)buf[i] });
             rows.Add("{\"code\":\"" + code + "\",\"addr\":\"0x" + (m.BaseAddress + start + (ulong)i).ToString("x") +
-              "\",\"state\":" + BitConverter.ToInt32(buf, i - 48) + ",\"f56\":" + BitConverter.ToInt32(buf, i - 56) +
+              "\",\"owner\":" + BitConverter.ToInt32(buf, i - 24) + ",\"state\":" + BitConverter.ToInt32(buf, i - 48) + ",\"f56\":" + BitConverter.ToInt32(buf, i - 56) +
               ",\"a\":" + BitConverter.ToInt32(buf, i - 88) + ",\"b\":" + BitConverter.ToInt32(buf, i - 84) +
               ",\"name\":\"" + name + "\",\"before\":\"" + Hex(buf, i - 96, 96) + "\"}");
           }
@@ -154,8 +156,9 @@ Write-Host "저장: $Out"
 $obj = $json | ConvertFrom-Json
 if ($obj.error) { Write-Host $obj.error }
 elseif ($Hand) {
-  $live = @($obj.units | Where-Object { $_.state -ne 72 -and $_.state -ne 17 -and $_.a -ne -1 })
-  Write-Host ("유닛 기록 {0}개, 그중 보유로 보이는 것 {1}개:" -f @($obj.units).Count, $live.Count)
+  $mine = @($obj.units | Where-Object { $_.owner -eq $Player -and $_.state -ne 17 -and $_.a -ne -1 })
+  $live = @($mine | Where-Object { $_.b -lt 100000 }); $odd = @($mine | Where-Object { $_.b -ge 100000 })
+  Write-Host ("유닛 기록 {0}개, 플레이어 {1}번 유닛 {2}개:" -f @($obj.units).Count, ($Player + 1), $live.Count)
   $live | Group-Object code | Sort-Object Count -Descending | ForEach-Object {
     $n = ($_.Group[0].name -replace '\|c[0-9a-fA-F]{8}','' -replace '\|r','')
     Write-Host ("  {0,-5} x{1}  {2}" -f $_.Name, $_.Count, $n) }
