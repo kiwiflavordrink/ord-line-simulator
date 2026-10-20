@@ -117,7 +117,10 @@ public static class OrdrMemScan {
           int n = (int)read; scanned += n;
           int from = (int)(off - start);
           for (int i = from + (int)((8 - (long)(m.BaseAddress + off) % 8) % 8); i + 8 <= n && i < from + CHUNK; i += 8) {
-            if (buf[i+4] != 0x7c || buf[i+5] != 0x63 || buf[i+6] != 0x66 || buf[i+7] != 0x66) continue;  // "|cff"
+            if (buf[i+4] != 0x7c || buf[i+5] != 0x63 || i + 14 > n) continue;  // "|c" + 8 hex color (locked units use alpha 00)
+            bool hex = true;
+            for (int k = 6; k < 14; k++) { byte c = buf[i+k]; if (!((c >= 0x30 && c <= 0x39) || (c >= 0x61 && c <= 0x66) || (c >= 0x41 && c <= 0x46))) hex = false; }
+            if (!hex) continue;
             bool ok = true;
             for (int k = 0; k < 4; k++) { byte c = buf[i+k]; if (!((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x5a) || (c >= 0x61 && c <= 0x7a))) ok = false; }
             if (!ok || i < 96) continue;
