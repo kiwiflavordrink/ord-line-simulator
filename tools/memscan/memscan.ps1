@@ -1,4 +1,4 @@
-<#
+﻿<#
 ORDR memory scan (read-only diagnostic, 수정내역 42).
 Finds where the given unit type codes (map rawcodes such as h006) appear in Warcraft III's memory and saves the
 surrounding bytes, so the unit-object layout can be worked out offline. The process is opened with
@@ -94,6 +94,8 @@ public static class OrdrMemScan {
   }
 }
 "@
+# With -File, 'h006,h00A' arrives as one string: split it.
+$Codes = @($Codes | ForEach-Object { $_ -split '[,\s]+' } | Where-Object { $_.Length -eq 4 })
 Add-Type -TypeDefinition $src -Language CSharp
 
 $proc = Get-Process | Where-Object { $_.ProcessName -like "$Process*" } | Select-Object -First 1
