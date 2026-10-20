@@ -13,6 +13,7 @@ param(
   [int]$Context = 96,
   [int]$MaxHits = 3000,
   [string]$Process = 'Warcraft III',
+  [string]$Note = '',
   [string]$Out = (Join-Path ([Environment]::GetFolderPath('Desktop')) 'ordr_memscan.json')
 )
 
@@ -105,7 +106,7 @@ Write-Host ("프로세스: {0} (PID {1}), 버전: {2}" -f $proc.ProcessName, $pr
 Write-Host ("찾는 코드: {0}  — 읽기 전용으로 스캔합니다. 1~3분 걸릴 수 있습니다." -f ($Codes -join ', '))
 $json = [OrdrMemScan]::Scan($proc.Id, $Codes, $Context, $MaxHits)
 $meta = '{"tool":"ordr-memscan 1","time":"' + (Get-Date -Format o) + '","process":"' + $proc.ProcessName + '","version":"' +
-        $ver + '","result":'
+        $ver + '","note":' + (ConvertTo-Json $Note) + ',"result":'
 [IO.File]::WriteAllText($Out, $meta + $json + '}', [Text.Encoding]::UTF8)
 Write-Host "저장: $Out"
 $obj = $json | ConvertFrom-Json

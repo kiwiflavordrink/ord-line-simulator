@@ -8,8 +8,8 @@
 ## 실행
 
 1. 이 폴더의 `memscan.bat`과 `memscan.ps1`을 **같은 폴더**에 받는다.
-2. 원랜디 게임 중(유닛을 가진 상태)에 `memscan.bat`을 더블클릭한다. 지금 가진 유닛 코드를 쉼표로 입력한다(Enter만 누르면 칼병·나미·쵸파). 코드는 창에 나오고, 나머지는 `dist/data.json`의 `forms[].rawcode`에 있다.
-3. 1~3분 뒤 바탕화면에 `ordr_memscan.json`이 생긴다. 이 파일과 **그때 가진 유닛과 개수**를 함께 보낸다. `OpenProcess failed`가 나오면 bat을 우클릭 → 관리자 권한으로 실행.
+2. 원랜디 게임 중(유닛을 가진 상태)에 `memscan.bat`을 더블클릭한다. 가진 유닛 코드와 개수를 입력하면 1차 스캔, 게임에서 그중 하나의 개수를 바꾸고 바뀐 개수를 입력하면 2차 스캔을 한다. 두 스캔의 차이로 실제 유닛 객체를 찾는다.
+3. 바탕화면의 `ordr_memscan_1.json`, `ordr_memscan_2.json`을 보낸다(개수 메모가 파일에 들어 있다). `OpenProcess failed`가 나오면 bat을 우클릭 → 관리자 권한으로 실행.
 
 PowerShell에서 직접: `powershell -ExecutionPolicy Bypass -File memscan.ps1 -Codes h006,h001,h008`
 
