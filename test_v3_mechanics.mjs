@@ -507,4 +507,14 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const noArea=structuredClone(fullData);noArea.heroes.find(h=>h.code==='L26').events=noArea.heroes.find(h=>h.code==='L26').events.filter(e=>e.index!=='흑완 보스·광폭 범위');
   assert.ok(simulateV2(fullData,[{code:'L26'}]).sourceDamage.L26>simulateV2(noArea,[{code:'L26'}]).sourceDamage.L26,'보스·광폭 공격 시 범위가 라인몹에 들어간다');
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting: passed');
+// [수정 46] 범위 체력 비례의 기준: 로우 4개는 공격 대상의 체력으로 범위 전체에 같은 값, 타시기 난향접 체력 비례는 단일.
+{
+  const ev=c=>fullData.heroes.find(h=>h.code===c).events;
+  assert.deepEqual(['인젝션 샷','수술수술열매'].map(i=>ev('L8').find(e=>e.index===i).pct_basis),['target','target']);
+  assert.deepEqual(['인젝션샷','라디오나이프'].map(i=>ev('TR5').find(e=>e.index===i).pct_basis),['target','target']);
+  assert.deepEqual(ev('TR27').filter(e=>/최대체력/.test(e.index)).map(e=>[e.target,e.radius]),[['single_line',undefined],['target_special',undefined]]);
+  const own=structuredClone(fullData);for(const e of own.heroes.find(h=>h.code==='L8').events)delete e.pct_basis;
+  const a=simulateV2(fullData,[{code:'L8'}]).sourceDamage.L8,b=simulateV2(own,[{code:'L8'}]).sourceDamage.L8;
+  assert.ok(a!==b,'공격 대상 기준과 각자 기준의 피해가 다르다');
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent: passed');

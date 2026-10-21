@@ -598,12 +598,14 @@ export function simulateV2(data,composition,options={}){
   // 시라호시 초월 apply as the tooltip says; single percent skills carry their own boss/story lines).
   const storyEvent=e=>e.story_parts?{...e,parts:e.story_parts}:e.boss_parts?{...e,parts:e.boss_parts}:
     e.nonline_parts?{...e,parts:e.nonline_parts}:e;
-  const eventDamage=(event,m,attack,extra)=>{
+  // ref (수정내역 46): percent-of-HP parts read this unit's HP (pct_basis 'target': the attack target's, dealt alike to
+  // every unit in range); armor/magic factors stay those of the unit hit.
+  const eventDamage=(event,m,attack,extra,ref=m)=>{
     let out=0;
     for(const [kind,flat,perc,mul=0] of event.parts){
       let raw=flat+mul*attack;
       for(const [basis,ratio] of perc){
-        const hp=basis==='max'?m.maxhp:basis==='current'?Math.max(0,m.hp):m.maxhp-Math.max(0,m.hp);
+        const hp=basis==='max'?ref.maxhp:basis==='current'?Math.max(0,ref.hp):ref.maxhp-Math.max(0,ref.hp);
         raw+=ratio*hp;
       }
       out+=raw*factor(kind,m,extra);
@@ -1029,13 +1031,18 @@ export function simulateV2(data,composition,options={}){
           if(posModel&&!single)targets=targets.filter(m=>m===target||dist(m,center)<=(e.radius??lp.default_radius));
           const preTargets=targets;
           if(e.requires_stack!=null)targets=targets.filter(m=>(m.stk?.[hero.age_stack?.key]??0)===e.requires_stack);
+          // pct_basis 'target' (수정내역 46, L8·TR5 로우): the percent part is the attack target's HP and the branch
+          // (boss ×0.5 / story ×0.33) is decided by the attack target, dealt alike to everyone in range (2.305
+          // UnitDamagePointLoc with GetUnitState(target), j:68145-68150, 68104-68118, 54841, 53227).
+          const pctRef=e.pct_basis==='target'&&target?.hp>0?target:null;
           for(const m of targets)if(m.hp>0){
             // boss_parts replace parts against a boss; nonline_parts against a boss or frenzy (E6 "보스").
-            let ev=m.kind==='story'?storyEvent(e):e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e.boss_parts&&m.kind==='boss'?{...e,parts:e.boss_parts}:e;
+            const vk=pctRef??m;
+            let ev=vk.kind==='story'?storyEvent(e):e.nonline_parts&&vk.kind!=='line'?{...e,parts:e.nonline_parts}:e.boss_parts&&vk.kind==='boss'?{...e,parts:e.boss_parts}:e;
             const ns=nut?.skill?.[e.index];
             if(ns)ev={...ev,parts:[...ev.parts,[ns.kind,ns.flat*(ns.basis==='cast'?(u.castS??nst.S):nst.S),[],0]]};
             const share=rate*.1*(m===target||single?1:cov);
-            deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
+            deal(m,eventDamage(ev,m,attack,extraArmor,pctRef??m)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
             // Armor break as an expected stack per step, like the supports (cap 75 in abAdd).
             if(m.hp>0&&e.ab)abAdd(m,e.ab*share);
             if(m.hp>0&&e.mob_debuff)mobDebuff(m,e.mob_debuff,share);
