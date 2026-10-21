@@ -21,7 +21,7 @@ onmessage=e=>{
     }
     if(m.type==='analyze'){
       latest=m.id;
-      const {hand,difficulty='신',goal,growthCut=0}=m;
+      const {hand,difficulty='신',goal,growthCut=0}=m;   // m.cats: target categories (수정내역 49)
       const {team,red,unknown,raws}=teamFromHand(data,hand,index);
       const diffs=[...new Set([difficulty,'신','악몽','지옥'])];
       const stats=comboStats(data,team,{red,growthCut,difficulties:diffs});
@@ -37,9 +37,15 @@ onmessage=e=>{
         // commons to pick with 선택 위습.
         const craftTier=t=>t&&!/^(흔함|안흔함|아이템|자원|기타)$/.test(t);
         const now=reachable(hand,recipes,tier,id=>craftTier(tier(id))).filter(x=>x.plan.ok).slice(0,12);
-        const rare=nextTargets(data,hand,recipes,tier,{limit:5,difficulty,red,growthCut,isTarget:id=>/희귀/.test(tier(id)??'')});
-        const next=nextTargets(data,hand,recipes,tier,{limit:8,difficulty,red,growthCut,
-          isTarget:id=>/전설|히든|초월|불멸|영원|제한|신비|변화|왜곡|세라핌|해적선/.test(tier(id)??'')});
+        // 수정내역 49: target categories chosen by the user (helper-style): 희귀, 전설, 히든, 상위(초월·불멸·영원·제한),
+        // 신비·변화·왜곡·세라핌, 해적선, 보조([스턴] 표기 유닛).
+        const CAT={rare:/희귀/,legend:/^전설/,hidden:/^히든/,upper:/초월|불멸|영원|제한/,mystic:/신비|변화|왜곡|세라핌/,ship:/해적선/,support:/\[스턴\]/};
+        const cats=(m.cats?.length?m.cats:['legend','upper']).filter(c=>CAT[c]);
+        // One list per chosen category (5 each), so cheap 희귀 do not push 해적선 or 상위 off the list.
+        const LABEL={rare:'희귀',legend:'전설',hidden:'히든',upper:'상위(초불영제)',mystic:'신비·기타',ship:'해적선',support:'보조'};
+        const next=cats.map(c=>({cat:c,label:LABEL[c],list:nextTargets(data,hand,recipes,tier,{limit:5,difficulty,red,growthCut,
+          isTarget:id=>CAT[c].test(tier(id)??'')})}));
+        const rare=[];
         postMessage({type:'next',id:m.id,next,rare,now});
       },0);
     }

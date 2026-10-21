@@ -34,3 +34,5 @@ table.next{width:100%;table-layout:fixed}
 table.next td:first-child{width:34%}
 table.next td:nth-child(2),table.next th:nth-child(2){width:12%}
 table.next td{white-space:normal;overflow-wrap:anywhere}
+.catbar{display:flex;flex-wrap:wrap;gap:2px 8px;font-size:12px;margin:2px 0 6px}
+.catbar label{display:inline-flex;align-items:center;gap:2px;cursor:pointer}

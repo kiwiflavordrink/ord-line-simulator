@@ -137,7 +137,7 @@ function analyze(){
   analyzeTimer=setTimeout(()=>{
     const diff=difficulty();
     worker.postMessage({type:'analyze',id:++state.reqId,hand:state.hand,difficulty:diff,
-      goal:$('goalSelect').value||null,growthCut:+state.settings.growthCut||0});
+      goal:$('goalSelect').value||null,growthCut:+state.settings.growthCut||0,cats:state.settings.cats??['legend','upper']});
     $('nextBody').innerHTML='<span class="muted">계산 중…</span>';
     renderHand();
   },120);
@@ -209,10 +209,10 @@ function renderQuick(){
 const tierShort=id=>(state.tiers.get(id)??'').replace(/\s*\[.*\]/,'');
 function renderNext(){
   if(!state.helper){$('nextBody').innerHTML='<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>';return;}
-  const table=(title,list)=>!list?.length?'':`<div class="muted">${title}</div><table class="next"><tr><th>유닛</th><th class="num">위습</th><th>뽑을 흔함 · 나무 · 부족</th></tr>`+
+  const table=(title,list)=>!list?.length?'':`${title?`<div class="muted">${title}</div>`:''}<table class="next"><tr><th>유닛</th><th class="num">위습</th><th>뽑을 흔함 · 나무 · 부족</th></tr>`+
     list.map(x=>`<tr><td class="click" data-goal="${x.id}">${esc(nameOf(x.id))}<br><span class="muted">${esc(tierShort(x.id))}</span></td><td class="num big">${x.plan.wisps}</td>
       <td>${x.plan.wisps?chips(x.plan.commons):'<span class="ok">위습 없이 가능</span>'}${x.plan.wood?` <span class="muted">나무 ${x.plan.wood}</span>`:''}${Object.keys(x.plan.missing).length?` <span class="warn">부족 ${chips(x.plan.missing)}</span>`:''}</td></tr>`).join('')+'</table>';
-  const html=table('전설 이상',state.next)+table('희귀',state.rare);
+  const html=(state.next??[]).map(g=>table(g.label,g.list)).join('');
   $('nextBody').innerHTML=html||'<span class="muted">후보 없음</span>';
 }
 function renderNow(){
@@ -245,6 +245,9 @@ $('memPlayer').onchange=async e=>{await saveSettings({memPlayer:+e.target.value}
 $('difficulty').onchange=async e=>{await saveSettings({difficulty:e.target.value});analyze();status();};
 $('growthCut').onchange=async e=>{await saveSettings({growthCut:+e.target.value||0});analyze();};
 $('goalSelect').onchange=async e=>{await saveSettings({goal:e.target.value||null});state.meta.goal=e.target.value||null;analyze();};
+// 목표 종류 (수정내역 49): saved in settings; default 전설 + 상위.
+function syncCats(){const on=new Set(state.settings.cats??['legend','upper']);for(const c of $('catBar').querySelectorAll('input'))c.checked=on.has(c.value);}
+$('catBar').onchange=async()=>{await saveSettings({cats:[...$('catBar').querySelectorAll('input:checked')].map(c=>c.value)});analyze();};
 $('nowBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g){$('goalSelect').value=g;$('goalSelect').onchange({target:$('goalSelect')});}};
 $('nextBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g){$('goalSelect').value=g;$('goalSelect').onchange({target:$('goalSelect')});}};
 $('handBody').onclick=e=>{const b=e.target.closest('button[data-id]');if(b)editHand(b.dataset.id,+b.dataset.d);};
@@ -295,6 +298,7 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   $('difficulty').value=state.settings.difficulty??'auto';
   $('growthCut').value=state.settings.growthCut??0;
   $('memPlayer').value=String(state.settings.memPlayer??0);
+  syncCats();
   $('helperDir').textContent=state.settings.helperDir??'-';
   $('logFile').textContent=state.settings.logFile??'-';
   $('scenarioFile').textContent=state.settings.scenarioFile??'-';
