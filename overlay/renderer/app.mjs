@@ -150,7 +150,7 @@ worker.onmessage=e=>{
   if(m.type==='helper-ok'){status();return;}
   if(m.id!==state.reqId)return;
   if(m.type==='quick'){state.quick=m;renderQuick();status();}
-  if(m.type==='next'){state.next=m.next;renderNext();}
+  if(m.type==='next'){state.next=m.next;state.rare=m.rare;state.now=m.now;renderNext();renderNow();}
 };
 
 function status(msg){
@@ -206,12 +206,21 @@ function renderQuick(){
   }
 }
 
+const tierShort=id=>(state.tiers.get(id)??'').replace(/\s*\[.*\]/,'');
 function renderNext(){
-  const list=state.next??[];
-  if(!list.length){$('nextBody').innerHTML='<span class="muted">후보 없음</span>';return;}
-  $('nextBody').innerHTML=`<table><tr><th>유닛</th><th class="num">위습</th><th class="num">나무</th><th>부족</th><th class="num">시뮬 남은</th></tr>`+
-    list.map(x=>`<tr><td class="click" data-goal="${x.id}">${esc(nameOf(x.id))}</td><td class="num">${x.plan.wisps}</td><td class="num">${x.plan.wood||''}</td>
-      <td>${Object.keys(x.plan.missing).length?chips(x.plan.missing):''}</td><td class="num ${x.sim?(x.sim.clear?'ok':'bad'):''}">${x.sim?.remaining??'-'}</td></tr>`).join('')+'</table>';
+  if(!state.helper){$('nextBody').innerHTML='<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>';return;}
+  const table=(title,list)=>!list?.length?'':`<div class="muted">${title}</div><table class="next"><tr><th>유닛</th><th class="num">위습</th><th>뽑을 흔함 · 나무 · 부족</th></tr>`+
+    list.map(x=>`<tr><td class="click" data-goal="${x.id}">${esc(nameOf(x.id))}<br><span class="muted">${esc(tierShort(x.id))}</span></td><td class="num big">${x.plan.wisps}</td>
+      <td>${x.plan.wisps?chips(x.plan.commons):'<span class="ok">위습 없이 가능</span>'}${x.plan.wood?` <span class="muted">나무 ${x.plan.wood}</span>`:''}${Object.keys(x.plan.missing).length?` <span class="warn">부족 ${chips(x.plan.missing)}</span>`:''}</td></tr>`).join('')+'</table>';
+  const html=table('전설 이상',state.next)+table('희귀',state.rare);
+  $('nextBody').innerHTML=html||'<span class="muted">후보 없음</span>';
+}
+function renderNow(){
+  const list=state.now??[];
+  if(!state.helper){$('nowBody').innerHTML='<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>';return;}
+  $('nowBody').innerHTML=list.length?list.map(x=>`<div class="click" data-goal="${x.id}"><span class="ok">${esc(nameOf(x.id))}</span> <span class="muted">${esc(tierShort(x.id))}</span>
+      ${x.plan.wood?` · 나무 ${x.plan.wood}`:''}${x.plan.gold?` · 골드 ${x.plan.gold}`:''} <span class="muted">← ${chips(x.plan.used)}</span></div>`).join('')
+    :'<span class="muted">지금 바로 만들 수 있는 유닛이 없습니다.</span>';
 }
 
 function renderHand(){
@@ -236,6 +245,7 @@ $('memPlayer').onchange=async e=>{await saveSettings({memPlayer:+e.target.value}
 $('difficulty').onchange=async e=>{await saveSettings({difficulty:e.target.value});analyze();status();};
 $('growthCut').onchange=async e=>{await saveSettings({growthCut:+e.target.value||0});analyze();};
 $('goalSelect').onchange=async e=>{await saveSettings({goal:e.target.value||null});state.meta.goal=e.target.value||null;analyze();};
+$('nowBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g){$('goalSelect').value=g;$('goalSelect').onchange({target:$('goalSelect')});}};
 $('nextBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g){$('goalSelect').value=g;$('goalSelect').onchange({target:$('goalSelect')});}};
 $('handBody').onclick=e=>{const b=e.target.closest('button[data-id]');if(b)editHand(b.dataset.id,+b.dataset.d);};
 $('addUnit').onclick=()=>{
@@ -290,6 +300,12 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   $('scenarioFile').textContent=state.settings.scenarioFile??'-';
   fillUnitLists();
   if(state.settings.helperDir)await loadHelperDir(state.settings.helperDir).catch(e=>status('헬퍼 Data를 읽지 못했습니다: '+e.message));
+  else if(webLive){
+    // serve.ps1 found the ORD_JHelper Data folder on this PC (수정내역 48): load it from /helper/.
+    try{const r=await fetch('/helper/',{cache:'no-store'});const j=r.ok?await r.json():null;
+      if(j?.names?.length){$('helperDir').textContent=j.dir;await loadHelperFrom(n=>fetch('/helper/'+encodeURIComponent(n),{cache:'no-store'}).then(x=>x.text()),j.names);}}
+    catch(e){status('헬퍼 Data를 찾지 못했습니다');}
+  }
   applySource();
   if(!state.settings.helperDir&&!state.settings.source)$('settings').hidden=false;
   status();

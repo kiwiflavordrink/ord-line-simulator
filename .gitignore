@@ -1,3 +1,4 @@
 .cache/
 __pycache__/
 overlay/node_modules/
+helper_path.txt

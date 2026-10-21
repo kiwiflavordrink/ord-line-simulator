@@ -27,3 +27,10 @@ td.num,th.num{text-align:right}
 .click{cursor:pointer}.click:hover{color:var(--acc)}
 body.compact .full,body.compact #settings,body.compact #scenarioBar{display:none!important}
 body.through #panel{border-color:rgba(124,184,255,.35)}
+
+/* 수정내역 48: candidate tables wrap their chips instead of overflowing */
+.chips{display:inline-flex;flex-wrap:wrap;gap:2px}
+table.next{width:100%;table-layout:fixed}
+table.next td:first-child{width:34%}
+table.next td:nth-child(2),table.next th:nth-child(2){width:12%}
+table.next td{white-space:normal;overflow-wrap:anywhere}

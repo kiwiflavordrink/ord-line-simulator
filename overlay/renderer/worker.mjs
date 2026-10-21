@@ -4,7 +4,7 @@
 //  {type:'analyze', id, hand, difficulty, goal, growthCut}
 // Replies {type:'quick', id, ...} at once and {type:'next', id, next} after the slower target search.
 import {teamFromHand,controlSums,comboStats,similarClears,nextTargets,unitIndex,isUpperTier} from '../../dist/advisor.mjs';
-import {indexRecipes,planTarget,reverseRawcode} from '../../dist/planner.mjs';
+import {indexRecipes,planTarget,reverseRawcode,reachable} from '../../dist/planner.mjs';
 
 let data=null,index=null,recipes=new Map(),tiers=new Map(),samples=[],latest=0;
 const tier=id=>tiers.get(id);
@@ -33,8 +33,14 @@ onmessage=e=>{
       // The search is slower (one simulation per candidate); skip it if a newer hand already arrived.
       setTimeout(()=>{
         if(m.id!==latest||!recipes.size)return;
-        const next=nextTargets(data,hand,recipes,tier,{limit:6,difficulty,red,growthCut});
-        postMessage({type:'next',id:m.id,next});
+        // 수정내역 48: what can be crafted right now (no wisps, nothing missing), and the nearest 희귀·상위 targets with the
+        // commons to pick with 선택 위습.
+        const craftTier=t=>t&&!/^(흔함|안흔함|아이템|자원|기타)$/.test(t);
+        const now=reachable(hand,recipes,tier,id=>craftTier(tier(id))).filter(x=>x.plan.ok).slice(0,12);
+        const rare=nextTargets(data,hand,recipes,tier,{limit:5,difficulty,red,growthCut,isTarget:id=>/희귀/.test(tier(id)??'')});
+        const next=nextTargets(data,hand,recipes,tier,{limit:8,difficulty,red,growthCut,
+          isTarget:id=>/전설|히든|초월|불멸|영원|제한|신비|변화|왜곡|세라핌|해적선/.test(tier(id)??'')});
+        postMessage({type:'next',id:m.id,next,rare,now});
       },0);
     }
   }catch(err){postMessage({type:'error',id:m.id,message:String(err?.message??err)});}
