@@ -81,8 +81,11 @@ async function readLog(){
 // Live hand from game memory: main.js runs tools/memscan/memscan.ps1 -Watch, which rewrites a JSON file every few
 // seconds ({Status, Time, Units:[{Rawcode(reversed), Count, Owner, Name}]}). Polled here (the file is replaced, not appended).
 let liveTimer=null,liveFile=null,liveTime=null;
+// Without the Electron app (tools/overlay-web/serve.ps1 on localhost): the same live file is served at /hand.
+const webLive=!api&&location.protocol==='http:'&&['localhost','127.0.0.1'].includes(location.hostname);
 async function startMemory(){
   stopMemory();
+  if(webLive){liveFile='/hand';liveTime=null;liveTimer=setInterval(readLive,2000);readLive();return;}
   const r=await api.memStart(+state.settings.memPlayer||0);
   if(r.error){status(r.error);return;}
   liveFile=r.file;liveTime=null;
@@ -90,8 +93,10 @@ async function startMemory(){
 }
 function stopMemory(){clearInterval(liveTimer);liveTimer=null;liveFile=null;api?.memStop();}
 async function readLive(){
-  if(!liveFile||!(await api.exists(liveFile)))return;
-  let j;try{j=JSON.parse((await api.readFile(liveFile)).replace(/^\uFEFF/,''));}catch{return;}
+  let text;
+  if(webLive){try{const r=await fetch('/hand',{cache:'no-store'});if(!r.ok)return;text=await r.text();}catch{status('패 읽기 서버에 연결하지 못했습니다');return;}}
+  else{if(!liveFile||!(await api.exists(liveFile)))return;text=await api.readFile(liveFile);}
+  let j;try{j=JSON.parse(text.replace(/^\uFEFF/,''));}catch{return;}
   if(j.Time===liveTime)return;liveTime=j.Time;
   for(const u of j.Units??[]){const code=reverseRawcode(u.Rawcode),n=String(u.Name??'').replace(/\|c[0-9a-fA-F]{8}|\|r/g,'').replace(/ - .*$/,'').trim();
     if(n&&!state.names.has(code)&&!state.codeNames.has(code))state.codeNames.set(code,n);}
@@ -119,7 +124,7 @@ function applySource(){
   $('scenarioBar').hidden=src!=='scenario';
   if(api&&state.settings.logFile)api.unwatch(state.settings.logFile);
   if(src!=='memory'&&liveTimer)stopMemory();
-  if(src==='memory'){if(api)startMemory();else status('게임 자동 읽기는 오버레이 앱(Windows)에서만 됩니다.');}
+  if(src==='memory'){if(api||webLive)startMemory();else status('게임 자동 읽기는 오버레이 앱이나 원랜디오버레이.bat에서만 됩니다.');}
   if(src==='log'&&api&&state.settings.logFile){api.watch(state.settings.logFile);readLog();}
   if(src==='manual'){state.hand={...(state.settings.manualHand??{})};state.meta={label:'직접 입력',goal:state.settings.goal??null};analyze();}
   if(src==='scenario'&&api&&state.settings.scenarioFile)api.readFile(state.settings.scenarioFile).then(t=>loadScenario(JSON.parse(t))).catch(e=>status(e.message));
@@ -273,6 +278,7 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
 // --- start ---------------------------------------------------------------------------------------------------------
 (async()=>{
   state.settings=await loadSettings();
+  if(new URLSearchParams(location.search).get('src')==='memory'&&!state.settings.source)await saveSettings({source:'memory'});
   const data=await (await fetch(new URL('../../dist/data.json',import.meta.url))).json();
   for(const h of data.heroes)for(const f of h.forms)if(f.rawcode&&!state.codeNames.has(f.rawcode))state.codeNames.set(f.rawcode,h.name);
   worker.postMessage({type:'data',data});

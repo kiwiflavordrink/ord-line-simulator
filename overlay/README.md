@@ -9,6 +9,17 @@
 
 계산은 저장소의 `dist/advisor.mjs` → `dist/planner.mjs`, `dist/engine_v3.mjs`를 그대로 씁니다(웹 v3와 같은 엔진).
 
+## 설치 없이 쓰기 (권장)
+
+Node.js 설치 없이 윈도우 기본 PowerShell과 엣지만 쓴다(수정내역 47).
+
+1. `python scripts/build_overlay_web.py ordr-overlay.zip`으로 만든 압축(약 0.3MB)을 받아 아무 폴더에 푼다.
+2. 게임을 켜고 `ordr_overlay.bat`을 더블클릭한다. 최소화된 PowerShell 창 2개(패 읽기 `tools/memscan/memscan.ps1 -Watch`, 로컬 서버 `tools/overlay-web/serve.ps1`)와 엣지 앱 창이 뜬다.
+3. 서버는 `http://localhost:8765/`에서만 이 폴더의 파일과 `/hand`(패 읽기 결과)를 내준다. 화면과 계산 코드는 아래 앱과 같다.
+4. 멀티에서 2번 자리면 `ordr_overlay.bat 1`. 끄려면 엣지 창과 PowerShell 창 2개를 닫는다.
+
+엣지 창은 항상 위 고정이 안 된다. 게임 옆이나 보조 모니터에 둔다.
+
 ## 실행 (Windows)
 
 Node.js 18 이상이 필요합니다. 저장소를 내려받은 뒤:
