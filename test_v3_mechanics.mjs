@@ -1,7 +1,7 @@
 // Focused checks for v3 calculation fixes. Each block names the change in docs/수정내역.md.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {simulateV2,alabastaEvents,randomPicks,stackVariant,chainTargets} from './dist/engine_v3.mjs';
+import {simulateV2,alabastaEvents,randomPicks,stackVariant,chainTargets,hitsSpecial} from './dist/engine_v3.mjs';
 import {simulateSingle,singleConditions,SINGLE_MOB} from './dist/engine_single_v3.mjs';
 
 const fullData=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
@@ -181,7 +181,8 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(['파견 해적','이완코브'].every(i=>e5.events.some(e=>e.index===i))&&e5.enemy_armor_auras[0].value===11);
   const noSummon=structuredClone(data),h=noSummon.heroes.find(x=>x.code==='E5');
   h.events=h.events.filter(e=>!['파견 해적','이완코브'].includes(e.index));delete h.enemy_armor_auras;
-  assert.ok(simulateV2(data,[{code:'E5'}],{}).sourceDamage.E5>simulateV2(noSummon,[{code:'E5'}],{}).sourceDamage.E5);
+  // same target rule for both (removing the summon lines would otherwise also change who it attacks, 수정내역 45)
+  assert.ok(simulateV2(data,[{code:'E5'}],{specialFocus:'all'}).sourceDamage.E5>simulateV2(noSummon,[{code:'E5'}],{specialFocus:'all'}).sourceDamage.E5);
   const tr30=data.heroes.find(x=>x.code==='TR30').events.filter(e=>e.stun);
   assert.ok(tr30.some(e=>e.index==='스턴 아틀라스 타격')&&tr30.some(e=>e.index==='스턴 릴리스 버블건'));
   assert.ok(simulateV2(data,[{code:'TR30'}],pos).control.stunnedLineMobSeconds>0);
@@ -284,8 +285,8 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(z(fullData,1)>z(noSpecial,1));                       // bosses and frenzy mobs trigger it
   const approachOnly=structuredClone(fullData),za=approachOnly.heroes.find(h=>h.code==='Z8');
   za.events=za.events.filter(e=>e.on_approach);za.events[0].ab=0;
-  const one=simulateV2(approachOnly,[{code:'Z8',count:1}],{red:false}).sourceDamage.Z8;
-  const three=simulateV2(approachOnly,[{code:'Z8',count:3}],{red:false}).sourceDamage.Z8;
+  const one=simulateV2(approachOnly,[{code:'Z8',count:1}],{red:false,specialFocus:'all'}).sourceDamage.Z8;
+  const three=simulateV2(approachOnly,[{code:'Z8',count:3}],{red:false,specialFocus:'all'}).sourceDamage.Z8;
   assert.ok(Math.abs(three-one)<1e-6*one);                       // copies share the once-per-enemy roll
   // Red Force +35% reaches TR28 and H15 basic attacks.
   for(const c of ['TR28','H15']){
@@ -487,4 +488,23 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.deepEqual(simulateV2(fullData,[{code:'L10'}],{specialTimer:null}).checkpoints.map(c=>c.remaining),
     simulateV2(fullData,[{code:'L10'}]).checkpoints.map(c=>c.remaining),'off by default');
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer: passed');
+// [수정 45] 보스·광폭: 단일 피해 문장이 있는 영웅만 보스·광폭을 때리고, 광폭은 받는 피해 +50%·폭발형 0.8배,
+// 제파 흑완·네코 광분의 보스·광폭 공격 시 범위는 라인몹에도 들어간다.
+{
+  const ev=c=>fullData.heroes.find(h=>h.code===c).events;
+  assert.equal(hitsSpecial(ev('L9')),true,'루치: 단일 34만5천·육식 25만은 보스에도 들어간다');
+  assert.equal(hitsSpecial([{target:'single_line',parts:[['magic',0,[['current',.34]],0]]},{radius:300,parts:[['magic',1e5,[],0]]}]),false,'라인 전용 단일·범위만이면 보스를 안 때린다');
+  assert.equal(hitsSpecial(ev('E1')),false);
+  const r=simulateV2(fullData,[{code:'E1'}],{red:false,redDamage:false});
+  const all=simulateV2(fullData,[{code:'E1'}],{red:false,redDamage:false,specialFocus:'all'});
+  assert.ok(r.sourceDamage.E1>all.sourceDamage.E1,'광역 유닛은 보스가 살아 있어도 라인몹을 때린다');
+  const t0=simulateV2(fullData,[{code:'L26'}],{frenzyDamageTaken:0}),t1=simulateV2(fullData,[{code:'L26'}]);
+  const k=x=>x.checkpoints.slice(1,5).map(c=>c.specialKillSecond);
+  assert.ok(k(t1).every((v,i)=>v!=null&&(k(t0)[i]==null||v<=k(t0)[i])),'광폭 받는 피해 증가로 더 빨리 잡힌다');
+  const z=ev('L26').find(e=>e.index==='흑완 보스·광폭 범위');
+  assert.deepEqual([z.radius,z.when_target,z.parts[0][2][0]],[650,['boss','frenzy'],['max',.004]]);
+  const g=ev('L3').find(e=>e.index==='광분 범위');assert.deepEqual([g.radius,g.when_target],[600,['boss']]);
+  const noArea=structuredClone(fullData);noArea.heroes.find(h=>h.code==='L26').events=noArea.heroes.find(h=>h.code==='L26').events.filter(e=>e.index!=='흑완 보스·광폭 범위');
+  assert.ok(simulateV2(fullData,[{code:'L26'}]).sourceDamage.L26>simulateV2(noArea,[{code:'L26'}]).sourceDamage.L26,'보스·광폭 공격 시 범위가 라인몹에 들어간다');
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting: passed');

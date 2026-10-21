@@ -205,6 +205,17 @@ function supportCastSchedule(code,full){
   return casts;
 }
 
+// 수정내역 45: a hero focuses a living boss/frenzy only when its tooltip gives it damage that lands on a boss/frenzy
+// as a single target: an unrestricted single-target line ('single'/'multishot'), a boss/frenzy line ('boss',
+// 'frenzy', 'target_special') or boss/frenzy parts. Line-only single lines ('single_line', "라인 몬스터일 경우")
+// and basic attacks do not count. Other heroes keep attacking line mobs; their area damage still hits bosses/frenzy.
+const FRENZY_DAMAGE_TAKEN=.5;   // [추정] WC3 Absk DataC1 default (A08R leaves it unset); see 수정내역 45
+const SPECIAL_SINGLE=new Set(['single','multishot','boss','frenzy','target_special']);
+const hasDamage=parts=>(parts??[]).some(p=>p[1]>0||(p[2]??[]).some(x=>x[1]>0)||p[3]>0);
+export function hitsSpecial(events){
+  return (events??[]).some(e=>(SPECIAL_SINGLE.has(e.target)&&(hasDamage(e.parts)||hasDamage(e.boss_parts)))||
+    hasDamage(e.boss_parts)&&e.target!=='single_line'||e.stack_target);
+}
 export function simulateV2(data,composition,options={}){
   const stackLevelOf=code=>['zero','half','max'].includes(options.stackLevels?.[code])?options.stackLevels[code]:
     ['zero','half','max'].includes(options.stackLevel)?options.stackLevel:null;
@@ -258,7 +269,7 @@ export function simulateV2(data,composition,options={}){
           if(['전설','히든'].includes(model.grade)){ev=[...events,GREEN_BLOOD_EVENT];gb=true;gbState={code:gbCode,applied:true};}
           else gbState={code:gbCode,applied:false,reason:`전설/히든 유닛에만 적용 (${model.grade})`};
         }
-        units.push({kind:'hero',code:item.code,model,events:ev,damage:item.damage!==false,level,levelStart:level,greenBlood:gb});
+        units.push({kind:'hero',code:item.code,model,events:ev,damage:item.damage!==false,level,levelStart:level,greenBlood:gb,hitsSpecial:hitsSpecial(ev)});
       }
     }
     else if(SUPPORTS[item.code])for(let i=0;i<count;i++)units.push({kind:'support',code:item.code,model:{...SUPPORTS[item.code],aps:allyAps(SUPPORTS[item.code].aps,BASE_COOLDOWN[item.code])},damage:item.damage!==false,ab:item.ab!==false});
@@ -370,6 +381,13 @@ export function simulateV2(data,composition,options={}){
   // the team has not killed it (a boss killer or 광폭 담당 outside the simulated team). Bonuses that need a living
   // boss/frenzy (e.g. L10 원혼 폭발 every hit) then last only that long. Off by default.
   const specialTimer=options.specialTimer&&typeof options.specialTimer==='object'?options.specialTimer:null;
+  // options.specialFocus (수정내역 45): 'tooltip' (default) = only heroes with boss/frenzy single damage (hitsSpecial)
+  // attack a living boss/frenzy; 'all' = every hero attacks it first (the model before 45).
+  const specialFocusAll=options.specialFocus==='all';
+  // Frenzy units (2.305 j:36705-36735): A08R 광폭화 = Absk berserk "광폭화 몬스터의 받는 데미지 ... 상승" (wts STRING 9367),
+  // damage-taken increase left at the WC3 default (options.frenzyDamageTaken, see 수정내역 45 for the value), and
+  // A11S set to level 1 (j:36731) so their HP-scaled explosive damage is x(.79+.01 x 1) = x0.80 (j:6343).
+  const frenzyTaken=clamp(options.frenzyDamageTaken??FRENZY_DAMAGE_TAKEN,0,5);
   const sc=options.singleControl;
   const singleControl=sc&&sc.to15>0&&sc.finish>0?{to15:clamp(sc.to15,.1,120),finish:clamp(sc.finish,.1,120)}:null;
   const finish=options.finisher??{},finishMode=finish.mode??'off';
@@ -448,10 +466,10 @@ export function simulateV2(data,composition,options={}){
     m.s+=clamp(base*pct,lp.min_speed,lp.max_speed??490)*.1;place(m);
   };
   // Attack target in range: bosses and frenzy mobs first (players focus them), then the nearest line mob.
-  const pickTarget=range=>{
+  const pickTarget=(range,lineFirst=false)=>{
     if(!posModel)return specials[0]??mobs[0]??null;
     const near=list=>list.filter(m=>m.hp>0&&dist(m,spawnPt)<=range).sort((a,b)=>dist(a,spawnPt)-dist(b,spawnPt))[0];
-    return near(specials)??near(mobs)??null;
+    return lineFirst?near(mobs)??near(specials)??null:near(specials)??near(mobs)??null;
   };
   // Bosses and frenzy mobs carry A08Q (Resistant Skin) only on 신·악몽 (R01R); 지옥 takes the normal duration.
   const stunFor=(m,st)=>m.kind==='line'||!diff.stun_resist?st.normal:m.kind==='boss'?(st.boss??st.hero??st.normal):(st.hero??st.normal);
@@ -546,13 +564,15 @@ export function simulateV2(data,composition,options={}){
     }
   };
   const factor=(kind,m,extra)=>kind==='physical'?pf(armor(m,extra)):kind==='magic'?mobMagic(m):
-    kind==='explosive'?1+Math.min(.25,explosiveAmp+(m.dbf?.explosive_amp??0)+(m.kind==='line'?normalOnlyExplosiveAmp:0))+(curse.explosive??0):1;
+    kind==='explosive'?(m.kind==='frenzy'?.8+Math.min(.45,Math.max(0,explosiveAmp)+(m.dbf?.explosive_amp??0)):
+      1+Math.min(.25,explosiveAmp+(m.dbf?.explosive_amp??0)+(m.kind==='line'?normalOnlyExplosiveAmp:0)))+(curse.explosive??0):1;
   // options.controlOnly [codes] (수정내역 32): those units deal no damage but keep stuns and slows (control evaluation).
   const controlOnly=new Set(options.controlOnly??[]);
   const holdStat={samples:0,count:0,share:0,gaps:0,gapSum:0,gapSq:0,piled:0,stunned:0,free:0,leaks:0,episodes:0,exits:0,dwell:0};
   const deal=(m,amount,source,scope,kind)=>{
     if(!m||m.hp<=0||!Number.isFinite(amount)||amount<=0||controlOnly.has(source))return;
     amount*=1+allAmp+(m.dbf?.all_amp??0);
+    if(m.kind==='frenzy')amount*=1+frenzyTaken;
     const applied=Math.min(m.hp,amount);
     m.hp-=amount;
     if(m.kind==='line'){
@@ -800,7 +820,8 @@ export function simulateV2(data,composition,options={}){
         }
         if(u.kind!=='hero'||!u.damage)continue;
         const hero=u.model,{form,transformed}=formAt(hero,globalT,t,resourceMode),baseAps=hero.forms[0].aps;
-        if(posModel)target=pickTarget(hero.own_range?form.range:engageRange);
+        if(posModel)target=pickTarget(hero.own_range?form.range:engageRange,!specialFocusAll&&!u.hitsSpecial);
+        else target=!specialFocusAll&&!u.hitsSpecial?mobs.find(m=>m.hp>0)??globalTarget:globalTarget;
         let aps=form.aps;if(hero.code==='E10'&&transformed)aps=1/.11;
         // Attack-speed auras add to the form's bonus (aps x base cooldown - 1), capped at +400% in WC3.
         // 양분 (TR6, hero.nutrients, 수정내역 22): one counter per player shared by every copy. A transform
@@ -926,6 +947,9 @@ export function simulateV2(data,composition,options={}){
             rate*=frac;
           }
           if(e.when_target==='line'&&target?.kind!=='line')continue;   // fires only while attacking a line mob
+          // when_target [kinds] (수정내역 45): fires only while the attack target is one of these kinds (L26 흑완·L3 광분
+          // area around a boss/frenzy); the area still hits every enemy in range, line mobs included.
+          if(Array.isArray(e.when_target)&&!e.when_target.includes(target?.kind))continue;
           // Position model: a skill needs a target in range unless it is centred on the hero.
           const center=posModel?(e.center==='self'?spawnPt:target):null;
           if(posModel&&!center)continue;
