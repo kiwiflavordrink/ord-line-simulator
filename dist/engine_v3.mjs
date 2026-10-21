@@ -366,6 +366,10 @@ export function simulateV2(data,composition,options={}){
   const customRate=clamp(custom.aps??5,0,100)*clamp(custom.chance??.15,0,1);
   const customFlat=clamp(custom.flat??0,0,1e10),customMax=clamp(custom.maxPct??0,0,1);
   const customCurrent=clamp(custom.currentPct??0,0,1),customLost=clamp(custom.lostPct??0,0,1);
+  // options.specialTimer {boss, frenzy} seconds (수정내역 44): a boss/frenzy is removed this long after it appears even if
+  // the team has not killed it (a boss killer or 광폭 담당 outside the simulated team). Bonuses that need a living
+  // boss/frenzy (e.g. L10 원혼 폭발 every hit) then last only that long. Off by default.
+  const specialTimer=options.specialTimer&&typeof options.specialTimer==='object'?options.specialTimer:null;
   const sc=options.singleControl;
   const singleControl=sc&&sc.to15>0&&sc.finish>0?{to15:clamp(sc.to15,.1,120),finish:clamp(sc.finish,.1,120)}:null;
   const finish=options.finisher??{},finishMode=finish.mode??'off';
@@ -642,7 +646,7 @@ export function simulateV2(data,composition,options={}){
     if(!story&&diff.boss[String(round)]){
       const [bossHp,dataBossArmor]=diff.boss[String(round)],hp=bossHp+diff.common.hp+(curse.boss_hp??0);
       const baseArmor=legacyArmor?.boss[String(round)]??dataBossArmor;
-      const boss={hp,maxhp:hp,armor:baseArmor,ab:0,kind:'boss',round};
+      const boss={hp,maxhp:hp,armor:baseArmor,ab:0,kind:'boss',round,born:(round-60)*32};
       if(posModel){boss.s=0;boss.speed=lp.boss_speed;place(boss);}
       specials.push(boss);
     }
@@ -657,11 +661,15 @@ export function simulateV2(data,composition,options={}){
       }
       if(!story&&diff.frenzy[String(round)]&&step===75){
         const hp=diff.frenzy[String(round)]+diff.common.hp+(curse.line_hp??0);
-        const frenzy={hp,maxhp:hp,armor:armor0+(diff.frenzy_aura?.armor??0),ab:0,kind:'frenzy',round};
+        const frenzy={hp,maxhp:hp,armor:armor0+(diff.frenzy_aura?.armor??0),ab:0,kind:'frenzy',round,born:globalT};
         if(posModel){frenzy.s=0;frenzy.speed=lp.mob_speed;place(frenzy);}
         specials.push(frenzy);
       }
       for(let i=mobs.length-1;i>=0;i--)if(mobs[i].hp<=0){mobs.splice(i,1);totalLineKilled++;}
+      if(specialTimer)for(const sp of specials){
+        const lim=specialTimer[sp.kind];
+        if(lim>0&&sp.hp>0&&globalT-sp.born>=lim){sp.hp=0;if(sp.round===round)specialKill??=+t.toFixed(1);}
+      }
       for(let i=specials.length-1;i>=0;i--)if(specials[i].hp<=0)specials.splice(i,1);
       if(story&&!specials.length){storyKill=+globalT.toFixed(1);return result(true);}
       if(story&&globalT>=(story.seconds??600))return result(false);

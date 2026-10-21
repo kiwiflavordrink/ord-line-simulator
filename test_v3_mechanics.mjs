@@ -478,4 +478,13 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.equal(simulateV2(fullData,[{code:'L25'}],{heroArmorCuts:true,cut:0}).cut,27);
   assert.equal(simulateV2(fullData,[{code:'L7'}],{cut:0}).cut,0,'off by default');
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras: passed');
+// [수정 44] specialTimer: 보스·광폭은 나온 뒤 정한 시간이 지나면 사라지고, 살아 있을 때만 붙는 원혼 폭발 매 타격도 그만큼만 붙는다.
+{
+  const off=simulateV2(fullData,[{code:'L10'}],{red:false,redDamage:false,cut:0});
+  const on=simulateV2(fullData,[{code:'L10'}],{red:false,redDamage:false,cut:0,specialTimer:{boss:3,frenzy:3}});
+  assert.ok(on.checkpoints[0].specialKillSecond!=null&&on.checkpoints[0].specialKillSecond<=3.1,'boss removed by the timer');
+  assert.ok(on.sourceDamage.L10<off.sourceDamage.L10||on.failedRound>off.failedRound||on.clear,'less boss-time bonus, or longer survival');
+  assert.deepEqual(simulateV2(fullData,[{code:'L10'}],{specialTimer:null}).checkpoints.map(c=>c.remaining),
+    simulateV2(fullData,[{code:'L10'}]).checkpoints.map(c=>c.remaining),'off by default');
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer: passed');
