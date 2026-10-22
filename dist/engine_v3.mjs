@@ -417,7 +417,7 @@ export function simulateV2(data,composition,options={}){
   // others keep the front mob. true = the 단 units of the single tester
   // (FRESH_SINGLES, default since 수정내역 54), an array of codes, or false (all attack the front mob). Non-position model only (the position model already picks by distance).
   const freshTarget=new Set(options.freshTarget===false?[]:Array.isArray(options.freshTarget)?options.freshTarget:FRESH_SINGLES);
-  const freshPick={t:null,mob:null};
+  const freshPick={t:null,mob:null},freshCut=clamp(options.freshCut??.15,0,.9);
   // Frenzy units (2.305 j:36705-36735): A08R 광폭화 = Absk berserk "광폭화 몬스터의 받는 데미지 ... 상승" (wts STRING 9367),
   // damage-taken increase left at the WC3 default (options.frenzyDamageTaken, see 수정내역 45 for the value), and
   // A11S set to level 1 (j:36731) so their HP-scaled explosive damage is x(.79+.01 x 1) = x0.80 (j:6343).
@@ -658,7 +658,7 @@ export function simulateV2(data,composition,options={}){
   let storyKill=null;
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
     story:options.story?{killed:storyKill!=null,second:storyKill,hpLeft:specials.find(x=>x.kind==='story')?.hp??0}:null,
-    bench:bench?{round:bench.round,to15:bench.to15,kill:bench.kill,hp:benchMob?.maxhp??null}:null,
+    bench:bench?{round:bench.round,to30:bench.to30,to15:bench.to15,kill:bench.kill,hp:benchMob?.maxhp??null}:null,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
     holding:holdStat.samples?(()=>{const H=holdStat,m=H.gaps?H.gapSum/H.gaps:0,v=H.gaps?H.gapSq/H.gaps-m*m:0;
       return {radius:options.holding.radius??600,inZone:H.count/H.samples,share:H.share/H.samples,gapMean:m,gapCV:m?Math.sqrt(Math.max(0,v))/m:0,piled:H.gaps?H.piled/H.gaps:0,
@@ -694,7 +694,7 @@ export function simulateV2(data,composition,options={}){
   // options.bench {round, seconds} (수정내역 60, 단일 측정): one line mob of that round (default 65) at t=0 and nothing
   // else (no other spawns, boss or frenzy, no defeat). The team attacks it with every aura, debuff and amp of the
   // line model; result.bench {to15, kill} in seconds (null if not reached within `seconds`, default 64).
-  const bench=!story&&options.bench?{round:options.bench.round??65,seconds:options.bench.seconds??64,to15:null,kill:null}:null;
+  const bench=!story&&options.bench?{round:options.bench.round??65,seconds:options.bench.seconds??64,to15:null,to30:null,kill:null}:null;
   let benchMob=null;
   // bench.attackers: 'singles' (default) = only the 단일 units (freshTarget set) deal damage, everyone else keeps
   // only auras and debuffs; 'all' = the whole team; or an array of codes (사용자: "단일 유닛들만 치게").
@@ -726,6 +726,7 @@ export function simulateV2(data,composition,options={}){
         if(!benchMob&&round===bench.round&&step===0){newMob=benchMob={hp:hp0,maxhp:hp0,armor:armor0,ab:0,kind:'line',round};
           if(posModel){newMob.s=0;newMob.speed=lp.mob_speed;place(newMob);}mobs.push(newMob);totalLineSpawned++;}
         else if(benchMob){
+          if(bench.to30==null&&benchMob.hp<=.3*benchMob.maxhp)bench.to30=+bt.toFixed(1);
           if(bench.to15==null&&benchMob.hp<=.15*benchMob.maxhp)bench.to15=+bt.toFixed(1);
           if(benchMob.hp<=0){bench.kill=+bt.toFixed(1);return result(true);}
           if(bt>=bench.seconds)return result(false);
@@ -885,9 +886,9 @@ export function simulateV2(data,composition,options={}){
           if(freshPick.t!==globalT){
             freshPick.t=globalT;
             const cur=freshPick.mob;
-            if(!(cur&&cur.hp>.15*cur.maxhp&&mobs.includes(cur))){
+            if(!(cur&&cur.hp>freshCut*cur.maxhp&&mobs.includes(cur))){
               freshPick.mob=null;
-              for(let k=mobs.length-1;k>=0;k--)if(mobs[k].hp>.15*mobs[k].maxhp){freshPick.mob=mobs[k];break;}
+              for(let k=mobs.length-1;k>=0;k--)if(mobs[k].hp>freshCut*mobs[k].maxhp){freshPick.mob=mobs[k];break;}
             }
           }
           if(freshPick.mob?.hp>0)target=freshPick.mob;
