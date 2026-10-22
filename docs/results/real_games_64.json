@@ -198,6 +198,28 @@
     ]
    },
    "diff": -6
+  },
+  {
+   "id": "G10",
+   "label": "신 류마 영원·에넬 제한 (나스쥬로)",
+   "actual": {
+    "clear": true,
+    "count": 21
+   },
+   "sim": {
+    "clear": true,
+    "count": 7,
+    "failed": null,
+    "rounds": [
+     0,
+     3,
+     4,
+     8,
+     10,
+     7
+    ]
+   },
+   "diff": -14
   }
  ]
 }
