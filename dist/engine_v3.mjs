@@ -401,6 +401,7 @@ export function simulateV2(data,composition,options={}){
   // others keep the front mob. true = the 단 units of the single tester
   // (FRESH_SINGLES, default since 수정내역 54), an array of codes, or false (all attack the front mob). Non-position model only (the position model already picks by distance).
   const freshTarget=new Set(options.freshTarget===false?[]:Array.isArray(options.freshTarget)?options.freshTarget:FRESH_SINGLES);
+  const freshPick={t:null,mob:null};
   // Frenzy units (2.305 j:36705-36735): A08R 광폭화 = Absk berserk "광폭화 몬스터의 받는 데미지 ... 상승" (wts STRING 9367),
   // damage-taken increase left at the WC3 default (options.frenzyDamageTaken, see 수정내역 45 for the value), and
   // A11S set to level 1 (j:36731) so their HP-scaled explosive damage is x(.79+.01 x 1) = x0.80 (j:6343).
@@ -842,10 +843,17 @@ export function simulateV2(data,composition,options={}){
         if(posModel)target=pickTarget(hero.own_range?form.range:engageRange,!specialFocusAll&&!u.hitsSpecial);
         else target=!specialFocusAll&&!u.hitsSpecial?mobs.find(m=>m.hp>0)??globalTarget:globalTarget;
         if(!posModel&&freshTarget.has(u.code)){
-          // Stay on the chosen mob until it reaches 15% (사용자 규칙), then take the newest line mob above 15%.
-          const cur=u.freshCur;
-          if(cur&&cur.hp>.15*cur.maxhp&&mobs.includes(cur))target=cur;
-          else{u.freshCur=null;for(let k=mobs.length-1;k>=0;k--)if(mobs[k].hp>.15*mobs[k].maxhp){target=u.freshCur=mobs[k];break;}}
+          // All single units share one target (사용자: "단일 유닛들은 함께 하나의 몹을 친다"), chosen once per 0.1 s
+          // step: kept until it reaches 15%, then the newest line mob above 15%.
+          if(freshPick.t!==globalT){
+            freshPick.t=globalT;
+            const cur=freshPick.mob;
+            if(!(cur&&cur.hp>.15*cur.maxhp&&mobs.includes(cur))){
+              freshPick.mob=null;
+              for(let k=mobs.length-1;k>=0;k--)if(mobs[k].hp>.15*mobs[k].maxhp){freshPick.mob=mobs[k];break;}
+            }
+          }
+          if(freshPick.mob?.hp>0)target=freshPick.mob;
         }
         let aps=form.aps;if(hero.code==='E10'&&transformed)aps=1/.11;
         // Attack-speed auras add to the form's bonus (aps x base cooldown - 1), capped at +400% in WC3.
