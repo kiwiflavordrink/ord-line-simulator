@@ -593,10 +593,10 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
 {
   const b=simulateV2(fullData,[{code:'L9',count:2}],{red:false,redDamage:false,bench:{}}).bench;
   assert.ok(b.to15>1&&b.to15<6&&b.kill>b.to15,'루치 2기 100→15%');
-  const w=simulateV2(fullData,[{code:'L9',count:2},{code:'E9'}],{red:false,redDamage:false,bench:{}}).bench;
-  assert.equal(w.to15,b.to15,'단일 유닛만 친다(우타 딜 제외)');
+  const wr=simulateV2(fullData,[{code:'L9',count:2},{code:'E9'}],{red:false,redDamage:false,bench:{}});
+  assert.ok(!wr.sourceDamage.E9,'단일 유닛만 친다(우타는 오라만)');
   const a=simulateV2(fullData,[{code:'L9',count:2},{code:'E9'}],{red:false,redDamage:false,bench:{attackers:'all'}}).bench;
-  assert.ok(a.to15<b.to15);
+  assert.ok(a.to15<wr.bench.to15);
   assert.ok(fullData.heroes.find(h=>h.code==='TR1').events.find(e=>e.index==='크로우즈').mob_debuff.all_amp===.1);
 }
 console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen, single bench: passed');
