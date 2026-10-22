@@ -571,4 +571,13 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const c=simulateV2(fullData,[{code:'L16'},{code:'TR12'}],{...o,royalRoader:'TR12'});
   assert.ok(c.sourceDamage.TR12>simulateV2(fullData,[{code:'L16'},{code:'TR12'}],o).sourceDamage.TR12);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader: passed');
+// [수정 57] 특강 데이터: 핸콕 영원(석화 2레벨: 석화발현 7.5→10%, 방깎 35→40, 슬레이브 애로우 0.1% 폭발형), 상디 초월(H09G 제르마 블랙).
+{
+  const o={red:false,redDamage:false};
+  const e0=simulateV2(fullData,[{code:'E12'}],o),e1=simulateV2(fullData,[{code:'E12'}],{...o,traits:{E12:'on'}});
+  assert.ok(e1.sourceDamage.E12>e0.sourceDamage.E12,'핸콕 영원 특강이 더 세다');
+  assert.equal(simulateV2(fullData,[{code:'E12'}],{...o,heroArmorCuts:true,cut:0,traits:{E12:'on'}}).cut,40);
+  const t0=simulateV2(fullData,[{code:'TR12'}],o),t1=simulateV2(fullData,[{code:'TR12'}],{...o,traits:{TR12:'on'}});
+  assert.ok(t1.sourceDamage.TR12>t0.sourceDamage.TR12,'상디 초월 특강(제르마 블랙)이 더 세다');
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits: passed');
