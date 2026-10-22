@@ -605,6 +605,7 @@ export function simulateV2(data,composition,options={}){
   const holdStat={samples:0,count:0,share:0,gaps:0,gapSum:0,gapSq:0,piled:0,stunned:0,free:0,leaks:0,episodes:0,exits:0,dwell:0};
   const deal=(m,amount,source,scope,kind)=>{
     if(!m||m.hp<=0||!Number.isFinite(amount)||amount<=0||controlOnly.has(source))return;
+    if(benchOnly&&!benchOnly.has(source))return;
     amount*=1+allAmp+(m.dbf?.all_amp??0);
     if(m.kind==='frenzy')amount*=1+frenzyTaken;
     const applied=Math.min(m.hp,amount);
@@ -657,6 +658,7 @@ export function simulateV2(data,composition,options={}){
   let storyKill=null;
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
     story:options.story?{killed:storyKill!=null,second:storyKill,hpLeft:specials.find(x=>x.kind==='story')?.hp??0}:null,
+    bench:bench?{round:bench.round,to15:bench.to15,kill:bench.kill,hp:benchMob?.maxhp??null}:null,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
     holding:holdStat.samples?(()=>{const H=holdStat,m=H.gaps?H.gapSum/H.gaps:0,v=H.gaps?H.gapSq/H.gaps-m*m:0;
       return {radius:options.holding.radius??600,inZone:H.count/H.samples,share:H.share/H.samples,gapMean:m,gapCV:m?Math.sqrt(Math.max(0,v))/m:0,piled:H.gaps?H.piled/H.gaps:0,
@@ -689,7 +691,16 @@ export function simulateV2(data,composition,options={}){
   // fort armor, the same armor/magic debuff abilities as line mobs). No line, boss or frenzy; no defeat; the run ends
   // when the story dies or after `seconds`. Result `story {killed, second}`.
   const story=options.story??null;
-  const loopRounds=story?Array.from({length:Math.max(1,Math.ceil((story.seconds??600)/32))},(_,i)=>60+i):rounds;
+  // options.bench {round, seconds} (수정내역 60, 단일 측정): one line mob of that round (default 65) at t=0 and nothing
+  // else (no other spawns, boss or frenzy, no defeat). The team attacks it with every aura, debuff and amp of the
+  // line model; result.bench {to15, kill} in seconds (null if not reached within `seconds`, default 64).
+  const bench=!story&&options.bench?{round:options.bench.round??65,seconds:options.bench.seconds??64,to15:null,kill:null}:null;
+  let benchMob=null;
+  // bench.attackers: 'singles' (default) = only the 단일 units (freshTarget set) deal damage, everyone else keeps
+  // only auras and debuffs; 'all' = the whole team; or an array of codes (사용자: "단일 유닛들만 치게").
+  const benchOnly=!bench?null:options.bench.attackers==='all'?null:
+    new Set(Array.isArray(options.bench.attackers)?options.bench.attackers:[...freshTarget]);
+  const loopRounds=bench?Array.from({length:Math.ceil(bench.seconds/32)},(_,i)=>bench.round+i).filter(r=>diff.rounds[String(r)]||r===bench.round):story?Array.from({length:Math.max(1,Math.ceil((story.seconds??600)/32))},(_,i)=>60+i):rounds;
   for(const round of loopRounds){
     const legacyArmor=armorModel==='data'?diff.armor_legacy:null;
     const [lineHp,mapArmor]=diff.rounds[String(round)]??[0,0],armor0=legacyArmor?.line[String(round)]??mapArmor;
@@ -699,7 +710,7 @@ export function simulateV2(data,composition,options={}){
       // Fort armor: attack-type multipliers of round 62 (fort line mob). Not an arrival (no approach skills).
       specials.push({hp:story.hp,maxhp:story.hp,armor:story.armor,ab:0,kind:'story',round,typeRound:'62',regen:story.regen??0,arrived:true});
     }
-    if(!story&&diff.boss[String(round)]){
+    if(!story&&!bench&&diff.boss[String(round)]){
       const [bossHp,dataBossArmor]=diff.boss[String(round)],hp=bossHp+diff.common.hp+(curse.boss_hp??0);
       const baseArmor=legacyArmor?.boss[String(round)]??dataBossArmor;
       const boss={hp,maxhp:hp,armor:baseArmor,ab:0,kind:'boss',round,born:(round-60)*32};
@@ -710,12 +721,22 @@ export function simulateV2(data,composition,options={}){
       const t=step*.1,globalT=(round-60)*32+t,globalStep=(round-60)*320+step;
       now=globalT;
       let newMob=null;
-      if(!story&&step%5===0&&spawned<35){
+      if(bench){
+        const bt=globalT-(bench.round-60)*32;
+        if(!benchMob&&round===bench.round&&step===0){newMob=benchMob={hp:hp0,maxhp:hp0,armor:armor0,ab:0,kind:'line',round};
+          if(posModel){newMob.s=0;newMob.speed=lp.mob_speed;place(newMob);}mobs.push(newMob);totalLineSpawned++;}
+        else if(benchMob){
+          if(bench.to15==null&&benchMob.hp<=.15*benchMob.maxhp)bench.to15=+bt.toFixed(1);
+          if(benchMob.hp<=0){bench.kill=+bt.toFixed(1);return result(true);}
+          if(bt>=bench.seconds)return result(false);
+        }
+      }
+      if(!story&&!bench&&step%5===0&&spawned<35){
         newMob={hp:hp0,maxhp:hp0,armor:armor0,ab:0,kind:'line',round};
         if(posModel){newMob.s=0;newMob.speed=lp.mob_speed;place(newMob);}
         mobs.push(newMob);spawned++;totalLineSpawned++;
       }
-      if(!story&&diff.frenzy[String(round)]&&step===75){
+      if(!story&&!bench&&diff.frenzy[String(round)]&&step===75){
         const hp=diff.frenzy[String(round)]+diff.common.hp+(curse.line_hp??0);
         const frenzy={hp,maxhp:hp,armor:armor0+(diff.frenzy_aura?.armor??0),ab:0,kind:'frenzy',round,born:globalT};
         if(posModel){frenzy.s=0;frenzy.speed=lp.mob_speed;place(frenzy);}
@@ -729,18 +750,18 @@ export function simulateV2(data,composition,options={}){
       for(let i=specials.length-1;i>=0;i--)if(specials[i].hp<=0)specials.splice(i,1);
       if(story&&!specials.length){storyKill=+globalT.toFixed(1);return result(true);}
       if(story&&globalT>=(story.seconds??600))return result(false);
-      if(!story&&!options.holding?.noDefeat&&mobs.length+specials.length>=diff.defeat){
+      if(!story&&!bench&&!options.holding?.noDefeat&&mobs.length+specials.length>=diff.defeat){
         timeline.push({second:globalT,count:mobs.length+specials.length,round});
         return result(false,round,+t.toFixed(1));
       }
       const active=specials.find(s=>s.round===round);
-      const bossAura=specials.some(s=>s.kind==='boss'),frenzyAura=specials.some(s=>s.kind==='frenzy');
+      const bossAura=specials.some(s=>s.kind==='boss'),frenzyAura=specials.some(s=>s.kind==='frenzy'&&!s.auraOff);
       const extraArmor=(bossAura?10:0)+(frenzyAura?diff.frenzy_aura?.armor??0:0);
       // Enemies arriving this step: the new line mob, the round's boss (step 0) and frenzy mob (7.5 s).
       const arrivals=[newMob,...specials.filter(s=>s.round===round&&!s.arrived)].filter(Boolean);
       for(const s of arrivals)s.arrived=true;
       for(const m of arrivals)for(const u of units){
-        if(u.kind!=='hero'||!u.damage)continue;
+        if(u.kind!=='hero'||!u.damage||benchOnly&&!benchOnly.has(u.code))continue;
         const hero=u.model,form=formAt(hero,globalT,t,resourceMode).form;
         const attack=heroAttack(u,form);
         for(const e0 of u.events){
@@ -778,7 +799,7 @@ export function simulateV2(data,composition,options={}){
       const unitRegen=r=>data.round_regen?.[String(r)]??0;
       const regen=(bossAura?500000:0)+(frenzyAura?frenzyRegen:0)+enemyRegen;
       for(const m of mobs){const g=(regen+unitRegen(m.level??m.round))*.1;if(g)m.hp=Math.min(m.maxhp,m.hp+g);}
-      for(const s of specials)s.hp=Math.min(s.maxhp,s.hp+(s.kind==='story'?s.regen:(s.kind==='boss'?550000:frenzyRegen+unitRegen(s.round))+enemyRegen)*.1);
+      for(const s of specials)s.hp=Math.min(s.maxhp,s.hp+(s.kind==='story'?s.regen:(s.kind==='boss'?550000:(s.auraOff?0:frenzyRegen)+unitRegen(s.round))+enemyRegen)*.1);
       if(posModel)for(const m of [...mobs,...specials])if(m.hp>0)move(m);
       // options.holding {radius, noDefeat} (수정내역 33): every 0.5 s, line mobs within `radius` of the units (the main
       // dealer's skill range): count, share of all line mobs, and how evenly they are spaced along the path (gap mean,
@@ -854,7 +875,7 @@ export function simulateV2(data,composition,options={}){
           }
           continue;
         }
-        if(u.kind!=='hero'||!u.damage)continue;
+        if(u.kind!=='hero'||!u.damage||benchOnly&&!benchOnly.has(u.code))continue;
         const hero=u.model,{form,transformed}=formAt(hero,globalT,t,resourceMode),baseAps=hero.forms[0].aps;
         if(posModel)target=pickTarget(hero.own_range?form.range:engageRange,!specialFocusAll&&!u.hitsSpecial);
         else target=!specialFocusAll&&!u.hitsSpecial?mobs.find(m=>m.hp>0)??globalTarget:globalTarget;
@@ -978,13 +999,16 @@ export function simulateV2(data,composition,options={}){
                 for(const m of mobs)if(m.hp>0&&(!posModel||dist(m,spawnPt)<=range)&&(!best||m.hp/m.maxhp<best.hp/best.maxhp))best=m;
                 x=best;
               }
-              if(x?.kind==='line'&&x.hp>0&&x.hp<=e.execute_below*x.maxhp){
+              if(x?.kind==='line'&&x.hp>0&&x.hp<=e.execute_below*x.maxhp&&!(benchOnly&&!benchOnly.has(u.code))){
                 x.hp=0;executeCounts[u.code]=(executeCounts[u.code]??0)+1;
               }
             }
             continue;
           }
           if(!rate)continue;
+          // removes_frenzy_aura (수정내역 60, TR1 크로우즈 광폭, 2.305 j:83112-83122): hitting a frenzy removes its aura
+          // abilities for good (신 A08S/A08T, 악몽 A128/A0RT: +regen and +armor to mobs within 900).
+          if(e.removes_frenzy_aura&&target?.kind==='frenzy'&&!target.auraOff){target.auraOff=true;target.armor-=diff.frenzy_aura?.armor??0;}
           if(e.min_target_ab&&!(target&&target.ab>=e.min_target_ab))continue;
           // min_hit {damage, ignore_on} (수정내역 41, L10 원혼 폭발 "단일 적에게 36만 이상의 피해를 가할시 (방어력계산포함)"):
           // fires only for basic hits on the attack target that reach `damage` after type and armor (crit included);
@@ -1255,7 +1279,7 @@ export function simulateV2(data,composition,options={}){
       // After absolute cooldown, each attack rolls its tooltip proc chance.
       // Sugar is an active used as soon as it is ready.
       for(const u of units){
-        if(u.kind!=='deleter'||!u.damage)continue;
+        if(u.kind!=='deleter'||!u.damage||benchOnly&&!benchOnly.has(u.code))continue;
         const spec=u.model;
         const cd=clamp(deleteOptions[`${u.code}Cooldown`]??spec.cooldown,.1,300);
         const proc=clamp(deleteOptions[`${u.code}Proc`]??spec.proc,0,1);
