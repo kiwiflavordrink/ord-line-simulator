@@ -580,4 +580,13 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const t0=simulateV2(fullData,[{code:'TR12'}],o),t1=simulateV2(fullData,[{code:'TR12'}],{...o,traits:{TR12:'on'}});
   assert.ok(t1.sourceDamage.TR12>t0.sourceDamage.TR12,'상디 초월 특강(제르마 블랙)이 더 세다');
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits: passed');
+// [수정 59] 체젠 오라가 체력 소모 스킬을 빠르게 한다(마젠과 같은 규칙), 검은수염 흑구 등 7개는 체력 스킬.
+{
+  const o={red:false,redDamage:false};
+  assert.equal(fullData.heroes.find(h=>h.code==='TR1').events[0].resource_kind,'hp');
+  const a=simulateV2(fullData,[{code:'TR1'}],o),b=simulateV2(fullData,[{code:'TR1'},{code:'H6',damage:false}],o);
+  assert.ok(b.sourceDamage.TR1>a.sourceDamage.TR1,'모비딕호 체젠 1.25가 흑구를 빠르게 한다');
+  const m=simulateV2(fullData,[{code:'TR1'},{code:'D2',damage:false}],o);
+  assert.ok(Math.abs(m.sourceDamage.TR1-a.sourceDamage.TR1)<.02*a.sourceDamage.TR1,'마젠은 체력 스킬에 안 들어간다');
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen: passed');

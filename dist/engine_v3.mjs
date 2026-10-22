@@ -348,7 +348,7 @@ export function simulateV2(data,composition,options={}){
       const key=a.group?a.group+':'+a.kind:a.id,prev=byId.get(key);
       byId.set(key,{a:prev&&prev.a.value>a.value?prev.a:a,miss:(prev?prev.miss:1)*(1-up)});
     }
-    const buffs={attack_pct:0,attack_flat:0,aps:0,mana_regen:0};
+    const buffs={attack_pct:0,attack_flat:0,aps:0,mana_regen:0,hp_regen:0};
     for(const {a,miss} of byId.values())buffs[a.kind]+=a.value*(1-miss);
     // 새턴 A13G (ACac) and 나스쥬로 A13E are enemy-side auras on every allied unit; they add like other auras.
     buffs.attack_pct+=curse.ally_attack??0;buffs.aps+=curse.ally_aps??0;
@@ -956,8 +956,9 @@ export function simulateV2(data,composition,options={}){
           if(e.phase==='trans'&&!transformed||e.phase==='base'&&transformed||e.phase==='giant'&&!giant||e.phase==='nongiant'&&giant)continue;
           let rate=e.rate*(e.per_attack?aps/baseAps:1);
           if(e.plant)rate*=plantCount(hero,e.plant);
-          // Mana-regen buffs speed up mana skills only (resource_kind 'hp' skills spend HP, 수정내역 27).
-          if(e.resource_cost&&e.resource_kind!=='hp'&&u.buffs.mana_regen)rate+=u.buffs.mana_regen/e.resource_cost;
+          // Regen buffs fill the skill's pool (수정내역 59): mana skills take mana_regen, HP-cost skills (real WC3 life,
+          // resource_kind 'hp', 2.305 '== max → life 1' triggers) take hp_regen (AUau/Ainf/Acht 체력 재생).
+          if(e.resource_cost){const reg=e.resource_kind==='hp'?u.buffs.hp_regen:u.buffs.mana_regen;if(reg)rate+=reg/e.resource_cost;}
           if(executing&&e.index===exe.boost_event)rate=aps;
           if(e.initial&&(resourceMode==='perRound'&&step===0||resourceMode==='start'&&globalStep===0))rate+=10;
           // execute_below (L27 사자의노래, 수정내역 30): the hero's attack clock (actual aps incl. buffs) runs every
