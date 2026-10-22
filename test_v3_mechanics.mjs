@@ -556,9 +556,10 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
 {
   const team=[{code:'E9'},{code:'L16'},{code:'L31'},{code:'L9'}];
   const o={red:false,redDamage:false,cut:0};
-  const a=simulateV2(fullData,team,o),b=simulateV2(fullData,team,{...o,freshTarget:true}),c=simulateV2(fullData,team,{...o,freshTarget:['L16','L31','L9']});
+  const a=simulateV2(fullData,team,{...o,freshTarget:false}),b=simulateV2(fullData,team,o),c=simulateV2(fullData,team,{...o,freshTarget:['L16','L31','L9']});
   assert.ok(b.sourceDamage.L9>a.sourceDamage.L9&&b.sourceDamage.L31>a.sourceDamage.L31,'새 몹이면 현재체력 비례가 크다');
-  assert.equal(b.sourceDamage.L9,c.sourceDamage.L9,'true = 단 유닛 목록');
+  assert.equal(b.sourceDamage.L9,c.sourceDamage.L9,'기본(54) = 단 유닛 목록');
+  assert.equal(simulateV2(fullData,team,{...o,freshTarget:true}).sourceDamage.L9,b.sourceDamage.L9);
   assert.equal(simulateV2(fullData,team,{...o,freshTarget:['L36']}).sourceDamage.E9,a.sourceDamage.E9,'목록에 없는 유닛은 그대로');
 }
 console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets: passed');

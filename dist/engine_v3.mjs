@@ -399,8 +399,8 @@ export function simulateV2(data,composition,options={}){
   // 새로운 몹을 유저가 찾아주고, 끝딜은 라인 앞에서 딸피를 잡는다"). They attack the newest line mob above 15% HP and move
   // on when it drops below 15%, also while a boss/frenzy lives (their area damage still reaches it); 끝딜 and the
   // others keep the front mob. true = the 단 units of the single tester
-  // (FRESH_SINGLES), or an array of codes. Non-position model only (the position model already picks by distance).
-  const freshTarget=new Set(options.freshTarget===true?FRESH_SINGLES:Array.isArray(options.freshTarget)?options.freshTarget:[]);
+  // (FRESH_SINGLES, default since 수정내역 54), an array of codes, or false (all attack the front mob). Non-position model only (the position model already picks by distance).
+  const freshTarget=new Set(options.freshTarget===false?[]:Array.isArray(options.freshTarget)?options.freshTarget:FRESH_SINGLES);
   // Frenzy units (2.305 j:36705-36735): A08R 광폭화 = Absk berserk "광폭화 몬스터의 받는 데미지 ... 상승" (wts STRING 9367),
   // damage-taken increase left at the WC3 default (options.frenzyDamageTaken, see 수정내역 45 for the value), and
   // A11S set to level 1 (j:36731) so their HP-scaled explosive damage is x(.79+.01 x 1) = x0.80 (j:6343).
