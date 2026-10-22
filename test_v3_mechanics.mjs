@@ -552,4 +552,13 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const d2=simulateV2(fullData,[{code:'D2'}],{red:false}),d2f=simulateV2(fullData,[{code:'D2'},{code:'TR28',damage:false}],{red:false});
   assert.ok(d2f.sourceDamage.D2>d2.sourceDamage.D2,'프랑키 오라 마나재생 5가 다른 영웅 스킬도 빠르게 한다');
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras: passed');
+// [수정 53] freshTarget: 단일 유닛이 새 몹(15% 초과 중 가장 최근)을 치면 현재체력 비례 단일이 세져 라인이 줄어든다.
+{
+  const team=[{code:'E9'},{code:'L16'},{code:'L31'},{code:'L9'}];
+  const o={red:false,redDamage:false,cut:0};
+  const a=simulateV2(fullData,team,o),b=simulateV2(fullData,team,{...o,freshTarget:true}),c=simulateV2(fullData,team,{...o,freshTarget:['L16','L31','L9']});
+  assert.ok(b.sourceDamage.L9>a.sourceDamage.L9&&b.sourceDamage.L31>a.sourceDamage.L31,'새 몹이면 현재체력 비례가 크다');
+  assert.equal(b.sourceDamage.L9,c.sourceDamage.L9,'true = 단 유닛 목록');
+  assert.equal(simulateV2(fullData,team,{...o,freshTarget:['L36']}).sourceDamage.E9,a.sourceDamage.E9,'목록에 없는 유닛은 그대로');
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets: passed');

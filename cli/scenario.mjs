@@ -144,7 +144,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','frankyTrait','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','z2Level','greenBlood','externalSlow','externalStuns','singleControl','specialTimer','specialFocus','frenzyDamageTaken','engageRange','heroArmorCuts','executeTarget','chosenBuffTargets','stackLevel','stackLevels','extraStackLevels','trait','traits','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','frankyTrait','freshTarget','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','z2Level','greenBlood','externalSlow','externalStuns','singleControl','specialTimer','specialFocus','frenzyDamageTaken','engageRange','heroArmorCuts','executeTarget','chosenBuffTargets','stackLevel','stackLevels','extraStackLevels','trait','traits','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -155,6 +155,7 @@ function validateLine(raw,data,is){
       summons:bool(o,'summons','line.options',is),
       frankyAura:bool(o,'frankyAura','line.options',is),
       frankyTrait:bool(o,'frankyTrait','line.options',is),
+      freshTarget:o.freshTarget===undefined?undefined:o.freshTarget===true||o.freshTarget===false?o.freshTarget:Array.isArray(o.freshTarget)&&o.freshTarget.every(x=>typeof x==='string')?o.freshTarget:(()=>{throw new Error('line.options.freshTarget: true/false 또는 코드 배열')})(),
       sunnyStagger:bool(o,'sunnyStagger','line.options',is),
       positionModel:bool(o,'positionModel','line.options',is),
       difficulty:oneOf(o,'difficulty','line.options',is,['지옥','신','악몽']),

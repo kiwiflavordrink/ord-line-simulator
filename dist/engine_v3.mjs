@@ -19,6 +19,8 @@ export const UNIT_MANA_AURAS={
   L19:[{id:'L19',kind:'mana_regen',value:1.25,targets:'all',note:'2.323 "◎ 마나재생 1.25"'}],
   TR28:[{id:'A0E3',kind:'mana_regen',value:5,targets:'others',note:'2.323 "◎ 자신 제외 마나재생 5", 2.305 A0E3 715 notself'}]
 };
+// 단 units of the single tester (dist/engine_single_v3.mjs SINGLE_UNITS without the 끝 L36), for options.freshTarget.
+export const FRESH_SINGLES=['L9','L16','L31','H13','H19','T1','L6','H5','D6','TR7'];
 export const SUPPORT_AURAS={
   L7:[{id:'L7',kind:'attack_pct',value:.25,targets:'all',note:'2.323 버프 "공격력 증가 25%"'}]
 };
@@ -393,6 +395,12 @@ export function simulateV2(data,composition,options={}){
   // options.specialFocus (수정내역 45): 'tooltip' (default) = only heroes with boss/frenzy single damage (hitsSpecial)
   // attack a living boss/frenzy; 'all' = every hero attacks it first (the model before 45).
   const specialFocusAll=options.specialFocus==='all';
+  // options.freshTarget (수정내역 53): 단일 dealers the player points at a new line mob (사용자 플레이 방식: "단일은 위쪽에서
+  // 새로운 몹을 유저가 찾아주고, 끝딜은 라인 앞에서 딸피를 잡는다"). They attack the newest line mob above 15% HP and move
+  // on when it drops below 15%, also while a boss/frenzy lives (their area damage still reaches it); 끝딜 and the
+  // others keep the front mob. true = the 단 units of the single tester
+  // (FRESH_SINGLES), or an array of codes. Non-position model only (the position model already picks by distance).
+  const freshTarget=new Set(options.freshTarget===true?FRESH_SINGLES:Array.isArray(options.freshTarget)?options.freshTarget:[]);
   // Frenzy units (2.305 j:36705-36735): A08R 광폭화 = Absk berserk "광폭화 몬스터의 받는 데미지 ... 상승" (wts STRING 9367),
   // damage-taken increase left at the WC3 default (options.frenzyDamageTaken, see 수정내역 45 for the value), and
   // A11S set to level 1 (j:36731) so their HP-scaled explosive damage is x(.79+.01 x 1) = x0.80 (j:6343).
@@ -833,6 +841,9 @@ export function simulateV2(data,composition,options={}){
         const hero=u.model,{form,transformed}=formAt(hero,globalT,t,resourceMode),baseAps=hero.forms[0].aps;
         if(posModel)target=pickTarget(hero.own_range?form.range:engageRange,!specialFocusAll&&!u.hitsSpecial);
         else target=!specialFocusAll&&!u.hitsSpecial?mobs.find(m=>m.hp>0)??globalTarget:globalTarget;
+        if(!posModel&&freshTarget.has(u.code)){
+          for(let k=mobs.length-1;k>=0;k--)if(mobs[k].hp>.15*mobs[k].maxhp){target=mobs[k];break;}
+        }
         let aps=form.aps;if(hero.code==='E10'&&transformed)aps=1/.11;
         // Attack-speed auras add to the form's bonus (aps x base cooldown - 1), capped at +400% in WC3.
         // 양분 (TR6, hero.nutrients, 수정내역 22): one counter per player shared by every copy. A transform
