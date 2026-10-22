@@ -562,4 +562,13 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.equal(simulateV2(fullData,team,{...o,freshTarget:true}).sourceDamage.L9,b.sourceDamage.L9);
   assert.equal(simulateV2(fullData,team,{...o,freshTarget:['L36']}).sourceDamage.E9,a.sourceDamage.E9,'목록에 없는 유닛은 그대로');
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets: passed');
+// [수정 56] 로얄로더(패왕의길 노드): 최상위 1기에 공속 +25%·공격력 +25,000·8% 400범위 고정(671,052.6 × 기본 쿨).
+{
+  const o={red:false,redDamage:false};
+  const a=simulateV2(fullData,[{code:'TR12'}],o),b=simulateV2(fullData,[{code:'TR12'}],{...o,royalRoader:true});
+  assert.ok(b.sourceDamage.TR12>a.sourceDamage.TR12,'로얄로더가 최상위 유닛을 강화한다');
+  assert.equal(simulateV2(fullData,[{code:'L16'}],{...o,royalRoader:true}).sourceDamage.L16,simulateV2(fullData,[{code:'L16'}],o).sourceDamage.L16,'전설은 대상이 아니다');
+  const c=simulateV2(fullData,[{code:'L16'},{code:'TR12'}],{...o,royalRoader:'TR12'});
+  assert.ok(c.sourceDamage.TR12>simulateV2(fullData,[{code:'L16'},{code:'TR12'}],o).sourceDamage.TR12);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader: passed');

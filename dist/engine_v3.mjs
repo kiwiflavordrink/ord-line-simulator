@@ -288,6 +288,21 @@ export function simulateV2(data,composition,options={}){
     else if(item.code==='MAGIC_CUSTOM')for(let i=0;i<count;i++)units.push({kind:'magic',code:'MAGIC_CUSTOM',damage:item.damage!==false});
   }
   if(!units.length)throw new Error('조합에 유닛을 한 기 이상 넣어 주세요.');
+  // options.royalRoader (수정내역 56): 패왕의길 항법 노드 '로얄로더' (2.305 j:17778-17780, rve j:77531-77560, hEA
+  // j:61237-61258). The one 최상위 unit (초월·불멸·영원·제한·신비; true = the first in the team, or a code) gets
+  // A0IW attack speed +25% and A0VQ attack +25,000, and on each attack 8% a 400-range fixed (CHAOS·UNIVERSAL) hit of
+  // 671,052.6 x its base attack cooldown (255,000 at 0.38; "기본 공격속도가 느릴수록 데미지 증가"). 2.305 values; the
+  // 2.32x tooltip is not available [2.305 기준]. 패왕의길's own 7% slow / 2.320 레오 is options.leo (position model).
+  if(options.royalRoader){
+    const TOP=['초월함','불멸의','영원한','제한됨','신비함'];
+    const ru=units.find(u=>u.kind==='hero'&&(options.royalRoader===true?TOP.includes(u.model.grade):u.code===options.royalRoader));
+    if(ru){
+      const f0=ru.model.forms[0],cd=f0.cooldown??1/f0.aps;
+      ru.royal=true;
+      ru.events=[...ru.events,{index:'로얄로더',rate:.08*f0.aps,per_attack:true,parts:[['fixed',671052.6*cd,[],0]],radius:400,center:'target',
+        source:'2.305 j:61237-61258 [2.305 기준]'}];
+    }
+  }
   // Ally buffs. An aura id counts once even with several copies (WC3 same-ability auras do not stack);
   // different auras add. targets: all (team), self, others. options.buffTargets {sourceCode:[targetCodes]}
   // limits who receives a source's buffs (default: the whole team is in range). Timed buffs use their
@@ -337,7 +352,8 @@ export function simulateV2(data,composition,options={}){
     for(const {a,miss} of byId.values())buffs[a.kind]+=a.value*(1-miss);
     // 새턴 A13G (ACac) and 나스쥬로 A13E are enemy-side auras on every allied unit; they add like other auras.
     buffs.attack_pct+=curse.ally_attack??0;buffs.aps+=curse.ally_aps??0;
-    if(u.greenBlood)buffs.aps+=.3;   // A13C AIsx Isx1 0.30
+    if(u.greenBlood)buffs.aps+=.3;
+    if(u.royal){buffs.aps+=.25;buffs.attack_flat+=25000;}   // 로얄로더 A0IW Isx1 0.25, A0VQ +25,000   // A13C AIsx Isx1 0.30
     u.buffs=buffs;
   }
   // Heroes' own enemy armor auras (data hero.own_armor_cut, 2.323 buff_lines "방어력 감소 N", 수정내역 29): with
