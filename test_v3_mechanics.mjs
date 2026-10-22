@@ -517,4 +517,14 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const a=simulateV2(fullData,[{code:'L8'}]).sourceDamage.L8,b=simulateV2(own,[{code:'L8'}]).sourceDamage.L8;
   assert.ok(a!==b,'공격 대상 기준과 각자 기준의 피해가 다르다');
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent: passed');
+// [수정 50] 단일 테스터에 루치 초월(TR7): 툴팁 4스킬, 1기의 100→15%가 루치 전설 2기(2단)와 비슷하다.
+{
+  const c=singleConditions(fullData,{});
+  const tr=simulateSingle([{code:'TR7',count:1}],{trials:1000,seed:7,conditions:c});
+  const l2=simulateSingle([{code:'L9',count:2}],{trials:1000,seed:7,conditions:c});
+  assert.ok(Math.abs(tr.to15-l2.to15)<.5,`루치 초월 1기 ${tr.to15.toFixed(2)}초 ≈ 루치 전설 2기 ${l2.to15.toFixed(2)}초`);
+  assert.ok(tr.kill<10&&tr.to15>2&&tr.to15<4);
+  const L=simulateSingle([{code:'L36',count:1}],{trials:1000,seed:7,conditions:c}),LT=simulateSingle([{code:'L36',count:1},{code:'TR7',count:1}],{trials:1000,seed:7,conditions:c});
+  assert.ok(LT.kill<L.kill,'함께 넣으면 더 빨리 잡는다');
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single: passed');
