@@ -842,7 +842,10 @@ export function simulateV2(data,composition,options={}){
         if(posModel)target=pickTarget(hero.own_range?form.range:engageRange,!specialFocusAll&&!u.hitsSpecial);
         else target=!specialFocusAll&&!u.hitsSpecial?mobs.find(m=>m.hp>0)??globalTarget:globalTarget;
         if(!posModel&&freshTarget.has(u.code)){
-          for(let k=mobs.length-1;k>=0;k--)if(mobs[k].hp>.15*mobs[k].maxhp){target=mobs[k];break;}
+          // Stay on the chosen mob until it reaches 15% (사용자 규칙), then take the newest line mob above 15%.
+          const cur=u.freshCur;
+          if(cur&&cur.hp>.15*cur.maxhp&&mobs.includes(cur))target=cur;
+          else{u.freshCur=null;for(let k=mobs.length-1;k>=0;k--)if(mobs[k].hp>.15*mobs[k].maxhp){target=u.freshCur=mobs[k];break;}}
         }
         let aps=form.aps;if(hero.code==='E10'&&transformed)aps=1/.11;
         // Attack-speed auras add to the form's bonus (aps x base cooldown - 1), capped at +400% in WC3.
