@@ -1,13 +1,278 @@
 {
   "note": "사용자 실전 기록(2026-10-21~22 대화). 덱은 사용자가 말한 희귀 이상 유닛만(나머지는 희귀 미만, 영향 없음 확인). count = 클리어 시점 유닛 카운트(유카). assumed 항목은 사용자가 말하지 않아 둔 가정.",
   "games": [
-    {"id":"G1","label":"신 우타 영원 (3단, 끝딜 없음)","difficulty":"신","team":["E9","L37","SR4","L16","L31","L9","L20","H17","R41","OB1"],"options":{},"actual":{"clear":true,"count":14},"assumed":["레드포스 없음"],"user_note":"3단, 끝딜 없음, 흡수 4초 쿨. 끝딜 없어 딸피 정리 안 되고 컨트롤 손실"},
-    {"id":"G2","label":"신 프랑키 초월 써니4 특성","difficulty":"신","team":["TR28",{"code":"H15","count":4},"D2","L19","L16","OB1"],"options":{"frankyTrait":true},"actual":{"clear":true,"count":null},"assumed":["레드포스 없음"],"user_note":"써니호 4 + 쇼군(장군 특성), 코알라 왜곡·슈가 전설로 마나재생, 단일 상디 전설 1, 흡수"},
-    {"id":"G3","label":"악몽 쿠마 세라핌·프랑키 특성 써니2","difficulty":"악몽","team":["TR28",{"code":"H15","count":2},"SR4","D2","H14","L31","L16"],"options":{"frankyTrait":true},"actual":{"clear":true,"count":18},"assumed":["도움소 없음(언급 없음)"],"user_note":"레드포스 안 씀, 장군 특성"},
-    {"id":"G4","label":"악몽 상디 초월 (로얄로더·워큐리)","difficulty":"악몽","team":["TR12","L16","H13","L36","H14","SR4","H16","L37","H17","H8"],"options":{"gorosei":"워큐리","royalRoader":true,"traits":{"TR12":"on"}},"actual":{"clear":true,"count":17},"assumed":["레드포스 없음","패왕의길이라 상위 특강"],"user_note":"65라 렉 3초"},
-    {"id":"G5","label":"악몽 핸콕 영원 (로얄로더·나스쥬로)","difficulty":"악몽","team":["L12","L31","L26","H14","D2","H9","H13","E12","H19","L35"],"options":{"gorosei":"나스쥬로","royalRoader":true,"traits":{"E12":"on"}},"actual":{"clear":true,"count":0},"assumed":["레드포스 없음","레오 전설은 딜 없음(사용자)"],"user_note":"레오 전설 포함"},
-    {"id":"G6","label":"악몽 후지토라 초월 (물뎀, 연합세력)","difficulty":"악몽","team":["TR29","L25","L33","L7","H10","D5","L18","H4","SP1"],"options":{"gorosei":"나스쥬로","red":true,"redDamage":true,"cut":201},"actual":{"clear":true,"count":0},"assumed":["풀깍 201"],"user_note":"레드포스호 히든, 항법 연합세력 일석이조"},
-    {"id":"G7","label":"악몽 검은수염 초월 (로얄로더·나스쥬로)","difficulty":"악몽","team":["TR1","H6","L3",{"code":"L31","count":2},"L4","SR4",{"code":"L36","count":2}],"options":{"gorosei":"나스쥬로","royalRoader":true,"traits":{"TR1":"on"}},"actual":{"clear":true,"count":16},"assumed":["레드포스 없음"],"user_note":"끝딜 핸콕 2"},
-    {"id":"G8","label":"악몽 키자루 초월 (바운티헌터·나스쥬로)","difficulty":"악몽","team":["TR26","L35","SR4","H14","L3","L12",{"code":"L16","count":2},"L9"],"options":{"gorosei":"나스쥬로","traits":{"TR26":"on"}},"actual":{"clear":true,"count":9},"assumed":["레드포스 없음","분신 스택 3(초기값, 실제 미확인)"],"user_note":"레오 전설 포함(딜 없음)"}
+    {
+      "id": "G1",
+      "label": "신 우타 영원 (3단, 끝딜 없음)",
+      "difficulty": "신",
+      "team": [
+        "E9",
+        "L37",
+        "SR4",
+        "L16",
+        "L31",
+        "L9",
+        "L20",
+        "H17",
+        "R41",
+        "OB1"
+      ],
+      "options": {},
+      "actual": {
+        "clear": true,
+        "count": 14
+      },
+      "assumed": [
+        "레드포스 없음"
+      ],
+      "user_note": "3단, 끝딜 없음, 흡수 4초 쿨. 끝딜 없어 딸피 정리 안 되고 컨트롤 손실"
+    },
+    {
+      "id": "G2",
+      "label": "신 프랑키 초월 써니4 특성",
+      "difficulty": "신",
+      "team": [
+        "TR28",
+        {
+          "code": "H15",
+          "count": 4
+        },
+        "D2",
+        "L19",
+        "L16",
+        "OB1"
+      ],
+      "options": {
+        "frankyTrait": true
+      },
+      "actual": {
+        "clear": true,
+        "count": null
+      },
+      "assumed": [
+        "레드포스 없음"
+      ],
+      "user_note": "써니호 4 + 쇼군(장군 특성), 코알라 왜곡·슈가 전설로 마나재생, 단일 상디 전설 1, 흡수"
+    },
+    {
+      "id": "G3",
+      "label": "악몽 쿠마 세라핌·프랑키 특성 써니2",
+      "difficulty": "악몽",
+      "team": [
+        "TR28",
+        {
+          "code": "H15",
+          "count": 2
+        },
+        "SR4",
+        "D2",
+        "H14",
+        "L31",
+        "L16"
+      ],
+      "options": {
+        "frankyTrait": true
+      },
+      "actual": {
+        "clear": true,
+        "count": 18
+      },
+      "assumed": [
+        "도움소 없음(언급 없음)"
+      ],
+      "user_note": "레드포스 안 씀, 장군 특성"
+    },
+    {
+      "id": "G4",
+      "label": "악몽 상디 초월 (로얄로더·워큐리)",
+      "difficulty": "악몽",
+      "team": [
+        "TR12",
+        "L16",
+        "H13",
+        "L36",
+        "H14",
+        "SR4",
+        "H16",
+        "L37",
+        "H17",
+        "H8"
+      ],
+      "options": {
+        "gorosei": "워큐리",
+        "royalRoader": true,
+        "traits": {
+          "TR12": "on"
+        }
+      },
+      "actual": {
+        "clear": true,
+        "count": 17
+      },
+      "assumed": [
+        "레드포스 없음",
+        "패왕의길이라 상위 특강"
+      ],
+      "user_note": "65라 렉 3초"
+    },
+    {
+      "id": "G5",
+      "label": "악몽 핸콕 영원 (로얄로더·나스쥬로)",
+      "difficulty": "악몽",
+      "team": [
+        "L12",
+        "L31",
+        "L26",
+        "H14",
+        "D2",
+        "H9",
+        "H13",
+        "E12",
+        "H19",
+        "L35"
+      ],
+      "options": {
+        "gorosei": "나스쥬로",
+        "royalRoader": true,
+        "traits": {
+          "E12": "on"
+        }
+      },
+      "actual": {
+        "clear": true,
+        "count": 0
+      },
+      "assumed": [
+        "레드포스 없음",
+        "레오 전설은 딜 없음(사용자)"
+      ],
+      "user_note": "레오 전설 포함"
+    },
+    {
+      "id": "G6",
+      "label": "악몽 후지토라 초월 (물뎀, 연합세력)",
+      "difficulty": "악몽",
+      "team": [
+        "TR29",
+        "L25",
+        "L33",
+        "L7",
+        "H10",
+        "D5",
+        "L18",
+        "H4",
+        "SP1"
+      ],
+      "options": {
+        "gorosei": "나스쥬로",
+        "red": true,
+        "redDamage": true,
+        "cut": 201
+      },
+      "actual": {
+        "clear": true,
+        "count": 0
+      },
+      "assumed": [
+        "풀깍 201"
+      ],
+      "user_note": "레드포스호 히든, 항법 연합세력 일석이조"
+    },
+    {
+      "id": "G7",
+      "label": "악몽 검은수염 초월 (로얄로더·나스쥬로)",
+      "difficulty": "악몽",
+      "team": [
+        "TR1",
+        "H6",
+        "L3",
+        {
+          "code": "L31",
+          "count": 2
+        },
+        "L4",
+        "SR4",
+        {
+          "code": "L36",
+          "count": 2
+        }
+      ],
+      "options": {
+        "gorosei": "나스쥬로",
+        "royalRoader": true,
+        "traits": {
+          "TR1": "on"
+        }
+      },
+      "actual": {
+        "clear": true,
+        "count": 16
+      },
+      "assumed": [
+        "레드포스 없음"
+      ],
+      "user_note": "끝딜 핸콕 2"
+    },
+    {
+      "id": "G8",
+      "label": "악몽 키자루 초월 (바운티헌터·나스쥬로)",
+      "difficulty": "악몽",
+      "team": [
+        "TR26",
+        "L35",
+        "SR4",
+        "H14",
+        "L3",
+        "L12",
+        {
+          "code": "L16",
+          "count": 2
+        },
+        "L9"
+      ],
+      "options": {
+        "gorosei": "나스쥬로",
+        "traits": {
+          "TR26": "on"
+        }
+      },
+      "actual": {
+        "clear": true,
+        "count": 9
+      },
+      "assumed": [
+        "레드포스 없음",
+        "분신 스택 3(초기값, 실제 미확인)"
+      ],
+      "user_note": "레오 전설 포함(딜 없음)"
+    },
+    {
+      "id": "G9",
+      "label": "신 제트 불멸·에넬 제한 (새턴)",
+      "difficulty": "신",
+      "team": [
+        "I10",
+        "Z7",
+        "L37",
+        "H16",
+        "H14",
+        "L28",
+        "H17",
+        "L26"
+      ],
+      "options": {
+        "gorosei": "새턴",
+        "greenBlood": "L37"
+      },
+      "actual": {
+        "clear": true,
+        "count": 34
+      },
+      "assumed": [
+        "레드포스 없음",
+        "징베 = 전설(L28) 가정, 등급 미확인"
+      ],
+      "user_note": "후지토라 전설 그린블러드, 삭제(도움소) 안 침"
+    }
   ]
 }

@@ -176,6 +176,28 @@
     ]
    },
    "diff": 5
+  },
+  {
+   "id": "G9",
+   "label": "신 제트 불멸·에넬 제한 (새턴)",
+   "actual": {
+    "clear": true,
+    "count": 34
+   },
+   "sim": {
+    "clear": true,
+    "count": 27,
+    "failed": null,
+    "rounds": [
+     19,
+     22,
+     23,
+     26,
+     28,
+     27
+    ]
+   },
+   "diff": -7
   }
  ]
 }
