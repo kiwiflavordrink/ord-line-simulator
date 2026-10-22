@@ -170,7 +170,7 @@ function options(){const c=context(true);return {
   allAmp:c.allAmp/100,explosiveAmp:c.generalExplosiveAmp/100,
   normalOnlyExplosiveAmp:c.normalOnlyExplosiveAmp/100,gorosei:$('v3-gorosei').value,
   red:$('red-v2').checked,redDamage:$('red-v2').checked,fullResource:$('resource-v2').checked,summons:$('summons-v2').checked,
-  frankyAura:$('franky-aura').checked,sunnyStagger:$('sunny-stagger').checked,
+  frankyAura:$('franky-aura').checked,frankyTrait:$('franky-trait').checked,sunnyStagger:$('sunny-stagger').checked,
   tr19Plants:{pea:val('tr19-pea'),snow:val('tr19-snow'),muk:val('tr19-muk')},
   buffTargets:buffTargets(),chosenBuffTargets:chosenBuffTargets(),positionModel:$('position-v3').checked,difficulty:$('difficulty-v3').value,armorModel:$('armor-model-v3').value,leo:$('leo-v3').checked,heroArmorCuts:$('hero-cuts-v3').checked,executeTarget:$('execute-v3').value,
   ...($('stack-v3').value!=='data'?{stackLevel:$('stack-v3').value}:{}),...($('trait-v3').value!=='data'?{trait:$('trait-v3').value}:{}),e6AlabastaLevel:val('e6-level'),e6MoveShot:$('e6-moveshot').checked,tr6Nutrients:val('tr6-nutrients'),...($('z2-level').value!==''?{z2Level:val('z2-level')}:{}),...($('green-blood').value?{greenBlood:$('green-blood').value}:{}),
@@ -365,6 +365,7 @@ function restore(){
   $('summons-v2').checked=params.get('summons')!=='0';
   $('franky-aura').checked=params.get('frankyAura')!=='0';
   $('sunny-stagger').checked=params.get('sunnyStagger')==='1';
+  $('franky-trait').checked=params.get('frankyTrait')==='1';
   $('position-v3').checked=params.get('position')==='1';
   if(params.get('armor')==='data')$('armor-model-v3').value='data';
   $('leo-v3').checked=params.get('leo')==='1';
@@ -394,6 +395,7 @@ function shareURL(){
   u.searchParams.set('summons',$('summons-v2').checked?'1':'0');
   u.searchParams.set('frankyAura',$('franky-aura').checked?'1':'0');
   u.searchParams.set('sunnyStagger',$('sunny-stagger').checked?'1':'0');
+  u.searchParams.set('frankyTrait',$('franky-trait').checked?'1':'0');
   u.searchParams.set('position',$('position-v3').checked?'1':'0');
   u.searchParams.set('difficulty',$('difficulty-v3').value);
   u.searchParams.set('armor',$('armor-model-v3').value);u.searchParams.set('leo',$('leo-v3').checked?'1':'0');

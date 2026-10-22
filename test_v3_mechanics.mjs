@@ -527,4 +527,19 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const L=simulateSingle([{code:'L36',count:1}],{trials:1000,seed:7,conditions:c}),LT=simulateSingle([{code:'L36',count:1},{code:'TR7',count:1}],{trials:1000,seed:7,conditions:c});
   assert.ok(LT.kill<L.kill,'함께 넣으면 더 빨리 잡는다');
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single: passed');
+// [수정 51] 프랑키 초월: 꾸드방 단일 추가, 솔져도크 미사일 2+써니호, 특성(프랑키 장군) 옵션, 써니호 선제공격.
+{
+  const t=n=>[{code:'TR28'},{code:'H15',count:n}];
+  const o={red:false,redDamage:false};
+  const dmg=(n,x={})=>{const r=simulateV2(fullData,t(n),{...o,...x});return r.sourceDamage.TR28;};
+  assert.ok(dmg(3)>dmg(2)&&dmg(4)>dmg(3),'써니호가 늘면 미사일이 늘어 프랑키 피해가 는다');
+  const g=simulateV2(fullData,t(3),{...o,frankyTrait:true});
+  assert.ok(g.control.frankyGenerals>0,'특성이면 마나 150마다 프랑키 장군');
+  assert.ok(!simulateV2(fullData,t(3),o).control.frankyGenerals,'기본은 라디칼 빔');
+  assert.ok(g.lineDamage.single>0);
+  // 선제공격: 써니호 혼자(프랑키 없음)라도 보스·광폭 첫 공격에 185만 범위가 터진다.
+  const solo=simulateV2(fullData,[{code:'H15'}],{...o,frankyAura:false});
+  assert.equal(solo.control.sunnyCasts,0);
+  assert.ok(solo.sourceDamage.H15>0);
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky: passed');

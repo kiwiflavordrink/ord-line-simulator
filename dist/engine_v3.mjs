@@ -1131,34 +1131,62 @@ export function simulateV2(data,composition,options={}){
             }
           }
         }else if(u.code==='TR28'){
-          while(u.attackBank>=1-1e-9){u.attackBank-=1;if(single)u.energy=Math.min(150,u.energy+1);}
-          if(!u.damage)continue;
-          if(single)deal(single,spec.attack*(1+(red?.35:0)+allyAttack)*attacks*typeFor(spec.attackType,single.typeRound??single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
-          const missiles=frankyLinked&&sunnyUnits.length?2+sunnyUnits.length:0;
-          for(const m of aoeTargets)if(m.hp>0){
-            deal(m,(spec.aps*.05*460_000+spec.aps*.08*250_000*missiles)*.1*magicFactor*hit(m),u.code,'area','magic');
-          }
-          if(single&&u.energy>=150){
-            u.energy-=150;
-            for(const m of aoeTargets)if(m.hp>0)deal(m,500_000*magicFactor*hit(m),u.code,'area','magic');
+          // 프랑키 초월 (수정내역 51). Structure 2.305 (Gce j:15167-15205, Ege j:13110-13142), numbers 2.323 tooltip.
+          // Mana +1 per attack (no regen, own aura excludes self). Base: at 150 mana 라디칼 빔 50만 magic on the line
+          // [2.305 250만×U(1,2), tooltip 50만]. Trait (options.frankyTrait, A12D 4 points, disables 라디칼 빔): at 150
+          // mana 프랑키 장군 for 6 s (A188 → H0BV, no mana gain), 제너럴 프레스 400만 magic 800 range at once; in that
+          // form every attack 제너럴 소드 20만 (300) + 33% 60만 (450), 7.5% 제너럴 빔 50만 + max HP 1%, no 꾸드방.
+          // 꾸드방 5%: 400 range 40만×U(0.8,1.5) + the attacked enemy 20만×U(0.8,1.5) (tooltip "단일 50% 추가").
+          // 솔져도크 8%: (2 + 써니호 count) missiles, each 400 range 20만×U(1,1.5) (YDM j:49422 counts h03L within 750,
+          // assumed all sunny in the team). Area parts hit aoeTargets like the other conditional units.
+          const trait=options.frankyTrait===true,missiles=2+sunnyUnits.length;
+          const atk=spec.attack*(1+(red?.35:0)+allyAttack);
+          const area=(amount,pct=0)=>{for(const m of aoeTargets)if(m.hp>0)deal(m,(amount+pct*m.maxhp)*magicFactor*hit(m),u.code,'area','magic');};
+          while(u.attackBank>=1-1e-9){
+            u.attackBank-=1;
+            if(!single)continue;
+            const general=trait&&globalT<(u.generalUntil??-1);
+            if(!general)u.energy=Math.min(150,u.energy+1);
+            if(!u.damage)continue;
+            deal(single,atk*typeFor(spec.attackType,single.typeRound??single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
+            area(.08*missiles*250_000);
+            if(general){
+              area(200_000+.33*600_000);
+              area(.075*500_000,.075*.01);
+            }else{
+              area(.05*460_000);
+              deal(single,.05*230_000*magicFactor,u.code,'single','magic');
+            }
+            if(u.energy>=150&&!general){
+              u.energy=0;
+              if(trait){u.generalUntil=globalT+6;control.frankyGenerals=(control.frankyGenerals??0)+1;area(4_000_000);}
+              else area(500_000);
+            }
           }
         }else if(u.code==='H15'){
+          // 써니호 (2.305 gAh j:60308-60367, 2.323 tooltip H15): mana +1 per attack, +5/s from 프랑키 aura (A0E3 715).
+          // With the aura: 100 mana → 600 range 185만 magic, 3 s stun. Without: 10% 600 range 20만, 1.2 s stun.
+          // 선제공격: the first attack on each boss/frenzy fires the 185만 blast; on a frenzy it adds max HP 45% magic.
           if(frankyLinked)u.energy=Math.min(100,u.energy+.5);
           while(u.attackBank>=1-1e-9){
             u.attackBank-=1;
             if(!single)continue;
             u.energy=Math.min(100,u.energy+1);
             if(u.damage)deal(single,spec.attack*(1+(red?.35:0)+allyAttack)*typeFor(spec.attackType,single.typeRound??single.round,data)*pf(armor(single,extraArmor)),u.code,'basic','physical');
+            const special=single.kind==='boss'||single.kind==='frenzy';
+            const preempt=special&&!(u.preempted??=new Set()).has(single);
+            if(preempt)u.preempted.add(single);
             const cast=frankyLinked&&globalT+1e-8>=u.openingDelay&&u.energy>=100;
             const proc=!frankyLinked&&random(u)<.1;
-            if(!u.damage||!cast&&!proc)continue;
+            if(!u.damage||!cast&&!proc&&!preempt)continue;
             if(cast){u.energy-=100;control.sunnyCasts++;}
-            else control.sunnyProcExpected++;
-            const duration=cast?3:1.2,flat=cast?1_850_000:200_000;
+            else if(proc)control.sunnyProcExpected++;
+            const big=cast||preempt,duration=big?3:1.2,flat=big?1_850_000:200_000;
             for(const m of aoeTargets)if(m.hp>0){
-              deal(m,(flat+(m.kind==='frenzy'?.45*m.maxhp:0))*magicFactor*hit(m),u.code,'area','magic');
+              deal(m,flat*magicFactor*hit(m),u.code,'area','magic');
               if(m.kind==='line')m.stunnedUntil=Math.max(m.stunnedUntil??0,globalT+duration);
             }
+            if(preempt&&single.kind==='frenzy')deal(single,.45*single.maxhp*magicFactor,u.code,'single','magic');
           }
         }
       }

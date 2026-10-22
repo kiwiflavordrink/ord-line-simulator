@@ -99,6 +99,7 @@ npm run sim -- examples/line_basic.json               # npm 스크립트
 | `resourceMode` | `start` · `empty` · `perRound` | `fullResource`에 따라 `start`/`empty` | `start`: 60라 시작 시 1회 만충 후 연속, `empty`: 빈 자원, `perRound`: 매 라운드 만충(이전 모델) |
 | `summons` | bool | true | 소환 범위 피해 포함 |
 | `frankyAura` | bool | true | 프랑키가 써니호 700범위 안에 있어 써니호 마나 +5/초 |
+| `frankyTrait` | bool | false | 프랑키 초월 특성(4포인트): 라디칼 빔 대신 마나 150마다 프랑키 장군 6초(제너럴 프레스·소드·빔) |
 | `sunnyStagger` | bool | false | 써니호 여러 기의 스킬 시점을 균등 분산 |
 | `positionModel` | bool | false | 위치 모델: 모든 유닛을 라인몹 생성 지점에 두고 이동·사거리·범위·스턴·이속 감소를 계산 (켜면 `coverage` 무시). 스턴·이속 감소는 `deletion.seed`로 정해지는 확률 발동 |
 | `difficulty` | `지옥` · `신` · `악몽` | `신` | 난이도: 몹 HP·방어·마방·재생·패배 기준(70·55·50)·광폭 오라·보스 스턴 저항, 위치 모델 이속. 구조는 2.305, 공통 HP·재생은 2.323 툴팁 (수정내역 19) |

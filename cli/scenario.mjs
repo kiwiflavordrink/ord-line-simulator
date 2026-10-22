@@ -26,7 +26,7 @@ export const LIMITATIONS=[
   {id:'single-units-limited',text:'65라 단일 테스터는 엔진에 정의된 단일·끝딜 유닛 10종만 지원한다.'},
   {id:'no-stun-or-movement',text:'기본(coverage) 모델에는 스턴·슬로우, 몹 이동 경로와 위치, 사거리가 없다(써니호 스턴은 line.control에 시간만 집계). 범위 피해는 coverage(범위 적중률)로 근사하고 타깃은 툴팁에 보스·광폭에 들어가는 단일 피해가 있는 영웅만 보스·광폭이 있으면 그쪽, 나머지 영웅은 라인몹이다(범위 피해는 보스·광폭에도 들어감, 수정내역 45). line.options.specialFocus "all"이면 이전처럼 모두 보스·광폭 우선. 이동·스턴은 line.options.positionModel로 켠다.'},
   {id:'resource-start',text:'자원은 60라 시작 시 1회 만충 후 연속으로 쌓인다(2.305 맵에 라운드 시작 마나 회복 없음). line.options.resourceMode로 empty·perRound(이전 모델)를 고를 수 있다.'},
-  {id:'unmodeled-effects',text:'아직 계산하지 않는 툴팁 효과: 스턴·이동, 아군 공격력·공속 오라와 대상 지정 버프(I4·I11·E5·Z6 등), 소환수 크리티컬(TR30 아틀라스·E5 거인족), Z10 처형·참수, TR19 먹깨비 처형, I4 카무사리, 프랑키 장군. 목록과 근거는 docs/수정내역.md.'},
+  {id:'unmodeled-effects',text:'아직 계산하지 않는 툴팁 효과: 스턴·이동, 아군 공격력·공속 오라와 대상 지정 버프(I4·I11·E5·Z6 등), 소환수 크리티컬(TR30 아틀라스·E5 거인족), Z10 처형·참수, TR19 먹깨비 처형, I4 카무사리. 프랑키 장군은 옵션 frankyTrait(수정내역 51). 목록과 근거는 docs/수정내역.md.'},
   {id:'expected-value-procs',text:'확률 스킬·아머브레이크·처형은 발동 기대값으로 매 0.1초 나누어 적용한다. 실제 발동 순서와 운에 따른 편차는 없다.'},
   {id:'effects-always-on',text:'context.selected의 증폭·마방 감소 효과는 대상에 계속 붙어 있다고 가정한다. 발동 확률, 지속시간, 범위·대상 조건을 자동 판정하지 않는다.'},
   {id:'amp-combination-order',text:'서로 다른 저항·증폭 단계(A04Q 마방, A04R 마법 증폭, 모든 피해 증폭)의 결합 순서는 실측되지 않아 곱셈으로 가정한다.'},
@@ -144,7 +144,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','z2Level','greenBlood','externalSlow','externalStuns','singleControl','specialTimer','specialFocus','frenzyDamageTaken','engageRange','heroArmorCuts','executeTarget','chosenBuffTargets','stackLevel','stackLevels','extraStackLevels','trait','traits','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','frankyTrait','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','z2Level','greenBlood','externalSlow','externalStuns','singleControl','specialTimer','specialFocus','frenzyDamageTaken','engageRange','heroArmorCuts','executeTarget','chosenBuffTargets','stackLevel','stackLevels','extraStackLevels','trait','traits','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -154,6 +154,7 @@ function validateLine(raw,data,is){
       resourceMode:oneOf(o,'resourceMode','line.options',is,['start','empty','perRound']),
       summons:bool(o,'summons','line.options',is),
       frankyAura:bool(o,'frankyAura','line.options',is),
+      frankyTrait:bool(o,'frankyTrait','line.options',is),
       sunnyStagger:bool(o,'sunnyStagger','line.options',is),
       positionModel:bool(o,'positionModel','line.options',is),
       difficulty:oneOf(o,'difficulty','line.options',is,['지옥','신','악몽']),
