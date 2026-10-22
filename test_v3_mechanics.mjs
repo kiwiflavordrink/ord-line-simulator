@@ -542,4 +542,14 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.equal(solo.control.sunnyCasts,0);
   assert.ok(solo.sourceDamage.H15>0);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky: passed');
+// [수정 52] 마나재생 오라가 프랑키·써니호에도: 코알라 왜곡 3.25, 슈가 전설 1.25, 프랑키 자신 제외 5(영웅에게도).
+{
+  const o={red:false,redDamage:false,frankyTrait:true};
+  const base=simulateV2(fullData,[{code:'TR28'},{code:'H15',count:4}],o);
+  const mana=simulateV2(fullData,[{code:'TR28'},{code:'H15',count:4},{code:'D2',damage:false},{code:'L19',damage:false}],o);
+  assert.ok(mana.control.sunnyCasts>base.control.sunnyCasts,'써니호 마나가 더 빨리 찬다');
+  assert.ok(mana.control.frankyGenerals>base.control.frankyGenerals,'프랑키도 아군 마나재생을 받는다');
+  const d2=simulateV2(fullData,[{code:'D2'}],{red:false}),d2f=simulateV2(fullData,[{code:'D2'},{code:'TR28',damage:false}],{red:false});
+  assert.ok(d2f.sourceDamage.D2>d2.sourceDamage.D2,'프랑키 오라 마나재생 5가 다른 영웅 스킬도 빠르게 한다');
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras: passed');

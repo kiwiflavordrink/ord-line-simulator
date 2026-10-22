@@ -13,6 +13,12 @@ export const DELETERS={
 // 2.305 object-data full upgrades, paired with the 2.323 ORDR cards.
 // These need individual targeting/resource clocks and cannot use the generic AoE hero events.
 // Ally auras of the support units (heroes carry theirs in data.json "auras").
+// Mana regen auras of the deleter and conditional units (수정내역 52): L19 슈가 전설 "◎ 마나재생 1.25",
+// TR28 프랑키 초월 "◎ 자신 제외 마나재생 5" (2.305 w3a A0E3 AHab Hab1 5, aare 715, notself).
+export const UNIT_MANA_AURAS={
+  L19:[{id:'L19',kind:'mana_regen',value:1.25,targets:'all',note:'2.323 "◎ 마나재생 1.25"'}],
+  TR28:[{id:'A0E3',kind:'mana_regen',value:5,targets:'others',note:'2.323 "◎ 자신 제외 마나재생 5", 2.305 A0E3 715 notself'}]
+};
 export const SUPPORT_AURAS={
   L7:[{id:'L7',kind:'attack_pct',value:.25,targets:'all',note:'2.323 버프 "공격력 증가 25%"'}]
 };
@@ -286,7 +292,7 @@ export function simulateV2(data,composition,options={}){
   // expected uptime: proc chance per attack over duration, or cast rate x duration.
   const buffTargets=options.buffTargets??{};
   const auraSources=units.map((u,i)=>({i,code:u.code,
-    auras:u.kind==='hero'?u.model.auras??[]:u.kind==='support'?SUPPORT_AURAS[u.code]??[]:[]})).filter(x=>x.auras.length);
+    auras:u.kind==='hero'?u.model.auras??[]:u.kind==='support'?SUPPORT_AURAS[u.code]??[]:UNIT_MANA_AURAS[u.code]??[]})).filter(x=>x.auras.length);
   // targets 'one' (수정내역 31): a buff cast on chosen allies — `picks` receivers per source copy (default 1), plus the
   // source itself when self_always. options.chosenBuffTargets {sourceCode:[codes in order]} picks them; the source's
   // own code may be listed (self-cast). Default: the other heroes in team order. Copies of a source take the next
@@ -304,9 +310,12 @@ export function simulateV2(data,composition,options={}){
     }
   }
   for(const [j,u] of units.entries()){
-    if(u.kind!=='hero')continue;
+    // Conditional units (TR28, H15) receive auras too; only mana_regen is used by their resource clocks.
+    if(u.kind!=='hero'&&u.kind!=='conditional')continue;
     const byId=new Map();
     for(const src of auraSources)for(const a of src.auras){
+      // options.frankyAura false: the sunny ships are outside 프랑키's aura (then they also use the 10% proc).
+      if(src.code==='TR28'&&u.code==='H15'&&options.frankyAura===false)continue;
       if(a.targets==='self'&&src.i!==j||a.targets==='others'&&src.i===j)continue;
       if(a.targets==='one'&&!(oneReceivers.get(src.i)?.has(j)||a.self_always&&src.i===j))continue;
       if(a.targets!=='one'&&src.i!==j&&buffTargets[src.code]&&!buffTargets[src.code].includes(u.code))continue;
@@ -1142,6 +1151,8 @@ export function simulateV2(data,composition,options={}){
           const trait=options.frankyTrait===true,missiles=2+sunnyUnits.length;
           const atk=spec.attack*(1+(red?.35:0)+allyAttack);
           const area=(amount,pct=0)=>{for(const m of aoeTargets)if(m.hp>0)deal(m,(amount+pct*m.maxhp)*magicFactor*hit(m),u.code,'area','magic');};
+          // Ally mana auras (코알라 왜곡 3.25, 슈가 전설 1.25, ...) also fill 프랑키's mana (not his own A0E3).
+          u.energy=Math.min(150,u.energy+(u.buffs?.mana_regen??0)*.1);
           while(u.attackBank>=1-1e-9){
             u.attackBank-=1;
             if(!single)continue;
@@ -1167,7 +1178,7 @@ export function simulateV2(data,composition,options={}){
           // 써니호 (2.305 gAh j:60308-60367, 2.323 tooltip H15): mana +1 per attack, +5/s from 프랑키 aura (A0E3 715).
           // With the aura: 100 mana → 600 range 185만 magic, 3 s stun. Without: 10% 600 range 20만, 1.2 s stun.
           // 선제공격: the first attack on each boss/frenzy fires the 185만 blast; on a frenzy it adds max HP 45% magic.
-          if(frankyLinked)u.energy=Math.min(100,u.energy+.5);
+          u.energy=Math.min(100,u.energy+(u.buffs?.mana_regen??0)*.1);
           while(u.attackBank>=1-1e-9){
             u.attackBank-=1;
             if(!single)continue;
