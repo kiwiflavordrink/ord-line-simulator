@@ -11,12 +11,16 @@
   <header id="drag">
     <span id="status">불러오는 중…</span>
     <span class="tools">
+      <button id="fontDown" title="글씨 작게">가−</button><button id="fontUp" title="글씨 크게">가+</button>
       <button id="btnCompact" title="접기/펼치기 (숨기기·보이기는 F1)">▤</button>
       <button id="btnClick" title="마우스 통과 (Ctrl+Shift+O)">⇱</button>
       <button id="btnSettings" title="설정">⚙</button>
       <button id="btnQuit" title="종료">✕</button>
     </span>
   </header>
+  <nav id="tabs">
+    <button data-view="now">지금 조합</button><button data-view="next">목표 후보</button><button data-view="upper">추천 상위</button><button data-view="lack">부족한 것</button><button data-view="hand">보유 유닛</button>
+  </nav>
 
   <section id="settings" hidden>
     <label>헬퍼 Data 폴더 <span id="helperDir" class="path">-</span> <button id="pickHelper">찾기</button></label>
@@ -44,18 +48,18 @@
     <button id="prevFrame">◀</button><select id="frame"></select><button id="nextFrame">▶</button>
   </section>
 
-  <section id="goal" class="card">
+  <section id="goal" class="card" data-view="next">
     <h2>목표 <select id="goalSelect"><option value="">(선택)</option></select></h2>
     <div id="goalBody" class="muted">목표 유닛을 고르면 부족 재료와 위습 수가 나옵니다.</div>
   </section>
 
-  <section id="now" class="card">
-    <h2>지금 조합 가능</h2>
+  <section id="now" class="card" data-view="now">
+    <h2>지금 바로 만들 수 있는 유닛 <span class="muted small">(위습·부족 재료 없이)</span></h2>
     <div id="nowBody" class="muted">-</div>
   </section>
 
-  <section id="next" class="card full">
-    <h2>다음 목표 후보 (선택 위습으로 뽑을 흔함)</h2>
+  <section id="next" class="card" data-view="next">
+    <h2>목표 후보 <span class="muted small">(필요한 선택 위습 수가 적은 순)</span></h2>
     <div id="catBar" class="catbar">
       <label><input type="checkbox" value="rare">희귀</label><label><input type="checkbox" value="legend">전설</label>
       <label><input type="checkbox" value="hidden">히든</label><label><input type="checkbox" value="upper">상위(초불영제)</label>
@@ -65,17 +69,27 @@
     <div id="nextBody" class="muted">-</div>
   </section>
 
-  <section id="combo" class="card">
-    <h2>현재 조합</h2>
+  <section id="upper" class="card" data-view="upper">
+    <h2>추천 상위 <span class="muted small">(만들었을 때 시뮬 결과가 좋은 순)</span></h2>
+    <div id="upperBody" class="muted">-</div>
+  </section>
+
+  <section id="lack" class="card" data-view="lack">
+    <h2>내 조합에서 부족한 것</h2>
+    <div id="lackBody" class="muted">-</div>
+  </section>
+
+  <section id="combo" class="card" data-view="lack">
+    <h2>현재 조합 시뮬</h2>
     <div id="comboBody" class="muted">보유 유닛이 없습니다.</div>
   </section>
 
-  <section id="real" class="card full">
+  <section id="real" class="card" data-view="lack">
     <h2>비슷한 실제 클리어</h2>
     <div id="realBody" class="muted">헬퍼 Data 폴더를 지정하면 비교합니다.</div>
   </section>
 
-  <section id="hand" class="card full">
+  <section id="hand" class="card" data-view="hand">
     <h2>보유 유닛</h2>
     <div class="add"><input id="unitSearch" list="unitList" placeholder="유닛 이름 또는 코드"><datalist id="unitList"></datalist><button id="addUnit">추가</button><button id="clearHand">비우기</button></div>
     <div id="handBody"></div>

@@ -43,10 +43,18 @@ onmessage=e=>{
         const cats=(m.cats?.length?m.cats:['legend','upper']).filter(c=>CAT[c]);
         // One list per chosen category (5 each), so cheap 희귀 do not push 해적선 or 상위 off the list.
         const LABEL={rare:'희귀',legend:'전설',hidden:'히든',upper:'상위(초불영제)',mystic:'신비·기타',ship:'해적선',support:'보조'};
-        const next=cats.map(c=>({cat:c,label:LABEL[c],list:nextTargets(data,hand,recipes,tier,{limit:5,difficulty,red,growthCut,
-          isTarget:id=>CAT[c].test(tier(id)??'')})}));
-        const rare=[];
-        postMessage({type:'next',id:m.id,next,rare,now});
+        // 수정내역 66: only the list the open tab shows is searched (each candidate costs one simulation).
+        const view=m.view??'now';
+        const next=view==='next'?cats.map(c=>({cat:c,label:LABEL[c],list:nextTargets(data,hand,recipes,tier,{limit:5,difficulty,red,growthCut,
+          isTarget:id=>CAT[c].test(tier(id)??'')})})):null;
+        // 추천 상위: the nearest 초월·불멸·영원·제한·신비 targets, ranked by the simulation after crafting (clear first, fewer left).
+        let upper=null;
+        if(view==='upper'){
+          upper=nextTargets(data,hand,recipes,tier,{limit:10,difficulty,red,growthCut,isTarget:id=>/초월|불멸|영원|제한|신비/.test(tier(id)??'')});
+          const score=x=>!x.sim?1e6:x.sim.clear?x.sim.remaining:1000-(x.sim.failedRound??60)*10-(x.sim.failedSecond??0)/10;
+          upper.sort((a,b)=>score(a)-score(b)||a.plan.wisps-b.plan.wisps);
+        }
+        postMessage({type:'next',id:m.id,next,upper,now});
       },0);
     }
   }catch(err){postMessage({type:'error',id:m.id,message:String(err?.message??err)});}

@@ -98,6 +98,9 @@ async function readLive(){
   else{if(!liveFile||!(await api.exists(liveFile)))return;text=await api.readFile(liveFile);}
   let j;try{j=JSON.parse(text.replace(/^\uFEFF/,''));}catch{return;}
   if(j.Time===liveTime)return;liveTime=j.Time;
+  // 수정내역 66: redraw only when the hand itself changed (memscan rewrites the file every few seconds).
+  const sig=(j.Units??[]).map(u=>u.Rawcode+':'+u.Count+':'+u.Owner).sort().join('|')+'#'+(j.Status??'');
+  if(sig===state.liveSig)return;state.liveSig=sig;
   for(const u of j.Units??[]){const code=reverseRawcode(u.Rawcode),n=String(u.Name??'').replace(/\|c[0-9a-fA-F]{8}|\|r/g,'').replace(/ - .*$/,'').trim();
     if(n&&!state.names.has(code)&&!state.codeNames.has(code))state.codeNames.set(code,n);}
   const owner=+state.settings.memPlayer||0;
@@ -136,9 +139,9 @@ function analyze(){
   clearTimeout(analyzeTimer);
   analyzeTimer=setTimeout(()=>{
     const diff=difficulty();
-    worker.postMessage({type:'analyze',id:++state.reqId,hand:state.hand,difficulty:diff,
+    worker.postMessage({type:'analyze',id:++state.reqId,hand:state.hand,difficulty:diff,view:view(),
       goal:$('goalSelect').value||null,growthCut:+state.settings.growthCut||0,cats:state.settings.cats??['legend','upper']});
-    $('nextBody').innerHTML='<span class="muted">계산 중…</span>';
+    for(const id of ['nextBody','upperBody'])if(!$(id).dataset.filled)$(id).innerHTML='<span class="muted">계산 중…</span>';
     renderHand();
   },120);
 }
@@ -149,8 +152,8 @@ worker.onmessage=e=>{
   if(m.type==='error'){status('계산 오류: '+m.message);return;}
   if(m.type==='helper-ok'){status();return;}
   if(m.id!==state.reqId)return;
-  if(m.type==='quick'){state.quick=m;renderQuick();status();}
-  if(m.type==='next'){state.next=m.next;state.rare=m.rare;state.now=m.now;renderNext();renderNow();}
+  if(m.type==='quick'){state.quick=m;renderQuick();renderLack();status();}
+  if(m.type==='next'){state.next=m.next;state.now=m.now;state.upper=m.upper;renderNext();renderNow();renderUpper();}
 };
 
 function status(msg){
@@ -207,20 +210,57 @@ function renderQuick(){
 }
 
 const tierShort=id=>(state.tiers.get(id)??'').replace(/\s*\[.*\]/,'');
+// 수정내역 66: one plain row per unit — name, how many 선택 위습, which commons to pick, wood, what cannot be picked.
+const wispBadge=n=>`<span class="wisp${n?'':' zero'}">${n?`위습 ${n}`:'바로'}</span>`;
+function howTo(p){
+  const parts=[];
+  if(p.wisps)parts.push(`흔함 뽑기 ${chips(p.commons)}`);
+  if(p.wood)parts.push(`<span class="muted">나무 ${p.wood}</span>`);
+  if(p.gold)parts.push(`<span class="muted">골드 ${p.gold}</span>`);
+  if(Object.keys(p.missing).length)parts.push(`<span class="warn">못 뽑는 재료 ${chips(p.missing)}</span>`);
+  return parts.join(' · ')||'<span class="ok">재료 다 있음</span>';
+}
+const unitRow=(x,extra='')=>`<div class="row click" data-goal="${x.id}"><div class="top"><span><span class="name">${esc(nameOf(x.id))}</span> <span class="muted small">${esc(tierShort(x.id))}</span></span>
+  <span>${extra} ${wispBadge(x.plan.wisps)}</span></div><div class="how">${howTo(x.plan)}</div></div>`;
+function fill(id,html){$(id).innerHTML=html;$(id).dataset.filled='1';}
 function renderNext(){
-  if(!state.helper){$('nextBody').innerHTML='<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>';return;}
-  const table=(title,list)=>!list?.length?'':`${title?`<div class="muted">${title}</div>`:''}<table class="next"><tr><th>유닛</th><th class="num">위습</th><th>뽑을 흔함 · 나무 · 부족</th></tr>`+
-    list.map(x=>`<tr><td class="click" data-goal="${x.id}">${esc(nameOf(x.id))}<br><span class="muted">${esc(tierShort(x.id))}</span></td><td class="num big">${x.plan.wisps}</td>
-      <td>${x.plan.wisps?chips(x.plan.commons):'<span class="ok">위습 없이 가능</span>'}${x.plan.wood?` <span class="muted">나무 ${x.plan.wood}</span>`:''}${Object.keys(x.plan.missing).length?` <span class="warn">부족 ${chips(x.plan.missing)}</span>`:''}</td></tr>`).join('')+'</table>';
-  const html=(state.next??[]).map(g=>table(g.label,g.list)).join('');
-  $('nextBody').innerHTML=html||'<span class="muted">후보 없음</span>';
+  if(state.next==null&&state.helper)return;
+  if(!state.helper){fill('nextBody','<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>');return;}
+  const html=(state.next??[]).map(g=>!g.list?.length?'':`<div class="muted small">${esc(g.label)}</div>`+g.list.map(x=>unitRow(x)).join('')).join('');
+  fill('nextBody',html||'<span class="muted">후보 없음 (위 칸에서 종류를 고르세요)</span>');
 }
 function renderNow(){
   const list=state.now??[];
-  if(!state.helper){$('nowBody').innerHTML='<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>';return;}
-  $('nowBody').innerHTML=list.length?list.map(x=>`<div class="click" data-goal="${x.id}"><span class="ok">${esc(nameOf(x.id))}</span> <span class="muted">${esc(tierShort(x.id))}</span>
-      ${x.plan.wood?` · 나무 ${x.plan.wood}`:''}${x.plan.gold?` · 골드 ${x.plan.gold}`:''} <span class="muted">← ${chips(x.plan.used)}</span></div>`).join('')
-    :'<span class="muted">지금 바로 만들 수 있는 유닛이 없습니다.</span>';
+  if(!state.helper){fill('nowBody','<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>');return;}
+  fill('nowBody',list.length?list.map(x=>`<div class="row click" data-goal="${x.id}"><div class="top"><span><span class="name ok">${esc(nameOf(x.id))}</span> <span class="muted small">${esc(tierShort(x.id))}</span></span>
+      <span>${x.plan.wood?`나무 ${x.plan.wood} `:''}${x.plan.gold?`골드 ${x.plan.gold}`:''}</span></div><div class="how"><span class="muted small">재료</span> ${chips(x.plan.used)}</div></div>`).join('')
+    :'<span class="muted">지금 바로 만들 수 있는 유닛이 없습니다. "목표 후보"에서 위습으로 가까운 유닛을 보세요.</span>');
+}
+const simText=s=>!s?'<span class="muted small">시뮬 미지원</span>':s.clear?`<span class="ok small">${difficulty()} 클리어 · 남은 몹 ${s.remaining}</span>`:`<span class="bad small">${difficulty()} ${s.failedRound}라 패배</span>`;
+function renderUpper(){
+  if(state.upper==null&&state.helper)return;
+  if(!state.helper){fill('upperBody','<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>');return;}
+  const list=state.upper??[];
+  fill('upperBody',list.length?list.map(x=>unitRow(x,simText(x.sim))).join(''):'<span class="muted">가까운 상위 유닛이 없습니다.</span>');
+}
+// 부족한 것: what the current combination lacks, from the line simulation and simple role counts.
+const ROLE={single:['L9','L16','L31','H13','H19','T1','L6','H5','D6','TR7'],finish:['L36'],
+  special:['H17','L26','L3','D2','SR4','I8','L10'],deleter:['OB1','L12','D4','L19'],mana:['D2','L19','L28','TR22','MY8','SP2','L31']};
+function renderLack(){
+  const q=state.quick;if(!q){fill('lackBody','-');return;}
+  const codes=new Map(q.team.map(t=>[t.code,t.count]));const has=r=>ROLE[r].reduce((a,c)=>a+(codes.get(c)??0),0);
+  const s=q.stats[difficulty()],items=[];
+  if(!q.team.length)items.push('라인에 쓰는 상위 유닛이 없습니다.');
+  else{
+    if(s&&!s.clear)items.push(`<b class="bad">${difficulty()}에서 ${s.failedRound}라 ${Math.round(s.failedSecond??0)}초 패배</b> (시뮬) — 라인딜이 부족합니다.`);
+    else if(s)items.push(`<b class="ok">${difficulty()} 클리어</b> (시뮬, 남은 몹 ${s.remaining} / 패배 ${s.threshold}).`);
+    const n1=has('single'),n2=has('finish'),n3=has('special'),n4=has('deleter');
+    items.push(n1?`단일 ${n1}기`:'<span class="warn">단일 없음</span> — 루치·상디·코비 전설 등으로 새 몹에 단일을 묻히면 라인딜이 크게 오릅니다 (루치 1기 ≈ 모든 몹 13%/라운드).');
+    if(n1)items.push(n2?`끝딜 ${n2}기`:'<span class="warn">끝딜 없음</span> — 핸콕 전설 1기 ≈ 모든 몹 5%/라운드, 단일과 같이 쓰면 더 큼.');
+    items.push(n3?`보스·광폭 처리 ${n3}기`:'<span class="warn">보스·광폭 처리 없음</span> — 아카이누 히든, 제파·네코 전설, 코알라 왜곡 중 하나가 있으면 루치 1~2기를 아낍니다.');
+    items.push(n4?`삭제 ${n4}기`:'<span class="muted">삭제(도움소 흡수 등) 없음</span>');
+  }
+  fill('lackBody','<ul class="lack">'+items.map(x=>`<li>${x}</li>`).join('')+'</ul>');
 }
 
 function renderHand(){
@@ -234,6 +274,18 @@ function editHand(id,d){
   if((state.settings.source??'manual')==='manual')saveSettings({manualHand:state.hand});
   analyze();
 }
+
+// --- view tabs and font (수정내역 66) ------------------------------------------------------------------------------
+const view=()=>state.settings.view??'now';
+function applyView(){
+  const v=view();
+  for(const b of $('tabs').querySelectorAll('button'))b.classList.toggle('on',b.dataset.view===v);
+  for(const sec of document.querySelectorAll('section[data-view]'))sec.hidden=sec.dataset.view!==v;
+}
+$('tabs').onclick=async e=>{const b=e.target.closest('button[data-view]');if(!b)return;await saveSettings({view:b.dataset.view});applyView();analyze();};
+const applyFont=()=>document.documentElement.style.setProperty('--fs',(state.settings.fontSize??15)+'px');
+$('fontUp').onclick=async()=>{await saveSettings({fontSize:Math.min(24,(state.settings.fontSize??15)+1)});applyFont();};
+$('fontDown').onclick=async()=>{await saveSettings({fontSize:Math.max(10,(state.settings.fontSize??15)-1)});applyFont();};
 
 // --- events --------------------------------------------------------------------------------------------------------
 $('btnSettings').onclick=()=>{$('settings').hidden=!$('settings').hidden;};
@@ -253,7 +305,7 @@ $('goalSelect').onchange=async e=>{await saveSettings({goal:e.target.value||null
 function syncCats(){const on=new Set(state.settings.cats??['legend','upper']);for(const c of $('catBar').querySelectorAll('input'))c.checked=on.has(c.value);}
 $('catBar').onchange=async()=>{await saveSettings({cats:[...$('catBar').querySelectorAll('input:checked')].map(c=>c.value)});analyze();};
 $('nowBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g){$('goalSelect').value=g;$('goalSelect').onchange({target:$('goalSelect')});}};
-$('nextBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g){$('goalSelect').value=g;$('goalSelect').onchange({target:$('goalSelect')});}};
+$('upperBody').onclick=$('nextBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g){$('goalSelect').value=g;$('goalSelect').onchange({target:$('goalSelect')});}};
 $('handBody').onclick=e=>{const b=e.target.closest('button[data-id]');if(b)editHand(b.dataset.id,+b.dataset.d);};
 $('addUnit').onclick=()=>{
   const v=$('unitSearch').value.trim();if(!v)return;
@@ -302,7 +354,7 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   $('difficulty').value=state.settings.difficulty??'auto';
   $('growthCut').value=state.settings.growthCut??0;
   $('memPlayer').value=String(state.settings.memPlayer??0);
-  syncCats();
+  syncCats();applyView();applyFont();
   $('helperDir').textContent=state.settings.helperDir??'-';
   $('logFile').textContent=state.settings.logFile??'-';
   $('scenarioFile').textContent=state.settings.scenarioFile??'-';
