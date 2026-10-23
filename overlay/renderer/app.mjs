@@ -283,6 +283,14 @@ function applyView(){
   for(const sec of document.querySelectorAll('section[data-view]'))sec.hidden=sec.dataset.view!==v;
 }
 $('tabs').onclick=async e=>{const b=e.target.closest('button[data-view]');if(!b)return;await saveSettings({view:b.dataset.view});applyView();analyze();};
+// 수정내역 67: hotkeys from topmost.ps1 (F2 next tab, F3 click mode) arrive through /cmd.
+const VIEWS=['now','next','upper','lack','hand'];let lastCmd=null;
+if(webLive)setInterval(async()=>{
+  let t;try{t=(await (await fetch('/cmd',{cache:'no-store'})).text()).trim();}catch{return;}
+  if(lastCmd===null){lastCmd=t;return;}if(!t||t===lastCmd)return;lastCmd=t;
+  if(t.startsWith('tab ')){const i=VIEWS.indexOf(view());await saveSettings({view:VIEWS[(i+1)%VIEWS.length]});applyView();analyze();}
+  if(t.startsWith('mode ')){const click=t.endsWith('click');document.body.classList.toggle('clickable',click);status(click?'클릭 가능 모드 (F3: 통과)':'클릭 통과 모드 (F3: 클릭 가능)');setTimeout(()=>status(),2500);}
+},400);
 const applyFont=()=>document.documentElement.style.setProperty('--fs',(state.settings.fontSize??15)+'px');
 $('fontUp').onclick=async()=>{await saveSettings({fontSize:Math.min(24,(state.settings.fontSize??15)+1)});applyFont();};
 $('fontDown').onclick=async()=>{await saveSettings({fontSize:Math.max(10,(state.settings.fontSize??15)-1)});applyFont();};
