@@ -237,7 +237,11 @@ function editHand(id,d){
 
 // --- events --------------------------------------------------------------------------------------------------------
 $('btnSettings').onclick=()=>{$('settings').hidden=!$('settings').hidden;};
-$('btnCompact').onclick=()=>document.body.classList.toggle('compact');
+$('btnCompact').onclick=()=>{
+  // Web overlay (수정내역 65): fold to the header bar; topmost.ps1 shrinks the window to match.
+  if(webLive){const f=document.body.classList.toggle('folded');fetch('/ui?fold='+(f?1:0),{cache:'no-store'}).catch(()=>{});return;}
+  document.body.classList.toggle('compact');
+};
 $('btnClick').onclick=()=>api?.setClickThrough(true);
 $('btnQuit').onclick=()=>api?api.quit():window.close();
 $('source').onchange=async e=>{await saveSettings({source:e.target.value});applySource();};
