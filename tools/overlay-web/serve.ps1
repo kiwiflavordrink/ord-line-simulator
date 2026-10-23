@@ -47,6 +47,12 @@ while ($listener.IsListening) {
       $file = if ($Helper -and $name -match '^[^\\/:*?"<>|]+\.json$') { Join-Path $Helper $name } else { $null }
       if ($file -and (Test-Path $file -PathType Leaf)) { $body = [IO.File]::ReadAllBytes($file); $res.ContentType = 'application/json; charset=utf-8' }
       else { $res.StatusCode = 404; $body = [Text.Encoding]::UTF8.GetBytes('not found') }
+    } elseif ($path -eq '/view' -and $ctx.Request.HttpMethod -eq 'POST') {
+      # 수정내역 68: the hidden page sends what the native window draws.
+      $sr = New-Object IO.StreamReader($ctx.Request.InputStream, [Text.Encoding]::UTF8); $txt = $sr.ReadToEnd(); $sr.Close()
+      $vf = Join-Path $env:TEMP 'ordr_overlay_view.json'; $tmp = "$vf.tmp"
+      [IO.File]::WriteAllText($tmp, $txt, (New-Object Text.UTF8Encoding($false))); Move-Item -Force $tmp $vf
+      $body = [Text.Encoding]::UTF8.GetBytes('ok'); $res.ContentType = 'text/plain'
     } elseif ($path -eq '/cmd') {
       $cf = Join-Path $env:TEMP 'ordr_overlay_cmd.txt'
       $body = [Text.Encoding]::UTF8.GetBytes($(if (Test-Path $cf) { (Get-Content $cf -Raw).Trim() } else { '' })); $res.ContentType = 'text/plain'

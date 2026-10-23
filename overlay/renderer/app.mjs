@@ -152,7 +152,7 @@ worker.onmessage=e=>{
   if(m.type==='error'){status('계산 오류: '+m.message);return;}
   if(m.type==='helper-ok'){status();return;}
   if(m.id!==state.reqId)return;
-  if(m.type==='quick'){state.quick=m;renderQuick();renderLack();status();}
+  if(m.type==='quick'){state.quick=m;renderQuick();renderLack();status();exportView();}
   if(m.type==='next'){state.next=m.next;state.now=m.now;state.upper=m.upper;renderNext();renderNow();renderUpper();}
 };
 
@@ -222,7 +222,40 @@ function howTo(p){
 }
 const unitRow=(x,extra='')=>`<div class="row click" data-goal="${x.id}"><div class="top"><span><span class="name">${esc(nameOf(x.id))}</span> <span class="muted small">${esc(tierShort(x.id))}</span></span>
   <span>${extra} ${wispBadge(x.plan.wisps)}</span></div><div class="how">${howTo(x.plan)}</div></div>`;
-function fill(id,html){$(id).innerHTML=html;$(id).dataset.filled='1';}
+function fill(id,html){$(id).innerHTML=html;$(id).dataset.filled='1';exportView();}
+// 수정내역 68: the visible tab as plain rows for the native window (tools/overlay-native/native.ps1), sent to /view.
+const native=webLive&&new URLSearchParams(location.search).get('native')==='1';
+let exportTimer=null;
+function exportView(){
+  if(!native)return;clearTimeout(exportTimer);
+  exportTimer=setTimeout(()=>{
+    const rows=[],colorOf=el=>el.closest?.('.bad')||el.querySelector?.('.bad')?'bad':el.querySelector?.('.warn')||el.classList?.contains('warn')?'warn':el.querySelector?.('.ok:not(.wisp)')?'ok':'';
+    for(const sec of document.querySelectorAll('section[data-view]')){
+      if(sec.hidden)continue;
+      rows.push({t:[...(sec.querySelector('h2')?.childNodes??[])].filter(n=>n.nodeName!=='SELECT').map(n=>n.textContent).join('').replace(/\s+/g,' ').trim(),c:'acc',b:true});
+      if(sec.id==='next'){
+        const on=new Set(state.settings.cats??['legend','upper']);
+        const cats=[...$('catBar').querySelectorAll('input')].map(i=>(on.has(i.value)?'☑ ':'☐ ')+i.parentElement.innerText.trim());
+        [...$('catBar').querySelectorAll('input')].forEach((inp,k)=>rows.push({t:cats[k],c:on.has(inp.value)?'ok':'muted',a:'cat '+inp.value,i:1}));
+      }
+      if(sec.id==='lack'){const d=state.settings.difficulty??'auto';rows.push({t:`난이도: ${d==='auto'?'자동('+difficulty()+')':d}  ▶ 눌러서 바꾸기`,c:'acc',a:'diff',i:1});}
+      if(sec.id==='goal'){const g=$('goalSelect').value;rows.push({t:'목표: '+(g?nameOf(g):'(목록에서 유닛을 누르면 목표로 지정)'),c:g?'':'muted'});
+        for(const d of $('goalBody').children.length?$('goalBody').children:[$('goalBody')]){const t=d.innerText.replace(/\s+/g,' ').trim();if(t)rows.push({t,c:d.classList.contains('warn')?'warn':d.classList.contains('muted')?'muted':'',i:1});}
+        continue;}
+      const body=sec.querySelector('[id$=Body]')??sec;
+      const items=body.querySelectorAll(':scope > .row, :scope > div.muted, :scope ul.lack > li, :scope .hand-row, :scope table tr');
+      if(!items.length){const t=body.innerText.trim();if(t)rows.push({t,c:'muted'});continue;}
+      for(const el of items){
+        if(el.classList.contains('row')){
+          const top=el.querySelector('.top')?.innerText.replace(/\s+/g,' ').trim()??el.innerText,how=el.querySelector('.how')?.innerText.replace(/\s+/g,' ').trim();
+          rows.push({t:top,b:true,c:colorOf(el.querySelector('.top')??el),a:el.dataset.goal?'goal '+el.dataset.goal:''});
+          if(how)rows.push({t:how,c:'muted',i:1});
+        }else rows.push({t:el.innerText.replace(/\s+/g,' ').trim(),c:colorOf(el)});
+      }
+    }
+    fetch('/view',{method:'POST',body:JSON.stringify({view:view(),status:$('status').textContent,rows})}).catch(()=>{});
+  },150);
+}
 function renderNext(){
   if(state.next==null&&state.helper)return;
   if(!state.helper){fill('nextBody','<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>');return;}
@@ -281,6 +314,7 @@ function applyView(){
   const v=view();
   for(const b of $('tabs').querySelectorAll('button'))b.classList.toggle('on',b.dataset.view===v);
   for(const sec of document.querySelectorAll('section[data-view]'))sec.hidden=sec.dataset.view!==v;
+  exportView();
 }
 $('tabs').onclick=async e=>{const b=e.target.closest('button[data-view]');if(!b)return;await saveSettings({view:b.dataset.view});applyView();analyze();};
 // 수정내역 67: hotkeys from topmost.ps1 (F2 next tab, F3 click mode) arrive through /cmd.
@@ -289,6 +323,13 @@ if(webLive)setInterval(async()=>{
   let t;try{t=(await (await fetch('/cmd',{cache:'no-store'})).text()).trim();}catch{return;}
   if(lastCmd===null){lastCmd=t;return;}if(!t||t===lastCmd)return;lastCmd=t;
   if(t.startsWith('tab ')){const i=VIEWS.indexOf(view());await saveSettings({view:VIEWS[(i+1)%VIEWS.length]});applyView();analyze();}
+  // 수정내역 68: commands from the native window: "<seq> view <v>", "<seq> goal <id>", "<seq> cat <c>".
+  const [,verb,arg]=t.split(' ');
+  if(verb==='view'&&VIEWS.includes(arg)){await saveSettings({view:arg});applyView();analyze();}
+  if(verb==='goal'&&arg){$('goalSelect').value=arg;await saveSettings({goal:arg});state.meta.goal=arg;await saveSettings({view:'next'});applyView();analyze();}
+  if(verb==='diff'){const L=['auto','신','악몽','지옥'],i=L.indexOf(state.settings.difficulty??'auto');await saveSettings({difficulty:L[(i+1)%L.length]});$('difficulty').value=state.settings.difficulty;status();analyze();}
+  if(verb==='cat'&&arg){const on=new Set(state.settings.cats??['legend','upper']);on.has(arg)?on.delete(arg):on.add(arg);await saveSettings({cats:[...on]});syncCats();analyze();}
+  exportView();
   if(t.startsWith('mode ')){const click=t.endsWith('click');document.body.classList.toggle('clickable',click);status(click?'클릭 가능 모드 (F3: 통과)':'클릭 통과 모드 (F3: 클릭 가능)');setTimeout(()=>status(),2500);}
 },400);
 const applyFont=()=>document.documentElement.style.setProperty('--fs',(state.settings.fontSize??15)+'px');
