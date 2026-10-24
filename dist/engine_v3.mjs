@@ -398,6 +398,11 @@ export function simulateV2(data,composition,options={}){
   const fullResource=resourceMode!=='empty',summons=options.summons!==false;
   for(const u of units)if(u.kind==='conditional')u.energy=fullResource?(u.code==='I8'?45:u.code==='H15'?100:150):0;
   const red=options.red!==false,redDamage=red&&options.redDamage!==false;
+  // Green Blood on 레드포스호 히든 (수정내역 80, 유저 "그린블러드는 레드포스호 줬어"): options.greenBlood 'H2' (또는 'RED'·
+  // 'h03U'). 레드포스호도 히든이라 A13C 공속 +30%와 3초마다 825범위 40만 + 최대체력 0.4% 고정(진력해방)을 받는다.
+  const redGB=redDamage&&['H2','RED','h03U'].includes(options.greenBlood);
+  if(redGB)gbState={code:'H2',applied:true};
+  const redAps=()=>{const cd=BASE_COOLDOWN.H2,b=(curse.ally_aps??0)+(redGB?.3:0);return b?Math.max(0,Math.min(5,5.625*cd+b))/cd:5.625;};
   // 새턴 A13G (ACac) adds to Red Force's +35% like any attack aura (supports, conditional units, Red Force).
   const allyAttack=curse.ally_attack??0;
   const frankyLinked=options.frankyAura!==false&&units.some(u=>u.code==='TR28');
@@ -1337,7 +1342,7 @@ export function simulateV2(data,composition,options={}){
       }
       if(frankyLinked&&sunnyUnits.length)control.frankyAuraSeconds+=.1;
       if(redDamage&&target){
-        const hiddenAps=allyAps(5.625,BASE_COOLDOWN.H2),hiddenAttack=67806.45*(1+allyAttack);
+        const hiddenAps=redAps(),hiddenAttack=67806.45*(1+allyAttack);
         deal(target,hiddenAttack*hiddenAps*1.05*pf(armor(target,extraArmor))*(target.kind==='boss'?2.2:1)*.1,'H2','basic','physical');
         if(target.kind==='boss'||target.kind==='frenzy'){
           const bonus=(target.kind==='frenzy'?.075:.0175)*target.maxhp;
@@ -1345,7 +1350,8 @@ export function simulateV2(data,composition,options={}){
         }
       }
       if(redDamage)for(const m of mobs)
-        deal(m,allyAps(5.625,BASE_COOLDOWN.H2)*.15*275000*magicFactor*.1*hit(m),'H2','area','magic');
+        deal(m,redAps()*.15*275000*magicFactor*.1*hit(m),'H2','area','magic');
+      if(redGB)for(const m of [...mobs,...specials])deal(m,(400000+.004*m.maxhp)/3*.1*hit(m),'H2','area','fixed');
 
       // After absolute cooldown, each attack rolls its tooltip proc chance.
       // Sugar is an active used as soon as it is ready.

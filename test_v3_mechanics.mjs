@@ -669,4 +669,10 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const a=simulateV2(fullData,t,{...o,specialFocus:['I10']}),b=simulateV2(fullData,t,{...o,specialFocus:[]});
   assert.notEqual(a.sourceDamage.I10,b.sourceDamage.I10);
 }
+// [수정 80] 그린블러드를 레드포스호(H2)에: 레드포스호 피해가 늘고 적용 상태가 남는다.
+{
+  const t=[{code:'TR8'}],a=simulateV2(fullData,t,{difficulty:'신'}),b=simulateV2(fullData,t,{difficulty:'신',greenBlood:'H2'});
+  assert.ok(b.sourceDamage.H2>a.sourceDamage.H2);assert.deepEqual(b.greenBlood,{code:'H2',applied:true});
+  assert.equal(simulateV2(fullData,t,{difficulty:'신',red:false,greenBlood:'H2'}).sourceDamage.H2,undefined);
+}
 console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen, single bench, TR8 rework: passed');
