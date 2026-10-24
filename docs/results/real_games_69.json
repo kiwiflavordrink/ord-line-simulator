@@ -230,18 +230,18 @@
    },
    "sim": {
     "clear": true,
-    "count": 34,
+    "count": 2,
     "failed": null,
     "rounds": [
      0,
      0,
      0,
-     3,
-     3,
-     34
+     0,
+     0,
+     2
     ]
    },
-   "diff": 34
+   "diff": 2
   },
   {
    "id": "G12",
@@ -251,19 +251,19 @@
     "count": 0
    },
    "sim": {
-    "clear": false,
-    "count": null,
-    "failed": "65라 12초",
+    "clear": true,
+    "count": 0,
+    "failed": null,
     "rounds": [
-     7,
-     24,
-     6,
-     30,
-     30,
-     33
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
     ]
    },
-   "diff": null
+   "diff": 0
   },
   {
    "id": "G13",
@@ -273,19 +273,41 @@
     "count": 6
    },
    "sim": {
-    "clear": false,
-    "count": null,
-    "failed": "65라 15.5초",
+    "clear": true,
+    "count": 0,
+    "failed": null,
     "rounds": [
      0,
-     14,
      0,
-     24,
-     25,
-     29
+     0,
+     0,
+     0,
+     0
     ]
    },
-   "diff": null
+   "diff": -6
+  },
+  {
+   "id": "G14",
+   "label": "악몽 마르코 제한 불사조 (물뎀, 새턴, 최고의도움 역발상)",
+   "actual": {
+    "clear": true,
+    "count": 0
+   },
+   "sim": {
+    "clear": true,
+    "count": 12,
+    "failed": null,
+    "rounds": [
+     0,
+     4,
+     0,
+     9,
+     13,
+     12
+    ]
+   },
+   "diff": 12
   }
  ]
 }
