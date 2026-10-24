@@ -56,3 +56,6 @@ ul.lack{margin:2px 0;padding-left:1.1em}ul.lack li{margin:2px 0}
 .stages{margin-top:4px;border-left:2px solid var(--acc,#6cf);padding-left:6px}
 .stage{margin:2px 0;line-height:1.35}
 .chips .sp{border-color:#e0a030;color:#ffcf70}
+/* 수정내역 81: current goal in lists, clear button */
+.row.cur{outline:1px solid var(--acc,#6cf)}
+#goalClear{font-size:.8em;padding:0 6px}

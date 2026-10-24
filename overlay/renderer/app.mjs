@@ -260,7 +260,7 @@ function howTo(p,st){
   if(st)parts.push(stageLine(st));
   return parts.filter(Boolean).join(' · ')||'<span class="ok">재료 다 있음</span>';
 }
-const unitRow=(x,extra='')=>`<div class="row click" data-goal="${x.id}"><div class="top"><span><span class="name">${esc(nameOf(x.id))}</span> <span class="muted small">${esc(tierShort(x.id))}</span></span>
+const unitRow=(x,extra='')=>`<div class="row click${x.id===$('goalSelect').value?' cur':''}" data-goal="${x.id}"><div class="top"><span><span class="name">${esc(nameOf(x.id))}</span> <span class="muted small">${esc(tierShort(x.id))}</span></span>
   <span>${extra} ${wispBadge(x.plan.wisps)}</span></div><div class="how">${howTo(x.plan,x.stages)}</div></div>`;
 function fill(id,html){$(id).innerHTML=html;$(id).dataset.filled='1';exportView();}
 // 수정내역 68: the visible tab as plain rows for the native window (tools/overlay-native/native.ps1), sent to /view.
@@ -280,6 +280,7 @@ function exportView(){
       }
       if(sec.id==='lack'){const d=state.settings.difficulty??'auto';rows.push({t:`난이도: ${d==='auto'?'자동('+difficulty()+')':d}  ▶ 눌러서 바꾸기`,c:'acc',a:'diff',i:1});}
       if(sec.id==='goal'){const g=$('goalSelect').value;rows.push({t:'목표: '+(g?nameOf(g):'(목록에서 유닛을 누르면 목표로 지정)'),c:g?'':'muted'});
+        if(g)rows.push({t:'✕ 목표 해제',c:'muted',a:'goal none',i:1});
         for(const d of $('goalBody').children.length?[...$('goalBody').children].flatMap(x=>x.classList.contains('stages')?[...x.children]:[x]):[$('goalBody')]){const t=d.innerText.replace(/\s+/g,' ').trim();if(t)rows.push({t,c:d.classList.contains('warn')?'warn':d.classList.contains('muted')?'muted':'',i:1});}
         continue;}
       const body=sec.querySelector('[id$=Body]')??sec;
@@ -355,7 +356,9 @@ const view=()=>state.settings.view??'now';
 function applyView(){
   const v=view();
   for(const b of $('tabs').querySelectorAll('button'))b.classList.toggle('on',b.dataset.view===v);
-  for(const sec of document.querySelectorAll('section[data-view]'))sec.hidden=sec.dataset.view!==v;
+  // 수정내역 81: the goal card stays on top in every tab once a goal is chosen (click a unit in any list to set it).
+  const goal=$('goalSelect').value;
+  for(const sec of document.querySelectorAll('section[data-view]'))sec.hidden=sec.id==='goal'?!(goal||v==='next'):sec.dataset.view!==v;
   exportView();
 }
 $('tabs').onclick=async e=>{const b=e.target.closest('button[data-view]');if(!b)return;await saveSettings({view:b.dataset.view});applyView();analyze();};
@@ -368,7 +371,7 @@ if(webLive)setInterval(async()=>{
   // 수정내역 68: commands from the native window: "<seq> view <v>", "<seq> goal <id>", "<seq> cat <c>".
   const [,verb,arg]=t.split(' ');
   if(verb==='view'&&VIEWS.includes(arg)){await saveSettings({view:arg});applyView();analyze();}
-  if(verb==='goal'&&arg){$('goalSelect').value=arg;await saveSettings({goal:arg});state.meta.goal=arg;await saveSettings({view:'next'});applyView();analyze();}
+  if(verb==='goal'&&arg){await setGoal(arg==='none'?null:arg);}
   if(verb==='diff'){const L=['auto','신','악몽','지옥'],i=L.indexOf(state.settings.difficulty??'auto');await saveSettings({difficulty:L[(i+1)%L.length]});$('difficulty').value=state.settings.difficulty;status();analyze();}
   if(verb==='cat'&&arg){const on=new Set(state.settings.cats??['legend','upper']);on.has(arg)?on.delete(arg):on.add(arg);await saveSettings({cats:[...on]});syncCats();analyze();}
   exportView();
@@ -391,12 +394,16 @@ $('source').onchange=async e=>{await saveSettings({source:e.target.value});apply
 $('memPlayer').onchange=async e=>{await saveSettings({memPlayer:+e.target.value});if((state.settings.source??'manual')==='memory')startMemory();};
 $('difficulty').onchange=async e=>{await saveSettings({difficulty:e.target.value});analyze();status();};
 $('growthCut').onchange=async e=>{await saveSettings({growthCut:+e.target.value||0});analyze();};
-$('goalSelect').onchange=async e=>{await saveSettings({goal:e.target.value||null});state.meta.goal=e.target.value||null;analyze();};
+async function setGoal(id){
+  $('goalSelect').value=id??'';await saveSettings({goal:id||null});state.meta.goal=id||null;
+  applyView();analyze();window.scrollTo({top:0,behavior:'smooth'});
+}
+$('goalSelect').onchange=e=>setGoal(e.target.value||null);
+$('goalClear').onclick=()=>setGoal(null);
 // 목표 종류 (수정내역 49): saved in settings; default 전설 + 상위.
 function syncCats(){const on=new Set(state.settings.cats??['legend','upper']);for(const c of $('catBar').querySelectorAll('input'))c.checked=on.has(c.value);}
 $('catBar').onchange=async()=>{await saveSettings({cats:[...$('catBar').querySelectorAll('input:checked')].map(c=>c.value)});analyze();};
-$('nowBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g){$('goalSelect').value=g;$('goalSelect').onchange({target:$('goalSelect')});}};
-$('upperBody').onclick=$('nextBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g){$('goalSelect').value=g;$('goalSelect').onchange({target:$('goalSelect')});}};
+$('nowBody').onclick=$('upperBody').onclick=$('nextBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g)setGoal(g);};
 $('handBody').onclick=e=>{const b=e.target.closest('button[data-id]');if(b)editHand(b.dataset.id,+b.dataset.d);};
 $('addUnit').onclick=()=>{
   const v=$('unitSearch').value.trim();if(!v)return;
