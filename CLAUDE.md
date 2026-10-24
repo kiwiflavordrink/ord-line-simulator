@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # ORDR simulator verification
 
 The public unit reference is `dist/ordr_units.json`, collected from `https://ordr.kr/character`.

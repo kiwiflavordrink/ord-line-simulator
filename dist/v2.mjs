@@ -216,7 +216,7 @@ function shareURL(){
   u.searchParams.set('summons',$('summons-v2').checked?'1':'0');history.replaceState(null,'',u);return u.href;
 }
 async function main(){
-  try{const response=await fetch('./data.json');if(!response.ok)throw new Error(`HTTP ${response.status}`);
+  try{const response=await fetch('./data_legacy.json');if(!response.ok)throw new Error(`HTTP ${response.status}`);
     data=await response.json();restore();renderMobs();render();setupSingle();
     $('add-unit').addEventListener('click',()=>addRow({code:'MAGIC_CUSTOM'}));
     document.querySelector('.v2-controls').addEventListener('input',schedule);

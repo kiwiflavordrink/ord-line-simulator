@@ -1,0 +1,14 @@
+{
+  "name": "ordsim-overlay",
+  "version": "0.1.0",
+  "private": true,
+  "description": "원랜디 시뮬레이터 게임 오버레이 (Windows, Electron). 계산은 ../dist 엔진을 그대로 쓴다.",
+  "main": "main.js",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^33.2.1"
+  }
+}

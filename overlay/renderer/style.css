@@ -1,0 +1,68 @@
+:root{--bg:rgba(12,14,20,.82);--card:rgba(255,255,255,.06);--fg:#e8ecf3;--muted:#9aa4b5;--ok:#5ad19a;--bad:#ff7a7a;--warn:#ffd166;--acc:#7cb8ff}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{margin:0;background:transparent;color:var(--fg);font:var(--fs,15px)/1.45 "Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;overflow:hidden}
+#panel{position:absolute;inset:0;background:var(--bg);border:1px solid rgba(255,255,255,.12);border-radius:8px;overflow:auto;padding:0 8px 8px}
+header{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px 0;background:var(--bg);-webkit-app-region:drag;z-index:1}
+header .tools{-webkit-app-region:no-drag;display:flex;gap:2px}
+#status{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+button,select,input{font:inherit;color:var(--fg);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:1px 6px}
+button{cursor:pointer}button:hover{background:rgba(255,255,255,.16)}
+select option{background:#1b1f29}
+.card{background:var(--card);border-radius:6px;padding:6px 8px;margin-top:6px}
+h2{margin:0 0 4px;font-size:1em;color:var(--acc);display:flex;gap:6px;align-items:center}
+h2 select{max-width:220px}
+#settings label{display:flex;gap:6px;align-items:center;margin:4px 0}
+.path{color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl;text-align:left}
+.hint,.muted{color:var(--muted)}
+.big{font-size:1.6em;font-weight:700}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+table{border-collapse:collapse;width:100%}
+td,th{padding:1px 4px;text-align:left;white-space:nowrap}th{color:var(--muted);font-weight:400}
+td.num,th.num{text-align:right}
+.chips span{display:inline-block;background:rgba(255,255,255,.08);border-radius:3px;padding:0 5px;margin:1px 2px 1px 0}
+.add{display:flex;gap:4px;margin-bottom:4px}.add input{flex:1;min-width:0}
+.hand-row{display:flex;justify-content:space-between;align-items:center;padding:1px 0}
+.hand-row .n{display:flex;gap:2px;align-items:center}
+.click{cursor:pointer}.click:hover{color:var(--acc)}
+body.compact .full,body.compact #settings,body.compact #scenarioBar{display:none!important}
+body.through #panel{border-color:rgba(124,184,255,.35)}
+
+/* 수정내역 48: candidate tables wrap their chips instead of overflowing */
+.chips{display:inline-flex;flex-wrap:wrap;gap:2px}
+table.next{width:100%;table-layout:fixed}
+table.next td:first-child{width:34%}
+table.next td:nth-child(2),table.next th:nth-child(2){width:12%}
+table.next td{white-space:normal;overflow-wrap:anywhere}
+.catbar{display:flex;flex-wrap:wrap;gap:2px 8px;margin:2px 0 6px}
+.catbar label{display:inline-flex;align-items:center;gap:2px;cursor:pointer}
+
+body.folded #panel>:not(header){display:none!important}
+
+/* 수정내역 66: tabs (one view at a time), larger text, plain candidate rows */
+#tabs{display:flex;flex-wrap:wrap;gap:3px;margin:2px 0 4px}
+#tabs button{flex:1;padding:4px 2px;border-radius:5px}
+#tabs button.on{background:var(--acc);color:#0b0f17;font-weight:700;border-color:var(--acc)}
+.small{font-size:.8em;font-weight:400}
+.row{padding:5px 2px;border-bottom:1px solid rgba(255,255,255,.07)}
+.row .top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.row .name{font-weight:700}
+.row .how{margin-top:2px}
+.wisp{display:inline-block;min-width:1.8em;text-align:center;border-radius:4px;padding:0 6px;font-weight:700;background:rgba(124,184,255,.18);color:var(--acc)}
+.wisp.zero{background:rgba(90,209,154,.18);color:var(--ok)}
+ul.lack{margin:2px 0;padding-left:1.1em}ul.lack li{margin:2px 0}
+
+/* 수정내역 79: craft stages and special pieces */
+.stages{margin-top:4px;border-left:2px solid var(--acc,#6cf);padding-left:6px}
+.stage{margin:2px 0;line-height:1.35}
+.chips .sp{border-color:#e0a030;color:#ffcf70}
+/* 수정내역 81: current goal in lists, clear button */
+.row.cur{outline:1px solid var(--acc,#6cf)}
+#goalClear{font-size:.8em;padding:0 6px}
+/* 수정내역 85: coach warnings */
+#coach{padding:4px 8px}
+#coachBody .w{margin:2px 0;font-weight:600}
+#coachBody .w.red{color:#ff6b6b}#coachBody .w.yellow{color:#ffcf70}#coachBody .w.green{color:#7ee08a}
+#coachBody .w small{display:block;font-weight:400;opacity:.75}
+#situation label{margin-right:8px}#situation input{width:3.5em}
+#coachBody .watch{opacity:.7;margin-top:2px}#coachBody .watch span{color:#9cd2ff}

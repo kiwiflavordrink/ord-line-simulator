@@ -1,0 +1,41 @@
+{
+  "schema": "ordr-coach-global-units/1",
+  "generated": "2026-10-24",
+  "sources": {
+    "tooltip_2323": "dist/ordr_units.json (ORDR.kr 2.323)",
+    "map_2305": "scratchpad/map2305/war3map.w3a·w3u·j·wts",
+    "guides": ["https://ordr.kr/guides/beginner","https://ordr.kr/guides/team-building","https://ordr.kr/guides/armor-reduction","https://ordr.kr/guides/slow","https://ordr.kr/guides/stun","https://ordr.kr/guides/gorosei","https://ordr.kr/guides/hell","https://ordr.kr/guides/god","https://ordr.kr/guides/nightmare","https://ordr.kr/guides/physical","https://ordr.kr/guides/magic"]
+  },
+  "scope_legend": {
+    "map_enemies": "맵 전체 모든 적(모든 플레이어 라인몹·보스·스토리). WC3 오라 aare 99999 + atar enemies",
+    "map_allies": "맵 전체 모든 아군 플레이어 유닛. aare 99999 + atar friend",
+    "own_player": "자기 플레이어 유닛만(atar player). 다른 플레이어에게 안 감",
+    "local": "유닛 주변 반경만. 라인에서는 자기 라인만, 스토리 존에서는 같이 모인 다른 플레이어·스토리에도 닿음",
+    "per_target": "맞은 적 개체에 쌓이는 디버프. 공유 스토리에 걸면 모두가 이득"
+  },
+  "wc3_stacking": "같은 버프 ID 오라는 여러 개 있어도 1번만(가장 센 값). 다른 버프 ID 오라는 합산. 출처: scratchpad/wc3_rules.md §2 (커뮤니티 근거, 공식 문서 없음)",
+  "story_geometry_2305": {
+    "story_rect": "Ht=Rect(-6880,-5184,-6656,-4960), 중심 (-6768,-5072), Player(5) 소유 공유 유닛 1개 (j:90584, j:10807·50926)",
+    "player_spots": {"P1":"Qt (-7088,-4784)","P2":"Ut (-6480,-4784)","P3":"pt (-7088,-5360)","P4":"Xt (-6480,-5360)"},
+    "teleport": "스토리 존 진입 유닛을 플레이어별 자리 Xh[pid] 중심으로 이동, 보스·미션유닛 생존 시 거부 (j:21786-21797, j:71361-71364, j:90575-90578)",
+    "distances": {"spot_to_story": 430, "spot_to_spot_horizontal": 608, "spot_to_spot_vertical": 576, "spot_to_spot_diagonal": 838},
+    "implication": "적 대상 방깎·이감 오라(2.305 최소 600, 대부분 800~925)는 어느 자리에서든 스토리에 닿는다 → 스토리에서는 모든 플레이어의 방깎·이감 오라가 합산(같은 버프는 1번). 아군 버프 오라는 850 이상이면 다른 3자리 모두, 800~825는 상하좌우 이웃 2자리(대각선 838은 못 닿음). 유닛 충돌 크기·자리 안 위치에 따라 경계값은 근사",
+    "party_scaling": "\"파티 플레이 입니다. 스토리의 체력 및 방어력이 플레이어 수 만큼 증가합니다\" (j:37901), 솔로는 감소 (j:37892). 정확한 배율 미확인",
+    "line_areas": "플레이어 영역 ch[0..3] = Yq/Nq/Cq/Mt, 3232×3296 사각형, 서로 2784 이상 떨어짐 (j:71333-71336, j:90534-90555) → 일반 오라는 다른 플레이어 라인에 닿지 않음"
+  },
+  "units": [
+    {"code":"TR19","name":"우솝","grade":"초월함","effect":"방어력 감소","value":8,"scope":"map_enemies","ability":"A0OS 허풍 (AHad Had1 -8, aare 99999, atar air,enemies,ground, buff B052)","stacks_same":"아니오(같은 B052)","stacks_with_own_local":"예: 같은 우솝의 A0OR 1085범위 -22(B051)와 별개 버프 → 자기 라인·스토리에서 30","evidence":["2.323 base_lines/trait_lines \"◎ 맵 전체 방어력감소 8\"","2.323 buff_lines \"방어력 감소 22\" = A0OR(로컬)만","2.305 w3a A0OS·A0OR, w3u H09B/H09C uabi","2.305 wts:33822 \"맵 전체 방어력 8 감소\""],"confidence":"확정(툴팁+2.305 일치)","sim_note":"data.json own_armor_cut 22만 반영, 맵 전체 8 미반영. ORDR 계산기·유틸보드 합산도 buff_lines(22) 기준"},
+    {"code":"TR10","name":"브룩","grade":"초월함","effect":"이동속도 감소","value":0.05,"scope":"map_enemies","ability":"A0Q7 플람 (AOae Oae1 -0.05, aare 99999, enemies, buff B03X)","stacks_same":"아니오","stacks_with_own_local":"예: A0SR 875범위 -15%(B04D)와 합산 → buff_lines 20% = 15+5","evidence":["2.323 buff_lines \"이동속도 감소 20%\"(범위 표기 없음)","2.305 w3a A0Q7 aare 99999","2.305 wts:32639 \"맵 전체 적군 유닛 이동속도 5% 감소\"","data.json TR10 enemy_slow_auras A0Q7 range 99999"],"confidence":"[2.305 기준] 구조, 2.323 합계 20%와 일치"},
+    {"code":"I7","name":"센고쿠","grade":"불멸의","effect":"공격력 증가(%)","value":0.11,"scope":"map_allies","exclude":"센고쿠 자신","ability":"A0LZ 해군통솔 (ACac Cac1 0.11, aare 99999, atar friend, self 없음, buff B03Y)","stacks_same":"아니오(센고쿠 여러 기·여러 플레이어여도 11% 한 번)","extra_local":"A142 해군원수 850범위 아군 공격력 22%(자신 제외)","evidence":["2.323 base_lines \"자신 제외 아군 유닛 공격력 11% 증가\"(범위 표기 없음)","2.323 buff_lines \"공격력 증가 22%\"(=A142 로컬)","2.305 w3a A0LZ aare 99999, wts:24958 \"◎범위 : 맵 전체\"","w3u h04E·h0BM uabi"],"confidence":"[2.305 기준] 범위, 2.323 수치 11% 일치"},
+    {"code":"OB1","name":"도움소(출항)","grade":"특수 기물","effect":"공격력 증가(%) 10초","value":0.4,"scope":"map_allies","ability":"A07Z 출항 (Aroa Roa1 0.5→2.310 패치 40%, aare 99999, atar self,friend, 쿨 135, 마나 150)","stacks_same":"아니오(격노 계열 중복 불가: 툴팁)","evidence":["2.305 w3a A07Z, wts:48403-48405 \"맵 전체 아군 유닛 공격력 50%증가 ▶ 같은 격노 스킬과 중복 불가능\"","2.310 패치노트 50%→40% (data.json OB1 note)","ordr_units.json에 없음"],"confidence":"[2.305 기준] 구조 + 패치노트 수치, 2.323 미확인"},
+    {"code":"QUEST_AOKIJI","name":"해군대장 저지 보상 '냉철함'(아오키지 저지 시)","grade":"도전과제 보상","effect":"이동속도 감소","value":0.07,"scope":"map_enemies","ability":"A0KY (AOae Oae1 -0.07, aare 99999, enemies, buff B03M) — 모든 참가 플레이어의 기록지침 유닛에 부여","stacks_same":"아니오(4명이 다 받아도 같은 버프 1번)","evidence":["2.305 j:62290-62320 해군대장 저지 완료 → AoM o02R이면 각 플레이어 vh[pid]에 A0KY","w3a A0KY 툴팁은 \"자신의 라인존\"이지만 aare 99999·enemies라 실제는 맵 전체"],"alternatives":"키자루 저지 → A0KX 신속함 공속 4%(player), 아카이누 저지 → A0KW 강렬함 공격력 5%(player)","confidence":"[2.305 기준], 2.323 미확인"},
+    {"code":"E9","name":"우타","grade":"영원한","effect":"우타월드: 적 이동속도 45% 감소 + 아군 공격력 30% 증가, 가희: 아군 공속 15%","value":{"slow":0.45,"atk_pct":0.3,"aps":0.15},"scope":"local","range":1250,"ability":"A0KO(AOae -0.45, 1250, enemies, B03F)·A0KN(ACac 0.3, 1250, friend, B037) — 더미 e0RE가 우타 위치에 생성·추적(j:74967-74999); A0D1 가희(AOae Oae2 0.15, 1250, self·friend, B027)","stacks_same":"아니오(우타 여러 기 → 1번)","per_target":"마나 스킬 800범위: 마법방어력 감소 10%·폭발형 10% 증폭(맞은 적 개체 디버프) → 공유 스토리에 걸면 모든 플레이어 이득","team_reach":"스토리 존에서는 1250 > 838(대각선)이므로 우타 1기가 스토리 + 4명 자리 전부를 덮음 → 사실상 '팀 전체'. 라인에서는 자기 라인만","evidence":["2.323 base_lines \"우타월드 :: 우타월드 범위안에서는 적군의 이동속도 45% 감소 및 아군의 공격력이 30% 증가\"(범위 수치 없음)","2.323 buff_lines \"공격속도 증가 15%\"","2.305 w3a A0KN/A0KO/A0D1 aare 1250, w3u e0RE uabi A0KN,A0KO","ordr.kr/character/E9 2026-10-24 재조회: '맵 전체' 표기 없음"],"confidence":"맵 전체라는 근거는 2.305·2.323 어디에도 없음. 사용자 진술은 스토리 존 배치(1250이 4자리 모두 덮음)로 설명됨. 2.323에서 범위가 바뀌었는지는 미확인","note":"2.305의 '$원피스' 보상 A0KR(공격력 30%, 99999, player)·A0KT(공속 30%, 99999, player)는 우타 툴팁을 복사해 쓴 보상 능력이며 우타 유닛 것이 아니다(j:84068-84071, 보물지도 전부 발견 시 본인 기록지침에 부여, 본인만)"},
+    {"code":"MY1","name":"고죠 사토루","grade":"신비함","effect":"영역전개 무량공처 정지+고정피해","scope":"own_area","evidence":["2.323 \"▶ 플레이어 영역 전체 범위\", \"▶ 스토리 공격시 발동하지 않음\"","2.305 플레이어 영역 rect ch[pid] (j:71333-71336)"],"note":"자기 플레이어 영역 전체. 다른 플레이어·스토리에는 없음"},
+    {"code":"L2","name":"나미","grade":"전설","effect":"골드 획득 60% 증가","scope":"own_player","evidence":["2.323 \"◎나미 전설 한번이라도 조합했을 경우 플레이어는 골드 획득량이 60% 증가\""],"note":"전투 효과 아님, 본인만"},
+    {"code":"I11","name":"카이도","grade":"불멸의","effect":"자신의 유닛 공격력 75% 감소(페널티)","value":-0.75,"scope":"own_player","range":2000,"evidence":["2.305 w3a A0Q1 ACac -0.75, aare 2000, atar player","wts 새턴 툴팁 사본 '2000범위 자신의 유닛 공격력 75% 감소'"],"note":"player 대상이라 스토리 존에서도 다른 플레이어에게는 안 감"},
+    {"code":"TR23","name":"쵸파","grade":"초월함","effect":"의료품: 자신 제외 아군 공격력 40%/50%, 공속 40%","scope":"local","range":825,"evidence":["2.323 \"◎ 의료품 :: 자신 제외 아군 유닛 공격력 40%증가\"","2.305 A0OK/A0OJ 825, friend"],"team_reach":"스토리 존에서 상하좌우 이웃 자리까지(825 < 838 대각선 제외, 근사)"}
+  ],
+  "per_target_debuffs_help_story": "data.json mob_debuff 보유: E12 핸콕(마방 5), I9 시키, Z7 에넬(마방 18), TR1 검은수염(마증 10%·모든 피해 10~25% 비중첩), TR2 나미, TR10 브룩(마증 10%), E8 오뎅, E9 우타(마방 10·폭발 10%), L37 후지토라, H9 방주맥심(마방 10·폭발 10%), H19/T6 캐럿, R3/L1 검은수염, L2 나미, RD4 센토 이스즈(마증 18%), RD13 페이몬(마증 10%), SR1 s-스네이크, SR4 s-베어, MY4 미나토, MY8 아냐 포저(마방 10). 공유 스토리에 걸면 모든 플레이어의 해당 피해 타입에 적용 [엔진 mob_debuff 모델 기준, 플레이어 간 공유는 WC3 개체 디버프라 성립한다고 봄 — 추정]",
+  "global_penalties_2305": "오로성(신·악몽) A13D 워큐리 방어력 +7/+10(AHad 99999, 적 쪽 자신·아군), A13E/A13F 나스쥬로 아군 공속 -10/-15%·적 이속 +15%(99999), A13G 새턴 공격력 -20/-30%(ACac 99999 enemies=플레이어 유닛). 툴팁/가이드 2.323 수치는 워큐리 +10/+15, 나스쥬로 이속 +10/+15%",
+  "excluded_checked": "2.305 w3a에서 aare ≥ 5000인 영웅 능력은 위 A0OS·A0Q7·A0LZ·A07Z뿐(나머지 ≥5000은 ANbr 배틀로어 더미·Awfb 투사체로 atar player/대상 지정). '@'아이템·'$'연구/보물 보상(A0O2~A0O6, A0NX, A0NZ, A0PA, A0PB, A0P8, A0KR, A0KT, A0KX, A0KW)은 aare 99999지만 atar player → 본인만"
+}

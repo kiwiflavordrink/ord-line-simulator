@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { simulate } from './dist/engine.mjs';
 
-const data = JSON.parse(fs.readFileSync(new URL('./dist/data.json', import.meta.url), 'utf8'));
+const data = JSON.parse(fs.readFileSync(new URL('./dist/data_legacy.json', import.meta.url), 'utf8'));
 const noRedDamage = process.argv.includes('--no-red-damage');
 const opts = cut => ({cut, coverage: 1, fullResource: true, summons: true,
   redDamage: !noRedDamage});

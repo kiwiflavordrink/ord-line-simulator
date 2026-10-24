@@ -1,0 +1,12 @@
+{
+  "name": "루치 + 핸콕 단일 테스터",
+  "description": "65라 일반몹 한 기에 루치 전설 1기와 핸콕 전설 1기",
+  "single": {
+    "team": [
+      {"code": "L9", "count": 1},
+      {"code": "L36", "count": 1}
+    ],
+    "trials": 3000,
+    "seed": 202323
+  }
+}

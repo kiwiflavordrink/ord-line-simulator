@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>원랜디 오버레이</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="panel">
+  <header id="drag">
+    <span id="status">불러오는 중…</span>
+    <span class="tools">
+      <button id="fontDown" title="글씨 작게">가−</button><button id="fontUp" title="글씨 크게">가+</button>
+      <button id="btnCompact" title="접기/펼치기 (F1 숨기기 · F2 다음 탭 · F3 클릭 모드)">▤</button>
+      <button id="btnClick" title="마우스 통과 (Ctrl+Shift+O)">⇱</button>
+      <button id="btnSettings" title="설정">⚙</button>
+      <button id="btnQuit" title="종료">✕</button>
+    </span>
+  </header>
+  <!-- 수정내역 85: 코치 경고 (최대 3줄) + 상황 입력(자동 읽기가 되면 채워진다) -->
+  <section id="coach" class="card">
+    <div id="coachBody"></div>
+    <div id="situation" class="small">
+      <label>라운드 <input id="sitRound" type="number" min="0" max="65" step="1"></label>
+      <label title="지금 살아 있는 스토리 단계. 에그헤드가 떠 있으면 14">스토리(남은 단계) <input id="sitStage" type="number" min="1" max="15" step="1"></label>
+      <label title="살아 있는 스토리의 남은 체력">체력% <input id="sitHp" type="number" min="0" max="100" step="1"></label>
+      <label title="에그헤드 제한시간 타이머에 보이는 남은 초">에그헤드 남은 초 <input id="sitEgg" type="number" min="0" max="240" step="1"></label>
+      <label>인원 <select id="sitPlayers"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+      <span class="quests">개인 퀘스트 <select class="sitQuest"></select><select class="sitQuest"></select><select class="sitQuest"></select></span>
+    </div>
+  </section>
+  <nav id="tabs">
+    <button data-view="now">지금 조합</button><button data-view="next">목표 후보</button><button data-view="upper">가이드</button><button data-view="lack">부족한 것</button><button data-view="hand">보유 유닛</button>
+  </nav>
+
+  <section id="settings" hidden>
+    <label>헬퍼 Data 폴더 <span id="helperDir" class="path">-</span> <button id="pickHelper">찾기</button></label>
+    <input id="helperFiles" type="file" webkitdirectory hidden>
+    <label>입력
+      <select id="source">
+        <option value="memory">게임에서 자동 읽기</option>
+        <option value="manual">직접 입력</option>
+        <option value="log">헬퍼 기록 파일 감시</option>
+        <option value="scenario">시나리오 재생</option>
+      </select>
+    </label>
+    <label data-for="memory">플레이어 자리 <select id="memPlayer"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option></select> <span id="memLog" class="path">-</span></label>
+    <label data-for="log">기록 파일 <span id="logFile" class="path">-</span> <button id="pickLog">찾기</button></label>
+    <label data-for="scenario">시나리오 <span id="scenarioFile" class="path">-</span> <button id="pickScenario">찾기</button></label>
+    <input id="scenarioInput" type="file" accept=".json" hidden>
+    <label>난이도
+      <select id="difficulty"><option value="auto">자동(기록 기준)</option><option>신</option><option>악몽</option><option>지옥</option></select>
+    </label>
+    <label>성장 방깎 <input id="growthCut" type="number" min="0" max="400" step="5" value="0"></label>
+    <label>오로성
+      <select id="gorosei"><option value="">모름·없음</option><option>나스쥬로</option><option>워큐리</option><option>새턴</option></select>
+    </label>
+    <p class="hint">Ctrl+Shift+O 마우스 통과 · Ctrl+Shift+H 숨기기 · Ctrl+Shift+M 접기</p>
+  </section>
+
+  <section id="scenarioBar" hidden>
+    <button id="prevFrame">◀</button><select id="frame"></select><button id="nextFrame">▶</button>
+  </section>
+
+  <section id="goal" class="card" data-view="next">
+    <h2>목표 <select id="goalSelect"><option value="">(선택)</option></select> <button id="goalClear" title="목표 해제">✕</button></h2>
+    <div id="goalBody" class="muted">목표 유닛을 고르면 부족 재료와 위습 수가 나옵니다.</div>
+  </section>
+
+  <section id="now" class="card" data-view="now">
+    <h2>지금 바로 만들 수 있는 유닛 <span class="muted small">(위습·부족 재료 없이)</span></h2>
+    <div id="nowBody" class="muted">-</div>
+  </section>
+
+  <section id="next" class="card" data-view="next">
+    <h2>목표 후보 <span class="muted small">(필요한 선택 위습 수가 적은 순)</span></h2>
+    <div id="catBar" class="catbar">
+      <label><input type="checkbox" value="rare">희귀</label><label><input type="checkbox" value="legend">전설</label>
+      <label><input type="checkbox" value="hidden">히든</label><label><input type="checkbox" value="upper">상위(초불영제)</label>
+      <label><input type="checkbox" value="mystic">신비·기타</label><label><input type="checkbox" value="ship">해적선</label>
+      <label><input type="checkbox" value="support">보조</label>
+    </div>
+    <div id="nextBody" class="muted">-</div>
+  </section>
+
+  <section id="upper" class="card" data-view="upper">
+    <h2>가이드 <span class="muted small">(가까운 순 · 흔함 환산 · 어울림·보완·겹침)</span></h2>
+    <div id="upperBody" class="muted">-</div>
+  </section>
+
+  <section id="lack" class="card" data-view="lack">
+    <h2>내 조합에서 부족한 것</h2>
+    <div id="lackBody" class="muted">-</div>
+  </section>
+
+  <section id="combo" class="card" data-view="lack">
+    <h2>현재 조합 시뮬</h2>
+    <div id="comboBody" class="muted">보유 유닛이 없습니다.</div>
+  </section>
+
+  <section id="real" class="card" data-view="lack">
+    <h2>비슷한 실제 클리어</h2>
+    <div id="realBody" class="muted">헬퍼 Data 폴더를 지정하면 비교합니다.</div>
+  </section>
+
+  <section id="hand" class="card" data-view="hand">
+    <h2>보유 유닛</h2>
+    <div class="add"><input id="unitSearch" list="unitList" placeholder="유닛 이름 또는 코드"><datalist id="unitList"></datalist><button id="addUnit">추가</button><button id="clearHand">비우기</button></div>
+    <div id="handBody"></div>
+  </section>
+</div>
+<script type="module" src="app.mjs"></script>
+</body>
+</html>
