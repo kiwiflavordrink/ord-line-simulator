@@ -278,7 +278,17 @@ export function simulateV2(data,composition,options={}){
     const count=clamp(Math.floor(item.count??1),1,6);
     if(heroMap.has(item.code)){
       const model=heroMap.get(item.code);
-      const events0=model.alabasta?alabastaEvents(model,options.e6AlabastaLevel,options.e6MoveShot!==false):model.events;
+      let events0=model.alabasta?alabastaEvents(model,options.e6AlabastaLevel,options.e6MoveShot!==false):model.events;
+      // Hero stats (수정내역 75): hero.hero_stats {str:[base, per level], agi, int} from w3u (ustr/ustp …, base unit
+      // default when unset); value at options.heroLevel (default 18, 유저 "보통 18렙이 끝") = floor(base + per x (L-1)),
+      // like GetHeroStatBJ(…, false). event.stat_parts [{stat, per, part}] adds per x stat to that part's flat value.
+      if(model.hero_stats)events0=events0.map(e=>{
+        if(!e.stat_parts)return e;
+        const L=clamp(Math.floor(options.heroLevels?.[model.code]??options.heroLevel??18),1,100);
+        const parts=e.parts.map(x=>[...x]);
+        for(const sp of e.stat_parts){const [b0,pl]=model.hero_stats[sp.stat]??[0,0];parts[sp.part??0][1]+=sp.per*Math.floor(b0+pl*(L-1)+1e-6);}
+        return {...e,parts};
+      });
       const events=item.code==='OB1'?helperEvents(events0):events0;
       const level=model.level_growth?levelStartOf(model):undefined;
       for(let i=0;i<count;i++){

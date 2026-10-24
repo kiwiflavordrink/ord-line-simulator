@@ -647,4 +647,11 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const t=[{code:'E12'},{code:'D2'},{code:'H14'}],a=simulateV2(fullData,t,o),b=simulateV2(old,t,o);
   assert.ok(a.totalLineKilled>b.totalLineKilled,'순차 타격이 더 많이 잡는다');
 }
+// [수정 75] 영웅 힘(레벨 기준, 기본 18레벨 → TR1 힘 14): 흑구 175만+힘×6만. 레벨을 올리면 세진다. Z3 기본공격 피해량은 dealt 기준.
+{
+  const o={red:false,redDamage:false};
+  const a=simulateV2(fullData,[{code:'TR1'}],{...o,heroLevel:1}),b=simulateV2(fullData,[{code:'TR1'}],o),c=simulateV2(fullData,[{code:'TR1'}],{...o,heroLevel:30});
+  assert.ok(a.sourceDamage.TR1<b.sourceDamage.TR1&&b.sourceDamage.TR1<c.sourceDamage.TR1);
+  assert.ok(fullData.heroes.find(h=>h.code==='Z3').events.filter(e=>e.mul_basis==='dealt').length===3);
+}
 console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen, single bench, TR8 rework: passed');
