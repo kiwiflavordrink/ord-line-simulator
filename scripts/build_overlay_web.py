@@ -2,7 +2,7 @@
 the engine files it imports. Usage: python scripts/build_overlay_web.py out.zip"""
 import sys,zipfile,glob,os
 root=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-files=['ordr_overlay.bat','ordr_overlay_web.bat','tools/overlay-native/native.ps1','tools/overlay-web/serve.ps1','tools/overlay-web/topmost.ps1','tools/memscan/memscan.ps1','tools/memscan/hand.bat','dist/data.json']
+files=['ordr_overlay.bat','ordr_overlay_web.bat','tools/overlay-native/native.ps1','tools/overlay-web/serve.ps1','tools/overlay-web/topmost.ps1','tools/memscan/memscan.ps1','tools/memscan/hand.bat','tools/memscan/probe.bat','dist/data.json']
 files+=[os.path.relpath(p,root) for p in glob.glob(os.path.join(root,'dist','*.mjs'))]
 files+=[os.path.relpath(p,root) for p in glob.glob(os.path.join(root,'overlay','renderer','*'))]
 readme=('ORDR 오버레이 (설치 없음)\r\n\r\n'

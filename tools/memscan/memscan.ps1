@@ -15,6 +15,7 @@ param(
   [string]$Process = 'Warcraft III',
   [string]$Note = '',
   [switch]$Hand,
+  [switch]$Probe,
   [int]$Player = 0,
   [switch]$Watch,
   [double]$Interval = 0.3,
@@ -137,6 +138,48 @@ public static class OrdrMemScan {
     }
   }
 
+  // Probe (수정내역 84): UTF-8 text around given patterns in writable memory (round timer title "현재 라운드 : N",
+  // quest frames "퀘스트 :: …", mission frames, unit-count multiboard …), to find where the coach can read game state.
+  public static string Strings(int pid, string[] pats, int maxHits) {
+    IntPtr h = OpenProcess(QUERY | VM_READ, false, pid);
+    if (h == IntPtr.Zero) return "{\"error\":\"OpenProcess failed " + Marshal.GetLastWin32Error() + "\"}";
+    var bp = new List<byte[]>(); foreach (var s in pats) bp.Add(Encoding.UTF8.GetBytes(s));
+    var hits = new List<string>[pats.Length]; var counts = new int[pats.Length];
+    for (int i = 0; i < pats.Length; i++) hits[i] = new List<string>();
+    ulong addr = 0; const int CHUNK = 16 * 1024 * 1024, PAD = 256; int size = Marshal.SizeOf(typeof(MBI64));
+    while (addr < 0x7FFFFFFFFFFF) {
+      MBI64 m;
+      if (VirtualQueryEx(h, (IntPtr)(long)addr, out m, (IntPtr)size) == IntPtr.Zero) break;
+      ulong next = m.BaseAddress + m.RegionSize; if (next <= addr) break;
+      bool rw = m.State == MEM_COMMIT && (m.Protect & 0x101) == 0 && (m.Protect & (0x04 | 0x08 | 0x40 | 0x80)) != 0;
+      if (rw) for (ulong off = 0; off < m.RegionSize; off += (ulong)CHUNK) {
+        ulong start = off >= PAD ? off - PAD : 0;
+        int len = (int)Math.Min((ulong)CHUNK + 2 * PAD, m.RegionSize - start);
+        var buf = new byte[len]; IntPtr read;
+        if (!ReadProcessMemory(h, (IntPtr)(long)(m.BaseAddress + start), buf, (IntPtr)len, out read)) continue;
+        int n = (int)read, from = (int)(off - start);
+        for (int i = from; i < n && i < from + CHUNK; i++) {
+          for (int p = 0; p < bp.Count; p++) {
+            var q = bp[p]; if (buf[i] != q[0] || i + q.Length > n) continue;
+            bool ok = true; for (int k = 1; k < q.Length && ok; k++) ok = buf[i + k] == q[k];
+            if (!ok) continue;
+            counts[p]++; if (hits[p].Count >= maxHits) continue;
+            int s0 = Math.Max(0, i - 48), e0 = Math.Min(n, i + q.Length + 160);
+            int z = i + q.Length; while (z < e0 && buf[z] != 0) z++;
+            var txt = Encoding.UTF8.GetString(buf, s0, z - s0).Replace("\\", "\\\\").Replace("\"", "\\\"");
+            var sb = new StringBuilder(); foreach (var c in txt) sb.Append(c < (char)0x20 ? ' ' : c);
+            hits[p].Add("{\"addr\":\"0x" + (m.BaseAddress + start + (ulong)i).ToString("x") + "\",\"text\":\"" + sb.ToString() + "\"}");
+          }
+        }
+      }
+      addr = next;
+    }
+    CloseHandle(h);
+    var o = new StringBuilder("{");
+    for (int p = 0; p < pats.Length; p++) { if (p > 0) o.Append(","); o.Append("\"" + pats[p].Replace("\"", "") + "\":{\"count\":" + counts[p] + ",\"hits\":[" + string.Join(",", hits[p].ToArray()) + "]}"); }
+    return o.Append("}").ToString();
+  }
+
   // bases: "" = walk all memory; else comma-separated region bases from an earlier call (fast re-read).
   // full: also return every record with its raw bytes (diagnostics). Hand entries use the helper's reversed rawcode.
   public static string Hand(int pid, int player, string bases, bool full) {
@@ -215,6 +258,31 @@ $proc = Find-Game
 if (-not $proc) { Write-Host "워크래프트 III 프로세스를 찾지 못했습니다. 게임을 켠 상태에서 실행하세요." ; exit 1 }
 $ver = try { $proc.MainModule.FileVersionInfo.FileVersion } catch { 'unknown' }
 Write-Host ("프로세스: {0} (PID {1}), 버전: {2}" -f $proc.ProcessName, $proc.Id, $ver)
+if ($Probe) {
+  # 수정내역 84: one-shot diagnostic for the coach — every unit record by owner (other players, 오로성 o02E/o031/o032,
+  # story/boss units) and the UI texts that carry round, quests, missions and unit count. Read-only.
+  Write-Host "코치용 진단 스캔(읽기 전용)입니다. 2~5분 걸릴 수 있습니다. 게임 중(신세계 전이라도 됨)에 실행하세요."
+  $pats = @('현재 라운드','보스 라운드','라운드 시작까지','신세계 시작까지','퀘스트 :: ','미션 :: ','유닛 카운트','에그헤드','제한시간','개인미션')
+  $units = [OrdrMemScan]::Hand($proc.Id, $Player, '', $true) | ConvertFrom-Json
+  $strs = [OrdrMemScan]::Strings($proc.Id, $pats, 200)
+  $byOwner = @{}
+  foreach ($u in @($units.units)) {
+    if ($u.state -eq 17 -or $u.a -eq -1) { continue }
+    $k = [string]$u.owner; if (-not $byOwner.ContainsKey($k)) { $byOwner[$k] = @{} }
+    $nm = Strip $u.name; $key = "$($u.code) $nm"
+    $byOwner[$k][$key] = 1 + [int]($byOwner[$k][$key])
+  }
+  $gor = @($units.units | Where-Object { $_.code -in @('o02E','o031','o032') } | ForEach-Object { @{ code = $_.code; owner = $_.owner; addr = $_.addr; name = (Strip $_.name) } })
+  $o = '{"tool":"ordr-probe 1","time":"' + (Get-Date -Format o) + '","process":"' + $proc.ProcessName + '","version":"' + $ver + '","player":' + $Player +
+       ',"note":' + (ConvertTo-Json $Note) + ',"unitsByOwner":' + (ConvertTo-Json -Depth 4 -Compress $byOwner) + ',"gorosei":' + (ConvertTo-Json -Compress -InputObject $gor) +
+       ',"strings":' + $strs + '}'
+  $pf = Join-Path ([Environment]::GetFolderPath('Desktop')) 'ordr_probe.json'
+  [IO.File]::WriteAllText($pf, $o, [Text.Encoding]::UTF8)
+  Write-Host "저장: $pf  (이 파일을 보내 주세요)"
+  foreach ($k in $byOwner.Keys | Sort-Object) { Write-Host ("  주인 {0}: {1}종" -f $k, $byOwner[$k].Count) }
+  if ($gor.Count) { Write-Host ("  오로성 유닛: " + (($gor | ForEach-Object { $_.code + ' ' + $_.name }) -join ', ')) } else { Write-Host '  오로성 유닛을 찾지 못했습니다.' }
+  exit 0
+}
 if ($Hand) { Write-Host "보유 패를 읽기 전용으로 스캔합니다. 1~3분 걸릴 수 있습니다." }
 else { Write-Host ("찾는 코드: {0}  — 읽기 전용으로 스캔합니다. 1~3분 걸릴 수 있습니다." -f ($Codes -join ', ')) }
 $json = if ($Hand) { [OrdrMemScan]::Hand($proc.Id, $Player, '', $true) } else { [OrdrMemScan]::Scan($proc.Id, $Codes, $Context, $MaxHits) }
