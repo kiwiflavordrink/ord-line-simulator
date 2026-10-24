@@ -40,14 +40,14 @@ export function coachWarnings(data,{myTeam=[],team=null,difficulty='신',gorosei
     if(need>left)push('red',100,`36라 시작 전까지 ${name} 못 깸 → 패배 위험`,detail);
     else if(round>=25&&need>left*.6)push('yellow',60,`35라 스토리 빠듯함: ${name}까지 ${Math.round(need)}초 필요`,detail);
   }
-  // 2. 에그헤드 (신·악몽): 와노쿠니(13단계)를 깨면 120초 뒤 등장해 240초 타이머가 돈다. 와노쿠니가 남았을 때(13)와
-  // 에그헤드가 떠 있을 때(14)만 본다. 신은 와노쿠니가 35라 필수가 아니라 깨지 않으면 에그헤드도 없다; 악몽은 필수다.
-  if(['신','악몽'].includes(difficulty)&&storyStage!=null&&(storyStage===13||storyStage===14)&&all.length){
+  // 2. 에그헤드: 와노쿠니(13단계)를 깨면 120초 뒤 등장해 240초 타이머가 돈다. 악몽은 와노쿠니가 36라 시작 전 필수라
+  // 와노쿠니가 남았을 때(13)부터 미리 본다. 신은 12단계까지만 필수라 와노쿠니는 문제가 아니고, 에그헤드가 실제로
+  // 떠 있을 때(14)만 본다(유저: "신은 12단계만 36라 전에 깨면 되지").
+  const eggFrom={악몽:13,신:14}[difficulty];
+  if(eggFrom&&storyStage!=null&&storyStage>=eggFrom&&storyStage<=14&&all.length){
     const t=storyKillTime(data,all,14,{difficulty,players,seconds:EGGHEAD_SECONDS+60,gorosei:goro});
-    const optional=difficulty==='신'&&storyStage===13;
-    const detail=`에그헤드 처치 예상 ${Number.isFinite(t)?Math.round(t)+'초':'300초 이상'} / 제한 ${EGGHEAD_SECONDS}초. 와노쿠니를 깨면 120초 뒤 등장.`+
-      (optional?' 신은 와노쿠니를 안 깨면 에그헤드도 나오지 않습니다.':'');
-    if(!(t<=EGGHEAD_SECONDS))push('red',90,optional?'와노쿠니 깨지 마세요: 에그헤드 240초 안에 못 잡음':'에그헤드 240초 안에 못 잡음 → 패배 위험',detail);
+    const detail=`에그헤드 처치 예상 ${Number.isFinite(t)?Math.round(t)+'초':'300초 이상'} / 제한 ${EGGHEAD_SECONDS}초`+(storyStage===13?' (와노쿠니 처치 120초 뒤 등장)':'');
+    if(!(t<=EGGHEAD_SECONDS))push('red',90,'에그헤드 240초 안에 못 잡음 → 패배 위험',detail);
     else if(t>EGGHEAD_SECONDS*.75)push('yellow',55,`에그헤드 빠듯함 (${Math.round(t)}초 / 240초)`,detail);
   }
   // 3. 보스 라운드 직전.
