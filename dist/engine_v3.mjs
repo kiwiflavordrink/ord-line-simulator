@@ -1116,7 +1116,10 @@ export function simulateV2(data,composition,options={}){
             const ns=nut?.skill?.[e.index];
             if(ns)ev={...ev,parts:[...ev.parts,[ns.kind,ns.flat*(ns.basis==='cast'?(u.castS??nst.S):nst.S),[],0]]};
             const share=rate*.1*(m===target||single?1:cov);
-            deal(m,eventDamage(ev,m,attack,extraArmor,pctRef??m)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
+            // mul_basis 'dealt' (수정내역 69, TR8 2.305 GetEventDamage): the attack multiplier uses the damage the basic attack
+            // actually dealt to the attack target (crit, attack type and armor included), not the raw attack.
+            const evAtk=e.mul_basis==='dealt'&&target?attack*critEV(form.crit)*form.rounds[String(target.typeRound??target.round)]*pf(armor(target,extraArmor)):attack;
+            deal(m,eventDamage(ev,m,evAtk,extraArmor,pctRef??m)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
             // Armor break as an expected stack per step, like the supports (cap 75 in abAdd).
             if(m.hp>0&&e.ab)abAdd(m,e.ab*share);
             if(m.hp>0&&e.mob_debuff)mobDebuff(m,e.mob_debuff,share);

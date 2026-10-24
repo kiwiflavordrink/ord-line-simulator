@@ -599,4 +599,15 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(a.to15<wr.bench.to15);
   assert.ok(fullData.heroes.find(h=>h.code==='TR1').events.find(e=>e.index==='크로우즈').mob_debuff.all_amp===.1);
 }
-console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen, single bench: passed');
+// [수정 69] 루피 초월: 고무고무 열매(매 공격 345범위 25000 + 준 피해×0.8 물리, mul_basis dealt), 18% 5배 크리, 특강 호크 개틀링.
+{
+  const h=fullData.heroes.find(x=>x.code==='TR8');
+  assert.ok(h.events.some(e=>e.index==='고무고무 열매'&&e.mul_basis==='dealt'));
+  assert.deepEqual(h.forms[0].crit,[0.18,5]);
+  const o={red:false,redDamage:false};
+  const a=simulateV2(fullData,[{code:'TR8'}],o),b=simulateV2(fullData,[{code:'TR8'}],{...o,traits:{TR8:'on'}});
+  assert.ok(b.sourceDamage.TR8>a.sourceDamage.TR8,'특강이 더 세다');
+  const raw=structuredClone(fullData);for(const e of raw.heroes.find(x=>x.code==='TR8').events)delete e.mul_basis;
+  assert.ok(simulateV2(raw,[{code:'TR8'}],{...o,cut:0}).sourceDamage.TR8!==simulateV2(fullData,[{code:'TR8'}],{...o,cut:0}).sourceDamage.TR8,'준 피해 기준과 공격력 기준이 다르다');
+}
+console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen, single bench, TR8 rework: passed');

@@ -1,0 +1,269 @@
+{
+ "data": "2.305 원시 공격 + 2.323 ORDR 툴팁",
+ "rows": [
+  {
+   "id": "G1",
+   "label": "신 우타 영원 (3단, 끝딜 없음)",
+   "actual": {
+    "clear": true,
+    "count": 14
+   },
+   "sim": {
+    "clear": true,
+    "count": 11,
+    "failed": null,
+    "rounds": [
+     6,
+     7,
+     8,
+     10,
+     11,
+     11
+    ]
+   },
+   "diff": -3
+  },
+  {
+   "id": "G2",
+   "label": "신 프랑키 초월 써니4 특성",
+   "actual": {
+    "clear": true,
+    "count": null
+   },
+   "sim": {
+    "clear": true,
+    "count": 26,
+    "failed": null,
+    "rounds": [
+     21,
+     25,
+     26,
+     27,
+     30,
+     26
+    ]
+   },
+   "diff": null
+  },
+  {
+   "id": "G3",
+   "label": "악몽 쿠마 세라핌·프랑키 특성 써니2",
+   "actual": {
+    "clear": true,
+    "count": 18
+   },
+   "sim": {
+    "clear": true,
+    "count": 19,
+    "failed": null,
+    "rounds": [
+     14,
+     17,
+     18,
+     19,
+     21,
+     19
+    ]
+   },
+   "diff": 1
+  },
+  {
+   "id": "G4",
+   "label": "악몽 상디 초월 (로얄로더·워큐리)",
+   "actual": {
+    "clear": true,
+    "count": 17
+   },
+   "sim": {
+    "clear": true,
+    "count": 16,
+    "failed": null,
+    "rounds": [
+     10,
+     12,
+     12,
+     14,
+     15,
+     16
+    ]
+   },
+   "diff": -1
+  },
+  {
+   "id": "G5",
+   "label": "악몽 핸콕 영원 (로얄로더·나스쥬로)",
+   "actual": {
+    "clear": true,
+    "count": 0
+   },
+   "sim": {
+    "clear": true,
+    "count": 17,
+    "failed": null,
+    "rounds": [
+     11,
+     13,
+     14,
+     17,
+     19,
+     17
+    ]
+   },
+   "diff": 17
+  },
+  {
+   "id": "G6",
+   "label": "악몽 후지토라 초월 (물뎀, 연합세력)",
+   "actual": {
+    "clear": true,
+    "count": 0
+   },
+   "sim": {
+    "clear": true,
+    "count": 0,
+    "failed": null,
+    "rounds": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "diff": 0
+  },
+  {
+   "id": "G7",
+   "label": "악몽 검은수염 초월 (로얄로더·나스쥬로)",
+   "actual": {
+    "clear": true,
+    "count": 16
+   },
+   "sim": {
+    "clear": true,
+    "count": 30,
+    "failed": null,
+    "rounds": [
+     24,
+     25,
+     26,
+     27,
+     28,
+     30
+    ]
+   },
+   "diff": 14
+  },
+  {
+   "id": "G8",
+   "label": "악몽 키자루 초월 (바운티헌터·나스쥬로)",
+   "actual": {
+    "clear": true,
+    "count": 9
+   },
+   "sim": {
+    "clear": true,
+    "count": 14,
+    "failed": null,
+    "rounds": [
+     6,
+     9,
+     9,
+     13,
+     14,
+     14
+    ]
+   },
+   "diff": 5
+  },
+  {
+   "id": "G9",
+   "label": "신 제트 불멸·에넬 제한 (새턴)",
+   "actual": {
+    "clear": true,
+    "count": 34
+   },
+   "sim": {
+    "clear": true,
+    "count": 28,
+    "failed": null,
+    "rounds": [
+     21,
+     24,
+     25,
+     28,
+     29,
+     28
+    ]
+   },
+   "diff": -6
+  },
+  {
+   "id": "G10",
+   "label": "신 류마 영원·에넬 제한 (나스쥬로)",
+   "actual": {
+    "clear": true,
+    "count": 21
+   },
+   "sim": {
+    "clear": true,
+    "count": 23,
+    "failed": null,
+    "rounds": [
+     14,
+     20,
+     21,
+     23,
+     24,
+     23
+    ]
+   },
+   "diff": 2
+  },
+  {
+   "id": "G11",
+   "label": "악몽 루피 초월 (물뎀, 새턴, 연합세력)",
+   "actual": {
+    "clear": true,
+    "count": 0
+   },
+   "sim": {
+    "clear": true,
+    "count": 34,
+    "failed": null,
+    "rounds": [
+     0,
+     0,
+     0,
+     3,
+     3,
+     34
+    ]
+   },
+   "diff": 34
+  },
+  {
+   "id": "G12",
+   "label": "악몽 루피 초월 (물뎀, 새턴, 바운티헌터)",
+   "actual": {
+    "clear": true,
+    "count": 0
+   },
+   "sim": {
+    "clear": false,
+    "count": null,
+    "failed": "65라 12초",
+    "rounds": [
+     7,
+     24,
+     6,
+     30,
+     30,
+     33
+    ]
+   },
+   "diff": null
+  }
+ ]
+}
