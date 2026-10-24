@@ -242,6 +242,28 @@
     ]
    },
    "diff": null
+  },
+  {
+   "id": "G12",
+   "label": "악몽 루피 초월 (물뎀, 새턴, 바운티헌터)",
+   "actual": {
+    "clear": true,
+    "count": 0
+   },
+   "sim": {
+    "clear": false,
+    "count": null,
+    "failed": "61라 8.5초",
+    "rounds": [
+     33,
+     35,
+     42,
+     42,
+     58,
+     62
+    ]
+   },
+   "diff": null
   }
  ]
 }
