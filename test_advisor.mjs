@@ -131,3 +131,13 @@ console.log('test_advisor: log parser ok');
   assert.equal(simulateV2(data,[{code:'E1'}],{difficulty:'악몽',gorosei:'새턴'}).gorosei,simulateV2(data,[{code:'E1'}],{difficulty:'악몽'}).gorosei,'엔진도 니카면 오로성 없음');
   console.log('test_advisor: coach ok');
 }
+// 수정내역 86: 개인 퀘스트·미션 힌트 — 트리플은 최상위 수와 가장 가까운 최상위, 도박 퀘스트는 조언하지 않는다.
+{
+  const {questHints}=await import('./dist/coach.mjs');
+  const fx={recipes:[...fixture.recipes,{recipeId:'u1',outputs:[{kind:'UNIT',id:'TOP1'}],conditions:[{kind:'UNIT',id:'LEGD',count:1}]}]};
+  const t4=id=>({...tiers,TOP1:'초월 [마딜]'})[id];
+  const h=questHints(data,{quests:['Q015','Q004'],hand:{},recipes:indexRecipes(fx),tier:t4,name:id=>id});
+  assert.ok(h.some(x=>/트리플: 최상위 0\/3 · 다음 TOP1/.test(x.text)));
+  assert.ok(!h.some(x=>/도박/.test(x.text)),'도박 퀘스트는 조언 안 함');
+  console.log('test_advisor: quest hints ok');
+}

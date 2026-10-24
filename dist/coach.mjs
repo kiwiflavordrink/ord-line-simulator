@@ -3,6 +3,7 @@
 // the story stage that is still alive, difficulty, 오로성). Numbers: 2.305 map (docs/coach/quests.md) unless noted.
 import {storyKillTime} from './story.mjs';
 import {controlSums} from './advisor.mjs';
+import {planTarget,priceModel,lockedPieces} from './planner.mjs';
 
 export const ROUND_SECONDS=35;                       // 신세계 전 라운드 길이 (2.305 j:85387)
 export const BOSS_ROUNDS=[10,20,30,40,50];           // 보스 라운드: 60초 안에 내 보스 처치 (j:25157, 50103-50125)
@@ -65,4 +66,75 @@ export function coachWarnings(data,{myTeam=[],team=null,difficulty='신',gorosei
     else if(round!=null&&round>=55)push('green',20,`지금 조합 ${difficulty} 클리어 각 (남은 몹 ${s.remaining})`,'시뮬은 실제보다 조금 비관적입니다.');
   }
   return out.sort((a,b)=>b.priority-a.priority).slice(0,limit);
+}
+
+// ---- 3단계: 개인 퀘스트·미션 (수정내역 86) ------------------------------------------------------------------------
+// docs/coach/quests.md (2.305 맵). 도박 관련 개인 퀘스트(목재수집·도박중독·도박실패)는 유저 결정으로 조언하지 않는다.
+export const PERSONAL_QUESTS=[
+  {id:'Q000',name:'고고학자',hint:'유니크 아이템 2개'},
+  {id:'Q001',name:'오늘만산다',hint:'14라까지 선택위습 11회',until:14},
+  {id:'Q002',name:'목재수집',gamble:true},{id:'Q003',name:'도박중독',gamble:true},{id:'Q004',name:'도박실패(하급)',gamble:true},
+  {id:'Q005',name:'도박실패(중급)',gamble:true},{id:'Q006',name:'도박실패(고급)',gamble:true},
+  {id:'Q007',name:'MVP 선정',hint:'스토리 기여도 1등 4회'},
+  {id:'Q008',name:'유닛조합(초월)',grade:/^초월/},{id:'Q009',name:'유닛조합(불멸)',grade:/^불멸/},{id:'Q010',name:'유닛조합(영원)',grade:/^영원/},
+  {id:'Q011',name:'유닛조합(제한)',grade:/^제한/},{id:'Q012',name:'유닛조합(왜곡)',grade:/^왜곡/},
+  {id:'Q013',name:'유닛조합(아이템)',items:true},
+  {id:'Q014',name:'콰트로',top:4},{id:'Q015',name:'트리플',top:3},
+  {id:'Q016',name:'리사이클',hint:'흔함 9개 판매'},
+  {id:'Q017',name:'유닛조합(신비)',grade:/^신비/},
+];
+const TOP_GRADE=/^(초월|불멸|영원|제한|신비)/;
+
+// Nearest target (by 흔함 price) among recipe outputs passing `want`; null if none.
+function nearest(hand,recipes,tier,name,want){
+  const locked=lockedPieces(hand,recipes,name),prices=priceModel(recipes,tier,name,{locked});
+  let best=null;
+  for(const id of recipes.keys()){
+    if(!want(id)||(hand[id]??0)>0)continue;
+    const p=planTarget(id,hand,recipes,tier,{prices});
+    if(Number.isFinite(p.price)&&(!best||p.price<best.price))best={id,price:p.price};
+  }
+  return best;
+}
+
+// Hints for the 3 personal quests and the missions that have a deadline. Same shape as coachWarnings.
+export function questHints(data,{quests=[],hand={},round=null,storyStage=null,team=[],difficulty='신',players=1,recipes=null,tier=()=>null,name=()=>null}={}){
+  const out=[],push=(level,priority,text,detail='')=>out.push({level,priority,text,detail});
+  const nm=id=>name(id)??id,cost=n=>n.price<.5?'지금 조합 가능':`흔함 ${Math.round(n.price)}`;
+  for(const qid of quests){
+    const q=PERSONAL_QUESTS.find(x=>x.id===qid);if(!q||q.gamble)continue;
+    if(q.until!=null){if(round==null||round<=q.until)push(round!=null&&round>=q.until-4?'yellow':'green',round!=null&&round>=q.until-4?45:15,`퀘스트 ${q.name}: ${q.hint}`,`${q.until}라가 지나면 못 깹니다.`);continue;}
+    if(!recipes?.size){if(q.hint)push('green',10,`퀘스트 ${q.name}: ${q.hint}`);continue;}
+    if(q.grade){
+      const n=nearest(hand,recipes,tier,name,id=>q.grade.test(tier(id)??''));
+      if(n)push('green',22,`퀘스트 ${q.name}: 가장 가까운 ${nm(n.id)} (${n.price<.5?'지금 조합 가능':'남은 흔함 '+Math.round(n.price)})`,'가이드 탭에서 눌러 목표로 지정하세요.');
+      continue;
+    }
+    if(q.top){
+      const have=Object.entries(hand).filter(([id,n])=>n>0&&TOP_GRADE.test(tier(id)??'')).reduce((a,[,n])=>a+n,0);
+      if(have>=q.top)continue;
+      const n=nearest(hand,recipes,tier,name,id=>TOP_GRADE.test(tier(id)??''));
+      push('green',22,`퀘스트 ${q.name}: 최상위 ${have}/${q.top}`+(n?` · 다음 ${nm(n.id)} (${cost(n)})`:''),'최상위 = 초월·불멸·영원·제한·신비.');
+      continue;
+    }
+    if(q.items){
+      const n=nearest(hand,recipes,tier,name,id=>(recipes.get(id)??[]).some(r=>r.special.some(s=>s.kind==='ITEM')));
+      if(n)push('green',20,`퀘스트 ${q.name}: 가장 가까운 ${nm(n.id)} (${cost(n)}, 유니크 아이템 필요)`);
+      continue;
+    }
+    if(q.hint)push('green',10,`퀘스트 ${q.name}: ${q.hint}`);
+  }
+  // 미션 — 패스트유니크(7라까지 희귀 1기), 신속한 철거(8라까지 알라바스타, 2.320), 파괴왕(29라까지 드레스로자).
+  if(round!=null&&round<=7&&recipes?.size&&!Object.entries(hand).some(([id,n])=>n>0&&/^희귀/.test(tier(id)??''))){
+    const n=nearest(hand,recipes,tier,name,id=>/^희귀/.test(tier(id)??''));
+    push(round>=5?'yellow':'green',round>=5?48:18,`미션 패스트유니크: 7라까지 희귀 1기`+(n?` · ${nm(n.id)} (${cost(n)})`:''));
+  }
+  if(round!=null&&round<=8&&storyStage!=null&&storyStage<=2)push(round>=6?'yellow':'green',round>=6?47:16,'미션 신속한 철거: 8라까지 알라바스타(2단계) 파괴','보상: 모두에게 랜덤위습.');
+  if(round!=null&&round>=18&&round<=29&&storyStage!=null&&storyStage<=11&&team.length){
+    let need=0;for(let s=storyStage;s<=11;s++){const t=storyKillTime(data,team,s,{difficulty,players,seconds:600});need+=Number.isFinite(t)?t:600;}
+    const left=secondsUntil(round,29),detail=`${storyStage}~11단계 처치 예상 ${Math.round(need)}초 / 29라 끝까지 약 ${left}초. 보상: 목재 2 + 모두 아이템 발굴.`;
+    if(need<=left)push('green',35,'미션 파괴왕 가능: 29라까지 드레스로자',detail);
+    else push('yellow',34,'미션 파괴왕 어려움 (29라까지 드레스로자)',detail);
+  }
+  return out;
 }

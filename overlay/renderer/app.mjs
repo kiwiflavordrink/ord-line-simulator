@@ -2,6 +2,7 @@
 // (folder/file inputs) for testing. No calculation here: worker.mjs calls dist/advisor.mjs.
 import {parseHelperText,snapshotFromValue,goalId} from './logparse.mjs';
 import {handFromUnits,reverseRawcode} from '../../dist/planner.mjs';
+import {PERSONAL_QUESTS} from '../../dist/coach.mjs';
 
 const api=window.ordApi??null;
 const $=id=>document.getElementById(id);
@@ -192,7 +193,8 @@ function requestCoach(){
     const q=state.quick;if(!q)return;const st=state.settings;
     const num=v=>v===''||v==null||isNaN(+v)?null:+v;
     worker.postMessage({type:'coach',id:state.reqId,ctx:{myTeam:q.team,team:q.team.concat(state.others??[]),difficulty:difficulty(),
-      gorosei:st.gorosei||null,players:+(st.sitPlayers??1),round:num(st.sitRound),storyStage:num(st.sitStage),stats:q.stats,red:q.red}});
+      gorosei:st.gorosei||null,players:+(st.sitPlayers??1),round:num(st.sitRound),storyStage:num(st.sitStage),stats:q.stats,red:q.red,
+      quests:(st.sitQuests??[]).filter(Boolean),hand:state.hand}});
   },60);
 }
 function renderCoach(){
@@ -432,6 +434,11 @@ $('memPlayer').onchange=async e=>{await saveSettings({memPlayer:+e.target.value}
 $('difficulty').onchange=async e=>{await saveSettings({difficulty:e.target.value});analyze();status();};
 $('growthCut').onchange=async e=>{await saveSettings({growthCut:+e.target.value||0});analyze();};
 $('gorosei').onchange=async e=>{await saveSettings({gorosei:e.target.value||null});analyze();};
+// 개인 퀘스트 3칸 (수정내역 86): 자동 읽기 전까지 직접 고른다. 도박 퀘스트는 목록에 두되 조언하지 않는다.
+for(const [k,sel] of [...document.querySelectorAll('.sitQuest')].entries()){
+  sel.innerHTML='<option value="">-</option>'+PERSONAL_QUESTS.map(q=>`<option value="${q.id}">${q.name}</option>`).join('');
+  sel.onchange=async()=>{await saveSettings({sitQuests:[...document.querySelectorAll('.sitQuest')].map(x=>x.value)});requestCoach();};
+}
 for(const [id,key] of [['sitRound','sitRound'],['sitStage','sitStage'],['sitPlayers','sitPlayers']])
   $(id).onchange=async e=>{await saveSettings({[key]:e.target.value});requestCoach();};
 async function setGoal(id){
@@ -493,6 +500,7 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   $('difficulty').value=state.settings.difficulty??'auto';
   $('growthCut').value=state.settings.growthCut??0;
   $('gorosei').value=state.settings.gorosei??'';
+  [...document.querySelectorAll('.sitQuest')].forEach((x,k)=>x.value=(state.settings.sitQuests??[])[k]??'');
   $('sitRound').value=state.settings.sitRound??'';$('sitStage').value=state.settings.sitStage??'';$('sitPlayers').value=state.settings.sitPlayers??'1';
   $('memPlayer').value=String(state.settings.memPlayer??0);
   syncCats();applyView();applyFont();

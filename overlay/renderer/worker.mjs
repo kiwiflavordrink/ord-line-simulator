@@ -5,7 +5,7 @@
 // Replies {type:'quick', id, ...} at once and {type:'next', id, next} after the slower target search.
 import {teamFromHand,controlSums,comboStats,similarClears,nextTargets,unitIndex,isUpperTier,guideTargets,buildKeyIndex,pairIndex} from '../../dist/advisor.mjs';
 import {indexRecipes,planTarget,reverseRawcode,reachable,craftStages} from '../../dist/planner.mjs';
-import {coachWarnings} from '../../dist/coach.mjs';
+import {coachWarnings,questHints} from '../../dist/coach.mjs';
 
 let data=null,index=null,recipes=new Map(),tiers=new Map(),names=new Map(),samples=[],latest=0,keyIndex=null,pairs=null;
 const tier=id=>tiers.get(id);
@@ -27,7 +27,9 @@ onmessage=e=>{
     // 수정내역 79: simulation-only requests (one difficulty), so several workers can run the difficulties in parallel.
     // 수정내역 85: coach warnings (story kill times run here; stats come from the page's simulation workers).
     if(m.type==='coach'){
-      postMessage({type:'coach',id:m.id,warnings:coachWarnings(data,m.ctx)});
+      const c=m.ctx,w=[...coachWarnings(data,{...c,limit:99}),
+        ...questHints(data,{...c,team:c.team??c.myTeam,recipes,tier,name:id=>names.get(id)})];   // 수정내역 86
+      postMessage({type:'coach',id:m.id,warnings:w.sort((a,b)=>b.priority-a.priority).slice(0,3)});
       return;
     }
     if(m.type==='sim'){
