@@ -264,12 +264,20 @@ export function simulateV2(data,composition,options={}){
     radius:825,center:'self',stun:{normal:1.2,hero:.24},source:'2.305 war3map.j:7590-7628, :19155, w3a A13B/A13C'};
   const gbCode=options.greenBlood??null;
   let gbState=gbCode?{code:gbCode,applied:false,reason:'조합에 없음'}:null;
+  // 도움소 OB1 사용 스킬 (수정내역 71, 유저 운용 규칙): options.reversal = 최고의도움 항법 '역발상'(2.305 맵에 없음, 2.32x
+  // 노드) → 흡수·출항만 쓴다. options.helperSkills = 쓰는 스킬 이름 배열(예: 삭제를 안 치면 흡수 제외). 조합에 킹 전설(L34)이
+  // 있으면 독약을 쓰지 않는다. 남는 마나의 재배분은 하지 않는다.
+  const hasKing=composition.some(i=>i.code==='L34');
+  const helperAllowed=Array.isArray(options.helperSkills)?options.helperSkills:null;
+  const helperEvents=evs=>evs.filter(e=>!(options.reversal&&!['흡수','출항'].includes(e.index))&&
+    !(helperAllowed&&!helperAllowed.includes(e.index))&&!(hasKing&&e.index==='독약'));
   const units=[];
   for(const item of composition){
     const count=clamp(Math.floor(item.count??1),1,6);
     if(heroMap.has(item.code)){
       const model=heroMap.get(item.code);
-      const events=model.alabasta?alabastaEvents(model,options.e6AlabastaLevel,options.e6MoveShot!==false):model.events;
+      const events0=model.alabasta?alabastaEvents(model,options.e6AlabastaLevel,options.e6MoveShot!==false):model.events;
+      const events=item.code==='OB1'?helperEvents(events0):events0;
       const level=model.level_growth?levelStartOf(model):undefined;
       for(let i=0;i<count;i++){
         let ev=events,gb=false;
