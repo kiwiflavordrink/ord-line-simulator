@@ -106,9 +106,15 @@ const scaleParts=(parts,k)=>parts.map(([kind,flat,perc,mul=0])=>[kind,flat*k,per
 // holds `current`; asking for the other state applies `other` (event overrides by index, {removed:true} drops one,
 // add_events appends, any other key replaces the hero field). options.trait 'on'|'off' for every hero,
 // options.traits {code: 'on'|'off'} per hero; unset keeps each hero's stored state.
-export function traitVariant(hero,want){
+export function traitVariant(hero,want,level){
   const t=hero.trait;
   if(!t||!want||want===t.current)return hero;
+  // trait.levels (수정내역 82, I9 함선 포식자): event overrides by index for a level picked with an option (only when the
+  // trait is turned on from off), applied over the trait's own events.
+  const lv=want==='on'&&t.levels?.values?.[String(level??t.levels.default)];
+  if(lv){const o0=t.other??{},ov={...(o0.events??{})};const adds=(o0.add_events??[]).map(e=>lv[e.index]?{...e,...lv[e.index]}:e);
+    for(const [k,v] of Object.entries(lv))if(!adds.some(e=>e.index===k))ov[k]={...(ov[k]??{}),...v};
+    return traitVariant({...hero,trait:{...t,levels:null,other:{...o0,events:ov,add_events:adds}}},want);}
   const o=t.other??{},events=[];
   for(const e of hero.events){
     const x=o.events?.[e.index];
@@ -230,7 +236,7 @@ export function simulateV2(data,composition,options={}){
   const traitOf=code=>['on','off'].includes(options.traits?.[code])?options.traits[code]:['on','off'].includes(options.trait)?options.trait:null;
   // Extra stacks follow options.extraStackLevels[code] (level or array of levels), else the hero's stack level.
   const extraLevelsOf=code=>options.extraStackLevels?.[code]??stackLevelOf(code);
-  const heroMap=new Map(data.heroes.map(h=>[h.code,stackVariant(traitVariant(h,traitOf(h.code)),stackLevelOf(h.code),extraLevelsOf(h.code))]));
+  const heroMap=new Map(data.heroes.map(h=>[h.code,stackVariant(traitVariant(h,traitOf(h.code),h.trait?.levels?options[h.trait.levels.option]:undefined),stackLevelOf(h.code),extraLevelsOf(h.code))]));
   // Difficulty (data.difficulties: 2.305 structure, 2.323 common HP/regen) and 오로성 (data.gorosei, 2.323 values).
   // The legacy option warcury=true selects 워큐리. 지옥 has no 오로성.
   const diffName=['지옥','신','악몽'].includes(options.difficulty)?options.difficulty:'신';

@@ -145,7 +145,7 @@ function validateLine(raw,data,is){
   const options={};
   if(!isObj(o))is.error('line.options','NOT_AN_OBJECT','객체여야 합니다.');
   else{
-    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','frankyTrait','freshTarget','freshCut','bench','royalRoader','reversal','helperSkills','departureAt','heroLevel','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','z2Level','greenBlood','externalSlow','externalStuns','singleControl','specialTimer','specialFocus','frenzyDamageTaken','engageRange','heroArmorCuts','executeTarget','chosenBuffTargets','stackLevel','stackLevels','extraStackLevels','trait','traits','customMagic','finisher','deletion'],'line.options',is);
+    onlyKeys(o,['cut','coverage','red','redDamage','fullResource','resourceMode','summons','frankyAura','frankyTrait','freshTarget','freshCut','bench','royalRoader','reversal','helperSkills','departureAt','heroLevel','shikiShips','sunnyStagger','tr19Plants','buffTargets','positionModel','difficulty','gorosei','armorModel','leo','e6AlabastaLevel','e6MoveShot','tr6Nutrients','z2Level','greenBlood','externalSlow','externalStuns','singleControl','specialTimer','specialFocus','frenzyDamageTaken','engageRange','heroArmorCuts','executeTarget','chosenBuffTargets','stackLevel','stackLevels','extraStackLevels','trait','traits','customMagic','finisher','deletion'],'line.options',is);
     Object.assign(options,compact({
       cut:num(o,'cut','line.options',is,{min:0,max:300}),
       coverage:num(o,'coverage','line.options',is,{min:0,max:1}),
@@ -161,6 +161,7 @@ function validateLine(raw,data,is){
       royalRoader:o.royalRoader===undefined||o.royalRoader===true||o.royalRoader===false||typeof o.royalRoader==='string'?o.royalRoader:(()=>{throw new Error('line.options.royalRoader: true/false 또는 유닛 코드')})(),
       freshTarget:o.freshTarget===undefined?undefined:o.freshTarget===true||o.freshTarget===false?o.freshTarget:Array.isArray(o.freshTarget)&&o.freshTarget.every(x=>typeof x==='string')?o.freshTarget:(()=>{throw new Error('line.options.freshTarget: true/false 또는 코드 배열')})(),
       reversal:bool(o,'reversal','line.options',is),
+      shikiShips:num(o,'shikiShips','line.options',is,{min:0,max:3,integer:true}),
       heroLevel:num(o,'heroLevel','line.options',is,{min:1,max:100,integer:true}),
       departureAt:o.departureAt===undefined||o.departureAt===false||(typeof o.departureAt==='object'&&o.departureAt&&Number.isFinite(o.departureAt.round)&&Number.isFinite(o.departureAt.second))?o.departureAt:(()=>{throw new Error('line.options.departureAt: {round, second} 또는 false')})(),
       helperSkills:o.helperSkills===undefined?undefined:Array.isArray(o.helperSkills)&&o.helperSkills.every(x=>typeof x==='string')?o.helperSkills:(()=>{throw new Error('line.options.helperSkills: 도움소 스킬 이름 배열')})(),

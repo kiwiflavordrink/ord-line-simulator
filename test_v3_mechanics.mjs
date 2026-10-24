@@ -675,4 +675,11 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(b.sourceDamage.H2>a.sourceDamage.H2);assert.deepEqual(b.greenBlood,{code:'H2',applied:true});
   assert.equal(simulateV2(fullData,t,{difficulty:'신',red:false,greenBlood:'H2'}).sourceDamage.H2,undefined);
 }
+// [수정 82] I9 시키 특강 대함대: 함대(물리, 실제 평타 피해 비례) 추가, 해적선 수(shikiShips)로 단계가 오르면 더 세다.
+{
+  const o={difficulty:'신',red:false,redDamage:false};
+  const off=simulateV2(fullData,[{code:'I9'}],o),on=simulateV2(fullData,[{code:'I9'}],{...o,traits:{I9:'on'}}),on3=simulateV2(fullData,[{code:'I9'}],{...o,traits:{I9:'on'},shikiShips:3});
+  assert.ok(!off.clear&&on.clear&&on3.remaining<=on.remaining);
+  const h=fullData.heroes.find(x=>x.code==='I9');assert.equal(h.events.find(e=>e.index==='7').parts[0][1],900000);
+}
 console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen, single bench, TR8 rework: passed');
