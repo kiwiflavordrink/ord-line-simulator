@@ -23,6 +23,15 @@ export function secondsUntil(round,lastRound){
   return s;
 }
 
+// Watches that are switched on (수정내역 87): a watch is active, and only raises a warning line when the situation is risky.
+//   story-신 / story-악몽: difficulty measured (36라 패배선), egghead: 에그헤드가 발견됨(남은 스토리 단계 14).
+export function coachActive({difficulty='신',difficultyKnown=true,storyStage=null,round=null}={}){
+  const a=[];
+  if(difficultyKnown&&difficulty==='신'&&(round==null||round<=35)&&(storyStage==null||storyStage<=12))a.push({id:'story-신',label:'신: 36라 전 12단계'});
+  if(difficultyKnown&&difficulty==='악몽'&&(round==null||round<=35)&&(storyStage==null||storyStage<=13))a.push({id:'story-악몽',label:'악몽: 36라 전 13단계'});
+  if(storyStage===14)a.push({id:'egghead',label:'에그헤드 240초'});
+  return a;
+}
 // warnings: [{level:'red'|'yellow'|'green', text, detail, priority}] sorted, max `limit`.
 export function coachWarnings(data,{myTeam=[],team=null,difficulty='신',gorosei=null,players=1,round=null,storyStage=null,
   stats=null,red=false,limit=3,difficultyKnown=true}={}){
@@ -50,7 +59,6 @@ export function coachWarnings(data,{myTeam=[],team=null,difficulty='신',gorosei
     const detail=`에그헤드 처치 예상 ${Number.isFinite(t)?Math.round(t)+'초':'300초 이상'} / 제한 ${EGGHEAD_SECONDS}초 (팀 전원이 칠 때)`;
     if(!(t<=EGGHEAD_SECONDS))push('red',95,'[에그헤드] 240초 안에 못 잡음 → 패배 위험',detail,'egghead');
     else if(t>EGGHEAD_SECONDS*.75)push('yellow',58,`[에그헤드] 빠듯함 (${Math.round(t)}초 / 240초)`,detail,'egghead');
-    else push('green',40,`[에그헤드] ${Math.round(t)}초 예상 — 팀 전원 스토리로`,detail,'egghead');
   }
   // 3. 보스 라운드 직전.
   if(round!=null&&BOSS_ROUNDS.includes(round+1))push('yellow',50,`다음 ${round+1}라 보스: 60초 안에 처치`,'못 잡으면 그 플레이어 패배. 단일·보스 피해 유닛을 내 라인에 두세요.');

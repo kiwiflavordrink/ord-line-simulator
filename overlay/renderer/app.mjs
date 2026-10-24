@@ -165,7 +165,7 @@ worker.onmessage=e=>{
   if(m.type==='error'){status('계산 오류: '+m.message);return;}
   if(m.type==='helper-ok'){status();return;}
   if(m.id!==state.reqId)return;
-  if(m.type==='coach'){if(m.id===state.reqId){state.coach=m.warnings;renderCoach();}return;}
+  if(m.type==='coach'){if(m.id===state.reqId){state.coach=m.warnings;state.coachActive=m.active??[];renderCoach();}return;}
   if(m.type==='quick'){
     // Keep the numbers of the same team while the new ones are computed (no flicker); start the simulations.
     const same=state.quick&&JSON.stringify(state.quick.team)===JSON.stringify(m.team)&&state.quick.red===m.red;
@@ -201,8 +201,10 @@ function requestCoach(){
 }
 function renderCoach(){
   const w=state.coach??[];
-  $('coachBody').innerHTML=w.length?w.map(x=>`<div class="w ${x.level}">${esc(x.text)}${x.detail?`<small>${esc(x.detail)}</small>`:''}</div>`).join('')
-    :'<div class="muted small">지금 경고 없음 · 라운드와 남은 스토리 단계를 넣으면 35라·에그헤드·보스를 미리 알려 줍니다.</div>';
+  const act=state.coachActive??[];
+  $('coachBody').innerHTML=(w.length?w.map(x=>`<div class="w ${x.level}">${esc(x.text)}${x.detail?`<small>${esc(x.detail)}</small>`:''}</div>`).join('')
+    :'<div class="muted small">지금 경고 없음</div>')+
+    `<div class="watch small">${act.length?'감시 중: '+act.map(a=>`<span>${esc(a.label)}</span>`).join(' · '):'감시 없음 · 난이도를 정하면 신·악몽 스토리 감시가 켜지고, 에그헤드가 나오면 에그헤드 감시가 켜집니다.'}</div>`;
   exportView();
 }
 function status(msg){

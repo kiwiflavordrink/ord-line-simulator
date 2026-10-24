@@ -65,3 +65,4 @@ ul.lack{margin:2px 0;padding-left:1.1em}ul.lack li{margin:2px 0}
 #coachBody .w.red{color:#ff6b6b}#coachBody .w.yellow{color:#ffcf70}#coachBody .w.green{color:#7ee08a}
 #coachBody .w small{display:block;font-weight:400;opacity:.75}
 #situation label{margin-right:8px}#situation input{width:3.5em}
+#coachBody .watch{opacity:.7;margin-top:2px}#coachBody .watch span{color:#9cd2ff}
