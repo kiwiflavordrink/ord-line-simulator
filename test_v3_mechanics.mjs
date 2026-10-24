@@ -663,4 +663,10 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const o={red:false,redDamage:false};
   assert.ok(simulateV2(fullData,[{code:'TR20'}],{...o,heroLevel:1}).sourceDamage.TR20<simulateV2(fullData,[{code:'TR20'}],o).sourceDamage.TR20);
 }
+// [수정 78] specialFocus 코드 배열: 지정한 영웅만 보스·광폭을 친다.
+{
+  const o={red:false,redDamage:false},t=[{code:'I10'},{code:'L16'},{code:'H5'}];
+  const a=simulateV2(fullData,t,{...o,specialFocus:['I10']}),b=simulateV2(fullData,t,{...o,specialFocus:[]});
+  assert.notEqual(a.sourceDamage.I10,b.sourceDamage.I10);
+}
 console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen, single bench, TR8 rework: passed');

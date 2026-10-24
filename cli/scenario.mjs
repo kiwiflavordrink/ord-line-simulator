@@ -213,7 +213,7 @@ function validateLine(raw,data,is){
       if(!isObj(x))is.error(p,'NOT_AN_OBJECT','{"to15": 초, "finish": 초} 형식이어야 합니다.');
       else{onlyKeys(x,['to15','finish'],p,is);options.singleControl=compact({to15:num(x,'to15',p,is,{min:.1,max:120}),finish:num(x,'finish',p,is,{min:.1,max:120})});}
     }
-    if(o.specialFocus!==undefined){const v=oneOf(o,'specialFocus','line.options',is,['tooltip','all']);if(v!==undefined)options.specialFocus=v;}
+    if(o.specialFocus!==undefined){if(Array.isArray(o.specialFocus)&&o.specialFocus.every(x=>typeof x==='string'))options.specialFocus=o.specialFocus;else{const v=oneOf(o,'specialFocus','line.options',is,['tooltip','all']);if(v!==undefined)options.specialFocus=v;}}
     if(o.frenzyDamageTaken!==undefined){const v=num(o,'frenzyDamageTaken','line.options',is,{min:0,max:5});if(v!==undefined)options.frenzyDamageTaken=v;}
     if(o.specialTimer!==undefined){
       const p='line.options.specialTimer',x=o.specialTimer;

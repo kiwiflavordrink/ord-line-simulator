@@ -440,6 +440,10 @@ export function simulateV2(data,composition,options={}){
   // options.specialFocus (수정내역 45): 'tooltip' (default) = only heroes with boss/frenzy single damage (hitsSpecial)
   // attack a living boss/frenzy; 'all' = every hero attacks it first (the model before 45).
   const specialFocusAll=options.specialFocus==='all';
+  // specialFocus as an array of codes (수정내역 78): exactly these heroes attack a living boss/frenzy (user: "제불로 보잡이랑
+  // 광폭화를 잡았어, 핸콕도 같이"); every other hero keeps the line mobs.
+  const specialFocusSet=Array.isArray(options.specialFocus)?new Set(options.specialFocus):null;
+  const goesSpecial=u=>specialFocusSet?specialFocusSet.has(u.code):specialFocusAll||u.hitsSpecial;
   // options.freshTarget (수정내역 53): 단일 dealers the player points at a new line mob (사용자 플레이 방식: "단일은 위쪽에서
   // 새로운 몹을 유저가 찾아주고, 끝딜은 라인 앞에서 딸피를 잡는다"). They attack the newest line mob above 15% HP and move
   // on when it drops below 15%, also while a boss/frenzy lives (their area damage still reaches it); 끝딜 and the
@@ -911,8 +915,8 @@ export function simulateV2(data,composition,options={}){
         }
         if(u.kind!=='hero'||!u.damage||benchOnly&&!benchOnly.has(u.code))continue;
         const hero=u.model,{form,transformed}=formAt(hero,globalT,t,resourceMode),baseAps=hero.forms[0].aps;
-        if(posModel)target=pickTarget(hero.own_range?form.range:engageRange,!specialFocusAll&&!u.hitsSpecial);
-        else target=!specialFocusAll&&!u.hitsSpecial?mobs.find(m=>m.hp>0)??globalTarget:globalTarget;
+        if(posModel)target=pickTarget(hero.own_range?form.range:engageRange,!goesSpecial(u));
+        else target=!goesSpecial(u)?mobs.find(m=>m.hp>0)??globalTarget:globalTarget;
         if(!posModel&&freshTarget.has(u.code)){
           // All single units share one target (사용자: "단일 유닛들은 함께 하나의 몹을 친다"), chosen once per 0.1 s
           // step: kept until it reaches 15%, then the newest line mob above 15%.
