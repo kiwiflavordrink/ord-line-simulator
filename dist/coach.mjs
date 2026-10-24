@@ -8,7 +8,7 @@ import {planTarget,priceModel,lockedPieces} from './planner.mjs';
 export const ROUND_SECONDS=35;                       // 신세계 전 라운드 길이 (2.305 j:85387)
 export const BOSS_ROUNDS=[10,20,30,40,50];           // 보스 라운드: 60초 안에 내 보스 처치 (j:25157, 50103-50125)
 export const BOSS_SECONDS=60;
-export const EGGHEAD_SECONDS=240;                    // 와노쿠니 처치 120초 뒤 등장, 240초 제한 (j:69060-69086, 14284-14288)
+export const EGGHEAD_SECONDS=240;                    // 신·악몽: 와노쿠니(13) 처치 120초 뒤 등장, 그때부터 240초 (j:69060-69086, 14284-14288)
 export const ARMOR_TARGET={지옥:180,신:201,악몽:211},SLOW_TARGET={지옥:90,신:102,악몽:102};   // ORDR 가이드, 1인 라인
 const GORO_ARMOR={워큐리:{신:7,악몽:10}},GORO_SLOW={나스쥬로:{신:10,악몽:15}};
 // 맵 전체 효과 (docs/coach/global_units.md): 누가 가졌든 모든 라인에. 우솝 초월 A0OS 방깎 8.
@@ -36,16 +36,19 @@ export function coachWarnings(data,{myTeam=[],team=null,difficulty='신',gorosei
     const left=secondsUntil(round,dl.round);let need=0;
     for(let s=storyStage;s<=dl.stage;s++){const t=storyKillTime(data,all,s,{difficulty,players,seconds:600,gorosei:goro});need+=Number.isFinite(t)?t:600;}
     const name=data.stories.stages[dl.stage-1]?.name??dl.stage+'단계';
-    const detail=`${storyStage}~${dl.stage}단계 처치 예상 ${Math.round(need)}초 / 35라 끝까지 약 ${left}초 (팀 전원이 스토리를 칠 때, 업그레이드 최대 기준)`;
-    if(need>left)push('red',100,`35라까지 ${name} 못 깸 → 패배 위험`,detail);
+    const detail=`${storyStage===dl.stage?dl.stage+'단계':storyStage+'~'+dl.stage+'단계'} 처치 예상 ${Math.round(need)}초 / 35라 끝까지 약 ${left}초 (팀 전원이 스토리를 칠 때, 업그레이드 최대 기준)`;
+    if(need>left)push('red',100,`36라 시작 전까지 ${name} 못 깸 → 패배 위험`,detail);
     else if(round>=25&&need>left*.6)push('yellow',60,`35라 스토리 빠듯함: ${name}까지 ${Math.round(need)}초 필요`,detail);
   }
-  // 2. 에그헤드 (신·악몽): 와노쿠니가 남았거나 막 깬 때.
-  if(['신','악몽'].includes(difficulty)&&storyStage!=null&&storyStage>=12&&storyStage<=14&&all.length){
+  // 2. 에그헤드 (신·악몽): 와노쿠니(13단계)를 깨면 120초 뒤 등장해 240초 타이머가 돈다. 와노쿠니가 남았을 때(13)와
+  // 에그헤드가 떠 있을 때(14)만 본다. 신은 와노쿠니가 35라 필수가 아니라 깨지 않으면 에그헤드도 없다; 악몽은 필수다.
+  if(['신','악몽'].includes(difficulty)&&storyStage!=null&&(storyStage===13||storyStage===14)&&all.length){
     const t=storyKillTime(data,all,14,{difficulty,players,seconds:EGGHEAD_SECONDS+60,gorosei:goro});
-    const detail=`에그헤드 처치 예상 ${Number.isFinite(t)?Math.round(t)+'초':'300초 이상'} / 제한 ${EGGHEAD_SECONDS}초 (와노쿠니 처치 120초 뒤 등장)`;
-    if(!(t<=EGGHEAD_SECONDS))push('red',90,'에그헤드 240초 안에 못 잡음 → 패배 위험',detail);
-    else if(t>EGGHEAD_SECONDS*.75)push('yellow',55,`에그헤드 빠듯함 (${Math.round(t)}초)`,detail);
+    const optional=difficulty==='신'&&storyStage===13;
+    const detail=`에그헤드 처치 예상 ${Number.isFinite(t)?Math.round(t)+'초':'300초 이상'} / 제한 ${EGGHEAD_SECONDS}초. 와노쿠니를 깨면 120초 뒤 등장.`+
+      (optional?' 신은 와노쿠니를 안 깨면 에그헤드도 나오지 않습니다.':'');
+    if(!(t<=EGGHEAD_SECONDS))push('red',90,optional?'와노쿠니 깨지 마세요: 에그헤드 240초 안에 못 잡음':'에그헤드 240초 안에 못 잡음 → 패배 위험',detail);
+    else if(t>EGGHEAD_SECONDS*.75)push('yellow',55,`에그헤드 빠듯함 (${Math.round(t)}초 / 240초)`,detail);
   }
   // 3. 보스 라운드 직전.
   if(round!=null&&BOSS_ROUNDS.includes(round+1))push('yellow',50,`다음 ${round+1}라 보스: 60초 안에 처치`,'못 잡으면 그 플레이어 패배. 단일·보스 피해 유닛을 내 라인에 두세요.');
