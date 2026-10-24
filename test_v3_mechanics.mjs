@@ -632,4 +632,11 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const noDep=simulateV2(fullData,t,{...o,helperSkills:['흡수'],departureAt:false});
   assert.ok(!noDep.buffs.find(b=>b.code==='TR8').attack_pct,'출항을 안 쓰면 버프 없음');
 }
+// [수정 73] 독약·버스터콜은 출항 시점(65라 17초)에 1회. 시점을 옮기거나 끄면(평균 rate) 결과가 다르다.
+{
+  assert.ok(['독약','버스터콜'].every(n=>fullData.heroes.find(h=>h.code==='OB1').events.find(e=>e.index===n).at_departure));
+  const o={red:false,redDamage:false},t=[{code:'TR8'},{code:'OB1'}];
+  const a=simulateV2(fullData,t,o).sourceDamage.OB1,b=simulateV2(fullData,t,{...o,departureAt:{round:63,second:5}}).sourceDamage.OB1;
+  assert.ok(a>0&&b>0&&a!==b);
+}
 console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen, single bench, TR8 rework: passed');

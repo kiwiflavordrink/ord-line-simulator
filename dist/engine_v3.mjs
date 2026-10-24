@@ -271,6 +271,8 @@ export function simulateV2(data,composition,options={}){
   const helperAllowed=Array.isArray(options.helperSkills)?options.helperSkills:null;
   const helperEvents=evs=>evs.filter(e=>!(options.reversal&&!['흡수','출항'].includes(e.index))&&
     !(helperAllowed&&!helperAllowed.includes(e.index))&&!(hasKing&&e.index==='독약'));
+  const departure=options.departureAt===false?null:{round:65,second:17,...(typeof options.departureAt==='object'&&options.departureAt?options.departureAt:{})};
+  const departureStep=departure?(departure.round-60)*320+Math.round(departure.second*10):null;
   const units=[];
   for(const item of composition){
     const count=clamp(Math.floor(item.count??1),1,6);
@@ -348,7 +350,7 @@ export function simulateV2(data,composition,options={}){
       // 다 나온 뒤 10초, 유저 운용). options.departureAt {round, second} moves it; false keeps the average uptime.
       if(a.window&&a.uptime?.cast_event&&options.departureAt!==false){
         if(!units[src.i].events.some(e=>e.index===a.uptime.cast_event))continue;
-        const w={...a.window,...(options.departureAt&&typeof options.departureAt==='object'?options.departureAt:{})};
+        const w={...a.window,...departure};
         const start=(w.round-60)*32+w.second;
         (u.timed??=new Map()).set(a.id,{kind:a.kind,value:a.value,start,end:start+(w.duration??a.uptime.duration)});
         continue;
@@ -1003,6 +1005,9 @@ export function simulateV2(data,composition,options={}){
           if(e.resource_cost){const reg=e.resource_kind==='hp'?u.buffs.hp_regen:u.buffs.mana_regen;if(reg)rate+=reg/e.resource_cost;}
           if(executing&&e.index===exe.boost_event)rate=aps;
           if(e.initial&&(resourceMode==='perRound'&&step===0||resourceMode==='start'&&globalStep===0))rate+=10;
+          // at_departure (수정내역 73): 도움소 독약·버스터콜은 출항과 같은 순간(기본 65라 17초)에 1회 — 유저 운용 "막라운드 모든 유닛
+          // 나오고 쓴다". options.departureAt false면 평균 rate.
+          if(e.at_departure&&departureStep!=null)rate=globalStep===departureStep&&e.rate>0?10:0;   // rate 0 = 마나 부족(스택 변형)
           // execute_below (L27 사자의노래, 수정내역 30): the hero's attack clock (actual aps incl. buffs) runs every
           // step; on each whole attack, if the attack target is a line mob at or below execute_below x max HP, the
           // skill fires 100% and removes it. Line damage brings mobs down; only the attack target is checked (2.305).
