@@ -264,6 +264,28 @@
     ]
    },
    "diff": null
+  },
+  {
+   "id": "G13",
+   "label": "악몽 루피 초월 (물뎀, 새턴, 최고의도움 역발상)",
+   "actual": {
+    "clear": true,
+    "count": 6
+   },
+   "sim": {
+    "clear": false,
+    "count": null,
+    "failed": "65라 15.5초",
+    "rounds": [
+     0,
+     14,
+     0,
+     24,
+     25,
+     29
+    ]
+   },
+   "diff": null
   }
  ]
 }
