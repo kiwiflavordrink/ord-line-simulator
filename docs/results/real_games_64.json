@@ -220,6 +220,28 @@
     ]
    },
    "diff": 2
+  },
+  {
+   "id": "G11",
+   "label": "악몽 루피 초월 (물뎀, 새턴, 연합세력)",
+   "actual": {
+    "clear": true,
+    "count": 0
+   },
+   "sim": {
+    "clear": false,
+    "count": null,
+    "failed": "61라 8초",
+    "rounds": [
+     35,
+     56,
+     44,
+     51,
+     59,
+     69
+    ]
+   },
+   "diff": null
   }
  ]
 }
