@@ -344,11 +344,20 @@ export function simulateV2(data,composition,options={}){
       if(a.targets==='self'&&src.i!==j||a.targets==='others'&&src.i===j)continue;
       if(a.targets==='one'&&!(oneReceivers.get(src.i)?.has(j)||a.self_always&&src.i===j))continue;
       if(a.targets!=='one'&&src.i!==j&&buffTargets[src.code]&&!buffTargets[src.code].includes(u.code))continue;
+      // Timed cast (수정내역 72): a.window {round, second, duration} — the buff is on only in that window (출항: 65라 몹이
+      // 다 나온 뒤 10초, 유저 운용). options.departureAt {round, second} moves it; false keeps the average uptime.
+      if(a.window&&a.uptime?.cast_event&&options.departureAt!==false){
+        if(!units[src.i].events.some(e=>e.index===a.uptime.cast_event))continue;
+        const w={...a.window,...(options.departureAt&&typeof options.departureAt==='object'?options.departureAt:{})};
+        const start=(w.round-60)*32+w.second;
+        (u.timed??=new Map()).set(a.id,{kind:a.kind,value:a.value,start,end:start+(w.duration??a.uptime.duration)});
+        continue;
+      }
       let up=1;
       if(a.uptime?.fixed!=null)up=a.uptime.fixed;
       else if(a.uptime){
         const h=units[src.i].model,base=h.forms[0].aps;
-        const rate=a.uptime.proc!=null?null:(h.events.find(e=>e.index===a.uptime.cast_event)?.rate??0);
+        const rate=a.uptime.proc!=null?null:(units[src.i].events.find(e=>e.index===a.uptime.cast_event)?.rate??0);
         up=a.uptime.proc!=null?1-Math.pow(1-a.uptime.proc,base*a.uptime.duration):Math.min(1,rate*a.uptime.duration);
       }
       // group: buffs the tooltip says do not stack with each other ("다른 가속 스킬과 중복 불가능") share one slot,
@@ -629,7 +638,9 @@ export function simulateV2(data,composition,options={}){
   // TR11/TR19 multipliers are crit expectations; Z2 +3000 x 전설의 후예 level is bonus damage outside the aura.
   const heroAttack=(u,form)=>{
     const hero=u.model,b=u.buffs;
-    let attack=form.attack*(1+(red?.35:0)+b.attack_pct)+b.attack_flat;
+    let pct=b.attack_pct,flat=b.attack_flat;
+    if(u.timed)for(const x of u.timed.values())if(now>=x.start&&now<x.end){if(x.kind==='attack_pct')pct+=x.value;else if(x.kind==='attack_flat')flat+=x.value;}
+    let attack=form.attack*(1+(red?.35:0)+pct)+flat;
     if(hero.level_growth)attack+=hero.level_growth.attack_per_level*u.level;
     return attack;
   };

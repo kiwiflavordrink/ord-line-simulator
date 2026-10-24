@@ -622,4 +622,14 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.equal(simulateV2(fullData,k,o).sourceDamage.OB1,
     simulateV2(fullData,k,{...o,helperSkills:['흡수','버스터콜','출항','대지진','충격','해루석','낙뢰']}).sourceDamage.OB1,'킹 전설이면 독약 없음');
 }
+// [수정 72] 출항: 65라 17초부터 10초만 공격력 +40%. 평균 가동률(departureAt:false)과 다르고, 시점을 옮기면 결과가 바뀐다.
+{
+  const o={red:false,redDamage:false},t=[{code:'TR8'},{code:'OB1'}];
+  const timed=simulateV2(fullData,t,o),avg=simulateV2(fullData,t,{...o,departureAt:false}),early=simulateV2(fullData,t,{...o,departureAt:{round:60,second:0}});
+  assert.ok(!timed.buffs.find(b=>b.code==='TR8').attack_pct,'상시 버프에는 출항이 없다');
+  assert.ok(avg.buffs.find(b=>b.code==='TR8').attack_pct>0);
+  assert.notEqual(timed.sourceDamage.TR8,early.sourceDamage.TR8);
+  const noDep=simulateV2(fullData,t,{...o,helperSkills:['흡수'],departureAt:false});
+  assert.ok(!noDep.buffs.find(b=>b.code==='TR8').attack_pct,'출항을 안 쓰면 버프 없음');
+}
 console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen, single bench, TR8 rework: passed');
