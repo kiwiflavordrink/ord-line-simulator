@@ -3,10 +3,10 @@
 //  {type:'helper', recipes, catalog, samples}  parsed ORD_JHelper files (any may be null)
 //  {type:'analyze', id, hand, difficulty, goal, growthCut}
 // Replies {type:'quick', id, ...} at once and {type:'next', id, next} after the slower target search.
-import {teamFromHand,controlSums,comboStats,similarClears,nextTargets,unitIndex,isUpperTier} from '../../dist/advisor.mjs';
+import {teamFromHand,controlSums,comboStats,similarClears,nextTargets,unitIndex,isUpperTier,guideTargets,buildKeyIndex,pairIndex} from '../../dist/advisor.mjs';
 import {indexRecipes,planTarget,reverseRawcode,reachable,craftStages} from '../../dist/planner.mjs';
 
-let data=null,index=null,recipes=new Map(),tiers=new Map(),samples=[],latest=0;
+let data=null,index=null,recipes=new Map(),tiers=new Map(),names=new Map(),samples=[],latest=0,keyIndex=null,pairs=null;
 const tier=id=>tiers.get(id);
 
 onmessage=e=>{
@@ -17,6 +17,10 @@ onmessage=e=>{
       recipes=m.recipes?indexRecipes(m.recipes):new Map();
       tiers=new Map((m.catalog?.units??[]).map(u=>[reverseRawcode(u.rawcode),u.tier]));
       samples=m.samples?.samples??m.samples??[];
+      // 수정내역 83: guide indexes (겹침패 key materials, real-clear pairs), built once per helper load.
+      names=new Map((m.catalog?.units??[]).map(u=>[reverseRawcode(u.rawcode),u.name]));
+      keyIndex=recipes.size?buildKeyIndex(recipes,tier):null;
+      pairs=samples.length?pairIndex(samples,r=>isUpperTier(tier(r))):null;
       postMessage({type:'helper-ok',recipes:recipes.size,units:tiers.size,samples:samples.length});return;
     }
     // 수정내역 79: simulation-only requests (one difficulty), so several workers can run the difficulties in parallel.
@@ -55,13 +59,18 @@ onmessage=e=>{
         const next=view==='next'?cats.map(c=>({cat:c,label:LABEL[c],list:nextTargets(data,hand,recipes,tier,{limit:5,difficulty,red,growthCut,simulate:false,
           isTarget:id=>CAT[c].test(tier(id)??'')})})):null;
         // 추천 상위: the nearest 초월·불멸·영원·제한·신비 targets, ranked by the simulation after crafting (clear first, fewer left).
-        let upper=null;
+        let upper=null,guide=null;
         if(view==='upper'){
-          // 수정내역 79: plans only here; the page runs the simulations on its worker pool and sorts as they arrive.
-          upper=nextTargets(data,hand,recipes,tier,{limit:10,difficulty,red,growthCut,simulate:false,isTarget:id=>/초월|불멸|영원|제한|신비/.test(tier(id)??'')});
+          // 수정내역 83: 가이드 — nearest targets by 흔함 price with fit, gaps and 겹침패 (replaces the 추천 상위 simulation list).
+          const o={samplesIndex:pairs,keyIndex,difficulty,gorosei:m.gorosei??null,red};
+          const nm=id=>names.get(id);
+          const up=guideTargets(data,hand,recipes,tier,nm,{...o,grades:'upper',limit:8});
+          const lg=guideTargets(data,hand,recipes,tier,nm,{...o,grades:'legend',limit:6});
+          guide={L:up.L,locked:up.locked,groups:[{label:'가까운 상위',list:up.list},{label:'가까운 전설·히든·해적선',list:lg.list}]};
         }
         const withStages=x=>({...x,stages:craftStages(x.plan,recipes,tier)});
-        postMessage({type:'next',id:m.id,next:next?.map(g=>({...g,list:g.list.map(withStages)})),upper:upper?.map(withStages),now});
+        if(guide)for(const g of guide.groups)g.list=g.list.map(x=>x.locked?x:withStages(x));
+        postMessage({type:'next',id:m.id,next:next?.map(g=>({...g,list:g.list.map(withStages)})),upper:null,guide,now});
       },0);
     }
   }catch(err){postMessage({type:'error',id:m.id,message:String(err?.message??err)});}

@@ -152,7 +152,7 @@ function analyze(){
   analyzeTimer=setTimeout(()=>{
     const diff=difficulty();
     worker.postMessage({type:'analyze',id:++state.reqId,hand:state.hand,difficulty:diff,view:view(),
-      goal:$('goalSelect').value||null,growthCut:+state.settings.growthCut||0,cats:state.settings.cats??['legend','upper']});
+      goal:$('goalSelect').value||null,growthCut:+state.settings.growthCut||0,gorosei:state.settings.gorosei||null,cats:state.settings.cats??['legend','upper']});
     for(const id of ['nextBody','upperBody'])if(!$(id).dataset.filled)$(id).innerHTML='<span class="muted">계산 중…</span>';
     renderHand();
   },30);
@@ -172,7 +172,7 @@ worker.onmessage=e=>{
     if(m.team.length)order.forEach((d,k)=>simWorkers[k].postMessage({type:'sim',id:m.id,team:m.team,red:m.red,growthCut:+state.settings.growthCut||0,difficulty:d}));
   }
   if(m.type==='next'){
-    state.next=m.next;state.now=m.now;state.upper=m.upper;renderNext();renderNow();renderUpper();
+    state.next=m.next;state.now=m.now;state.upper=m.upper;state.guide=m.guide;renderNext();renderNow();renderUpper();
     // 수정내역 79: simulate each candidate on the worker pool (after the difficulty runs already queued there).
     state.simJobs=new Map();let k=0;
     for(const x of [...(m.upper??[]),...(m.next??[]).flatMap(g=>g.list)]){
@@ -288,9 +288,9 @@ function exportView(){
       if(!items.length){const t=body.innerText.trim();if(t)rows.push({t,c:'muted'});continue;}
       for(const el of items){
         if(el.classList.contains('row')){
-          const top=el.querySelector('.top')?.innerText.replace(/\s+/g,' ').trim()??el.innerText,how=el.querySelector('.how')?.innerText.replace(/\s+/g,' ').trim();
+          const top=el.querySelector('.top')?.innerText.replace(/\s+/g,' ').trim()??el.innerText;
           rows.push({t:top,b:true,c:colorOf(el.querySelector('.top')??el),a:el.dataset.goal?'goal '+el.dataset.goal:''});
-          if(how)rows.push({t:how,c:'muted',i:1});
+          for(const h of el.querySelectorAll('.how')){const t=h.innerText.replace(/\s+/g,' ').trim();if(t)rows.push({t,c:h.querySelector('.warn')?'warn':'muted',i:1});}
         }else rows.push({t:el.innerText.replace(/\s+/g,' ').trim(),c:colorOf(el)});
       }
     }
@@ -312,11 +312,30 @@ function renderNow(){
 }
 const upperScore=(a,b)=>{const sc=x=>x.sim===undefined?2e6:!x.sim?1e6:x.sim.clear?x.sim.remaining:1000-(x.sim.failedRound??60)*10-(x.sim.failedSecond??0)/10;return sc(a)-sc(b)||a.plan.wisps-b.plan.wisps;};
 const simText=s=>s===undefined?'<span class="muted small">시뮬 계산 중…</span>':!s?'<span class="muted small">시뮬 미지원</span>':s.clear?`<span class="ok small">${difficulty()} 클리어 · 남은 몹 ${s.remaining}</span>`:`<span class="bad small">${difficulty()} ${s.failedRound}라 패배</span>`;
+// 수정내역 83: 가이드 — the nearest targets by 흔함 price (특수 기물 included) with how much the hand covers, role,
+// real-clear partners, what the team still lacks after making it, and 겹침패 (targets that need the same 희귀·전설급
+// material or 특수 기물).
+const nameTier=id=>`${esc(nameOf(id))}<span class="muted small">·${esc(tierShort(id))}</span>`;
+function guideRow(x){
+  if(x.locked)return `<div class="row"><div class="top"><span><span class="name muted">${esc(nameOf(x.id))}</span> <span class="muted small">${esc(tierShort(x.id))}</span></span><span class="bad small">잠김</span></div>
+    <div class="how muted">한 판에 하나뿐인 기물(초월 위습·그린블러드·유니크 아이템)을 이미 썼습니다.</div></div>`;
+  const pct=Math.round(x.pct*100),lines=[];
+  if(x.role.length)lines.push(`<span class="muted small">역할</span> ${esc(x.role.join(' · '))}`);
+  const pr=x.partners;
+  if(pr?.games)lines.push(`<span class="muted small">어울림</span> ${pr.list.map(p=>`${nameTier(p.id)} ${Math.round(p.share*100)}%`).join(', ')} <span class="muted small">(실전 ${pr.games}판, 남은 몹 중앙값 ${pr.median})</span>`);
+  if(x.gaps.length)lines.push(`<span class="muted small">보완</span> <span class="warn">${esc(x.gaps.join(' · '))}</span>`);
+  if(x.overlaps.length)lines.push(`<span class="muted small">겹침</span> ${x.overlaps.map(o=>`${nameTier(o.id)}(${o.shared.map(nameTier).join('+')})`).join(', ')}`);
+  if(x.specials.length)lines.push(`<span class="muted small">특수 기물</span> ${x.specials.map(s=>`<span class="chips"><span class="sp">${esc(nameOf(s.id))} 흔함 ${Math.round(s.price)}</span></span>`).join(' ')}`);
+  return `<div class="row click${x.id===$('goalSelect').value?' cur':''}" data-goal="${x.id}"><div class="top"><span><span class="name">${esc(nameOf(x.id))}</span> <span class="muted small">${esc(tierShort(x.id))}</span></span>
+    <span><b class="${pct>=70?'ok':''}">${pct}%</b> <span class="muted small">남은 흔함 ${Math.round(x.price)}/${Math.round(x.full)}</span></span></div>
+    ${lines.map(l=>`<div class="how">${l}</div>`).join('')}${x.stages?`<div class="how">${stageLine(x.stages)}</div>`:''}</div>`;
+}
 function renderUpper(){
-  if(state.upper==null&&state.helper)return;
   if(!state.helper){fill('upperBody','<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>');return;}
-  const list=state.upper??[];
-  fill('upperBody',list.length?list.map(x=>unitRow(x,simText(x.sim))).join(''):'<span class="muted">가까운 상위 유닛이 없습니다.</span>');
+  if(state.guide==null)return;
+  const g=state.guide;
+  fill('upperBody',g.groups.map(gr=>`<div class="muted small">${esc(gr.label)}</div>`+(gr.list.length?gr.list.map(guideRow).join(''):'<span class="muted">없음</span>')).join('')+
+    `<div class="muted small">가격 = 들어가는 흔함 수 (전설 평균 ${Math.round(g.L)}). 특수 기물은 흔함 환산값.</div>`);
 }
 // 부족한 것: what the current combination lacks, from the line simulation and simple role counts.
 const ROLE={single:['L9','L16','L31','H13','H19','T1','L6','H5','D6','TR7'],finish:['L36'],
@@ -394,6 +413,7 @@ $('source').onchange=async e=>{await saveSettings({source:e.target.value});apply
 $('memPlayer').onchange=async e=>{await saveSettings({memPlayer:+e.target.value});if((state.settings.source??'manual')==='memory')startMemory();};
 $('difficulty').onchange=async e=>{await saveSettings({difficulty:e.target.value});analyze();status();};
 $('growthCut').onchange=async e=>{await saveSettings({growthCut:+e.target.value||0});analyze();};
+$('gorosei').onchange=async e=>{await saveSettings({gorosei:e.target.value||null});analyze();};
 async function setGoal(id){
   $('goalSelect').value=id??'';await saveSettings({goal:id||null});state.meta.goal=id||null;
   applyView();analyze();window.scrollTo({top:0,behavior:'smooth'});
@@ -452,6 +472,7 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   for(const w of simWorkers)w.postMessage({type:'data',data});
   $('difficulty').value=state.settings.difficulty??'auto';
   $('growthCut').value=state.settings.growthCut??0;
+  $('gorosei').value=state.settings.gorosei??'';
   $('memPlayer').value=String(state.settings.memPlayer??0);
   syncCats();applyView();applyFont();
   $('helperDir').textContent=state.settings.helperDir??'-';

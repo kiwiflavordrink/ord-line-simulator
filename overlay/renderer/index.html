@@ -19,7 +19,7 @@
     </span>
   </header>
   <nav id="tabs">
-    <button data-view="now">지금 조합</button><button data-view="next">목표 후보</button><button data-view="upper">추천 상위</button><button data-view="lack">부족한 것</button><button data-view="hand">보유 유닛</button>
+    <button data-view="now">지금 조합</button><button data-view="next">목표 후보</button><button data-view="upper">가이드</button><button data-view="lack">부족한 것</button><button data-view="hand">보유 유닛</button>
   </nav>
 
   <section id="settings" hidden>
@@ -41,6 +41,9 @@
       <select id="difficulty"><option value="auto">자동(기록 기준)</option><option>신</option><option>악몽</option><option>지옥</option></select>
     </label>
     <label>성장 방깎 <input id="growthCut" type="number" min="0" max="400" step="5" value="0"></label>
+    <label>오로성
+      <select id="gorosei"><option value="">모름·없음</option><option>나스쥬로</option><option>워큐리</option><option>새턴</option></select>
+    </label>
     <p class="hint">Ctrl+Shift+O 마우스 통과 · Ctrl+Shift+H 숨기기 · Ctrl+Shift+M 접기</p>
   </section>
 
@@ -70,7 +73,7 @@
   </section>
 
   <section id="upper" class="card" data-view="upper">
-    <h2>추천 상위 <span class="muted small">(만들었을 때 시뮬 결과가 좋은 순)</span></h2>
+    <h2>가이드 <span class="muted small">(가까운 순 · 흔함 환산 · 어울림·보완·겹침)</span></h2>
     <div id="upperBody" class="muted">-</div>
   </section>
 

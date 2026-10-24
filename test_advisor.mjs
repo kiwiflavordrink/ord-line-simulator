@@ -2,7 +2,7 @@
 // ORD_JHelper data is not part of this repository.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {reverseRawcode,indexRecipes,planTarget,reachable,handFromUnits,craftStages} from './dist/planner.mjs';
+import {reverseRawcode,indexRecipes,planTarget,reachable,handFromUnits,craftStages,priceModel,lockedPieces,fulfillment} from './dist/planner.mjs';
 import {unitIndex,teamFromHand,controlSums,comboStats,similarClears,RED_FORCE_RAWCODE} from './dist/advisor.mjs';
 
 const data=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
@@ -49,6 +49,25 @@ assert.equal(r[0].plan.wisps,1);
   const st=craftStages(q,rec2,t2);
   assert.deepEqual(st.stages.map(g=>[g.tier,g.items.map(x=>x.id+'x'+x.count).join()]),[['희귀함','RAREx2'],['해적선','BOATx1']]);
   assert.deepEqual(st.commons,{CMA:2,CMB:2});
+}
+// 수정내역 83: 흔함 환산 가격 — 전설 평균 흔함 L, 특수 기물(해적선 5, 초월 위습 L)과 조건(그린블러드 R), 한 판에 하나뿐인
+// 기물은 이미 썼으면 잠김(Infinity), 충족률.
+{
+  const fx={recipes:[...fixture.recipes,
+    {recipeId:'k1',outputs:[{kind:'UNIT',id:'KUMA'}],conditions:[]},
+    {recipeId:'t1',outputs:[{kind:'UNIT',id:'TRA1'}],conditions:[{kind:'UNIT',id:'LEGD',count:1},{kind:'UNIT',id:'KUMA',count:1}]},
+    {recipeId:'t2',outputs:[{kind:'UNIT',id:'TRA2'}],conditions:[{kind:'UNIT',id:'HIDN',count:1},{kind:'UNIT',id:'KUMA',count:1}]},
+    {recipeId:'s1',outputs:[{kind:'UNIT',id:'SERA'}],conditions:[{kind:'UNIT',id:'LEGD',count:1},{kind:'GREN',id:'GREN',count:1}]}]};
+  const tt={...tiers,KUMA:'기타',TRA1:'초월 [마딜]',TRA2:'초월 [물딜]',SERA:'세라핌',UNCM:'안흔함'};
+  const t3=id=>tt[id],nm=id=>({KUMA:'초월쿠마'})[id]??id;
+  const rec3=indexRecipes(fx),pm=priceModel(rec3,t3,nm);
+  assert.equal(pm.L,planTarget('LEGD',{},rec3,t3).wisps,'L = 전설 평균 흔함');
+  assert.equal(pm.leaf('KUMA'),pm.L,'초월 위습 = 전설급');
+  assert.equal(planTarget('SERA',{},rec3,t3,{prices:pm}).price,planTarget('LEGD',{},rec3,t3,{prices:pm}).price+pm.R,'세라핌 = 전설 + 그린블러드(희귀급)');
+  const lk=lockedPieces({TRA1:1},rec3,nm);assert.ok(lk.has('KUMA'),'초월을 만들면 초월 위습 잠김');
+  assert.equal(planTarget('TRA2',{TRA1:1},rec3,t3,{prices:priceModel(rec3,t3,nm,{locked:lk})}).price,Infinity);
+  assert.ok(lockedPieces({SERA:1},rec3,nm).has('GREN:GREN'),'세라핌을 만들면 그린블러드 잠김');
+  const f=fulfillment('LEGD',{RARE:1},rec3,t3,pm);assert.ok(f.pct>0&&f.pct<1);
 }
 
 assert.deepEqual(handFromUnits([{Rawcode:'Z20h',Count:2,Owner:0},{Rawcode:'Z20h',Count:5,Owner:1},{c:'Z20h',k:1}]),{h02Z:3},
