@@ -25,30 +25,32 @@ export function secondsUntil(round,lastRound){
 
 // warnings: [{level:'red'|'yellow'|'green', text, detail, priority}] sorted, max `limit`.
 export function coachWarnings(data,{myTeam=[],team=null,difficulty='신',gorosei=null,players=1,round=null,storyStage=null,
-  stats=null,red=false,limit=3}={}){
+  stats=null,red=false,limit=3,difficultyKnown=true}={}){
   const all=team??myTeam,out=[];
   const goro=goroseiActive(all,gorosei);
-  const push=(level,priority,text,detail='')=>out.push({level,priority,text,detail});
+  const push=(level,priority,text,detail='',id=null)=>out.push({level,priority,text,detail,id});
   if(gorosei&&!goro)push('green',10,'니카 영원: 오로성 효과 없음','니카 영원이 오로성을 없앤다(이스터 에그).');
-  // 1. 35라 스토리 패배선: 지옥 11·신 12·악몽 13단계를 35라 끝까지.
-  const dl=data.stories?.deadline?.[difficulty];
-  if(dl&&round!=null&&storyStage!=null&&storyStage<=dl.stage&&round<=dl.round&&all.length){
-    const left=secondsUntil(round,dl.round);let need=0;
-    for(let s=storyStage;s<=dl.stage;s++){const t=storyKillTime(data,all,s,{difficulty,players,seconds:600,gorosei:goro});need+=Number.isFinite(t)?t:600;}
-    const name=data.stories.stages[dl.stage-1]?.name??dl.stage+'단계';
-    const detail=`${storyStage===dl.stage?dl.stage+'단계':storyStage+'~'+dl.stage+'단계'} 처치 예상 ${Math.round(need)}초 / 35라 끝까지 약 ${left}초 (팀 전원이 스토리를 칠 때, 업그레이드 최대 기준)`;
-    if(need>left)push('red',100,`36라 시작 전까지 ${name} 못 깸 → 패배 위험`,detail);
-    else if(round>=25&&need>left*.6)push('yellow',60,`35라 스토리 빠듯함: ${name}까지 ${Math.round(need)}초 필요`,detail);
+  // 스토리 경고는 셋으로 나눈다(유저 결정, 수정내역 87): 신(36라 시작 전 12단계), 악몽(36라 시작 전 13단계), 에그헤드
+  // (등장한 뒤부터 240초). 난이도가 측정되었을 때(difficultyKnown)만 그 난이도의 경고가 켜진다.
+  const STORY_RULES={신:{id:'story-신',stage:12},악몽:{id:'story-악몽',stage:13}};
+  const rule=difficultyKnown?STORY_RULES[difficulty]:null;
+  // 1. 신·악몽 36라 패배선.
+  if(rule&&round!=null&&storyStage!=null&&storyStage<=rule.stage&&round<=35&&all.length){
+    const left=secondsUntil(round,35);let need=0;
+    for(let s=storyStage;s<=rule.stage;s++){const t=storyKillTime(data,all,s,{difficulty,players,seconds:600,gorosei:goro});need+=Number.isFinite(t)?t:600;}
+    const name=data.stories.stages[rule.stage-1]?.name??rule.stage+'단계';
+    const detail=`${difficulty}: ${storyStage===rule.stage?rule.stage+'단계':storyStage+'~'+rule.stage+'단계'} 처치 예상 ${Math.round(need)}초 / 35라 끝까지 약 ${left}초 (팀 전원이 스토리를 칠 때, 업그레이드 최대 기준)`;
+    if(need>left)push('red',100,`[${difficulty}] 36라 시작 전까지 ${name} 못 깸 → 패배 위험`,detail,rule.id);
+    else if(round>=25&&need>left*.6)push('yellow',60,`[${difficulty}] 36라 전 ${name}까지 빠듯함 (${Math.round(need)}초 필요)`,detail,rule.id);
   }
-  // 2. 에그헤드: 와노쿠니(13단계)를 깨면 120초 뒤 등장해 240초 타이머가 돈다. 악몽은 와노쿠니가 36라 시작 전 필수라
-  // 와노쿠니가 남았을 때(13)부터 미리 본다. 신은 12단계까지만 필수라 와노쿠니는 문제가 아니고, 에그헤드가 실제로
-  // 떠 있을 때(14)만 본다(유저: "신은 12단계만 36라 전에 깨면 되지").
-  const eggFrom={악몽:13,신:14}[difficulty];
-  if(eggFrom&&storyStage!=null&&storyStage>=eggFrom&&storyStage<=14&&all.length){
+  // 2. 에그헤드: 난이도와 상관없이 에그헤드가 발견되면(남은 스토리 단계 14) 띄운다(유저). 와노쿠니 처치 120초 뒤 등장,
+  // 240초 제한. 체력 배수는 알려진 난이도(모르면 신)로 계산.
+  if(storyStage===14&&all.length){
     const t=storyKillTime(data,all,14,{difficulty,players,seconds:EGGHEAD_SECONDS+60,gorosei:goro});
-    const detail=`에그헤드 처치 예상 ${Number.isFinite(t)?Math.round(t)+'초':'300초 이상'} / 제한 ${EGGHEAD_SECONDS}초`+(storyStage===13?' (와노쿠니 처치 120초 뒤 등장)':'');
-    if(!(t<=EGGHEAD_SECONDS))push('red',90,'에그헤드 240초 안에 못 잡음 → 패배 위험',detail);
-    else if(t>EGGHEAD_SECONDS*.75)push('yellow',55,`에그헤드 빠듯함 (${Math.round(t)}초 / 240초)`,detail);
+    const detail=`에그헤드 처치 예상 ${Number.isFinite(t)?Math.round(t)+'초':'300초 이상'} / 제한 ${EGGHEAD_SECONDS}초 (팀 전원이 칠 때)`;
+    if(!(t<=EGGHEAD_SECONDS))push('red',95,'[에그헤드] 240초 안에 못 잡음 → 패배 위험',detail,'egghead');
+    else if(t>EGGHEAD_SECONDS*.75)push('yellow',58,`[에그헤드] 빠듯함 (${Math.round(t)}초 / 240초)`,detail,'egghead');
+    else push('green',40,`[에그헤드] ${Math.round(t)}초 예상 — 팀 전원 스토리로`,detail,'egghead');
   }
   // 3. 보스 라운드 직전.
   if(round!=null&&BOSS_ROUNDS.includes(round+1))push('yellow',50,`다음 ${round+1}라 보스: 60초 안에 처치`,'못 잡으면 그 플레이어 패배. 단일·보스 피해 유닛을 내 라인에 두세요.');

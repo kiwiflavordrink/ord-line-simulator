@@ -194,7 +194,9 @@ function requestCoach(){
     const num=v=>v===''||v==null||isNaN(+v)?null:+v;
     worker.postMessage({type:'coach',id:state.reqId,ctx:{myTeam:q.team,team:q.team.concat(state.others??[]),difficulty:difficulty(),
       gorosei:st.gorosei||null,players:+(st.sitPlayers??1),round:num(st.sitRound),storyStage:num(st.sitStage),stats:q.stats,red:q.red,
-      quests:(st.sitQuests??[]).filter(Boolean),hand:state.hand}});
+      quests:(st.sitQuests??[]).filter(Boolean),hand:state.hand,
+      // 수정내역 87: 난이도가 측정됐을 때(직접 선택 또는 기록·자동 읽기)만 신·악몽 스토리 경고를 켠다.
+      difficultyKnown:(st.difficulty&&st.difficulty!=='auto')||['신','악몽','지옥'].includes(state.meta.difficulty)}});
   },60);
 }
 function renderCoach(){
