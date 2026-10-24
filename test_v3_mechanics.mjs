@@ -102,7 +102,7 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
 // [수정 9] I8 공격력 버프, E12 파퓸페뮤르 상한, TR16·H16 중첩 불가.
 {
   const e12=data.heroes.find(x=>x.code==='E12').events.find(e=>e.index==='1 단일 타격');
-  assert.equal(e12.per_proc_cap_maxhp,1);
+  assert.equal(e12.seq_hits.count,25);   // 수정내역 74: 상한 대신 25회 순차 타격
   {
     const ctx=await import('./dist/v3_effects.mjs');
     assert.equal(ctx.damageContext({selected:['TR16','H16']}).explosiveAmp,10);
@@ -638,5 +638,13 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   const o={red:false,redDamage:false},t=[{code:'TR8'},{code:'OB1'}];
   const a=simulateV2(fullData,t,o).sourceDamage.OB1,b=simulateV2(fullData,t,{...o,departureAt:{round:63,second:5}}).sourceDamage.OB1;
   assert.ok(a>0&&b>0&&a!==b);
+}
+// [수정 74] E12 파퓸페뮤르: 25회 × 최대체력 16%, 대상이 죽으면 다음 적으로 넘어간다 → 시전 1회에 여러 기 처치.
+{
+  const o={difficulty:'악몽',red:false,redDamage:false,cut:0};
+  const old=structuredClone(fullData),e=old.heroes.find(h=>h.code==='E12').events.find(x=>x.index==='1 단일 타격');
+  delete e.seq_hits;e.parts=[['magic',0,[['max',4]],0]];e.per_proc_cap_maxhp=1;
+  const t=[{code:'E12'},{code:'D2'},{code:'H14'}],a=simulateV2(fullData,t,o),b=simulateV2(old,t,o);
+  assert.ok(a.totalLineKilled>b.totalLineKilled,'순차 타격이 더 많이 잡는다');
 }
 console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen, single bench, TR8 rework: passed');

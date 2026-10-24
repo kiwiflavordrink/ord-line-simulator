@@ -794,6 +794,7 @@ export function simulateV2(data,composition,options={}){
             deal(newMob,e.on_spawn*eventDamage(e,newMob,attack,extraArmor),hero.code,'area','mixed');
             if(e.ab&&newMob.hp>0)abAdd(newMob,e.ab*e.on_spawn);
             if(e.armor_debuff&&newMob.hp>0)applyDebuff(newMob,e.armor_debuff,e.on_spawn);
+            if(e.mob_debuff&&newMob.hp>0)mobDebuff(newMob,e.mob_debuff,e.on_spawn);   // 수정내역 74 (E12 접근 마법방어력 −5%)
           }
           // on_approach (Z8 접근 스킬, 2.305 j:79460-79512): each enemy rolls once in its life when it first
           // comes near (the map marks it with turn speed 0.49, shared by every copy of the hero): chance
@@ -1110,6 +1111,29 @@ export function simulateV2(data,composition,options={}){
               deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit),u.code,'area','mixed');
               if(e.mob_debuff&&m.hp>0)mobDebuff(m,e.mob_debuff,1);
             },e.distinct===true);
+            continue;
+          }
+          if(e.seq_hits){
+            // seq_hits {count, radius} (수정내역 74, E12 파퓸페뮤르): count hits one after another on the attack target, each
+            // with the event's per-hit parts (line mob: parts, others: nonline_parts). When the target dies the next hit
+            // goes to a living enemy within radius of it (2.305 R4A j:41246-41275: GroupEnumUnitsInRangeOfLoc 200 of the
+            // last target point, FirstOfGroup). Without the position model the next enemy in line order stands in
+            // (mobs bunch under slows and stuns) [추정].
+            const bank=u.seqBank??={};
+            bank[e.index]=(bank[e.index]??0)+rate*.1;
+            for(;bank[e.index]>=1;bank[e.index]--){
+              const pool=[...mobs,...specials];
+              let cur=target&&target.hp>0?target:pool.find(x=>x.hp>0);
+              for(let k=0;k<e.seq_hits.count&&cur;k++){
+                const ev=cur.kind==='story'?storyEvent(e):e.nonline_parts&&cur.kind!=='line'?{...e,parts:e.nonline_parts}:e;
+                deal(cur,eventDamage(ev,cur,attack,extraArmor),u.code,cur===target?'single':'area','magic');
+                if(cur.hp<=0){
+                  const last=cur,i=pool.indexOf(last);
+                  cur=posModel?pool.filter(x=>x.hp>0&&dist(x,last)<=(e.seq_hits.radius??200)).sort((x,y)=>dist(x,last)-dist(y,last))[0]:
+                    pool.slice(i+1).find(x=>x.hp>0)??pool.slice(0,i).reverse().find(x=>x.hp>0);
+                }
+              }
+            }
             continue;
           }
           if(e.chain){
