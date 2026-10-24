@@ -1073,6 +1073,9 @@ export function simulateV2(data,composition,options={}){
           // MECH-B: stack_target (TR17 철저한 정의, 2.305 j:76404-76422 + oLM j:72651-72716): on the first whole
           // attack on a boss/frenzy after `cooldown` s, cast with multiplier mult (same target as this hero's
           // last proc: +step, else 1). area_parts hit radius around the target, parts the target, frenzy_parts x1.
+          // mul_basis 'dealt' (수정내역 69·76, 2.305 GetEventDamage): the attack multiplier uses the damage the basic attack
+          // actually dealt to the attack target (crit incl. 타격 target_crit, attack type and armor), not the raw attack.
+          const atkE=e.mul_basis==='dealt'&&target?attack*critEV(form.crit)*critEV(form.target_crit)*form.rounds[String(target.typeRound??target.round)]*pf(armor(target,extraArmor)):attack;
           const sj=e.stack_target;
           if(sj){
             const st=(u.stackState??={})[e.index]??={clock:0,ready:0,m:null,mult:0};
@@ -1082,9 +1085,9 @@ export function simulateV2(data,composition,options={}){
               st.ready=now+sj.cooldown;st.mult=st.m===target?st.mult+sj.step:1;st.m=target;
               const k=st.mult*critEV(e.crit);
               for(const x of [...mobs,...specials])if(x.hp>0&&(x===target||!posModel||dist(x,target)<=sj.radius))
-                deal(x,eventDamage({...e,parts:sj.area_parts},x,attack,extraArmor)*k*(x===target||posModel?1:cov),u.code,x===target?'single':'area','mixed');
-              deal(target,eventDamage(e,target,attack,extraArmor)*k,u.code,'single','mixed');
-              if(sj.frenzy_parts&&target.kind==='frenzy')deal(target,eventDamage({...e,parts:sj.frenzy_parts},target,attack,extraArmor),u.code,'single','fixed');
+                deal(x,eventDamage({...e,parts:sj.area_parts},x,atkE,extraArmor)*k*(x===target||posModel?1:cov),u.code,x===target?'single':'area','mixed');
+              deal(target,eventDamage(e,target,atkE,extraArmor)*k,u.code,'single','mixed');
+              if(sj.frenzy_parts&&target.kind==='frenzy')deal(target,eventDamage({...e,parts:sj.frenzy_parts},target,atkE,extraArmor),u.code,'single','fixed');
               if(posModel&&e.stun&&target.hp>0)applyStun(target,e.stun);
               (u.justiceLog??=[]).push(st.mult);
             }
@@ -1118,7 +1121,7 @@ export function simulateV2(data,composition,options={}){
             bank[e.index]=(bank[e.index]??0)+rate*.1;
             for(;bank[e.index]>=1;bank[e.index]--)randomPicks(targets,e.picks??1,pickRandom,m=>{
               const ev=m.kind==='story'?storyEvent(e):e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e;
-              deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit),u.code,'area','mixed');
+              deal(m,eventDamage(ev,m,atkE,extraArmor)*critEV(e.crit),u.code,'area','mixed');
               if(e.mob_debuff&&m.hp>0)mobDebuff(m,e.mob_debuff,1);
             },e.distinct===true);
             continue;
@@ -1136,7 +1139,7 @@ export function simulateV2(data,composition,options={}){
               let cur=target&&target.hp>0?target:pool.find(x=>x.hp>0);
               for(let k=0;k<e.seq_hits.count&&cur;k++){
                 const ev=cur.kind==='story'?storyEvent(e):e.nonline_parts&&cur.kind!=='line'?{...e,parts:e.nonline_parts}:e;
-                deal(cur,eventDamage(ev,cur,attack,extraArmor),u.code,cur===target?'single':'area','magic');
+                deal(cur,eventDamage(ev,cur,atkE,extraArmor),u.code,cur===target?'single':'area','magic');
                 if(cur.hp<=0){
                   const last=cur,i=pool.indexOf(last);
                   cur=posModel?pool.filter(x=>x.hp>0&&dist(x,last)<=(e.seq_hits.radius??200)).sort((x,y)=>dist(x,last)-dist(y,last))[0]:
@@ -1153,7 +1156,7 @@ export function simulateV2(data,composition,options={}){
             for(;bank[e.index]>=1;bank[e.index]--){
               chainTargets(target,[...mobs,...specials],e.chain,posModel,dist).forEach((m,k)=>{
                 const ev=m.kind==='story'?storyEvent(e):e.nonline_parts&&m.kind!=='line'?{...e,parts:e.nonline_parts}:e;
-                deal(m,eventDamage(ev,m,attack,extraArmor)*critEV(e.crit)*(e.chain.factor??1)**k,u.code,k?'area':'single','mixed');
+                deal(m,eventDamage(ev,m,atkE,extraArmor)*critEV(e.crit)*(e.chain.factor??1)**k,u.code,k?'area':'single','mixed');
                 if(posModel&&e.stun&&m.hp>0)applyStun(m,e.stun);
                 if(e.mob_debuff&&m.hp>0)mobDebuff(m,e.mob_debuff,1);
               });
@@ -1174,10 +1177,7 @@ export function simulateV2(data,composition,options={}){
             const ns=nut?.skill?.[e.index];
             if(ns)ev={...ev,parts:[...ev.parts,[ns.kind,ns.flat*(ns.basis==='cast'?(u.castS??nst.S):nst.S),[],0]]};
             const share=rate*.1*(m===target||single?1:cov);
-            // mul_basis 'dealt' (수정내역 69, TR8 2.305 GetEventDamage): the attack multiplier uses the damage the basic attack
-            // actually dealt to the attack target (crit, attack type and armor included), not the raw attack.
-            const evAtk=e.mul_basis==='dealt'&&target?attack*critEV(form.crit)*form.rounds[String(target.typeRound??target.round)]*pf(armor(target,extraArmor)):attack;
-            deal(m,eventDamage(ev,m,evAtk,extraArmor,pctRef??m)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
+            deal(m,eventDamage(ev,m,atkE,extraArmor,pctRef??m)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
             // Armor break as an expected stack per step, like the supports (cap 75 in abAdd).
             if(m.hp>0&&e.ab)abAdd(m,e.ab*share);
             if(m.hp>0&&e.mob_debuff)mobDebuff(m,e.mob_debuff,share);
