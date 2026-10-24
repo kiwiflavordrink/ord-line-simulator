@@ -4,7 +4,7 @@
 //  {type:'analyze', id, hand, difficulty, goal, growthCut}
 // Replies {type:'quick', id, ...} at once and {type:'next', id, next} after the slower target search.
 import {teamFromHand,controlSums,comboStats,similarClears,nextTargets,unitIndex,isUpperTier} from '../../dist/advisor.mjs';
-import {indexRecipes,planTarget,reverseRawcode,reachable} from '../../dist/planner.mjs';
+import {indexRecipes,planTarget,reverseRawcode,reachable,craftStages} from '../../dist/planner.mjs';
 
 let data=null,index=null,recipes=new Map(),tiers=new Map(),samples=[],latest=0;
 const tier=id=>tiers.get(id);
@@ -19,17 +19,24 @@ onmessage=e=>{
       samples=m.samples?.samples??m.samples??[];
       postMessage({type:'helper-ok',recipes:recipes.size,units:tiers.size,samples:samples.length});return;
     }
+    // 수정내역 79: simulation-only requests (one difficulty), so several workers can run the difficulties in parallel.
+    if(m.type==='sim'){
+      postMessage({type:'stat',id:m.id,key:m.key,difficulty:m.difficulty,stat:comboStats(data,m.team,{red:m.red,growthCut:m.growthCut,difficulties:[m.difficulty]})[m.difficulty]});
+      return;
+    }
     if(m.type==='analyze'){
       latest=m.id;
       const {hand,difficulty='신',goal,growthCut=0}=m;   // m.cats: target categories (수정내역 49)
       const {team,red,unknown,raws}=teamFromHand(data,hand,index);
-      const diffs=[...new Set([difficulty,'신','악몽','지옥'])];
-      const stats=comboStats(data,team,{red,growthCut,difficulties:diffs});
+      // 수정내역 79: everything that comes from the hand alone is sent first (no simulation); the page then asks the
+      // simulation workers for each difficulty (selected first) and fills the numbers in when they arrive.
       const ctrl=controlSums(data,team,red);
       const upper=tiers.size?r=>isUpperTier(tier(r)):r=>index.has(r);
       const similar=samples.length?similarClears(samples,hand,{difficulty,isUpper:upper}):null;
-      const goalPlan=goal&&recipes.size?{id:goal,plan:planTarget(goal,hand,recipes,tier)}:null;
-      postMessage({type:'quick',id:m.id,team,raws,red,unknown,stats,ctrl,similar,goalPlan});
+      const goalPlan=goal&&recipes.size?(()=>{const plan=planTarget(goal,hand,recipes,tier);return {id:goal,plan,stages:craftStages(plan,recipes,tier)};})():null;
+      postMessage({type:'quick',id:m.id,team,raws,red,unknown,stats:{},ctrl,similar,goalPlan});
+      if(m.simInline){const diffs=[...new Set([difficulty,'신','악몽','지옥'])];
+        postMessage({type:'stats',id:m.id,stats:comboStats(data,team,{red,growthCut,difficulties:diffs})});}
       // The search is slower (one simulation per candidate); skip it if a newer hand already arrived.
       setTimeout(()=>{
         if(m.id!==latest||!recipes.size)return;
@@ -45,16 +52,16 @@ onmessage=e=>{
         const LABEL={rare:'희귀',legend:'전설',hidden:'히든',upper:'상위(초불영제)',mystic:'신비·기타',ship:'해적선',support:'보조'};
         // 수정내역 66: only the list the open tab shows is searched (each candidate costs one simulation).
         const view=m.view??'now';
-        const next=view==='next'?cats.map(c=>({cat:c,label:LABEL[c],list:nextTargets(data,hand,recipes,tier,{limit:5,difficulty,red,growthCut,
+        const next=view==='next'?cats.map(c=>({cat:c,label:LABEL[c],list:nextTargets(data,hand,recipes,tier,{limit:5,difficulty,red,growthCut,simulate:false,
           isTarget:id=>CAT[c].test(tier(id)??'')})})):null;
         // 추천 상위: the nearest 초월·불멸·영원·제한·신비 targets, ranked by the simulation after crafting (clear first, fewer left).
         let upper=null;
         if(view==='upper'){
-          upper=nextTargets(data,hand,recipes,tier,{limit:10,difficulty,red,growthCut,isTarget:id=>/초월|불멸|영원|제한|신비/.test(tier(id)??'')});
-          const score=x=>!x.sim?1e6:x.sim.clear?x.sim.remaining:1000-(x.sim.failedRound??60)*10-(x.sim.failedSecond??0)/10;
-          upper.sort((a,b)=>score(a)-score(b)||a.plan.wisps-b.plan.wisps);
+          // 수정내역 79: plans only here; the page runs the simulations on its worker pool and sorts as they arrive.
+          upper=nextTargets(data,hand,recipes,tier,{limit:10,difficulty,red,growthCut,simulate:false,isTarget:id=>/초월|불멸|영원|제한|신비/.test(tier(id)??'')});
         }
-        postMessage({type:'next',id:m.id,next,upper,now});
+        const withStages=x=>({...x,stages:craftStages(x.plan,recipes,tier)});
+        postMessage({type:'next',id:m.id,next:next?.map(g=>({...g,list:g.list.map(withStages)})),upper:upper?.map(withStages),now});
       },0);
     }
   }catch(err){postMessage({type:'error',id:m.id,message:String(err?.message??err)});}

@@ -51,3 +51,8 @@ body.folded #panel>:not(header){display:none!important}
 .wisp{display:inline-block;min-width:1.8em;text-align:center;border-radius:4px;padding:0 6px;font-weight:700;background:rgba(124,184,255,.18);color:var(--acc)}
 .wisp.zero{background:rgba(90,209,154,.18);color:var(--ok)}
 ul.lack{margin:2px 0;padding-left:1.1em}ul.lack li{margin:2px 0}
+
+/* 수정내역 79: craft stages and special pieces */
+.stages{margin-top:4px;border-left:2px solid var(--acc,#6cf);padding-left:6px}
+.stage{margin:2px 0;line-height:1.35}
+.chips .sp{border-color:#e0a030;color:#ffcf70}

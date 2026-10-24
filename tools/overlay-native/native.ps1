@@ -115,7 +115,7 @@ if ($keys.ContainsKey($HideKey)) { $form.HideVk = $keys[$HideKey] }
 if ($keys.ContainsKey($TabKey)) { $form.TabVk = $keys[$TabKey] }
 $viewFile = Join-Path $env:TEMP 'ordr_overlay_view.json'
 $script:last = $null
-$timer = New-Object System.Windows.Forms.Timer; $timer.Interval = 400
+$timer = New-Object System.Windows.Forms.Timer; $timer.Interval = 120   # 수정내역 79: 0.4 s -> 0.12 s
 $timer.Add_Tick({
   if (-not (Test-Path $viewFile)) { $form.Status = '계산 준비 중… (엣지 백그라운드)'; $form.Invalidate(); return }
   $t = (Get-Item $viewFile).LastWriteTimeUtc.Ticks

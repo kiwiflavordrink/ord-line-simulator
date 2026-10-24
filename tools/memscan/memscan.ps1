@@ -17,7 +17,7 @@ param(
   [switch]$Hand,
   [int]$Player = 0,
   [switch]$Watch,
-  [int]$Interval = 3,
+  [double]$Interval = 0.3,
   [int]$Rescan = 90,
   [string]$Out = (Join-Path ([Environment]::GetFolderPath('Desktop')) 'ordr_memscan.json')
 )
@@ -181,7 +181,9 @@ if ($Watch) {
   # Live hand for the overlay: full scan, then re-read only the regions holding this player's records every
   # $Interval seconds; full scan again every $Rescan seconds (new units may land in a new region) or when the game
   # restarts. Writes {Source,Time,Status,Units:[{Rawcode,Code,Count,Owner,Name}]} to $Out (temp file + rename).
-  $tmp = "$Out.tmp"; $bases = ''; $lastFull = [DateTime]::MinValue; $pid0 = 0
+  # 수정내역 79: re-read every 0.3 s (was 3 s); the file is rewritten only when the hand changes (plus a 5 s heartbeat),
+  # and the status carries the read time so slow PCs show up.
+  $tmp = "$Out.tmp"; $bases = ''; $lastFull = [DateTime]::MinValue; $pid0 = 0; $lastUnits = $null; $lastPut = [DateTime]::MinValue
   function Put($status, $units) {
     $o = '{"Source":"memscan","Time":"' + (Get-Date -Format o) + '","Status":' + (ConvertTo-Json $status) + ',"Units":' + $units + '}'
     [IO.File]::WriteAllText($tmp, $o, (New-Object Text.UTF8Encoding $false)); Move-Item -Force $tmp $Out
@@ -192,15 +194,20 @@ if ($Watch) {
     if ($proc.Id -ne $pid0) { $pid0 = $proc.Id; $bases = '' }
     $full = (-not $bases) -or (((Get-Date) - $lastFull).TotalSeconds -ge $Rescan)
     if ($full -and -not $bases) { Put '전체 스캔 중' '[]' }
+    $sw = [Diagnostics.Stopwatch]::StartNew()
     $json = [OrdrMemScan]::Hand($proc.Id, $Player, $(if ($full) { '' } else { $bases }), $false)
+    $ms = $sw.ElapsedMilliseconds
     $obj = $json | ConvertFrom-Json
     if ($obj.error) { Put $obj.error '[]'; Start-Sleep -Seconds 5; continue }
     if ($full) { $lastFull = Get-Date; $bases = ($obj.regions -join ',') }
     $units = ConvertTo-Json -Compress -InputObject @($obj.hand)
     if (-not $units -or $units -eq 'null') { $units = '[]' }
-    Put $(if ($full) { '전체' } else { '빠름' }) $units
-    Write-Host ("{0:HH:mm:ss} {1} {2}종" -f (Get-Date), $(if ($full) { '전체' } else { '빠름' }), @($obj.hand).Count)
-    Start-Sleep -Seconds $Interval
+    if ($full -or $units -ne $lastUnits -or ((Get-Date) - $lastPut).TotalSeconds -ge 5) {
+      Put ("{0} {1}ms" -f $(if ($full) { '전체' } else { '빠름' }), $ms) $units
+      $lastUnits = $units; $lastPut = Get-Date
+      Write-Host ("{0:HH:mm:ss} {1} {2}종 {3}ms" -f (Get-Date), $(if ($full) { '전체' } else { '빠름' }), @($obj.hand).Count, $ms)
+    }
+    Start-Sleep -Milliseconds ([int]($Interval * 1000))
   }
 }
 

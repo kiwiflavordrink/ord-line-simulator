@@ -6,6 +6,18 @@ import {handFromUnits,reverseRawcode} from '../../dist/planner.mjs';
 const api=window.ordApi??null;
 const $=id=>document.getElementById(id);
 const worker=new Worker(new URL('./worker.mjs',import.meta.url),{type:'module'});
+// 수정내역 79: simulation workers, one per difficulty, so the three results come in parallel (~0.5 s each).
+const simWorkers=[0,1,2].map(()=>new Worker(new URL('./worker.mjs',import.meta.url),{type:'module'}));
+for(const w of simWorkers)w.onmessage=e=>{
+  const m=e.data;if(m.type!=='stat'||m.id!==state.reqId)return;
+  if(m.key){   // a candidate from 목표 후보 / 추천 상위
+    const x=state.simJobs?.get(m.key);if(!x)return;x.sim=m.stat??null;
+    if(state.upper?.includes(x))state.upper.sort(upperScore);
+    clearTimeout(state.candTimer);state.candTimer=setTimeout(()=>{renderNext();renderUpper();},40);return;
+  }
+  if(!state.quick||state.quick.id!==m.id)return;
+  state.quick.stats[m.difficulty]=m.stat;renderQuick();renderLack();exportView();
+};
 
 const state={settings:{},hand:{},meta:{},names:new Map(),tiers:new Map(),outputs:[],helper:null,
   frames:[],frame:0,reqId:0,quick:null,next:null,codeNames:new Map()};
@@ -85,11 +97,11 @@ let liveTimer=null,liveFile=null,liveTime=null;
 const webLive=!api&&location.protocol==='http:'&&['localhost','127.0.0.1'].includes(location.hostname);
 async function startMemory(){
   stopMemory();
-  if(webLive){liveFile='/hand';liveTime=null;liveTimer=setInterval(readLive,2000);readLive();return;}
+  if(webLive){liveFile='/hand';liveTime=null;liveTimer=setInterval(readLive,250);readLive();return;}
   const r=await api.memStart(+state.settings.memPlayer||0);
   if(r.error){status(r.error);return;}
   liveFile=r.file;liveTime=null;
-  liveTimer=setInterval(readLive,2000);readLive();
+  liveTimer=setInterval(readLive,250);readLive();
 }
 function stopMemory(){clearInterval(liveTimer);liveTimer=null;liveFile=null;api?.memStop();}
 async function readLive(){
@@ -99,7 +111,7 @@ async function readLive(){
   let j;try{j=JSON.parse(text.replace(/^\uFEFF/,''));}catch{return;}
   if(j.Time===liveTime)return;liveTime=j.Time;
   // 수정내역 66: redraw only when the hand itself changed (memscan rewrites the file every few seconds).
-  const sig=(j.Units??[]).map(u=>u.Rawcode+':'+u.Count+':'+u.Owner).sort().join('|')+'#'+(j.Status??'');
+  const sig=(j.Units??[]).map(u=>u.Rawcode+':'+u.Count+':'+u.Owner).sort().join('|')+'#'+String(j.Status??'').replace(/\s*\d+ms$/,'');
   if(sig===state.liveSig)return;state.liveSig=sig;
   for(const u of j.Units??[]){const code=reverseRawcode(u.Rawcode),n=String(u.Name??'').replace(/\|c[0-9a-fA-F]{8}|\|r/g,'').replace(/ - .*$/,'').trim();
     if(n&&!state.names.has(code)&&!state.codeNames.has(code))state.codeNames.set(code,n);}
@@ -143,7 +155,7 @@ function analyze(){
       goal:$('goalSelect').value||null,growthCut:+state.settings.growthCut||0,cats:state.settings.cats??['legend','upper']});
     for(const id of ['nextBody','upperBody'])if(!$(id).dataset.filled)$(id).innerHTML='<span class="muted">계산 중…</span>';
     renderHand();
-  },120);
+  },30);
 }
 const difficulty=()=>{const d=state.settings.difficulty??'auto';return d==='auto'?(['신','악몽','지옥'].includes(state.meta.difficulty)?state.meta.difficulty:'신'):d;};
 
@@ -152,8 +164,23 @@ worker.onmessage=e=>{
   if(m.type==='error'){status('계산 오류: '+m.message);return;}
   if(m.type==='helper-ok'){status();return;}
   if(m.id!==state.reqId)return;
-  if(m.type==='quick'){state.quick=m;renderQuick();renderLack();status();exportView();}
-  if(m.type==='next'){state.next=m.next;state.now=m.now;state.upper=m.upper;renderNext();renderNow();renderUpper();}
+  if(m.type==='quick'){
+    // Keep the numbers of the same team while the new ones are computed (no flicker); start the simulations.
+    const same=state.quick&&JSON.stringify(state.quick.team)===JSON.stringify(m.team)&&state.quick.red===m.red;
+    m.stats=same?{...state.quick.stats}:{};state.quick=m;renderQuick();renderLack();status();exportView();
+    const d0=difficulty(),order=[d0,...['신','악몽','지옥'].filter(d=>d!==d0)];
+    if(m.team.length)order.forEach((d,k)=>simWorkers[k].postMessage({type:'sim',id:m.id,team:m.team,red:m.red,growthCut:+state.settings.growthCut||0,difficulty:d}));
+  }
+  if(m.type==='next'){
+    state.next=m.next;state.now=m.now;state.upper=m.upper;renderNext();renderNow();renderUpper();
+    // 수정내역 79: simulate each candidate on the worker pool (after the difficulty runs already queued there).
+    state.simJobs=new Map();let k=0;
+    for(const x of [...(m.upper??[]),...(m.next??[]).flatMap(g=>g.list)]){
+      if(!x.code){x.sim=null;continue;}
+      const key='c'+k;state.simJobs.set(key,x);
+      simWorkers[k++%simWorkers.length].postMessage({type:'sim',id:m.id,key,team:x.team,red:state.quick?.red??false,growthCut:+state.settings.growthCut||0,difficulty:difficulty()});
+    }
+  }
 };
 
 function status(msg){
@@ -177,15 +204,15 @@ function renderQuick(){
         ${p.wood?` · 나무 <b class="${lum!=null&&lum<p.wood?'bad':''}">${p.wood}</b>${lum!=null?` (보유 ${lum})`:''}`:''}
         ${p.gold?` · 골드 <b class="${gold!=null&&gold<p.gold?'bad':''}">${p.gold}</b>${gold!=null?` (보유 ${gold})`:''}`:''}</div>
       ${p.wisps?`<div>위습으로 뽑을 흔함: ${chips(p.commons)}</div>`:''}
-      ${miss?`<div class="warn">부족 재료(위습으로 안 됨): ${chips(p.missing)}</div>`:''}
+      ${miss?`<div class="warn">특수 기물·못 뽑는 재료: ${specialChips(p.missing)}</div>`:''}
       ${p.special.length?`<div class="warn">특수 조건: ${p.special.map(s=>esc(s.kind+(s.id?' '+nameOf(s.id):''))).join(', ')}</div>`:''}
       ${Object.keys(p.used).length?`<div class="muted">쓰는 보유 유닛: ${chips(p.used)}</div>`:''}
-      <div class="muted">순서: ${p.steps.map(s=>esc(nameOf(s.output))).join(' → ')||'-'}</div>`;
+      ${stagesHtml(g.stages)}`;
   }
   // combo
   if(!q.team.length)$('comboBody').innerHTML='<span class="muted">라인에 쓰는 상위 유닛이 없습니다.</span>';
   else{
-    const rows=['신','악몽','지옥'].map(d=>{const s=q.stats[d];if(!s)return '';
+    const rows=['신','악몽','지옥'].map(d=>{const s=q.stats[d];if(!s)return `<tr${d===diff?' class="cur"':''}><td>${d}${d===diff?' ◀':''}</td><td class="num muted">…</td><td class="num muted">…</td><td class="muted">계산 중</td></tr>`;
       return `<tr${d===diff?' class="cur"':''}><td>${d}${d===diff?' ◀':''}</td><td class="num">${s.remaining}</td><td class="num">${s.threshold}</td>
         <td class="${s.clear?'ok':'bad'}">${s.clear?'클리어':`${s.failedRound}라 ${Math.round(s.failedSecond??0)}초 패배`}</td></tr>`;}).join('');
     const c=q.ctrl;
@@ -212,16 +239,29 @@ function renderQuick(){
 const tierShort=id=>(state.tiers.get(id)??'').replace(/\s*\[.*\]/,'');
 // 수정내역 66: one plain row per unit — name, how many 선택 위습, which commons to pick, wood, what cannot be picked.
 const wispBadge=n=>`<span class="wisp${n?'':' zero'}">${n?`위습 ${n}`:'바로'}</span>`;
-function howTo(p){
+// 수정내역 79: special pieces (해적선·레일리(희귀)·토큰·초월쿠마 …) are named with their grade so they stand out.
+const specialChips=obj=>'<span class="chips">'+Object.entries(obj).map(([id,n])=>`<span class="sp">${esc(nameOf(id))}${n>1?'×'+n:''} <small>${esc(tierShort(id)||'특수')}</small></span>`).join('')+'</span>';
+// Craft order by stage: 위습 → 안흔함 → 희귀 → … each "name ×n (materials)".
+function stagesHtml(st){
+  if(!st)return '';
+  const out=[];
+  if(Object.keys(st.commons).length)out.push(`<div class="stage"><b>1. 위습으로 흔함</b> ${chips(st.commons)}</div>`);
+  st.stages.forEach((g,k)=>out.push(`<div class="stage"><b>${k+(Object.keys(st.commons).length?2:1)}. ${esc(g.tier)}</b> `+
+    g.items.map(x=>`${esc(nameOf(x.id))}${x.count>1?' ×'+x.count:''} <span class="muted small">(${x.materials.map(m=>esc(nameOf(m.id))+(m.count>1?'×'+m.count:'')).join('+')})</span>`).join(', ')+'</div>'));
+  return out.length?'<div class="stages">'+out.join('')+'</div>':'';
+}
+const stageLine=st=>st?.stages?.length?`<span class="muted small">만들기 </span>`+st.stages.map(g=>`${esc(g.tier)} ${g.items.reduce((a,x)=>a+x.count,0)}`).join(' → '):'';
+function howTo(p,st){
   const parts=[];
   if(p.wisps)parts.push(`흔함 뽑기 ${chips(p.commons)}`);
   if(p.wood)parts.push(`<span class="muted">나무 ${p.wood}</span>`);
   if(p.gold)parts.push(`<span class="muted">골드 ${p.gold}</span>`);
-  if(Object.keys(p.missing).length)parts.push(`<span class="warn">못 뽑는 재료 ${chips(p.missing)}</span>`);
-  return parts.join(' · ')||'<span class="ok">재료 다 있음</span>';
+  if(Object.keys(p.missing).length)parts.push(`<span class="warn">특수 기물 ${specialChips(p.missing)}</span>`);
+  if(st)parts.push(stageLine(st));
+  return parts.filter(Boolean).join(' · ')||'<span class="ok">재료 다 있음</span>';
 }
 const unitRow=(x,extra='')=>`<div class="row click" data-goal="${x.id}"><div class="top"><span><span class="name">${esc(nameOf(x.id))}</span> <span class="muted small">${esc(tierShort(x.id))}</span></span>
-  <span>${extra} ${wispBadge(x.plan.wisps)}</span></div><div class="how">${howTo(x.plan)}</div></div>`;
+  <span>${extra} ${wispBadge(x.plan.wisps)}</span></div><div class="how">${howTo(x.plan,x.stages)}</div></div>`;
 function fill(id,html){$(id).innerHTML=html;$(id).dataset.filled='1';exportView();}
 // 수정내역 68: the visible tab as plain rows for the native window (tools/overlay-native/native.ps1), sent to /view.
 const native=webLive&&new URLSearchParams(location.search).get('native')==='1';
@@ -240,7 +280,7 @@ function exportView(){
       }
       if(sec.id==='lack'){const d=state.settings.difficulty??'auto';rows.push({t:`난이도: ${d==='auto'?'자동('+difficulty()+')':d}  ▶ 눌러서 바꾸기`,c:'acc',a:'diff',i:1});}
       if(sec.id==='goal'){const g=$('goalSelect').value;rows.push({t:'목표: '+(g?nameOf(g):'(목록에서 유닛을 누르면 목표로 지정)'),c:g?'':'muted'});
-        for(const d of $('goalBody').children.length?$('goalBody').children:[$('goalBody')]){const t=d.innerText.replace(/\s+/g,' ').trim();if(t)rows.push({t,c:d.classList.contains('warn')?'warn':d.classList.contains('muted')?'muted':'',i:1});}
+        for(const d of $('goalBody').children.length?[...$('goalBody').children].flatMap(x=>x.classList.contains('stages')?[...x.children]:[x]):[$('goalBody')]){const t=d.innerText.replace(/\s+/g,' ').trim();if(t)rows.push({t,c:d.classList.contains('warn')?'warn':d.classList.contains('muted')?'muted':'',i:1});}
         continue;}
       const body=sec.querySelector('[id$=Body]')??sec;
       const items=body.querySelectorAll(':scope > .row, :scope > div.muted, :scope ul.lack > li, :scope .hand-row, :scope table tr');
@@ -254,12 +294,12 @@ function exportView(){
       }
     }
     fetch('/view',{method:'POST',body:JSON.stringify({view:view(),status:$('status').textContent,rows})}).catch(()=>{});
-  },150);
+  },30);
 }
 function renderNext(){
   if(state.next==null&&state.helper)return;
   if(!state.helper){fill('nextBody','<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>');return;}
-  const html=(state.next??[]).map(g=>!g.list?.length?'':`<div class="muted small">${esc(g.label)}</div>`+g.list.map(x=>unitRow(x)).join('')).join('');
+  const html=(state.next??[]).map(g=>!g.list?.length?'':`<div class="muted small">${esc(g.label)}</div>`+g.list.map(x=>unitRow(x,simText(x.sim))).join('')).join('');
   fill('nextBody',html||'<span class="muted">후보 없음 (위 칸에서 종류를 고르세요)</span>');
 }
 function renderNow(){
@@ -269,7 +309,8 @@ function renderNow(){
       <span>${x.plan.wood?`나무 ${x.plan.wood} `:''}${x.plan.gold?`골드 ${x.plan.gold}`:''}</span></div><div class="how"><span class="muted small">재료</span> ${chips(x.plan.used)}</div></div>`).join('')
     :'<span class="muted">지금 바로 만들 수 있는 유닛이 없습니다. "목표 후보"에서 위습으로 가까운 유닛을 보세요.</span>');
 }
-const simText=s=>!s?'<span class="muted small">시뮬 미지원</span>':s.clear?`<span class="ok small">${difficulty()} 클리어 · 남은 몹 ${s.remaining}</span>`:`<span class="bad small">${difficulty()} ${s.failedRound}라 패배</span>`;
+const upperScore=(a,b)=>{const sc=x=>x.sim===undefined?2e6:!x.sim?1e6:x.sim.clear?x.sim.remaining:1000-(x.sim.failedRound??60)*10-(x.sim.failedSecond??0)/10;return sc(a)-sc(b)||a.plan.wisps-b.plan.wisps;};
+const simText=s=>s===undefined?'<span class="muted small">시뮬 계산 중…</span>':!s?'<span class="muted small">시뮬 미지원</span>':s.clear?`<span class="ok small">${difficulty()} 클리어 · 남은 몹 ${s.remaining}</span>`:`<span class="bad small">${difficulty()} ${s.failedRound}라 패배</span>`;
 function renderUpper(){
   if(state.upper==null&&state.helper)return;
   if(!state.helper){fill('upperBody','<span class="muted">헬퍼 Data 폴더(레시피)가 필요합니다.</span>');return;}
@@ -285,6 +326,7 @@ function renderLack(){
   const s=q.stats[difficulty()],items=[];
   if(!q.team.length)items.push('라인에 쓰는 상위 유닛이 없습니다.');
   else{
+    if(!s)items.push('<span class="muted">시뮬 계산 중…</span>');
     if(s&&!s.clear)items.push(`<b class="bad">${difficulty()}에서 ${s.failedRound}라 ${Math.round(s.failedSecond??0)}초 패배</b> (시뮬) — 라인딜이 부족합니다.`);
     else if(s)items.push(`<b class="ok">${difficulty()} 클리어</b> (시뮬, 남은 몹 ${s.remaining} / 패배 ${s.threshold}).`);
     const n1=has('single'),n2=has('finish'),n3=has('special'),n4=has('deleter');
@@ -400,6 +442,7 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   const data=await (await fetch(new URL('../../dist/data.json',import.meta.url))).json();
   for(const h of data.heroes)for(const f of h.forms)if(f.rawcode&&!state.codeNames.has(f.rawcode))state.codeNames.set(f.rawcode,h.name);
   worker.postMessage({type:'data',data});
+  for(const w of simWorkers)w.postMessage({type:'data',data});
   $('difficulty').value=state.settings.difficulty??'auto';
   $('growthCut').value=state.settings.growthCut??0;
   $('memPlayer').value=String(state.settings.memPlayer??0);

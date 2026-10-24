@@ -2,7 +2,7 @@
 // ORD_JHelper data is not part of this repository.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {reverseRawcode,indexRecipes,planTarget,reachable,handFromUnits} from './dist/planner.mjs';
+import {reverseRawcode,indexRecipes,planTarget,reachable,handFromUnits,craftStages} from './dist/planner.mjs';
 import {unitIndex,teamFromHand,controlSums,comboStats,similarClears,RED_FORCE_RAWCODE} from './dist/advisor.mjs';
 
 const data=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
@@ -37,6 +37,19 @@ assert.equal(p.ok,true,'an owned 전설 is not broken down');assert.equal(p.step
 const r=reachable({LEGD:1},rec,tier,id=>['LEGD','HIDN'].includes(id));
 assert.deepEqual(r.map(x=>x.id),['HIDN'],'owned units are not next targets');
 assert.equal(r[0].plan.wisps,1);
+// 수정내역 79: a recipe that consumes nothing (helper data: 해적선, 레일리(희귀)) is a special piece, not a free craft;
+// craft stages list the crafts by grade with counts.
+{
+  const fx={recipes:[...fixture.recipes,
+    {recipeId:'r5',outputs:[{kind:'UNIT',id:'SHIP'}],conditions:[]},
+    {recipeId:'r6',outputs:[{kind:'UNIT',id:'BOAT'}],conditions:[{kind:'UNIT',id:'RARE',count:2},{kind:'UNIT',id:'SHIP',count:1}]}]};
+  const t2=id=>({...tiers,SHIP:'기타',BOAT:'해적선'})[id];
+  const rec2=indexRecipes(fx),q=planTarget('BOAT',{},rec2,t2);
+  assert.deepEqual(q.missing,{SHIP:1},'해적선 piece is reported, not crafted for free');
+  const st=craftStages(q,rec2,t2);
+  assert.deepEqual(st.stages.map(g=>[g.tier,g.items.map(x=>x.id+'x'+x.count).join()]),[['희귀함','RAREx2'],['해적선','BOATx1']]);
+  assert.deepEqual(st.commons,{CMA:2,CMB:2});
+}
 
 assert.deepEqual(handFromUnits([{Rawcode:'Z20h',Count:2,Owner:0},{Rawcode:'Z20h',Count:5,Owner:1},{c:'Z20h',k:1}]),{h02Z:3},
   'owner filter and tmo-style keys');

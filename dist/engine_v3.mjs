@@ -600,7 +600,7 @@ export function simulateV2(data,composition,options={}){
     let sum=0;
     if(m.stk)for(const k in m.stk)sum+=m.stk[k]*(stackArmor[k]??0);
     for(const a of armorAuras.values())if(!posModel||dist(m,spawnPt)<=a.range)sum+=a.eff;
-    if(m.debuffs)for(const d of Object.values(m.debuffs))if(d.until>now)sum+=d.value;
+    if(m.debuffs){const ds=m.debuffs;for(const k in ds){const d=ds[k];if(d.until>now)sum+=d.value;}}
     if(m.huntSingle>0)sum+=Math.min(145,70+5*m.huntSingle);
     if(m.huntArea>0)sum+=Math.min(30,3*m.huntArea);
     return sum;
@@ -624,8 +624,9 @@ export function simulateV2(data,composition,options={}){
     const d=m.dbf??={};
     // dbf.nonstack [keys] (수정내역 41): a single-instance buff ("다른 속공과 중복되지 않습니다") — the expected share of
     // having been hit at least once, at most v, instead of adding per hit.
-    for(const [k,v] of Object.entries(dbf)){
+    for(const k in dbf){
       if(k==='note'||k==='nonstack')continue;
+      const v=dbf[k];
       if(dbf.nonstack?.includes(k)){const h=m.dbfHit??={};h[k]=Math.min(1,(h[k]??0)+share);d[k]=Math.max(d[k]??0,Math.min(MOB_DEBUFF_CAP[k]??1,v*h[k]));}
       else d[k]=Math.min(MOB_DEBUFF_CAP[k]??1,(d[k]??0)+v*share);
     }
@@ -646,7 +647,7 @@ export function simulateV2(data,composition,options={}){
     if(m.kind==='line'){
       sourceDamage[source]=(sourceDamage[source]??0)+applied;
       lineDamage[scope]+=applied;
-      if(kind in lineDamage)lineDamage[kind]+=applied;
+      if(kind!=='mixed'&&kind in lineDamage)lineDamage[kind]+=applied;
     }
   };
   // Command Aura (ACac) bonuses add before multiplying base attack in WC3: Red Force A0BC +35%
@@ -672,11 +673,14 @@ export function simulateV2(data,composition,options={}){
   // every unit in range); armor/magic factors stay those of the unit hit.
   const eventDamage=(event,m,attack,extra,ref=m)=>{
     let out=0;
-    for(const [kind,flat,perc,mul=0] of event.parts){
-      let raw=flat+mul*attack;
-      for(const [basis,ratio] of perc){
+    const parts=event.parts;
+    for(let i=0;i<parts.length;i++){
+      const p=parts[i],kind=p[0],perc=p[2],mul=p[3]??0;
+      let raw=p[1]+mul*attack;
+      for(let j=0;j<perc.length;j++){
+        const basis=perc[j][0];
         const hp=basis==='max'?ref.maxhp:basis==='current'?Math.max(0,ref.hp):ref.maxhp-Math.max(0,ref.hp);
-        raw+=ratio*hp;
+        raw+=perc[j][1]*hp;
       }
       out+=raw*factor(kind,m,extra);
     }
@@ -1174,14 +1178,14 @@ export function simulateV2(data,composition,options={}){
           // (boss ×0.5 / story ×0.33) is decided by the attack target, dealt alike to everyone in range (2.305
           // UnitDamagePointLoc with GetUnitState(target), j:68145-68150, 68104-68118, 54841, 53227).
           const pctRef=e.pct_basis==='target'&&target?.hp>0?target:null;
+          const evCrit=critEV(e.crit),evScope=single?'single':'area',ns=nut?.skill?.[e.index];
           for(const m of targets)if(m.hp>0){
             // boss_parts replace parts against a boss; nonline_parts against a boss or frenzy (E6 "보스").
             const vk=pctRef??m;
             let ev=vk.kind==='story'?storyEvent(e):e.nonline_parts&&vk.kind!=='line'?{...e,parts:e.nonline_parts}:e.boss_parts&&vk.kind==='boss'?{...e,parts:e.boss_parts}:e;
-            const ns=nut?.skill?.[e.index];
             if(ns)ev={...ev,parts:[...ev.parts,[ns.kind,ns.flat*(ns.basis==='cast'?(u.castS??nst.S):nst.S),[],0]]};
             const share=rate*.1*(m===target||single?1:cov);
-            deal(m,eventDamage(ev,m,atkE,extraArmor,pctRef??m)*critEV(e.crit)*share,u.code,single?'single':'area','mixed');
+            deal(m,eventDamage(ev,m,atkE,extraArmor,pctRef??m)*evCrit*share,u.code,evScope,'mixed');
             // Armor break as an expected stack per step, like the supports (cap 75 in abAdd).
             if(m.hp>0&&e.ab)abAdd(m,e.ab*share);
             if(m.hp>0&&e.mob_debuff)mobDebuff(m,e.mob_debuff,share);

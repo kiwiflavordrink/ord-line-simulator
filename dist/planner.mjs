@@ -54,7 +54,9 @@ const cost=p=>p.wisps+1000*Object.values(p.missing).reduce((x,n)=>x+n,0)+100*p.s
 function expand(id,stock,recipes,tier,depth,maxDepth,path){
   const have=stock.get(id)??0;
   if(have>0){stock.set(id,have-1);const p=emptyPlan();add(p.used,id,1);return p;}
-  const options=recipes.get(id)??[];
+  // A recipe with nothing to consume (helper data lists 해적선·레일리(희귀) this way) is not a free craft: the unit comes
+  // from a special source, so it is a leaf like a unit without a recipe (수정내역 79).
+  const options=(recipes.get(id)??[]).filter(r=>r.materials.length||r.special.length||r.wood||r.gold);
   if(!options.length||depth>=maxDepth||path.has(id)){
     const p=emptyPlan();
     if(isCommon(tier(id))){p.wisps=1;add(p.commons,id,1);}else add(p.missing,id,1);
@@ -94,4 +96,23 @@ export function handFromUnits(units,owner=0){
     add(hand,reverseRawcode(raw),u.Count??u.count??u.k??1);
   }
   return hand;
+}
+
+// Craft order by stage (수정내역 79): the plan's crafts grouped by the output's grade, lowest first (안흔함 → 희귀 →
+// 특별 → 전설 …), each with how many to make and one recipe's materials. Also the commons to pick with 선택 위습 and
+// the special pieces (해적선·레일리(희귀)·토큰·초월쿠마 …: non-common leaves that 위습 cannot give).
+const STAGE=['흔함','안흔함','특별','희귀','전설','히든','특수','해적선','제한','초월','영원','불멸','신비','변화','왜곡','세라핌','랜덤'];
+export const stageOf=t=>{const s=String(t??'');const i=STAGE.findIndex(x=>s.startsWith(x)||s.includes(x));return i<0?STAGE.length:i;};
+export function craftStages(plan,recipes,tier){
+  const count=new Map(),recipeOf=new Map();
+  for(const st of plan.steps){count.set(st.output,(count.get(st.output)??0)+1);if(!recipeOf.has(st.output))recipeOf.set(st.output,st.recipe);}
+  const stages=new Map();
+  for(const [id,n] of count){
+    const t=tier(id)??'',k=stageOf(t),name=String(t).replace(/\s*\[.*\]/,'')||'기타';
+    if(!stages.has(k))stages.set(k,{rank:k,tier:name,items:[]});
+    const r=(recipes.get(id)??[]).find(x=>x.id===recipeOf.get(id));
+    stages.get(k).items.push({id,count:n,materials:r?r.materials:[],wood:r?.wood??0,gold:r?.gold??0});
+  }
+  return {commons:plan.commons,specials:plan.missing,used:plan.used,
+    stages:[...stages.values()].sort((a,b)=>a.rank-b.rank)};
 }

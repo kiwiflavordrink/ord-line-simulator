@@ -91,7 +91,7 @@ export function similarClears(samples,hand,{difficulty='신',k=30,isUpper}={}){
 }
 
 // Next targets: upper units the hand can reach, cheapest first, each with the simulated result if it joins the team.
-export function nextTargets(data,hand,recipes,tier,{limit=6,difficulty='신',red=false,growthCut=0,isTarget}={}){
+export function nextTargets(data,hand,recipes,tier,{limit=6,difficulty='신',red=false,growthCut=0,isTarget,simulate=true}={}){
   const index=unitIndex(data);
   const list=reachable(hand,recipes,tier,id=>isTarget?isTarget(id):TARGET_TIER.test(tier(id)??'')).slice(0,limit*3);
   const out=[];
@@ -99,8 +99,9 @@ export function nextTargets(data,hand,recipes,tier,{limit=6,difficulty='신',red
     const code=index.get(id);
     const after={...hand};after[id]=(after[id]??0)+1;for(const [u,n] of Object.entries(plan.used))after[u]-=n;
     const {team}=teamFromHand(data,after,index);
-    const sim=code?comboStats(data,team,{red,growthCut,difficulties:[difficulty]})[difficulty]:null;
-    out.push({id,code,plan,sim});
+    // simulate false (수정내역 79): plans and the team after crafting only; the caller simulates later (sim undefined).
+    if(!simulate)out.push({id,code,plan,team});
+    else out.push({id,code,plan,sim:code?comboStats(data,team,{red,growthCut,difficulties:[difficulty]})[difficulty]:null});
     if(out.length>=limit)break;
   }
   return out;
