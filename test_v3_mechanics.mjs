@@ -655,4 +655,12 @@ const run=(team,o={})=>simulateV2(data,team,{red:false,redDamage:false,...o});
   assert.ok(a.sourceDamage.TR1<b.sourceDamage.TR1&&b.sourceDamage.TR1<c.sourceDamage.TR1);
   assert.ok(fullData.heroes.find(h=>h.code==='Z3').events.filter(e=>e.mul_basis==='dealt').length===3);
 }
+// [수정 77] 초월 9종 스탯 비례: hero_stats와 stat_parts가 있고, 레벨을 낮추면 약해진다.
+{
+  for(const c of ['TR2','TR3','TR6','TR17','TR20','TR22','TR25','TR26','TR27']){
+    const h=fullData.heroes.find(x=>x.code===c);assert.ok(h.hero_stats&&h.events.some(e=>e.stat_parts),c);
+  }
+  const o={red:false,redDamage:false};
+  assert.ok(simulateV2(fullData,[{code:'TR20'}],{...o,heroLevel:1}).sourceDamage.TR20<simulateV2(fullData,[{code:'TR20'}],o).sourceDamage.TR20);
+}
 console.log('V3 mechanics: resource clock, forms, single-target kinds, boss lines, hero armor break, auras and rates, execute, P1 omissions, crit, armor debuffs, executioner, TR19 plants, ally auras, position model, difficulty/slow auras/summons, difficulty tables and 오로성, curse on supports/single, armor model, 레오, E6, review fixes (random picks, Z8, Red Force, TR6), H17 and external control, single control, 30 magic heroes, TR17/Z5/TR21 mechanics, all units, hero armor auras, extra stacks, HP-condition execute, multishot/chain/chosen buffs/per-mob debuffs, holding probe, Z2 level growth, green blood, Z8 trait, support armor auras, special timer, boss/frenzy targeting, target-based area percent, TR7 single, TR28 franky, unit mana auras, fresh single targets, royal roader, E12/TR12 traits, hp regen, single bench, TR8 rework: passed');
