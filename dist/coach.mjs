@@ -27,38 +27,49 @@ export function secondsUntil(round,lastRound){
 //   story-신 / story-악몽: difficulty measured (36라 패배선), egghead: 에그헤드가 발견됨(남은 스토리 단계 14).
 export function coachActive({difficulty='신',difficultyKnown=true,storyStage=null,round=null}={}){
   const a=[];
-  if(difficultyKnown&&difficulty==='신'&&(round==null||round<=35)&&(storyStage==null||storyStage<=12))a.push({id:'story-신',label:'신: 36라 전 12단계'});
-  if(difficultyKnown&&difficulty==='악몽'&&(round==null||round<=35)&&(storyStage==null||storyStage<=13))a.push({id:'story-악몽',label:'악몽: 36라 전 13단계'});
+  if(difficultyKnown&&difficulty==='신'&&(round==null||round<=35)&&(storyStage==null||storyStage<=12))a.push({id:'story-신',label:'신: 25라 10단계 · 36라 전 12단계'});
+  if(difficultyKnown&&difficulty==='악몽'&&(round==null||round<=35)&&(storyStage==null||storyStage<=13))a.push({id:'story-악몽',label:'악몽: 25라 11단계 · 36라 전 13단계'});
   if(storyStage===14)a.push({id:'egghead',label:'에그헤드 240초'});
   return a;
 }
 // warnings: [{level:'red'|'yellow'|'green', text, detail, priority}] sorted, max `limit`.
 export function coachWarnings(data,{myTeam=[],team=null,difficulty='신',gorosei=null,players=1,round=null,storyStage=null,
-  stats=null,red=false,limit=3,difficultyKnown=true}={}){
+  stats=null,red=false,limit=3,difficultyKnown=true,storyHp=null,eggLeft=null}={}){
   const all=team??myTeam,out=[];
   const goro=goroseiActive(all,gorosei);
   const push=(level,priority,text,detail='',id=null)=>out.push({level,priority,text,detail,id});
   if(gorosei&&!goro)push('green',10,'니카 영원: 오로성 효과 없음','니카 영원이 오로성을 없앤다(이스터 에그).');
-  // 스토리 경고는 셋으로 나눈다(유저 결정, 수정내역 87): 신(36라 시작 전 12단계), 악몽(36라 시작 전 13단계), 에그헤드
-  // (등장한 뒤부터 240초). 난이도가 측정되었을 때(difficultyKnown)만 그 난이도의 경고가 켜진다.
-  const STORY_RULES={신:{id:'story-신',stage:12},악몽:{id:'story-악몽',stage:13}};
+  // 스토리 경고는 셋(수정내역 87·88): 신·악몽(난이도가 측정되면 감시)과 에그헤드(발견되면 감시). 누가 스토리를 치는지는
+  // 알 수 없으므로 시뮬 추정 대신 실제 진행(살아 있는 단계, 체력 %)과 시간으로 판단한다(유저 결정).
+  //  - 신: 25라 시작 때 9단계까지 밀고 10단계를 치고 있어야 안전, 악몽: 10단계까지 밀고 11단계(유저: "30라 넘어가서는
+  //    늦다"). 22~24라에 미리 노랑, 25라부터 빨강. 25라 이후는 25라 기준점에서 36라 시작 전(신 12·악몽 13단계 처치)까지
+  //    직선으로 기대 진행을 그어 반 단계 넘게 늦으면 노랑, 한 단계 이상 늦으면 빨강.
+  //  - 에그헤드: 남은 시간 비율보다 남은 체력 %가 크면 빨강(예: 1분 남았는데 25% 이상), 10%p 이내로 붙으면 노랑.
+  const STORY_RULES={신:{id:'story-신',deadline:12,check:10},악몽:{id:'story-악몽',deadline:13,check:11}};
   const rule=difficultyKnown?STORY_RULES[difficulty]:null;
-  // 1. 신·악몽 36라 패배선.
-  if(rule&&round!=null&&storyStage!=null&&storyStage<=rule.stage&&round<=35&&all.length){
-    const left=secondsUntil(round,35);let need=0;
-    for(let s=storyStage;s<=rule.stage;s++){const t=storyKillTime(data,all,s,{difficulty,players,seconds:600,gorosei:goro});need+=Number.isFinite(t)?t:600;}
-    const name=data.stories.stages[rule.stage-1]?.name??rule.stage+'단계';
-    const detail=`${difficulty}: ${storyStage===rule.stage?rule.stage+'단계':storyStage+'~'+rule.stage+'단계'} 처치 예상 ${Math.round(need)}초 / 35라 끝까지 약 ${left}초 (팀 전원이 스토리를 칠 때, 업그레이드 최대 기준)`;
-    if(need>left)push('red',100,`[${difficulty}] 36라 시작 전까지 ${name} 못 깸 → 패배 위험`,detail,rule.id);
-    else if(round>=25&&need>left*.6)push('yellow',60,`[${difficulty}] 36라 전 ${name}까지 빠듯함 (${Math.round(need)}초 필요)`,detail,rule.id);
+  const hpLeft=storyHp==null?1:Math.max(0,Math.min(1,storyHp/100));   // 살아 있는 단계의 남은 체력 비율(모르면 100%)
+  if(rule&&round!=null&&storyStage!=null&&storyStage<=rule.deadline&&round<=35){
+    const name=n=>data.stories.stages[n-1]?.name??n+'단계';
+    const progress=storyStage+(1-hpLeft);                              // 지금까지 민 단계 수 + 1 (치는 단계의 진행분 포함)
+    const expected=round<25?rule.check:rule.check+(round-25)*(rule.deadline+1-rule.check)/11;
+    const behind=expected-progress;
+    const detail=`[${difficulty}] 기준: 25라 시작 때 ${rule.check-1}단계까지 밀고 ${rule.check}단계(${name(rule.check)})를 치고 있어야 안전, 36라 시작 전 ${rule.deadline}단계(${name(rule.deadline)}) 처치. 지금 ${storyStage}단계${storyHp!=null?` 체력 ${Math.round(storyHp)}%`:''}.`;
+    if(round>=22&&round<25&&storyStage<rule.check)push('yellow',70,`[${difficulty}] 25라까지 ${rule.check}단계(${name(rule.check)}) 진입 필요 — 스토리를 미세요`,detail,rule.id);
+    else if(round>=25&&behind>=1)push('red',100,`[${difficulty}] 스토리 늦음 → 36라 패배 위험 (${(behind).toFixed(1)}단계 뒤처짐)`,detail,rule.id);
+    else if(round>=25&&behind>.5)push('yellow',65,`[${difficulty}] 스토리 조금 늦음 (${(behind).toFixed(1)}단계)`,detail,rule.id);
   }
-  // 2. 에그헤드: 난이도와 상관없이 에그헤드가 발견되면(남은 스토리 단계 14) 띄운다(유저). 와노쿠니 처치 120초 뒤 등장,
-  // 240초 제한. 체력 배수는 알려진 난이도(모르면 신)로 계산.
-  if(storyStage===14&&all.length){
-    const t=storyKillTime(data,all,14,{difficulty,players,seconds:EGGHEAD_SECONDS+60,gorosei:goro});
-    const detail=`에그헤드 처치 예상 ${Number.isFinite(t)?Math.round(t)+'초':'300초 이상'} / 제한 ${EGGHEAD_SECONDS}초 (팀 전원이 칠 때)`;
-    if(!(t<=EGGHEAD_SECONDS))push('red',95,'[에그헤드] 240초 안에 못 잡음 → 패배 위험',detail,'egghead');
-    else if(t>EGGHEAD_SECONDS*.75)push('yellow',58,`[에그헤드] 빠듯함 (${Math.round(t)}초 / 240초)`,detail,'egghead');
+  // 에그헤드: 발견되면(남은 스토리 단계 14) 감시. 체력 %·남은 시간을 알면 비율로, 모르면 시뮬 추정(팀 전원 기준)으로.
+  if(storyStage===14){
+    if(storyHp!=null&&eggLeft!=null&&eggLeft<=EGGHEAD_SECONDS-30){
+      const pace=eggLeft/EGGHEAD_SECONDS*100,detail=`남은 시간 ${Math.round(eggLeft)}초(${Math.round(pace)}%) / 남은 체력 ${Math.round(storyHp)}%. 남은 체력이 남은 시간 비율보다 크면 시간 안에 못 잡는다.`;
+      if(storyHp>=pace)push('red',95,`[에그헤드] 남은 체력 ${Math.round(storyHp)}% > 남은 시간 ${Math.round(pace)}% → 패배 위험, 딜 유닛 전부 스토리로`,detail,'egghead');
+      else if(storyHp>=pace-10)push('yellow',58,`[에그헤드] 빠듯함: 체력 ${Math.round(storyHp)}% / 시간 ${Math.round(pace)}%`,detail,'egghead');
+    }else if(all.length){
+      const t=storyKillTime(data,all,14,{difficulty,players,seconds:EGGHEAD_SECONDS+60,gorosei:goro});
+      const detail=`에그헤드 처치 예상 ${Number.isFinite(t)?Math.round(t)+'초':'300초 이상'} / 제한 ${EGGHEAD_SECONDS}초 (모든 유닛이 칠 때의 시뮬 추정. 체력 %와 남은 시간을 넣으면 실제 진행으로 판단)`;
+      if(!(t<=EGGHEAD_SECONDS))push('red',95,'[에그헤드] 240초 안에 못 잡을 수 있음 → 딜 유닛 전부 스토리로',detail,'egghead');
+      else if(t>EGGHEAD_SECONDS*.75)push('yellow',58,`[에그헤드] 빠듯함 (시뮬 ${Math.round(t)}초 / 240초)`,detail,'egghead');
+    }
   }
   // 3. 보스 라운드 직전.
   if(round!=null&&BOSS_ROUNDS.includes(round+1))push('yellow',50,`다음 ${round+1}라 보스: 60초 안에 처치`,'못 잡으면 그 플레이어 패배. 단일·보스 피해 유닛을 내 라인에 두세요.');

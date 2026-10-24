@@ -193,7 +193,7 @@ function requestCoach(){
     const q=state.quick;if(!q)return;const st=state.settings;
     const num=v=>v===''||v==null||isNaN(+v)?null:+v;
     worker.postMessage({type:'coach',id:state.reqId,ctx:{myTeam:q.team,team:q.team.concat(state.others??[]),difficulty:difficulty(),
-      gorosei:st.gorosei||null,players:+(st.sitPlayers??1),round:num(st.sitRound),storyStage:num(st.sitStage),stats:q.stats,red:q.red,
+      gorosei:st.gorosei||null,players:+(st.sitPlayers??1),round:num(st.sitRound),storyStage:num(st.sitStage),storyHp:num(st.sitHp),eggLeft:num(st.sitEgg),stats:q.stats,red:q.red,
       quests:(st.sitQuests??[]).filter(Boolean),hand:state.hand,
       // 수정내역 87: 난이도가 측정됐을 때(직접 선택 또는 기록·자동 읽기)만 신·악몽 스토리 경고를 켠다.
       difficultyKnown:(st.difficulty&&st.difficulty!=='auto')||['신','악몽','지옥'].includes(state.meta.difficulty)}});
@@ -443,7 +443,7 @@ for(const [k,sel] of [...document.querySelectorAll('.sitQuest')].entries()){
   sel.innerHTML='<option value="">-</option>'+PERSONAL_QUESTS.map(q=>`<option value="${q.id}">${q.name}</option>`).join('');
   sel.onchange=async()=>{await saveSettings({sitQuests:[...document.querySelectorAll('.sitQuest')].map(x=>x.value)});requestCoach();};
 }
-for(const [id,key] of [['sitRound','sitRound'],['sitStage','sitStage'],['sitPlayers','sitPlayers']])
+for(const [id,key] of [['sitRound','sitRound'],['sitStage','sitStage'],['sitPlayers','sitPlayers'],['sitHp','sitHp'],['sitEgg','sitEgg']])
   $(id).onchange=async e=>{await saveSettings({[key]:e.target.value});requestCoach();};
 async function setGoal(id){
   $('goalSelect').value=id??'';await saveSettings({goal:id||null});state.meta.goal=id||null;
@@ -505,7 +505,7 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   $('growthCut').value=state.settings.growthCut??0;
   $('gorosei').value=state.settings.gorosei??'';
   [...document.querySelectorAll('.sitQuest')].forEach((x,k)=>x.value=(state.settings.sitQuests??[])[k]??'');
-  $('sitRound').value=state.settings.sitRound??'';$('sitStage').value=state.settings.sitStage??'';$('sitPlayers').value=state.settings.sitPlayers??'1';
+  $('sitRound').value=state.settings.sitRound??'';$('sitStage').value=state.settings.sitStage??'';$('sitPlayers').value=state.settings.sitPlayers??'1';$('sitHp').value=state.settings.sitHp??'';$('sitEgg').value=state.settings.sitEgg??'';
   $('memPlayer').value=String(state.settings.memPlayer??0);
   syncCats();applyView();applyFont();
   $('helperDir').textContent=state.settings.helperDir??'-';
