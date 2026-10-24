@@ -308,6 +308,28 @@
     ]
    },
    "diff": 6
+  },
+  {
+   "id": "G15",
+   "label": "신 핸콕 영원·제트 불멸 (새턴, 최고의도움 역발상)",
+   "actual": {
+    "clear": true,
+    "count": 33
+   },
+   "sim": {
+    "clear": true,
+    "count": 15,
+    "failed": null,
+    "rounds": [
+     1,
+     8,
+     12,
+     14,
+     17,
+     15
+    ]
+   },
+   "diff": -18
   }
  ]
 }
