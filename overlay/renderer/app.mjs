@@ -16,7 +16,7 @@ for(const w of simWorkers)w.onmessage=e=>{
     clearTimeout(state.candTimer);state.candTimer=setTimeout(()=>{renderNext();renderUpper();},40);return;
   }
   if(!state.quick||state.quick.id!==m.id)return;
-  state.quick.stats[m.difficulty]=m.stat;renderQuick();renderLack();exportView();
+  state.quick.stats[m.difficulty]=m.stat;renderQuick();renderLack();requestCoach();exportView();
 };
 
 const state={settings:{},hand:{},meta:{},names:new Map(),tiers:new Map(),outputs:[],helper:null,
@@ -164,10 +164,11 @@ worker.onmessage=e=>{
   if(m.type==='error'){status('계산 오류: '+m.message);return;}
   if(m.type==='helper-ok'){status();return;}
   if(m.id!==state.reqId)return;
+  if(m.type==='coach'){if(m.id===state.reqId){state.coach=m.warnings;renderCoach();}return;}
   if(m.type==='quick'){
     // Keep the numbers of the same team while the new ones are computed (no flicker); start the simulations.
     const same=state.quick&&JSON.stringify(state.quick.team)===JSON.stringify(m.team)&&state.quick.red===m.red;
-    m.stats=same?{...state.quick.stats}:{};state.quick=m;renderQuick();renderLack();status();exportView();
+    m.stats=same?{...state.quick.stats}:{};state.quick=m;renderQuick();renderLack();status();requestCoach();exportView();
     const d0=difficulty(),order=[d0,...['신','악몽','지옥'].filter(d=>d!==d0)];
     if(m.team.length)order.forEach((d,k)=>simWorkers[k].postMessage({type:'sim',id:m.id,team:m.team,red:m.red,growthCut:+state.settings.growthCut||0,difficulty:d}));
   }
@@ -183,6 +184,23 @@ worker.onmessage=e=>{
   }
 };
 
+// --- coach (수정내역 85) -------------------------------------------------------------------------------------------
+let coachTimer=null;
+function requestCoach(){
+  clearTimeout(coachTimer);
+  coachTimer=setTimeout(()=>{
+    const q=state.quick;if(!q)return;const st=state.settings;
+    const num=v=>v===''||v==null||isNaN(+v)?null:+v;
+    worker.postMessage({type:'coach',id:state.reqId,ctx:{myTeam:q.team,team:q.team.concat(state.others??[]),difficulty:difficulty(),
+      gorosei:st.gorosei||null,players:+(st.sitPlayers??1),round:num(st.sitRound),storyStage:num(st.sitStage),stats:q.stats,red:q.red}});
+  },60);
+}
+function renderCoach(){
+  const w=state.coach??[];
+  $('coachBody').innerHTML=w.length?w.map(x=>`<div class="w ${x.level}">${esc(x.text)}${x.detail?`<small>${esc(x.detail)}</small>`:''}</div>`).join('')
+    :'<div class="muted small">지금 경고 없음 · 라운드와 남은 스토리 단계를 넣으면 35라·에그헤드·보스를 미리 알려 줍니다.</div>';
+  exportView();
+}
 function status(msg){
   const m=state.meta,parts=[m.label??'직접 입력'];
   if(m.round)parts.push(m.round+'라');
@@ -269,7 +287,7 @@ let exportTimer=null;
 function exportView(){
   if(!native)return;clearTimeout(exportTimer);
   exportTimer=setTimeout(()=>{
-    const rows=[],colorOf=el=>el.closest?.('.bad')||el.querySelector?.('.bad')?'bad':el.querySelector?.('.warn')||el.classList?.contains('warn')?'warn':el.querySelector?.('.ok:not(.wisp)')?'ok':'';
+    const rows=(state.coach??[]).map(x=>({t:x.text,c:x.level==='red'?'bad':x.level==='yellow'?'warn':'ok',b:true})),colorOf=el=>el.closest?.('.bad')||el.querySelector?.('.bad')?'bad':el.querySelector?.('.warn')||el.classList?.contains('warn')?'warn':el.querySelector?.('.ok:not(.wisp)')?'ok':'';
     for(const sec of document.querySelectorAll('section[data-view]')){
       if(sec.hidden)continue;
       rows.push({t:[...(sec.querySelector('h2')?.childNodes??[])].filter(n=>n.nodeName!=='SELECT').map(n=>n.textContent).join('').replace(/\s+/g,' ').trim(),c:'acc',b:true});
@@ -414,6 +432,8 @@ $('memPlayer').onchange=async e=>{await saveSettings({memPlayer:+e.target.value}
 $('difficulty').onchange=async e=>{await saveSettings({difficulty:e.target.value});analyze();status();};
 $('growthCut').onchange=async e=>{await saveSettings({growthCut:+e.target.value||0});analyze();};
 $('gorosei').onchange=async e=>{await saveSettings({gorosei:e.target.value||null});analyze();};
+for(const [id,key] of [['sitRound','sitRound'],['sitStage','sitStage'],['sitPlayers','sitPlayers']])
+  $(id).onchange=async e=>{await saveSettings({[key]:e.target.value});requestCoach();};
 async function setGoal(id){
   $('goalSelect').value=id??'';await saveSettings({goal:id||null});state.meta.goal=id||null;
   applyView();analyze();window.scrollTo({top:0,behavior:'smooth'});
@@ -473,6 +493,7 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   $('difficulty').value=state.settings.difficulty??'auto';
   $('growthCut').value=state.settings.growthCut??0;
   $('gorosei').value=state.settings.gorosei??'';
+  $('sitRound').value=state.settings.sitRound??'';$('sitStage').value=state.settings.sitStage??'';$('sitPlayers').value=state.settings.sitPlayers??'1';
   $('memPlayer').value=String(state.settings.memPlayer??0);
   syncCats();applyView();applyFont();
   $('helperDir').textContent=state.settings.helperDir??'-';

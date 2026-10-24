@@ -59,3 +59,9 @@ ul.lack{margin:2px 0;padding-left:1.1em}ul.lack li{margin:2px 0}
 /* 수정내역 81: current goal in lists, clear button */
 .row.cur{outline:1px solid var(--acc,#6cf)}
 #goalClear{font-size:.8em;padding:0 6px}
+/* 수정내역 85: coach warnings */
+#coach{padding:4px 8px}
+#coachBody .w{margin:2px 0;font-weight:600}
+#coachBody .w.red{color:#ff6b6b}#coachBody .w.yellow{color:#ffcf70}#coachBody .w.green{color:#7ee08a}
+#coachBody .w small{display:block;font-weight:400;opacity:.75}
+#situation label{margin-right:8px}#situation input{width:3.5em}

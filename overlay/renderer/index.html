@@ -18,6 +18,15 @@
       <button id="btnQuit" title="종료">✕</button>
     </span>
   </header>
+  <!-- 수정내역 85: 코치 경고 (최대 3줄) + 상황 입력(자동 읽기가 되면 채워진다) -->
+  <section id="coach" class="card">
+    <div id="coachBody"></div>
+    <div id="situation" class="small">
+      <label>라운드 <input id="sitRound" type="number" min="0" max="65" step="1"></label>
+      <label>스토리(남은 단계) <input id="sitStage" type="number" min="1" max="15" step="1"></label>
+      <label>인원 <select id="sitPlayers"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+    </div>
+  </section>
   <nav id="tabs">
     <button data-view="now">지금 조합</button><button data-view="next">목표 후보</button><button data-view="upper">가이드</button><button data-view="lack">부족한 것</button><button data-view="hand">보유 유닛</button>
   </nav>

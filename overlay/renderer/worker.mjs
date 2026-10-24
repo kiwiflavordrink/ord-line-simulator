@@ -5,6 +5,7 @@
 // Replies {type:'quick', id, ...} at once and {type:'next', id, next} after the slower target search.
 import {teamFromHand,controlSums,comboStats,similarClears,nextTargets,unitIndex,isUpperTier,guideTargets,buildKeyIndex,pairIndex} from '../../dist/advisor.mjs';
 import {indexRecipes,planTarget,reverseRawcode,reachable,craftStages} from '../../dist/planner.mjs';
+import {coachWarnings} from '../../dist/coach.mjs';
 
 let data=null,index=null,recipes=new Map(),tiers=new Map(),names=new Map(),samples=[],latest=0,keyIndex=null,pairs=null;
 const tier=id=>tiers.get(id);
@@ -24,6 +25,11 @@ onmessage=e=>{
       postMessage({type:'helper-ok',recipes:recipes.size,units:tiers.size,samples:samples.length});return;
     }
     // 수정내역 79: simulation-only requests (one difficulty), so several workers can run the difficulties in parallel.
+    // 수정내역 85: coach warnings (story kill times run here; stats come from the page's simulation workers).
+    if(m.type==='coach'){
+      postMessage({type:'coach',id:m.id,warnings:coachWarnings(data,m.ctx)});
+      return;
+    }
     if(m.type==='sim'){
       postMessage({type:'stat',id:m.id,key:m.key,difficulty:m.difficulty,stat:comboStats(data,m.team,{red:m.red,growthCut:m.growthCut,difficulties:[m.difficulty]})[m.difficulty]});
       return;

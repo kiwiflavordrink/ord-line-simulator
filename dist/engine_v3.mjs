@@ -243,7 +243,9 @@ export function simulateV2(data,composition,options={}){
   const diff=data.difficulties?.[diffName]??{rounds:data.rounds,boss:data.boss,frenzy:data.frenzy,defeat:55,magic_level:16,
     speed:{aura:0,line_flat:0},frenzy_aura:{armor:5,regen:1000000},stun_resist:true,common:{hp:0,regen:0},gorosei:true};
   const goroWanted=options.gorosei??(options.warcury===true?'워큐리':null);
-  const goroName=diff.gorosei&&(data.gorosei?data.gorosei[goroWanted]:goroWanted==='워큐리')?goroWanted:null;
+  // 니카 영원(E1·E2)이 조합에 있으면 오로성이 없다 (수정내역 85: 이스터 에그, 유저 지시로 있다고 본다; 툴팁·2.305 맵에 없음).
+  const nika=composition.some(i=>['E1','E2'].includes(i.code));
+  const goroName=!nika&&diff.gorosei&&(data.gorosei?data.gorosei[goroWanted]:goroWanted==='워큐리')?goroWanted:null;
   // Armor (수정내역 22): default 'map' = 2.305 formula in diff.rounds/boss; 'data' = the pre-22 values.
   const armorModel=options.armorModel==='data'&&data.difficulties?'data':'map';
   const curse=goroName?(data.gorosei?.[goroName]?.[diffName]??{armor:10,magic_levels:10}):{};

@@ -118,3 +118,16 @@ console.log('test_advisor: log parser ok');
   assert.equal(parseHelperText(JSON.stringify(live)).units.length,2,'log parser also accepts the live file');
   console.log('test_advisor: memscan live ok');
 }
+// 수정내역 85: coach warnings — 35라 스토리 패배선, 보스 라운드 직전, 니카 영원은 오로성을 없앤다.
+{
+  const {coachWarnings,secondsUntil}=await import('./dist/coach.mjs');
+  const {simulateV2}=await import('./dist/engine_v3.mjs');
+  assert.equal(secondsUntil(30,35),35*5+60,'30라(보스 60초)~35라');
+  const weak=[{code:'L16'},{code:'L36'}];
+  const w=coachWarnings(data,{myTeam:weak,difficulty:'신',round:30,storyStage:11});
+  assert.ok(w.some(x=>x.level==='red'&&/35라/.test(x.text)),'약한 덱은 35라 스토리 경고');
+  assert.ok(coachWarnings(data,{myTeam:weak,difficulty:'신',round:19,storyStage:5}).some(x=>/20라 보스/.test(x.text)));
+  assert.ok(coachWarnings(data,{myTeam:[{code:'E1'}],difficulty:'신',gorosei:'새턴'}).some(x=>/니카/.test(x.text)));
+  assert.equal(simulateV2(data,[{code:'E1'}],{difficulty:'악몽',gorosei:'새턴'}).gorosei,simulateV2(data,[{code:'E1'}],{difficulty:'악몽'}).gorosei,'엔진도 니카면 오로성 없음');
+  console.log('test_advisor: coach ok');
+}
