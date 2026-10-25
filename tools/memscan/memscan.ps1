@@ -104,8 +104,14 @@ public static class OrdrMemScan {
   //   -24 int owner player (0 = 플레이어 1, 7 = 선택창 표시용, 5/6 = 적, 27 = 중립); -88 two ints = (-1,-1) and
   //   -48 int = 0x11 once removed; -56 int 0x64e live, 0x445/0x645 removed.
   // Reads unit records in one region. Owned = owner == player, not removed (-48 != 0x11, -88 != -1).
+  // Game state from the same unit records (수정내역 90, probe 2026-10-25): story = owner 5 record named "N. 이름"
+  // (n000 "1. 로그타운" … n009 "14. 에그헤드"), round = highest "레벨 NN" in owner 6 line-mob names, 오로성 = unit o02E/o031/o032
+  // (owner 7, placed at game start), other players = owners 0..3 except this player.
+  public class GameState { public int round = 0, story = 0; public string storyName = "", gorosei = "";
+    public Dictionary<int, Dictionary<string, int>> others = new Dictionary<int, Dictionary<string, int>>(); }
+  static string StripColor(string s) { return System.Text.RegularExpressions.Regex.Replace(s, "\\|c[0-9a-fA-F]{8}|\\|r", ""); }
   static void HandRegion(IntPtr h, MBI64 m, int player, bool full, List<string> rows, Dictionary<string, int> counts,
-                         Dictionary<string, string> names, HashSet<ulong> mine, ref long scanned) {
+                         Dictionary<string, string> names, HashSet<ulong> mine, ref long scanned, GameState gs) {
     const int CHUNK = 16 * 1024 * 1024, PAD = 128;
     for (ulong off = 0; off < m.RegionSize; off += (ulong)CHUNK) {
       ulong start = off >= PAD ? off - PAD : 0;
@@ -123,13 +129,30 @@ public static class OrdrMemScan {
         int owner = BitConverter.ToInt32(buf, i - 24), st = BitConverter.ToInt32(buf, i - 48), a = BitConverter.ToInt32(buf, i - 88);
         string code = new string(new char[] { (char)buf[i+3], (char)buf[i+2], (char)buf[i+1], (char)buf[i] });
         bool owned = owner == player && st != 0x11 && a != -1;
-        if (owner == player) mine.Add(m.BaseAddress);
-        if (!owned && !full) continue;
+        bool live = st != 0x11 && a != -1;
+        bool gor = code == "o02E" || code == "o031" || code == "o032";
+        bool watch = owner == player || (owner >= 0 && owner <= 3) || owner == 5 || owner == 6 || gor;
+        if (watch) mine.Add(m.BaseAddress);
+        if (!owned && !full && !(watch && live)) continue;
         int e = i + 4; while (e < n && buf[e] != 0 && e < i + 200) e++;
         var nc = Encoding.UTF8.GetString(buf, i + 4, e - i - 4).ToCharArray();
         for (int k = 0; k < nc.Length; k++) if (nc[k] < (char)0x20) nc[k] = ' ';
         string name = new string(nc).Replace("\\", "\\\\").Replace("\"", "\\\"");
         if (owned) { int c0; counts.TryGetValue(code, out c0); counts[code] = c0 + 1; names[code] = name; }
+        if (live && gs != null) {
+          string plain = StripColor(new string(nc)).Trim();
+          if (gor) gs.gorosei = code;
+          else if (owner == 5 && code[0] == 'n') {
+            var sm = System.Text.RegularExpressions.Regex.Match(plain, "^(\\d+)\\. ");
+            if (sm.Success) { int sv = int.Parse(sm.Groups[1].Value); if (sv > gs.story) { gs.story = sv; gs.storyName = plain.Replace("\\", "").Replace("\"", ""); } }
+          } else if (owner == 6) {
+            var lm = System.Text.RegularExpressions.Regex.Match(plain, "레벨 (\\d+)");
+            if (lm.Success) { int lv = int.Parse(lm.Groups[1].Value); if (lv > gs.round) gs.round = lv; }
+          } else if (owner >= 0 && owner <= 3 && owner != player) {
+            Dictionary<string, int> d0; if (!gs.others.TryGetValue(owner, out d0)) { d0 = new Dictionary<string, int>(); gs.others[owner] = d0; }
+            int c1; d0.TryGetValue(code, out c1); d0[code] = c1 + 1;
+          }
+        }
         if (full) rows.Add("{\"code\":\"" + code + "\",\"addr\":\"0x" + (m.BaseAddress + start + (ulong)i).ToString("x") +
           "\",\"owner\":" + owner + ",\"state\":" + st + ",\"f56\":" + BitConverter.ToInt32(buf, i - 56) +
           ",\"a\":" + a + ",\"b\":" + BitConverter.ToInt32(buf, i - 84) +
@@ -187,6 +210,7 @@ public static class OrdrMemScan {
     if (h == IntPtr.Zero) return "{\"error\":\"OpenProcess failed " + Marshal.GetLastWin32Error() + "\"}";
     var rows = new List<string>(); var counts = new Dictionary<string, int>(); var names = new Dictionary<string, string>();
     var mine = new HashSet<ulong>(); long scanned = 0; int size = Marshal.SizeOf(typeof(MBI64));
+    var gs = new GameState();
     var list = new List<ulong>();
     if (!string.IsNullOrEmpty(bases)) foreach (var t in bases.Split(',')) if (t.Length > 0) list.Add(Convert.ToUInt64(t.Replace("0x", ""), 16));
     ulong addr = 0;
@@ -197,7 +221,7 @@ public static class OrdrMemScan {
       if (VirtualQueryEx(h, (IntPtr)(long)addr, out m, (IntPtr)size) == IntPtr.Zero) { if (list.Count > 0) continue; break; }
       ulong next = m.BaseAddress + m.RegionSize;
       bool rw = m.State == MEM_COMMIT && (m.Protect & 0x101) == 0 && (m.Protect & (0x04 | 0x08 | 0x40 | 0x80)) != 0;
-      if (rw) HandRegion(h, m, player, full, rows, counts, names, mine, ref scanned);
+      if (rw) HandRegion(h, m, player, full, rows, counts, names, mine, ref scanned, gs);
       if (list.Count == 0) { if (next <= addr) break; addr = next; }
     }
     CloseHandle(h);
@@ -208,7 +232,10 @@ public static class OrdrMemScan {
                ",\"Name\":\"" + names[kv.Key] + "\"}");
     }
     var reg = new List<string>(); foreach (var b in mine) reg.Add("\"0x" + b.ToString("x") + "\"");
-    return "{\"bytesScanned\":" + scanned + ",\"regions\":[" + string.Join(",", reg.ToArray()) + "],\"hand\":[" +
+    var oth = new List<string>();
+    foreach (var kv in gs.others) { var it = new List<string>(); foreach (var u in kv.Value) it.Add("\"" + u.Key + "\":" + u.Value); oth.Add("\"" + kv.Key + "\":{" + string.Join(",", it.ToArray()) + "}"); }
+    string game = "{\"round\":" + gs.round + ",\"story\":" + gs.story + ",\"storyName\":\"" + gs.storyName + "\",\"gorosei\":\"" + gs.gorosei + "\",\"others\":{" + string.Join(",", oth.ToArray()) + "}}";
+    return "{\"bytesScanned\":" + scanned + ",\"game\":" + game + ",\"regions\":[" + string.Join(",", reg.ToArray()) + "],\"hand\":[" +
       string.Join(",", hand.ToArray()) + "],\"units\":[" + string.Join(",", rows.ToArray()) + "]}";
   }
 }
@@ -227,8 +254,9 @@ if ($Watch) {
   # 수정내역 79: re-read every 0.3 s (was 3 s); the file is rewritten only when the hand changes (plus a 5 s heartbeat),
   # and the status carries the read time so slow PCs show up.
   $tmp = "$Out.tmp"; $bases = ''; $lastFull = [DateTime]::MinValue; $pid0 = 0; $lastUnits = $null; $lastPut = [DateTime]::MinValue
-  function Put($status, $units) {
-    $o = '{"Source":"memscan","Time":"' + (Get-Date -Format o) + '","Status":' + (ConvertTo-Json $status) + ',"Units":' + $units + '}'
+  # 수정내역 90: "Game" = {round, story, storyName, gorosei, others} read from the same unit records.
+  function Put($status, $units, $game = 'null') {
+    $o = '{"Source":"memscan","Time":"' + (Get-Date -Format o) + '","Status":' + (ConvertTo-Json $status) + ',"Units":' + $units + ',"Game":' + $game + '}'
     [IO.File]::WriteAllText($tmp, $o, (New-Object Text.UTF8Encoding $false)); Move-Item -Force $tmp $Out
   }
   while ($true) {
@@ -245,9 +273,10 @@ if ($Watch) {
     if ($full) { $lastFull = Get-Date; $bases = ($obj.regions -join ',') }
     $units = ConvertTo-Json -Compress -InputObject @($obj.hand)
     if (-not $units -or $units -eq 'null') { $units = '[]' }
-    if ($full -or $units -ne $lastUnits -or ((Get-Date) - $lastPut).TotalSeconds -ge 5) {
-      Put ("{0} {1}ms" -f $(if ($full) { '전체' } else { '빠름' }), $ms) $units
-      $lastUnits = $units; $lastPut = Get-Date
+    $game = if ($obj.game) { ConvertTo-Json -Compress -Depth 4 $obj.game } else { 'null' }
+    if ($full -or ($units + $game) -ne $lastUnits -or ((Get-Date) - $lastPut).TotalSeconds -ge 5) {
+      Put ("{0} {1}ms" -f $(if ($full) { '전체' } else { '빠름' }), $ms) $units $game
+      $lastUnits = $units + $game; $lastPut = Get-Date
       Write-Host ("{0:HH:mm:ss} {1} {2}종 {3}ms" -f (Get-Date), $(if ($full) { '전체' } else { '빠름' }), @($obj.hand).Count, $ms)
     }
     Start-Sleep -Milliseconds ([int]($Interval * 1000))

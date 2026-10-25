@@ -111,6 +111,12 @@ async function readLive(){
   else{if(!liveFile||!(await api.exists(liveFile)))return;text=await api.readFile(liveFile);}
   let j;try{j=JSON.parse(text.replace(/^\uFEFF/,''));}catch{return;}
   if(j.Time===liveTime)return;liveTime=j.Time;
+  // 수정내역 90: game state read from unit records (round, story stage, 오로성, other players' units).
+  const g=j.Game;
+  if(g){const gsig=JSON.stringify(g);if(gsig!==state.gameSig){state.gameSig=gsig;
+    const others={};for(const o of Object.values(g.others??{}))for(const [c,n] of Object.entries(o))others[c]=(others[c]??0)+n;
+    state.live={round:g.round||null,story:g.story||null,storyName:g.storyName||'',gorosei:GORO_CODE[g.gorosei]??null,othersHand:others,players:1+Object.keys(g.others??{}).length};
+    showLive();requestCoach();if(state.live.gorosei&&state.live.gorosei!==state.lastGoro){state.lastGoro=state.live.gorosei;analyze();}}}
   // 수정내역 66: redraw only when the hand itself changed (memscan rewrites the file every few seconds).
   const sig=(j.Units??[]).map(u=>u.Rawcode+':'+u.Count+':'+u.Owner).sort().join('|')+'#'+String(j.Status??'').replace(/\s*\d+ms$/,'');
   if(sig===state.liveSig)return;state.liveSig=sig;
@@ -153,7 +159,7 @@ function analyze(){
   analyzeTimer=setTimeout(()=>{
     const diff=difficulty();
     worker.postMessage({type:'analyze',id:++state.reqId,hand:state.hand,difficulty:diff,view:view(),
-      goal:$('goalSelect').value||null,growthCut:+state.settings.growthCut||0,gorosei:state.settings.gorosei||null,cats:state.settings.cats??['legend','upper']});
+      goal:$('goalSelect').value||null,growthCut:+state.settings.growthCut||0,gorosei:goroNow(),cats:state.settings.cats??['legend','upper']});
     for(const id of ['nextBody','upperBody'])if(!$(id).dataset.filled)$(id).innerHTML='<span class="muted">계산 중…</span>';
     renderHand();
   },30);
@@ -186,6 +192,11 @@ worker.onmessage=e=>{
 };
 
 // --- coach (수정내역 85) -------------------------------------------------------------------------------------------
+const GORO_CODE={o02E:'워큐리',o031:'새턴',o032:'나스쥬로'};
+const goroNow=()=>state.live?.gorosei??state.settings.gorosei??null;
+// Auto values show as placeholders; a typed value overrides them.
+function showLive(){const l=state.live??{};$('sitRound').placeholder=l.round?'자동 '+l.round:'';$('sitStage').placeholder=l.story?'자동 '+l.story:'';
+  $('gorosei').title=l.gorosei?'게임에서 읽음: '+l.gorosei:'';}
 let coachTimer=null;
 function requestCoach(){
   clearTimeout(coachTimer);
@@ -193,7 +204,8 @@ function requestCoach(){
     const q=state.quick;if(!q)return;const st=state.settings;
     const num=v=>v===''||v==null||isNaN(+v)?null:+v;
     worker.postMessage({type:'coach',id:state.reqId,ctx:{myTeam:q.team,team:q.team.concat(state.others??[]),difficulty:difficulty(),
-      gorosei:st.gorosei||null,players:+(st.sitPlayers??1),round:num(st.sitRound),storyStage:num(st.sitStage),storyHp:num(st.sitHp),eggLeft:num(st.sitEgg),stats:q.stats,red:q.red,
+      gorosei:goroNow(),players:st.sitPlayers?+st.sitPlayers:(state.live?.players??1),round:num(st.sitRound)??state.live?.round??null,storyStage:num(st.sitStage)??state.live?.story??null,storyHp:num(st.sitHp),eggLeft:num(st.sitEgg),
+      othersHand:state.live?.othersHand??null,stats:q.stats,red:q.red,
       quests:(st.sitQuests??[]).filter(Boolean),hand:state.hand,
       // 수정내역 87: 난이도가 측정됐을 때(직접 선택 또는 기록·자동 읽기)만 신·악몽 스토리 경고를 켠다.
       difficultyKnown:(st.difficulty&&st.difficulty!=='auto')||['신','악몽','지옥'].includes(state.meta.difficulty)}});
@@ -505,7 +517,7 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   $('growthCut').value=state.settings.growthCut??0;
   $('gorosei').value=state.settings.gorosei??'';
   [...document.querySelectorAll('.sitQuest')].forEach((x,k)=>x.value=(state.settings.sitQuests??[])[k]??'');
-  $('sitRound').value=state.settings.sitRound??'';$('sitStage').value=state.settings.sitStage??'';$('sitPlayers').value=state.settings.sitPlayers??'1';$('sitHp').value=state.settings.sitHp??'';$('sitEgg').value=state.settings.sitEgg??'';
+  $('sitRound').value=state.settings.sitRound??'';$('sitStage').value=state.settings.sitStage??'';$('sitPlayers').value=state.settings.sitPlayers??'';$('sitHp').value=state.settings.sitHp??'';$('sitEgg').value=state.settings.sitEgg??'';
   $('memPlayer').value=String(state.settings.memPlayer??0);
   syncCats();applyView();applyFont();
   $('helperDir').textContent=state.settings.helperDir??'-';

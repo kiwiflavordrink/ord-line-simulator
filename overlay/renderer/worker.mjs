@@ -27,7 +27,10 @@ onmessage=e=>{
     // 수정내역 79: simulation-only requests (one difficulty), so several workers can run the difficulties in parallel.
     // 수정내역 85: coach warnings (story kill times run here; stats come from the page's simulation workers).
     if(m.type==='coach'){
-      const c=m.ctx,w=[...coachWarnings(data,{...c,limit:99}),
+      const c={...m.ctx};
+      // 수정내역 90: other players' units from the memory reader join the team (story, map-wide effects).
+      if(c.othersHand&&Object.keys(c.othersHand).length){const ot=teamFromHand(data,c.othersHand,index).team;c.team=[...(c.myTeam??[]),...ot];}
+      const w=[...coachWarnings(data,{...c,limit:99}),
         ...questHints(data,{...c,team:c.team??c.myTeam,recipes,tier,name:id=>names.get(id)})];   // 수정내역 86
       postMessage({type:'coach',id:m.id,warnings:w.sort((a,b)=>b.priority-a.priority).slice(0,3),active:coachActive(c)});
       return;
