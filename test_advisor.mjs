@@ -148,4 +148,13 @@ console.log('test_advisor: log parser ok');
   assert.ok(h.some(x=>/트리플: 최상위 0\/3 · 다음 TOP1/.test(x.text)));
   assert.ok(!h.some(x=>/도박/.test(x.text)),'도박 퀘스트는 조언 안 함');
   console.log('test_advisor: quest hints ok');
+  {// 수정내역 92: quest progress rows
+    const {questStatus}=await import('./dist/coach.mjs');
+    const r=questStatus({quests:['Q011','Q002','Q003'],hand:{z1:1},tier:id=>id==='z1'?'제한':null,progress:{Q002:5,Q003:[4,2,4]}});
+    assert(r[0].done&&r[0].have===1,'grade quest done from hand');
+    assert(r[1].text==='목재수집 5/9 (목재 도박)'&&!r[1].done,'counter quest '+r[1].text);
+    assert(r[2].have===2,'도박중독 = min of three');
+    const u=questStatus({quests:['Q007']});assert(u[0].have===null&&u[0].text.startsWith('MVP 선정 ?/4'),'unknown counter shows ?');
+    console.log('test_advisor: quest progress ok');
+  }
 }

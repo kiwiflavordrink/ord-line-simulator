@@ -5,7 +5,7 @@
 // Replies {type:'quick', id, ...} at once and {type:'next', id, next} after the slower target search.
 import {teamFromHand,controlSums,comboStats,similarClears,nextTargets,unitIndex,isUpperTier,guideTargets,buildKeyIndex,pairIndex} from '../../dist/advisor.mjs';
 import {indexRecipes,planTarget,reverseRawcode,reachable,craftStages} from '../../dist/planner.mjs';
-import {coachWarnings,questHints,coachActive} from '../../dist/coach.mjs';
+import {coachWarnings,questHints,coachActive,questStatus} from '../../dist/coach.mjs';
 
 let data=null,index=null,recipes=new Map(),tiers=new Map(),names=new Map(),samples=[],latest=0,keyIndex=null,pairs=null;
 const tier=id=>tiers.get(id);
@@ -32,7 +32,8 @@ onmessage=e=>{
       if(c.othersHand&&Object.keys(c.othersHand).length){const ot=teamFromHand(data,c.othersHand,index).team;c.team=[...(c.myTeam??[]),...ot];}
       const w=[...coachWarnings(data,{...c,limit:99}),
         ...questHints(data,{...c,team:c.team??c.myTeam,recipes,tier,name:id=>names.get(id)})];   // 수정내역 86
-      postMessage({type:'coach',id:m.id,warnings:w.sort((a,b)=>b.priority-a.priority).slice(0,3),active:coachActive(c)});
+      postMessage({type:'coach',id:m.id,warnings:w.sort((a,b)=>b.priority-a.priority).slice(0,3),active:coachActive(c),
+        quests:questStatus({quests:c.quests,hand:c.hand??{},recipes,tier,progress:c.questProgress??{}})});
       return;
     }
     if(m.type==='sim'){

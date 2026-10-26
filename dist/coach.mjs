@@ -109,6 +109,30 @@ export const PERSONAL_QUESTS=[
 ];
 const TOP_GRADE=/^(초월|불멸|영원|제한|신비)/;
 
+// 수정내역 92: progress of the 3 personal quests. Unit quests come from the hand; counter quests (목재 도박 횟수 …) need
+// the counter from memory (`progress[id]` = number, or [하급,중급,고급] for 도박중독) and show "?" until it can be read.
+export const QUEST_GOALS={
+  Q000:{need:2,what:'유니크 아이템'},Q001:{need:11,what:'선택위습 사용'},Q002:{need:9,what:'목재 도박'},
+  Q003:{need:4,what:'하급·중급·고급 도박 각'},Q004:{need:4,what:'하급 도박 실패'},Q005:{need:4,what:'중급 도박 실패'},
+  Q006:{need:4,what:'고급 도박 실패'},Q007:{need:4,what:'스토리 기여도 1등'},Q016:{need:9,what:'흔함 판매'},
+};
+export function questStatus({quests=[],hand={},recipes=null,tier=()=>null,progress={}}={}){
+  const rows=[];
+  for(const qid of quests){
+    const q=PERSONAL_QUESTS.find(x=>x.id===qid);if(!q)continue;
+    const owned=want=>Object.entries(hand).filter(([id,n])=>n>0&&want(id)).reduce((a,[,n])=>a+n,0);
+    let have=null,need=1,what='';
+    if(q.grade){have=Math.min(1,owned(id=>q.grade.test(tier(id)??'')));what=q.name.match(/\((.+)\)/)?.[1]+' 조합';}
+    else if(q.top){have=Math.min(q.top,owned(id=>TOP_GRADE.test(tier(id)??'')));need=q.top;what='최상위 보유';}
+    else if(q.items){have=recipes?.size?Math.min(1,owned(id=>(recipes.get(id)??[]).some(r=>r.special.some(s=>s.kind==='ITEM')))):null;what='아이템 유닛 조합';}
+    else{const g=QUEST_GOALS[qid];need=g.need;what=g.what;const v=progress[qid];
+      have=Array.isArray(v)?Math.min(...v):(typeof v==='number'?v:null);}
+    rows.push({id:qid,name:q.name,have,need,what,done:have!=null&&have>=need,
+      text:`${q.name} ${have==null?'?':Math.min(have,need)}/${need}`+(what?` (${what})`:'')});
+  }
+  return rows;
+}
+
 // Nearest target (by 흔함 price) among recipe outputs passing `want`; null if none.
 function nearest(hand,recipes,tier,name,want){
   const locked=lockedPieces(hand,recipes,name),prices=priceModel(recipes,tier,name,{locked});

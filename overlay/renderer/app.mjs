@@ -173,7 +173,7 @@ worker.onmessage=e=>{
   if(m.type==='error'){status('계산 오류: '+m.message);return;}
   if(m.type==='helper-ok'){status();return;}
   if(m.id!==state.reqId)return;
-  if(m.type==='coach'){if(m.id===state.reqId){state.coach=m.warnings;state.coachActive=m.active??[];renderCoach();}return;}
+  if(m.type==='coach'){if(m.id===state.reqId){state.coach=m.warnings;state.coachActive=m.active??[];state.questRows=m.quests??[];renderCoach();}return;}
   if(m.type==='quick'){
     // Keep the numbers of the same team while the new ones are computed (no flicker); start the simulations.
     const same=state.quick&&JSON.stringify(state.quick.team)===JSON.stringify(m.team)&&state.quick.red===m.red;
@@ -211,7 +211,7 @@ function requestCoach(){
     const num=v=>v===''||v==null||isNaN(+v)?null:+v;
     worker.postMessage({type:'coach',id:state.reqId,ctx:{myTeam:q.team,team:q.team.concat(state.others??[]),difficulty:difficulty(),
       gorosei:goroNow(),players:st.sitPlayers?+st.sitPlayers:(state.live?.players??1),round:num(st.sitRound)??state.live?.round??null,storyStage:num(st.sitStage)??state.live?.story??null,storyHp:num(st.sitHp),eggLeft:num(st.sitEgg),
-      othersHand:state.live?.othersHand??null,stats:q.stats,red:q.red,
+      othersHand:state.live?.othersHand??null,questProgress:state.live?.questProgress??{},stats:q.stats,red:q.red,
       quests:liveQuests(),hand:state.hand,
       // 수정내역 87: 난이도가 측정됐을 때(직접 선택 또는 기록·자동 읽기)만 신·악몽 스토리 경고를 켠다.
       difficultyKnown:(st.difficulty&&st.difficulty!=='auto')||['신','악몽','지옥'].includes(state.meta.difficulty)}});
@@ -222,6 +222,8 @@ function renderCoach(){
   const act=state.coachActive??[];
   $('coachBody').innerHTML=(w.length?w.map(x=>`<div class="w ${x.level}">${esc(x.text)}${x.detail?`<small>${esc(x.detail)}</small>`:''}</div>`).join('')
     :'<div class="muted small">지금 경고 없음</div>')+
+    // 수정내역 92: 개인 퀘스트 진행도 (? = 아직 게임에서 못 읽는 횟수).
+    ((state.questRows??[]).length?`<div class="quests small">퀘스트 ${state.questRows.map(r=>`<span class="${r.done?'done':''}">${esc(r.done?'✓ '+r.name:r.text)}</span>`).join(' · ')}</div>`:'')+
     `<div class="watch small">${act.length?'감시 중: '+act.map(a=>`<span>${esc(a.label)}</span>`).join(' · '):'감시 없음 · 난이도를 정하면 신·악몽 스토리 감시가 켜지고, 에그헤드가 나오면 에그헤드 감시가 켜집니다.'}</div>`;
   exportView();
 }

@@ -16,6 +16,7 @@ param(
   [string]$Note = '',
   [switch]$Hand,
   [switch]$Probe,
+  [switch]$Track,
   [int]$Player = 0,
   [switch]$Watch,
   [double]$Interval = 0.3,
@@ -281,6 +282,104 @@ public static class OrdrMemScan {
       string.Join(",", hand.ToArray()) + "],\"units\":[" + string.Join(",", rows.ToArray()) + "]}";
   }
 }
+
+// 수정내역 92: personal quests read on a background thread (full memory pass every 1.5 s until round 10 / until found,
+// then every 30 s), so a reroll shows up within seconds without slowing the 0.3 s hand loop.
+public static class QuestBg {
+  static System.Threading.Thread th; static volatile string cur = "[]"; static volatile int pidRun = 0;
+  public static volatile int Round = 0;
+  public static string Current { get { return cur; } }
+  public static void Ensure(int pid) {
+    if (pidRun == pid && th != null && th.IsAlive) return;
+    pidRun = pid; cur = "[]";
+    th = new System.Threading.Thread(() => {
+      while (pidRun == pid) {
+        try { cur = OrdrMemScan.Quests(pid); } catch { }
+        System.Threading.Thread.Sleep(Round > 10 && cur != "[]" ? 30000 : 1500);
+      }
+    });
+    th.IsBackground = true; th.Priority = System.Threading.ThreadPriority.BelowNormal; th.Start();
+  }
+}
+
+// 수정내역 92: quest counters (목재 도박 횟수, 하급 도박 시도 …) are per-player JASS integer arrays (2.305 `Ah[p]`, `yM[p]`).
+// Their place in memory is unknown, so Track finds one by value: the user enters the counter after each action and the
+// candidate int32 addresses are narrowed down; Report then dumps the bytes around the survivors and around every
+// pointer to them, so the array/variable layout can be worked out and all counters located by name afterwards.
+public static class Track {
+  [DllImport("kernel32.dll", SetLastError=true)] static extern IntPtr OpenProcess(uint access, bool inherit, int pid);
+  [DllImport("kernel32.dll", SetLastError=true)] static extern bool CloseHandle(IntPtr h);
+  [DllImport("kernel32.dll", SetLastError=true)] static extern IntPtr VirtualQueryEx(IntPtr h, IntPtr addr, out OrdrMemScan.MBI64 info, IntPtr len);
+  [DllImport("kernel32.dll", SetLastError=true)] static extern bool ReadProcessMemory(IntPtr h, IntPtr addr, byte[] buf, IntPtr size, out IntPtr read);
+  const uint ACCESS = 0x0400 | 0x0010;
+  public static List<ulong> Cand = new List<ulong>();
+  static bool Rw(OrdrMemScan.MBI64 m) { return m.State == 0x1000 && (m.Protect & 0x101) == 0 && (m.Protect & (0x04 | 0x08 | 0x40 | 0x80)) != 0; }
+  static void Walk(IntPtr h, Action<ulong, byte[], int> each) {
+    ulong addr = 0; const int CHUNK = 16 * 1024 * 1024; int size = Marshal.SizeOf(typeof(OrdrMemScan.MBI64));
+    while (addr < 0x7FFFFFFFFFFF) {
+      OrdrMemScan.MBI64 m;
+      if (VirtualQueryEx(h, (IntPtr)(long)addr, out m, (IntPtr)size) == IntPtr.Zero) break;
+      ulong next = m.BaseAddress + m.RegionSize; if (next <= addr) break;
+      if (Rw(m) && m.Type == 0x20000) for (ulong off = 0; off < m.RegionSize; off += (ulong)CHUNK) {
+        int len = (int)Math.Min((ulong)CHUNK, m.RegionSize - off); var buf = new byte[len]; IntPtr read;
+        if (ReadProcessMemory(h, (IntPtr)(long)(m.BaseAddress + off), buf, (IntPtr)len, out read)) each(m.BaseAddress + off, buf, (int)read);
+      }
+      addr = next;
+    }
+  }
+  public static long First(int pid, int value) {
+    IntPtr h = OpenProcess(ACCESS, false, pid); if (h == IntPtr.Zero) return -1;
+    Cand = new List<ulong>();
+    Walk(h, (b, buf, n) => { for (int i = 0; i + 4 <= n; i += 4) if (BitConverter.ToInt32(buf, i) == value) Cand.Add(b + (ulong)i); });
+    CloseHandle(h); return Cand.Count;
+  }
+  public static long Next(int pid, int value) {
+    IntPtr h = OpenProcess(ACCESS, false, pid); if (h == IntPtr.Zero) return -1;
+    var keep = new List<ulong>(); var buf = new byte[1 << 20]; ulong blk = ulong.MaxValue; bool ok = false; var one = new byte[4];
+    foreach (var a in Cand) {
+      ulong bb = a & ~((ulong)(1 << 20) - 1); IntPtr read;
+      if (bb != blk) { blk = bb; ok = ReadProcessMemory(h, (IntPtr)(long)bb, buf, (IntPtr)buf.Length, out read) && (long)read == buf.Length; }
+      int v;
+      if (ok) v = BitConverter.ToInt32(buf, (int)(a - bb));
+      else { if (!ReadProcessMemory(h, (IntPtr)(long)a, one, (IntPtr)4, out read)) continue; v = BitConverter.ToInt32(one, 0); }
+      if (v == value) keep.Add(a);
+    }
+    Cand = keep; CloseHandle(h); return Cand.Count;
+  }
+  static string Hex(byte[] b, int s, int n) { var sb = new StringBuilder(); for (int i = s; i < s + n && i < b.Length; i++) sb.Append(b[i].ToString("x2")); return sb.ToString(); }
+  static string Text(IntPtr h, ulong p) {
+    var b = new byte[64]; IntPtr read; if (!ReadProcessMemory(h, (IntPtr)(long)p, b, (IntPtr)64, out read)) return null;
+    int z = 0; while (z < 64 && b[z] != 0) z++; if (z < 2) return null;
+    var t = Encoding.UTF8.GetString(b, 0, z); foreach (var c in t) if (c < ' ') return null;
+    return t.Replace("\\", "\\\\").Replace("\"", "\\\"");
+  }
+  static string Around(IntPtr h, ulong a, int before, int after) {
+    var b = new byte[before + after]; IntPtr read;
+    if (!ReadProcessMemory(h, (IntPtr)(long)(a - (ulong)before), b, (IntPtr)b.Length, out read)) return "{\"addr\":\"0x" + a.ToString("x") + "\"}";
+    var strs = new List<string>();
+    for (int i = 0; i + 8 <= b.Length; i += 8) { ulong q = BitConverter.ToUInt64(b, i); if (q > 0x10000 && q < 0x7FFFFFFFFFFF) { var t = Text(h, q); if (t != null) strs.Add("\"" + (i - before) + "\":\"" + t + "\""); } }
+    return "{\"addr\":\"0x" + a.ToString("x") + "\",\"from\":" + (-before) + ",\"hex\":\"" + Hex(b, 0, b.Length) + "\",\"ptrText\":{" + string.Join(",", strs.ToArray()) + "}}";
+  }
+  public static string Report(int pid, string label, string steps) {
+    IntPtr h = OpenProcess(ACCESS, false, pid); if (h == IntPtr.Zero) return "{\"error\":\"OpenProcess\"}";
+    var c = Cand.Count > 40 ? Cand.GetRange(0, 40) : Cand; var items = new List<string>();
+    var holders = new Dictionary<ulong, List<ulong>>(); foreach (var a in c) holders[a] = new List<ulong>();
+    // Pointers to (a - 0..64): an array's data pointer usually points at element 0 or at a small header before it.
+    var sorted = c.ToArray(); Array.Sort(sorted); ulong lo = sorted[0] - 64, hi = sorted[sorted.Length - 1];
+    Walk(h, (b, buf, n) => {
+      for (int i = 0; i + 8 <= n; i += 8) { ulong q = BitConverter.ToUInt64(buf, i); if (q < lo || q > hi) continue;
+        int k = Array.BinarySearch(sorted, q); if (k < 0) k = ~k;
+        for (; k < sorted.Length && sorted[k] - q <= 64; k++) if (holders[sorted[k]].Count < 12) holders[sorted[k]].Add(b + (ulong)i); }
+    });
+    foreach (var a in c) {
+      var hs = new List<string>(); foreach (var x in holders[a]) hs.Add(Around(h, x, 96, 96));
+      items.Add("{\"cand\":" + Around(h, a, 64, 64) + ",\"pointers\":[" + string.Join(",", hs.ToArray()) + "]}");
+    }
+    CloseHandle(h);
+    return "{\"tool\":\"track\",\"label\":\"" + label.Replace("\"", "") + "\",\"steps\":\"" + steps + "\",\"left\":" + Cand.Count + ",\"items\":[" + string.Join(",", items.ToArray()) + "]}";
+  }
+}
+
 '@
 # With -File, 'h006,h00A' arrives as one string: split it.
 $Codes = @($Codes | ForEach-Object { $_ -split '[,\s]+' } | Where-Object { $_.Length -eq 4 })
@@ -315,8 +414,8 @@ if ($Watch) {
     if ($full) { $lastFull = Get-Date; $bases = ($obj.regions -join ',') }
     $units = ConvertTo-Json -Compress -InputObject @($obj.hand)
     if (-not $units -or $units -eq 'null') { $units = '[]' }
-    # 수정내역 91: quests are read on full scans until found and round 10 has passed (reroll window, 2.320).
-    if ($full -and ($quests -eq '[]' -or $obj.game.round -le 10)) { $quests = [OrdrMemScan]::Quests($proc.Id) }
+    # 수정내역 92: quests come from a background thread (re-read every 1.5 s until round 10).
+    [QuestBg]::Ensure($proc.Id); if ($obj.game) { [QuestBg]::Round = [int]$obj.game.round }; $quests = [QuestBg]::Current
     if ($obj.game) { $obj.game | Add-Member -Force NoteProperty quests @($quests | ConvertFrom-Json) }
     $game = if ($obj.game) { ConvertTo-Json -Compress -Depth 4 $obj.game } else { 'null' }
     if ($full -or ($units + $game) -ne $lastUnits -or ((Get-Date) - $lastPut).TotalSeconds -ge 5) {
@@ -332,6 +431,34 @@ $proc = Find-Game
 if (-not $proc) { Write-Host "워크래프트 III 프로세스를 찾지 못했습니다. 게임을 켠 상태에서 실행하세요." ; exit 1 }
 $ver = try { $proc.MainModule.FileVersionInfo.FileVersion } catch { 'unknown' }
 Write-Host ("프로세스: {0} (PID {1}), 버전: {2}" -f $proc.ProcessName, $proc.Id, $ver)
+if ($Track) {
+  # 수정내역 92: find a quest counter (하급 도박 시도 횟수 = 2.305 yM[p]) by value. Read-only.
+  Write-Host "퀘스트 진행도 위치 찾기(읽기 전용). 하급 도박 횟수로 찾습니다."
+  Write-Host "1) 하급 도박을 2번 이상 한 뒤, 지금까지 한 하급 도박 횟수를 입력하세요."
+  Write-Host "2) 하급 도박을 1번 더 하고 새 횟수를 입력하세요. 후보가 10개 이하가 될 때까지 반복합니다."
+  Write-Host "   (도박을 안 하고 같은 숫자를 넣어도 됩니다. 처음부터 다시: r, 끝내기: q)"
+  $steps = @(); $first = $true
+  while ($true) {
+    $t = Read-Host "지금까지 하급 도박 횟수"
+    if ($t -eq 'q') { break }
+    if ($t -eq 'r') { $first = $true; $steps = @(); continue }
+    $v = 0; if (-not [int]::TryParse($t, [ref]$v) -or $v -lt 1) { Write-Host "1 이상의 숫자를 넣으세요."; continue }
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+    $n = if ($first) { [Track]::First($proc.Id, $v) } else { [Track]::Next($proc.Id, $v) }
+    $first = $false; $steps += $v
+    Write-Host ("  후보 {0}곳 ({1:N1}초)" -f $n, ($sw.ElapsedMilliseconds / 1000))
+    if ($n -le 0) { Write-Host "  후보가 없습니다. 숫자가 맞는지 확인하고 r로 다시 시작하세요."; continue }
+    if ($n -le 10) { break }
+  }
+  if (-not $first -and [Track]::Cand.Count -gt 0) {
+    Write-Host "보고서를 만드는 중입니다(1~3분)..."
+    $o = [Track]::Report($proc.Id, '하급 도박 시도', ($steps -join ','))
+    $tf = Join-Path ([Environment]::GetFolderPath('Desktop')) 'ordr_track.json'
+    [IO.File]::WriteAllText($tf, $o, [Text.Encoding]::UTF8)
+    Write-Host "저장: $tf  (이 파일을 보내 주세요)"
+  }
+  exit 0
+}
 if ($Probe) {
   # 수정내역 84: one-shot diagnostic for the coach — every unit record by owner (other players, 오로성 o02E/o031/o032,
   # story/boss units) and the UI texts that carry round, quests, missions and unit count. Read-only.
