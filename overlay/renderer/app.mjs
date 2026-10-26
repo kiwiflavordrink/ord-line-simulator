@@ -115,7 +115,9 @@ async function readLive(){
   const g=j.Game;
   if(g){const gsig=JSON.stringify(g);if(gsig!==state.gameSig){state.gameSig=gsig;
     const others={};for(const o of Object.values(g.others??{}))for(const [c,n] of Object.entries(o))others[c]=(others[c]??0)+n;
-    state.live={round:g.round||null,story:g.story||null,storyName:g.storyName||'',gorosei:GORO_CODE[g.gorosei]??null,othersHand:others,players:1+Object.keys(g.others??{}).length};
+    state.live={round:g.round||null,story:g.story||null,storyName:g.storyName||'',gorosei:GORO_CODE[g.gorosei]??null,othersHand:others,players:1+Object.keys(g.others??{}).length,
+      // 수정내역 91: 개인 퀘스트 3개(이름 → 퀘스트 id).
+      quests:(g.quests??[]).map(n=>PERSONAL_QUESTS.find(q=>q.name===n)?.id).filter(Boolean)};
     showLive();requestCoach();if(state.live.gorosei&&state.live.gorosei!==state.lastGoro){state.lastGoro=state.live.gorosei;analyze();}}}
   // 수정내역 66: redraw only when the hand itself changed (memscan rewrites the file every few seconds).
   const sig=(j.Units??[]).map(u=>u.Rawcode+':'+u.Count+':'+u.Owner).sort().join('|')+'#'+String(j.Status??'').replace(/\s*\d+ms$/,'');
@@ -196,7 +198,11 @@ const GORO_CODE={o02E:'워큐리',o031:'새턴',o032:'나스쥬로'};
 const goroNow=()=>state.live?.gorosei??state.settings.gorosei??null;
 // Auto values show as placeholders; a typed value overrides them.
 function showLive(){const l=state.live??{};$('sitRound').placeholder=l.round?'자동 '+l.round:'';$('sitStage').placeholder=l.story?'자동 '+l.story:'';
-  $('gorosei').title=l.gorosei?'게임에서 읽음: '+l.gorosei:'';}
+  $('gorosei').title=l.gorosei?'게임에서 읽음: '+l.gorosei:'';
+  // 빈 퀘스트 칸의 '-' 자리에 읽은 퀘스트를 보여 준다.
+  [...document.querySelectorAll('.sitQuest')].forEach((x,k)=>{const id=l.quests?.[k];x.options[0].textContent=id?'자동 '+PERSONAL_QUESTS.find(q=>q.id===id).name:'-';});}
+// 직접 고른 칸이 하나라도 있으면 직접 고른 것만, 없으면 게임에서 읽은 3개.
+const liveQuests=()=>{const mine=(state.settings.sitQuests??[]).filter(Boolean);return mine.length?mine:(state.live?.quests??[]);};
 let coachTimer=null;
 function requestCoach(){
   clearTimeout(coachTimer);
@@ -206,7 +212,7 @@ function requestCoach(){
     worker.postMessage({type:'coach',id:state.reqId,ctx:{myTeam:q.team,team:q.team.concat(state.others??[]),difficulty:difficulty(),
       gorosei:goroNow(),players:st.sitPlayers?+st.sitPlayers:(state.live?.players??1),round:num(st.sitRound)??state.live?.round??null,storyStage:num(st.sitStage)??state.live?.story??null,storyHp:num(st.sitHp),eggLeft:num(st.sitEgg),
       othersHand:state.live?.othersHand??null,stats:q.stats,red:q.red,
-      quests:(st.sitQuests??[]).filter(Boolean),hand:state.hand,
+      quests:liveQuests(),hand:state.hand,
       // 수정내역 87: 난이도가 측정됐을 때(직접 선택 또는 기록·자동 읽기)만 신·악몽 스토리 경고를 켠다.
       difficultyKnown:(st.difficulty&&st.difficulty!=='auto')||['신','악몽','지옥'].includes(state.meta.difficulty)}});
   },60);
@@ -450,7 +456,7 @@ $('memPlayer').onchange=async e=>{await saveSettings({memPlayer:+e.target.value}
 $('difficulty').onchange=async e=>{await saveSettings({difficulty:e.target.value});analyze();status();};
 $('growthCut').onchange=async e=>{await saveSettings({growthCut:+e.target.value||0});analyze();};
 $('gorosei').onchange=async e=>{await saveSettings({gorosei:e.target.value||null});analyze();};
-// 개인 퀘스트 3칸 (수정내역 86): 자동 읽기 전까지 직접 고른다. 도박 퀘스트는 목록에 두되 조언하지 않는다.
+// 개인 퀘스트 3칸 (수정내역 86, 91): 비워 두면 게임에서 읽은 퀘스트를 쓴다. 도박 퀘스트는 목록에 두되 조언하지 않는다.
 for(const [k,sel] of [...document.querySelectorAll('.sitQuest')].entries()){
   sel.innerHTML='<option value="">-</option>'+PERSONAL_QUESTS.map(q=>`<option value="${q.id}">${q.name}</option>`).join('');
   sel.onchange=async()=>{await saveSettings({sitQuests:[...document.querySelectorAll('.sitQuest')].map(x=>x.value)});requestCoach();};

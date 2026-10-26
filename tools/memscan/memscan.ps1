@@ -203,6 +203,48 @@ public static class OrdrMemScan {
     return o.Append("}").ToString();
   }
 
+  // Personal quests (수정내역 91, probes 2026-10-25 x2): every quest title "|cffffdead퀘스트 :: 이름|r" exists in memory (map
+  // script and quest dialogs), but the 3 quests given to this player appear 4 times as stand-alone strings, the others
+  // at most twice. Script copies are preceded by a quote and are not NUL-terminated after "|r", so they are skipped.
+  public static void CountQuests(byte[] buf, int from, int n, byte[] q, Dictionary<string, int> cnt) {
+        for (int i = Math.Max(from, 1); i + q.Length + 4 < n && i < from + 16 * 1024 * 1024; i++) {
+          if (buf[i] != 0x7c || buf[i + 1] != 0x63 || buf[i - 1] == 0x22) continue;
+          bool ok = true; for (int k = 2; k < q.Length && ok; k++) ok = buf[i + k] == q[k];
+          if (!ok) continue;
+          int s0 = i + q.Length, z = s0; while (z + 2 < n && z < s0 + 60 && !(buf[z] == 0x7c && buf[z + 1] == 0x72)) z++;
+          if (z + 2 >= n || buf[z] != 0x7c || buf[z + 2] != 0) continue;
+          string name = Encoding.UTF8.GetString(buf, s0, z - s0);
+          if (System.Text.RegularExpressions.Regex.IsMatch(name, "^\ud018\uc2a4\ud2b8 \\d+\ubc88$") || name.IndexOf('"') >= 0 || name.IndexOf('\\') >= 0) continue;
+          int c0; cnt.TryGetValue(name, out c0); cnt[name] = c0 + 1;
+        }
+  }
+  public static string Quests(int pid) {
+    IntPtr h = OpenProcess(QUERY | VM_READ, false, pid);
+    if (h == IntPtr.Zero) return "[]";
+    var q = Encoding.UTF8.GetBytes("|cffffdead\ud018\uc2a4\ud2b8 :: "); var cnt = new Dictionary<string, int>();
+    ulong addr = 0; const int CHUNK = 16 * 1024 * 1024, PAD = 128; int size = Marshal.SizeOf(typeof(MBI64));
+    while (addr < 0x7FFFFFFFFFFF) {
+      MBI64 m;
+      if (VirtualQueryEx(h, (IntPtr)(long)addr, out m, (IntPtr)size) == IntPtr.Zero) break;
+      ulong next = m.BaseAddress + m.RegionSize; if (next <= addr) break;
+      bool rw = m.State == MEM_COMMIT && (m.Protect & 0x101) == 0 && (m.Protect & (0x04 | 0x08 | 0x40 | 0x80)) != 0;
+      if (rw) for (ulong off = 0; off < m.RegionSize; off += (ulong)CHUNK) {
+        ulong start = off >= PAD ? off - PAD : 0;
+        int len = (int)Math.Min((ulong)CHUNK + 2 * PAD, m.RegionSize - start);
+        var buf = new byte[len]; IntPtr read;
+        if (!ReadProcessMemory(h, (IntPtr)(long)(m.BaseAddress + start), buf, (IntPtr)len, out read)) continue;
+        int n = (int)read, from = (int)(off - start);
+        CountQuests(buf, from, n, q, cnt);
+      }
+      addr = next;
+    }
+    CloseHandle(h);
+    var top = new List<KeyValuePair<string, int>>(); foreach (var kv in cnt) if (kv.Value >= 3) top.Add(kv);
+    top.Sort((a, b) => b.Value.CompareTo(a.Value));
+    var o = new List<string>(); for (int k = 0; k < top.Count && k < 3; k++) o.Add("\"" + top[k].Key + "\"");
+    return "[" + string.Join(",", o.ToArray()) + "]";
+  }
+
   // bases: "" = walk all memory; else comma-separated region bases from an earlier call (fast re-read).
   // full: also return every record with its raw bytes (diagnostics). Hand entries use the helper's reversed rawcode.
   public static string Hand(int pid, int player, string bases, bool full) {
@@ -253,7 +295,7 @@ if ($Watch) {
   # restarts. Writes {Source,Time,Status,Units:[{Rawcode,Code,Count,Owner,Name}]} to $Out (temp file + rename).
   # 수정내역 79: re-read every 0.3 s (was 3 s); the file is rewritten only when the hand changes (plus a 5 s heartbeat),
   # and the status carries the read time so slow PCs show up.
-  $tmp = "$Out.tmp"; $bases = ''; $lastFull = [DateTime]::MinValue; $pid0 = 0; $lastUnits = $null; $lastPut = [DateTime]::MinValue
+  $tmp = "$Out.tmp"; $bases = ''; $lastFull = [DateTime]::MinValue; $pid0 = 0; $lastUnits = $null; $lastPut = [DateTime]::MinValue; $quests = '[]'
   # 수정내역 90: "Game" = {round, story, storyName, gorosei, others} read from the same unit records.
   function Put($status, $units, $game = 'null') {
     $o = '{"Source":"memscan","Time":"' + (Get-Date -Format o) + '","Status":' + (ConvertTo-Json $status) + ',"Units":' + $units + ',"Game":' + $game + '}'
@@ -262,7 +304,7 @@ if ($Watch) {
   while ($true) {
     $proc = Find-Game
     if (-not $proc) { Put '게임 없음' '[]'; $bases = ''; Start-Sleep -Seconds 5; continue }
-    if ($proc.Id -ne $pid0) { $pid0 = $proc.Id; $bases = '' }
+    if ($proc.Id -ne $pid0) { $pid0 = $proc.Id; $bases = ''; $quests = '[]' }
     $full = (-not $bases) -or (((Get-Date) - $lastFull).TotalSeconds -ge $Rescan)
     if ($full -and -not $bases) { Put '전체 스캔 중' '[]' }
     $sw = [Diagnostics.Stopwatch]::StartNew()
@@ -273,6 +315,9 @@ if ($Watch) {
     if ($full) { $lastFull = Get-Date; $bases = ($obj.regions -join ',') }
     $units = ConvertTo-Json -Compress -InputObject @($obj.hand)
     if (-not $units -or $units -eq 'null') { $units = '[]' }
+    # 수정내역 91: quests are read on full scans until found and round 10 has passed (reroll window, 2.320).
+    if ($full -and ($quests -eq '[]' -or $obj.game.round -le 10)) { $quests = [OrdrMemScan]::Quests($proc.Id) }
+    if ($obj.game) { $obj.game | Add-Member -Force NoteProperty quests @($quests | ConvertFrom-Json) }
     $game = if ($obj.game) { ConvertTo-Json -Compress -Depth 4 $obj.game } else { 'null' }
     if ($full -or ($units + $game) -ne $lastUnits -or ((Get-Date) - $lastPut).TotalSeconds -ge 5) {
       Put ("{0} {1}ms" -f $(if ($full) { '전체' } else { '빠름' }), $ms) $units $game
