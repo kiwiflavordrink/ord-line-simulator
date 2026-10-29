@@ -312,7 +312,8 @@ public static class Track {
   [DllImport("kernel32.dll", SetLastError=true)] static extern IntPtr VirtualQueryEx(IntPtr h, IntPtr addr, out OrdrMemScan.MBI64 info, IntPtr len);
   [DllImport("kernel32.dll", SetLastError=true)] static extern bool ReadProcessMemory(IntPtr h, IntPtr addr, byte[] buf, IntPtr size, out IntPtr read);
   const uint ACCESS = 0x0400 | 0x0010;
-  public static List<ulong> Cand = new List<ulong>();
+  public static List<ulong> Cand = new List<ulong>(); public static int Last = 0;
+  public static List<ulong> Changed = new List<ulong>(); public static List<int> ChangedTo = new List<int>();
   static bool Rw(OrdrMemScan.MBI64 m) { return m.State == 0x1000 && (m.Protect & 0x101) == 0 && (m.Protect & (0x04 | 0x08 | 0x40 | 0x80)) != 0; }
   static void Walk(IntPtr h, Action<ulong, byte[], int> each) {
     ulong addr = 0; const int CHUNK = 16 * 1024 * 1024; int size = Marshal.SizeOf(typeof(OrdrMemScan.MBI64));
@@ -320,7 +321,7 @@ public static class Track {
       OrdrMemScan.MBI64 m;
       if (VirtualQueryEx(h, (IntPtr)(long)addr, out m, (IntPtr)size) == IntPtr.Zero) break;
       ulong next = m.BaseAddress + m.RegionSize; if (next <= addr) break;
-      if (Rw(m) && m.Type == 0x20000) for (ulong off = 0; off < m.RegionSize; off += (ulong)CHUNK) {
+      if (Rw(m)) for (ulong off = 0; off < m.RegionSize; off += (ulong)CHUNK) {
         int len = (int)Math.Min((ulong)CHUNK, m.RegionSize - off); var buf = new byte[len]; IntPtr read;
         if (ReadProcessMemory(h, (IntPtr)(long)(m.BaseAddress + off), buf, (IntPtr)len, out read)) each(m.BaseAddress + off, buf, (int)read);
       }
@@ -329,12 +330,13 @@ public static class Track {
   }
   public static long First(int pid, int value) {
     IntPtr h = OpenProcess(ACCESS, false, pid); if (h == IntPtr.Zero) return -1;
-    Cand = new List<ulong>();
+    Cand = new List<ulong>(); Last = value; Changed.Clear(); ChangedTo.Clear();
     Walk(h, (b, buf, n) => { for (int i = 0; i + 4 <= n; i += 4) if (BitConverter.ToInt32(buf, i) == value) Cand.Add(b + (ulong)i); });
     CloseHandle(h); return Cand.Count;
   }
   public static long Next(int pid, int value) {
     IntPtr h = OpenProcess(ACCESS, false, pid); if (h == IntPtr.Zero) return -1;
+    Changed.Clear(); ChangedTo.Clear();
     var keep = new List<ulong>(); var buf = new byte[1 << 20]; ulong blk = ulong.MaxValue; bool ok = false; var one = new byte[4];
     foreach (var a in Cand) {
       ulong bb = a & ~((ulong)(1 << 20) - 1); IntPtr read;
@@ -343,8 +345,11 @@ public static class Track {
       if (ok) v = BitConverter.ToInt32(buf, (int)(a - bb));
       else { if (!ReadProcessMemory(h, (IntPtr)(long)a, one, (IntPtr)4, out read)) continue; v = BitConverter.ToInt32(one, 0); }
       if (v == value) keep.Add(a);
+      else if (v != Last) { Changed.Add(a); ChangedTo.Add(v); }
     }
-    Cand = keep; CloseHandle(h); return Cand.Count;
+    CloseHandle(h);
+    if (keep.Count == 0) return 0;   // keep the previous candidates so the report shows what they became
+    Cand = keep; Last = value; Changed.Clear(); ChangedTo.Clear(); return Cand.Count;
   }
   static string Hex(byte[] b, int s, int n) { var sb = new StringBuilder(); for (int i = s; i < s + n && i < b.Length; i++) sb.Append(b[i].ToString("x2")); return sb.ToString(); }
   static string Text(IntPtr h, ulong p) {
@@ -362,7 +367,7 @@ public static class Track {
   }
   public static string Report(int pid, string label, string steps) {
     IntPtr h = OpenProcess(ACCESS, false, pid); if (h == IntPtr.Zero) return "{\"error\":\"OpenProcess\"}";
-    var c = Cand.Count > 40 ? Cand.GetRange(0, 40) : Cand; var items = new List<string>();
+    var c = Cand.Count > 40 ? Cand.GetRange(0, 40) : Cand; if (c.Count == 0) { CloseHandle(h); return "{\"left\":0}"; } var items = new List<string>();
     var holders = new Dictionary<ulong, List<ulong>>(); foreach (var a in c) holders[a] = new List<ulong>();
     // Pointers to (a - 0..64): an array's data pointer usually points at element 0 or at a small header before it.
     var sorted = c.ToArray(); Array.Sort(sorted); ulong lo = sorted[0] - 64, hi = sorted[sorted.Length - 1];
@@ -375,8 +380,14 @@ public static class Track {
       var hs = new List<string>(); foreach (var x in holders[a]) hs.Add(Around(h, x, 96, 96));
       items.Add("{\"cand\":" + Around(h, a, 64, 64) + ",\"pointers\":[" + string.Join(",", hs.ToArray()) + "]}");
     }
+    // Candidates that changed at the step where none matched: value histogram + the first 40 near the expected value.
+    var hist = new Dictionary<int, int>(); var ch = new List<string>();
+    for (int k = 0; k < Changed.Count; k++) { int v = ChangedTo[k]; int c0; hist.TryGetValue(v, out c0); hist[v] = c0 + 1;
+      if (ch.Count < 40 && v > Last && v - Last <= 20) ch.Add("{\"to\":" + v + ",\"at\":" + Around(h, Changed[k], 64, 64) + "}"); }
+    var hs2 = new List<string>(); foreach (var kv in hist) if (hs2.Count < 200) hs2.Add("\"" + kv.Key + "\":" + kv.Value);
     CloseHandle(h);
-    return "{\"tool\":\"track\",\"label\":\"" + label.Replace("\"", "") + "\",\"steps\":\"" + steps + "\",\"left\":" + Cand.Count + ",\"items\":[" + string.Join(",", items.ToArray()) + "]}";
+    return "{\"tool\":\"track 2\",\"last\":" + Last + ",\"changedHist\":{" + string.Join(",", hs2.ToArray()) + "},\"changed\":[" + string.Join(",", ch.ToArray()) + "]," +
+      "\"label\":\"" + label.Replace("\"", "") + "\",\"steps\":\"" + steps + "\",\"left\":" + Cand.Count + ",\"items\":[" + string.Join(",", items.ToArray()) + "]}";
   }
 }
 
@@ -432,30 +443,38 @@ if (-not $proc) { Write-Host "워크래프트 III 프로세스를 찾지 못했�
 $ver = try { $proc.MainModule.FileVersionInfo.FileVersion } catch { 'unknown' }
 Write-Host ("프로세스: {0} (PID {1}), 버전: {2}" -f $proc.ProcessName, $proc.Id, $ver)
 if ($Track) {
-  # 수정내역 92: find a quest counter (하급 도박 시도 횟수 = 2.305 yM[p]) by value. Read-only.
+  # 수정내역 92-93: find a quest counter (하급 도박 시도 횟수 = 2.305 yM[p]) by value. Read-only.
+  # 93: all writable memory (not only private); when no candidate is left the previous ones are kept and the file
+  # records what they became, so an off-by-one count or a different counting rule shows up; q also saves.
   Write-Host "퀘스트 진행도 위치 찾기(읽기 전용). 하급 도박 횟수로 찾습니다."
   Write-Host "1) 하급 도박을 2번 이상 한 뒤, 지금까지 한 하급 도박 횟수를 입력하세요."
-  Write-Host "2) 하급 도박을 1번 더 하고 새 횟수를 입력하세요. 후보가 10개 이하가 될 때까지 반복합니다."
-  Write-Host "   (도박을 안 하고 같은 숫자를 넣어도 됩니다. 처음부터 다시: r, 끝내기: q)"
+  Write-Host "2) 하급 도박을 1번 더 하고(결과가 화면에 뜬 뒤) 새 횟수를 입력하세요. 후보가 10개 이하가 될 때까지 반복합니다."
+  Write-Host "   (처음부터 다시: r, 저장하고 끝내기: q)"
+  $tf = Join-Path ([Environment]::GetFolderPath('Desktop')) 'ordr_track.json'
+  function Save-Track($why) {
+    Write-Host "파일을 만드는 중입니다(1~3분)..."
+    $o = [Track]::Report($proc.Id, "하급 도박 시도 ($why)", ($steps -join ','))
+    [IO.File]::WriteAllText($tf, $o, [Text.Encoding]::UTF8)
+    Write-Host "저장: $tf  (이 파일을 보내 주세요)"
+  }
   $steps = @(); $first = $true
   while ($true) {
     $t = Read-Host "지금까지 하급 도박 횟수"
-    if ($t -eq 'q') { break }
+    if ($t -eq 'q') { if (-not $first) { Save-Track 'q' }; break }
     if ($t -eq 'r') { $first = $true; $steps = @(); continue }
     $v = 0; if (-not [int]::TryParse($t, [ref]$v) -or $v -lt 1) { Write-Host "1 이상의 숫자를 넣으세요."; continue }
     $sw = [Diagnostics.Stopwatch]::StartNew()
     $n = if ($first) { [Track]::First($proc.Id, $v) } else { [Track]::Next($proc.Id, $v) }
     $first = $false; $steps += $v
     Write-Host ("  후보 {0}곳 ({1:N1}초)" -f $n, ($sw.ElapsedMilliseconds / 1000))
-    if ($n -le 0) { Write-Host "  후보가 없습니다. 숫자가 맞는지 확인하고 r로 다시 시작하세요."; continue }
-    if ($n -le 10) { break }
-  }
-  if (-not $first -and [Track]::Cand.Count -gt 0) {
-    Write-Host "보고서를 만드는 중입니다(1~3분)..."
-    $o = [Track]::Report($proc.Id, '하급 도박 시도', ($steps -join ','))
-    $tf = Join-Path ([Environment]::GetFolderPath('Desktop')) 'ordr_track.json'
-    [IO.File]::WriteAllText($tf, $o, [Text.Encoding]::UTF8)
-    Write-Host "저장: $tf  (이 파일을 보내 주세요)"
+    if ($n -lt 0) { Write-Host "  게임을 읽지 못했습니다."; break }
+    if ($n -eq 0) {
+      Write-Host "  맞는 후보가 없습니다. 직전 후보가 어떤 값으로 바뀌었는지 파일로 남깁니다."
+      Save-Track 'none'
+      Write-Host "  숫자를 잘못 넣었다면 맞는 숫자를 다시 넣어 계속할 수 있습니다(직전 후보 유지). 끝내려면 q."
+      continue
+    }
+    if ($n -le 10) { Save-Track 'found'; break }
   }
   exit 0
 }
