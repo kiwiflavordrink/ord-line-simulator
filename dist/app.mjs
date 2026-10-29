@@ -138,7 +138,7 @@ function updateURL(){
 
 async function main(){
   try{
-    const response=await fetch('./data.json');
+    const response=await fetch('./data_legacy.json');
     if(!response.ok)throw new Error(`데이터 HTTP ${response.status}`);
     state.data=await response.json();
     populate(state.data);render();

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {simulate} from './dist/engine.mjs';
 
-const data=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
+const data=JSON.parse(readFileSync(new URL('./dist/data_legacy.json',import.meta.url)));
 const hero='TR19',base={cut:201,coverage:1};
 const none=simulate(data,hero,base);
 const abOnly=simulate(data,hero,{...base,supportCode:'D3',supportDamage:false});

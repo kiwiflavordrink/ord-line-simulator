@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import {simulate} from './dist/engine.mjs';
 import {simulateV2,DELETERS} from './dist/engine_v2.mjs';
 
-const data=JSON.parse(readFileSync(new URL('./dist/data.json',import.meta.url)));
+const data=JSON.parse(readFileSync(new URL('./dist/data_legacy.json',import.meta.url)));
 for(const hero of data.heroes){
   const old=simulate(data,hero.code,{cut:201,coverage:1});
   const v2=simulateV2(data,[{code:hero.code}],{cut:201,coverage:1,finisher:{mode:'off'}});
