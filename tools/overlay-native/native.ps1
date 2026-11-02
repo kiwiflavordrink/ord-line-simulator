@@ -15,7 +15,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-public class OrdrRow { public string Text; public string Color; public bool Bold; public string Act; public int Indent; }
+public class OrdrRow { public string Text; public string Color; public bool Bold; public string Act; public int Indent; public string[] Menu; }
 public class OrdrOverlay : Form {
   [DllImport("user32.dll")] static extern bool RegisterHotKey(IntPtr h, int id, uint mod, uint vk);
   [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr h, IntPtr after, int x, int y, int cx, int cy, uint flags);
@@ -79,7 +79,7 @@ public class OrdrOverlay : Form {
         TextRenderer.DrawText(g, Labels[i], on ? fb : fs, r, on ? Color.FromArgb(11,15,23) : C(""), TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         hits.Add(new KeyValuePair<Rectangle,string>(r, "view " + Views[i])); }
       y += lh + 10;
-      int top = y, bottom = ClientSize.Height - lh - 8;
+      int top = y, bottom = ClientSize.Height - lh - 8; contentTop = top; contentBottom = bottom;
       // rows (word-wrapped), clipped to the content area
       g.SetClip(new Rectangle(0, top, W, bottom - top));
       int cy = top - scroll;
@@ -103,8 +103,23 @@ public class OrdrOverlay : Form {
       ViewHeight = bottom - top;
     }
   }
-  int ViewHeight = 400;
+  int ViewHeight = 400, contentTop = 0, contentBottom = 0;
+  // 수정내역 97: 목록 영역은 끌어서 스크롤(6px 넘게 움직이면 스크롤, 아니면 놓을 때 클릭). ▼ 줄은 목록 메뉴, ✎ 줄은 입력 창.
+  bool pressing = false, scrolling = false; int pressY = 0, scrollStart = 0; string pressAct = null; Point pressPt;
+  void DoAct(string a, Point pt) {
+    if (a.StartsWith("input ")) { string txt = OrdrInput.Ask("유닛 찾기 검색어", ""); if (txt != null) Send(a.Substring(6) + " " + txt); return; }
+    var row = Rows.Find(r => r.Act == a && r.Menu != null && r.Menu.Length > 0);
+    if (row != null) { var cm = new ContextMenuStrip(); cm.Font = new Font("Malgun Gothic", FontSize);
+      for (int k = 0; k < row.Menu.Length; k++) { int idx = k; cm.Items.Add(row.Menu[k], null, (s2, ev) => Send(a + " " + idx)); }
+      cm.Show(this, pt); return; }
+    Send(a);
+  }
   protected override void OnMouseDown(MouseEventArgs e) {
+    if (e.Y >= contentTop && e.Y < contentBottom && !folded) {
+      pressing = true; scrolling = false; pressY = e.Y; pressPt = e.Location; scrollStart = scroll; pressAct = null; Capture = true;
+      for (int i = hits.Count - 1; i >= 0; i--) if (hits[i].Key.Contains(e.Location)) { pressAct = hits[i].Value; break; }
+      return;
+    }
     for (int i = hits.Count - 1; i >= 0; i--) { if (!hits[i].Key.Contains(e.Location)) continue; string a = hits[i].Value;
       if (a == "drag") { dragging = true; dragFrom = e.Location; Capture = true; return; }
       if (a == "up") { scroll = Math.Max(0, scroll - ViewHeight * 2 / 3); Invalidate(); return; }
@@ -114,10 +129,17 @@ public class OrdrOverlay : Form {
       if (a == "tool 2") { folded = !folded; Height = folded ? (int)(FontSize * 2.6) + 12 : fullH; Invalidate(); return; }
       if (a == "tool 3") { Close(); return; }
       if (a.StartsWith("view ")) { View = a.Substring(5); scroll = 0; Send(a); Invalidate(); return; }
-      Send(a); return; }
+      DoAct(a, e.Location); return; }
   }
-  protected override void OnMouseMove(MouseEventArgs e) { if (dragging) Location = new Point(Location.X + e.X - dragFrom.X, Location.Y + e.Y - dragFrom.Y); }
-  protected override void OnMouseUp(MouseEventArgs e) { dragging = false; Capture = false; }
+  protected override void OnMouseMove(MouseEventArgs e) {
+    if (dragging) { Location = new Point(Location.X + e.X - dragFrom.X, Location.Y + e.Y - dragFrom.Y); return; }
+    if (pressing) { int dy = e.Y - pressY; if (Math.Abs(dy) > 6) scrolling = true;
+      if (scrolling) { scroll = Math.Max(0, Math.Min(Math.Max(0, contentH - ViewHeight), scrollStart - dy)); Invalidate(); } }
+  }
+  protected override void OnMouseUp(MouseEventArgs e) {
+    if (pressing && !scrolling && pressAct != null) DoAct(pressAct, pressPt);
+    pressing = false; scrolling = false; dragging = false; Capture = false;
+  }
 }
 
 // 수정내역 94: 알람 배너 — 화면 위쪽 가운데, 맨 위, 포커스를 뺏지 않음. 오버레이를 F1로 숨겨도 뜬다. 누르면 닫힘, 10초 뒤 자동으로 닫힘.
@@ -143,7 +165,43 @@ public class OrdrBanner : Form {
       TextRenderer.DrawText(e.Graphics, Detail, fs, new Rectangle(10, 60, Width - 20, Height - 64), Color.FromArgb(240, 240, 240), TextFormatFlags.HorizontalCenter | TextFormatFlags.WordBreak);
     }
   }
-  protected override void OnMouseDown(MouseEventArgs e) { close.Stop(); Hide(); }
+  // 수정내역 97: 끌어서 옮긴다(위치는 %TEMP%\ordr_banner_pos.txt 에 기억). 끌지 않고 누르면 닫힌다.
+  bool down = false, moved = false; Point from;
+  static string PosFile { get { return System.IO.Path.Combine(System.IO.Path.GetTempPath(), "ordr_banner_pos.txt"); } }
+  public void LoadPos() { try { var t = System.IO.File.ReadAllText(PosFile).Split(','); Location = new Point(int.Parse(t[0]), int.Parse(t[1])); } catch {} }
+  protected override void OnMouseDown(MouseEventArgs e) { down = true; moved = false; from = e.Location; Capture = true; close.Stop(); }
+  protected override void OnMouseMove(MouseEventArgs e) {
+    if (!down) return; if (Math.Abs(e.X - from.X) + Math.Abs(e.Y - from.Y) > 3) moved = true;
+    if (moved) Location = new Point(Location.X + e.X - from.X, Location.Y + e.Y - from.Y);
+  }
+  protected override void OnMouseUp(MouseEventArgs e) {
+    down = false; Capture = false;
+    if (!moved) { Hide(); return; }
+    try { System.IO.File.WriteAllText(PosFile, Location.X + "," + Location.Y); } catch {}
+    close.Start();
+  }
+}
+
+// 수정내역 97: 검색어 입력 창. 글자를 받으려면 창이 포커스를 가져야 해서, 닫은 뒤 원래 창(게임)으로 포커스를 돌려준다.
+public class OrdrInput : Form {
+  [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
+  [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr h);
+  readonly TextBox box = new TextBox();
+  OrdrInput(string title, string init) {
+    Text = title; FormBorderStyle = FormBorderStyle.FixedToolWindow; StartPosition = FormStartPosition.CenterScreen; TopMost = true;
+    ClientSize = new Size(360, 72); Font = new Font("Malgun Gothic", 12f);
+    box.SetBounds(10, 10, 340, 28); box.Text = init;
+    var ok = new Button { Text = "찾기", DialogResult = DialogResult.OK }; ok.SetBounds(190, 40, 76, 28);
+    var no = new Button { Text = "취소", DialogResult = DialogResult.Cancel }; no.SetBounds(274, 40, 76, 28);
+    Controls.Add(box); Controls.Add(ok); Controls.Add(no); AcceptButton = ok; CancelButton = no;
+    Shown += (s, e) => { Activate(); box.Focus(); };
+  }
+  public static string Ask(string title, string init) {
+    IntPtr prev = GetForegroundWindow(); string r = null;
+    using (var f = new OrdrInput(title, init)) { if (f.ShowDialog() == DialogResult.OK) r = f.box.Text.Trim(); }
+    if (prev != IntPtr.Zero) SetForegroundWindow(prev);
+    return r;
+  }
 }
 '@
 $keys = @{ F1=0x70; F2=0x71; F3=0x72; F4=0x73; F5=0x74; F6=0x75; F7=0x76; F8=0x77; F9=0x78; F10=0x79; F11=0x7A; F12=0x7B }
@@ -152,7 +210,7 @@ if ($keys.ContainsKey($HideKey)) { $form.HideVk = $keys[$HideKey] }
 if ($keys.ContainsKey($TabKey)) { $form.TabVk = $keys[$TabKey] }
 $viewFile = Join-Path $env:TEMP 'ordr_overlay_view.json'
 $script:last = $null; $script:seen = @{}; $script:raiseAt = 0
-$banner = New-Object OrdrBanner
+$banner = New-Object OrdrBanner; $banner.LoadPos()
 $timer = New-Object System.Windows.Forms.Timer; $timer.Interval = 120   # 수정내역 79: 0.4 s -> 0.12 s
 $timer.Add_Tick({
   # 수정내역 94: 게임이 맨 위를 가져가도 2초마다 다시 올린다(숨김 상태가 아닐 때).
@@ -163,7 +221,7 @@ $timer.Add_Tick({
   $script:last = $t
   try { $j = Get-Content $viewFile -Raw -Encoding UTF8 | ConvertFrom-Json } catch { return }
   $rows = New-Object 'System.Collections.Generic.List[OrdrRow]'
-  foreach ($r in $j.rows) { $o = New-Object OrdrRow; $o.Text = [string]$r.t; $o.Color = [string]$r.c; $o.Bold = [bool]$r.b; $o.Act = [string]$r.a; $o.Indent = [int]$r.i; $rows.Add($o) }
+  foreach ($r in $j.rows) { $o = New-Object OrdrRow; $o.Text = [string]$r.t; $o.Color = [string]$r.c; $o.Bold = [bool]$r.b; $o.Act = [string]$r.a; $o.Indent = [int]$r.i; if ($r.m) { $o.Menu = [string[]]@($r.m) }; $rows.Add($o) }
   $form.Rows = $rows; $form.Status = [string]$j.status
   foreach ($a in @($j.alarms)) { if ($a -and $a.id -and -not $script:seen.ContainsKey([string]$a.id)) { $script:seen[[string]$a.id] = 1; $banner.ShowAlarm([string]$a.text, [string]$a.detail, ([string]$a.level -eq 'red')) } }
   if ($j.view) { $form.View = [string]$j.view }

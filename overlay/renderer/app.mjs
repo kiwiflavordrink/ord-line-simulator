@@ -1,7 +1,7 @@
 // Overlay page (수정내역 34). Runs inside the Electron window (window.ordApi from preload.js) or in a plain browser
 // (folder/file inputs) for testing. No calculation here: worker.mjs calls dist/advisor.mjs.
 import {parseHelperText,snapshotFromValue,goalId} from './logparse.mjs';
-import {handFromUnits,reverseRawcode} from '../../dist/planner.mjs';
+import {handFromUnits,reverseRawcode,stepView,STEP_FROM} from '../../dist/planner.mjs';
 import {PERSONAL_QUESTS,liveAlarms} from '../../dist/coach.mjs';
 import {findUnits,FIND_GRADES} from '../../dist/advisor.mjs';
 
@@ -271,8 +271,11 @@ function renderQuick(){
       ${miss?`<div class="warn">특수 기물·못 뽑는 재료: ${specialChips(p.missing)}</div>`:''}
       ${p.special.length?`<div class="warn">특수 조건: ${p.special.map(s=>esc(s.kind+(s.id?' '+nameOf(s.id):''))).join(', ')}</div>`:''}
       ${Object.keys(p.used).length?`<div class="muted small">쓰는 보유 유닛: ${Object.entries(p.used).map(([id,n])=>esc(nameOf(id))+(n>1?'×'+n:'')).join(', ')}</div>`:''}
+      <div id="nextStep"></div>
       ${stagesHtml(g.stages)}`;
   }
+  // 수정내역 97: 다음 할 일 (패를 보고 다음 단계로).
+  renderNextStep(g);
   // combo
   if(!q.team.length)$('comboBody').innerHTML='<span class="muted">라인에 쓰는 상위 유닛이 없습니다.</span>';
   else{
@@ -307,22 +310,41 @@ const wispBadge=n=>`<span class="wisp${n?'':' zero'}">${n?`위습 ${n}`:'바로'
 const specialChips=obj=>'<span class="chips">'+Object.entries(obj).map(([id,n])=>`<span class="sp">${esc(nameOf(id))}${n>1?'×'+n:''} <small>${esc(tierShort(id)||'특수')}</small></span>`).join('')+'</span>';
 // Craft order by stage: 위습 → 안흔함 → 희귀 → … each "name ×n (materials)".
 // 수정내역 94: one line per step (유저: 줄글이라 읽기 힘듦) — 단계 제목 줄, 그 아래 "만들 유닛 = 재료 + 재료" 한 줄씩.
+// 수정내역 97: 보기 시작 등급(설정 stepFrom: 처음부터·특별부터·희귀부터·전설부터). 아래 단계는 감추고 "준비할 것"으로 묶는다.
+const nmOf=st=>{const ids=new Set(st.stages.flatMap(g=>g.items.flatMap(x=>[x.id,...x.materials.map(m=>m.id)]))),byName={};
+  for(const id of ids)(byName[nameOf(id)]??=new Set()).add(id);
+  return id=>esc(nameOf(id))+(byName[nameOf(id)]?.size>1?`<span class="muted small">(${esc(tierShort(id))})</span>`:'');};
 function stagesHtml(st){
   if(!st)return '';
+  const from=state.settings.stepFrom??'',v=stepView(st,state.hand,{from}),nm=nmOf(st);
   const out=[];let k=0;
-  if(Object.keys(st.commons).length){out.push(`<div class="stage"><b>${++k}단계. 흔함 선택위습으로 뽑기</b></div>`);
+  out.push(`<div class="stage muted small">보기: <select id="stepFrom">${STEP_FROM.map(f=>`<option value="${f}"${f===from?' selected':''}>${f?f+'부터':'처음부터'}</option>`).join('')}</select></div>`);
+  if(!from&&Object.keys(st.commons).length){out.push(`<div class="stage"><b>${++k}단계. 흔함 선택위습으로 뽑기</b></div>`);
     for(const [id,n] of Object.entries(st.commons))out.push(`<div class="step">· ${esc(nameOf(id))}${n>1?' ×'+n:''}</div>`);}
-  // 이름이 같은 다른 등급(예: 트라팔가 로우 특별·희귀)은 등급을 붙여 구분한다.
-  const ids=new Set(st.stages.flatMap(g=>g.items.flatMap(x=>[x.id,...x.materials.map(m=>m.id)]))),byName={};
-  for(const id of ids)(byName[nameOf(id)]??=new Set()).add(id);
-  const nm=id=>esc(nameOf(id))+(byName[nameOf(id)]?.size>1?`<span class="muted small">(${esc(tierShort(id))})</span>`:'');
-  for(const g of st.stages){
-    const items=g.items.filter(x=>x.materials.length);   // 재료가 없는 것(랜덤유닛 K 등)은 특수 기물 줄에 있다
-    if(!items.length)continue;
+  if(from&&v.prep.length){out.push(`<div class="stage"><b>${++k}단계. 준비할 것 (${esc(from)} 아래 단계)</b></div>`);
+    for(const p of v.prep)out.push(`<div class="step ${p.have>=p.need?'ok':''}">${p.have>=p.need?'✓':'·'} ${nm(p.id)} ${Math.min(p.have,p.need)}/${p.need}</div>`);}
+  for(const g of v.shown){
     out.push(`<div class="stage"><b>${++k}단계. ${esc(g.tier)} 조합</b></div>`);
-    for(const x of items)out.push(`<div class="step">· ${nm(x.id)}${x.count>1?' ×'+x.count:''} = ${x.materials.map(m=>nm(m.id)+(m.count>1?'×'+m.count:'')).join(' + ')}${x.wood?` <span class="muted small">나무 ${x.wood}</span>`:''}</div>`);
+    for(const x of g.items)out.push(`<div class="step">· ${nm(x.id)}${x.count>1?' ×'+x.count:''} = ${x.materials.map(m=>nm(m.id)+(m.count>1?'×'+m.count:'')).join(' + ')}${x.wood?` <span class="muted small">나무 ${x.wood}</span>`:''}</div>`);
   }
-  return out.length?'<div class="stages">'+out.join('')+'</div>':'';
+  return '<div class="stages">'+out.join('')+'</div>';
+}
+// 다음 할 일: 지금 패로 바로 할 수 있는 조합 하나. 지시한 조합이 패에 생기면 "확인"을 띄우고 다음으로.
+// 패를 기준으로 매번 다시 계산하므로 미리 만들거나 뽑은 것은 저절로 빠진다.
+function renderNextStep(g){
+  const el=$('nextStep');if(!el||!g)return;
+  const v=stepView(g.stages,state.hand,{from:state.settings.stepFrom??''}),n=v.next,nm=nmOf(g.stages);
+  const prev=state.stepPrev;
+  if(prev&&prev.goal===g.id&&(state.hand[prev.id]??0)>prev.had)state.stepDone={text:`✓ ${nameOf(prev.id)} 조합 확인`,at:Date.now()};
+  state.stepPrev=n?.kind==='craft'?{goal:g.id,id:n.id,had:state.hand[n.id]??0}:null;
+  const done=state.stepDone&&Date.now()-state.stepDone.at<8000?`<div class="ok small">${esc(state.stepDone.text)} → 다음 단계</div>`:'';
+  let t='';
+  if(!n)t='<b>다음 할 일:</b> 목표 조합 재료가 다 모였습니다.';
+  else if(n.kind==='craft')t=`<b>다음 할 일:</b> ${nm(n.id)} 조합 = ${n.materials.map(m=>nm(m.id)+(m.count>1?'×'+m.count:'')).join(' + ')} <span class="muted small">(${esc(n.tier)}${n.count>1?', 이번 목표에 '+n.count+'번':''})</span>`;
+  else if(n.kind==='prep')t=`<b>다음 할 일:</b> 준비 — ${n.items.map(p=>nm(p.id)+' '+p.have+'/'+p.need).join(', ')}`;
+  else if(n.kind==='draw')t=`<b>다음 할 일:</b> 흔함 선택위습으로 뽑기 — ${Object.entries(n.commons).map(([id,c])=>esc(nameOf(id))+(c>1?' ×'+c:'')).join(', ')}`;
+  else t='<b>다음 할 일:</b> 특수 기물을 구하세요 (위 특수 기물 줄).';
+  el.className='nextstep';el.innerHTML=done+`<div>${t}</div>`;
 }
 const stageLine=st=>st?.stages?.length?`<span class="muted small">만들기 </span>`+st.stages.map(g=>`${esc(g.tier)} ${g.items.reduce((a,x)=>a+x.count,0)}`).join(' → '):'';
 function howTo(p,st){
@@ -348,7 +370,9 @@ function exportView(now){
       if(sec.hidden)continue;
       rows.push({t:[...(sec.querySelector('h2')?.childNodes??[])].filter(n=>n.nodeName!=='SELECT').map(n=>n.textContent).join('').replace(/\s+/g,' ').trim(),c:'acc',b:true});
       if(sec.id==='next'){
-        const fg=state.settings.findGrade??'';rows.push({t:`유닛 찾기 등급: ${fg||'(전체)'}  ▶ 눌러서 바꾸기`,c:'acc',a:'fgrade',i:1});
+        // 수정내역 97: 등급은 ▼ 목록(m), 검색어는 눌러서 입력 창(input).
+        const fg=state.settings.findGrade??'';rows.push({t:`유닛 찾기 등급: ${fg||'(전체)'}  ▼`,c:'acc',a:'fgrade',m:['(전체)',...FIND_GRADES],i:1});
+        const fq=$('findName').value.trim();rows.push({t:`검색어: ${fq||'(없음)'}  ✎ 눌러서 입력`,c:'acc',a:'input findq',i:1});
         for(const el of $('findBody').querySelectorAll('.row'))rows.push({t:el.innerText.replace(/\s+/g,' ').trim(),a:'goal '+el.dataset.goal,i:1});
         const on=new Set(state.settings.cats??['legend','upper']);
         const cats=[...$('catBar').querySelectorAll('input')].map(i=>(on.has(i.value)?'☑ ':'☐ ')+i.parentElement.innerText.trim());
@@ -357,7 +381,11 @@ function exportView(now){
       if(sec.id==='lack'){const d=state.settings.difficulty??'auto';rows.push({t:`난이도: ${d==='auto'?'자동('+difficulty()+')':d}  ▶ 눌러서 바꾸기`,c:'acc',a:'diff',i:1});}
       if(sec.id==='goal'){const g=$('goalSelect').value;rows.push({t:'목표: '+(g?nameOf(g):'(목록에서 유닛을 누르면 목표로 지정)'),c:g?'':'muted'});
         if(g)rows.push({t:'✕ 목표 해제',c:'muted',a:'goal none',i:1});
-        for(const d of $('goalBody').children.length?[...$('goalBody').children].flatMap(x=>x.classList.contains('stages')?[...x.children]:[x]):[$('goalBody')]){const t=d.innerText.replace(/\s+/g,' ').trim();if(t)rows.push({t,c:d.classList.contains('warn')?'warn':d.classList.contains('muted')?'muted':d.classList.contains('stage')?'acc':'',b:d.classList.contains('stage'),i:d.classList.contains('step')?2:1});}
+        for(const d of $('goalBody').children.length?[...$('goalBody').children].flatMap(x=>x.classList.contains('stages')?[...x.children]:[x]):[$('goalBody')]){
+          if(d.querySelector?.('#stepFrom')){const f=state.settings.stepFrom??'';rows.push({t:`보기: ${f?f+'부터':'처음부터'}  ▼`,c:'acc',a:'stepfrom',m:STEP_FROM.map(x=>x?x+'부터':'처음부터'),i:1});continue;}
+          const t=d.innerText.replace(/\s+/g,' ').trim();if(!t)continue;
+          if(d.id==='nextStep'){for(const c of d.children){const tt=c.innerText.replace(/\s+/g,' ').trim();if(tt)rows.push({t:tt,c:c.classList.contains('ok')?'ok':'acc',b:true,i:1});}continue;}
+          rows.push({t,c:d.classList.contains('warn')?'warn':d.classList.contains('ok')?'ok':d.classList.contains('muted')?'muted':d.classList.contains('stage')?'acc':'',b:d.classList.contains('stage'),i:d.classList.contains('step')?2:1});}
         continue;}
       const body=sec.id==='next'?$('nextBody'):(sec.querySelector('[id$=Body]')??sec);
       const items=body.querySelectorAll(':scope > .row, :scope > div.muted, :scope ul.lack > li, :scope .hand-row, :scope table tr');
@@ -485,7 +513,10 @@ if(webLive)setInterval(async()=>{
   const [,verb,arg]=t.split(' ');
   if(verb==='view'&&VIEWS.includes(arg)){await saveSettings({view:arg});applyView();analyze();}
   if(verb==='goal'&&arg){await setGoal(arg==='none'?null:arg);}
-  if(verb==='fgrade'){const L=['',...FIND_GRADES],i=L.indexOf(state.settings.findGrade??'');await saveSettings({findGrade:L[(i+1)%L.length]});$('findGrade').value=state.settings.findGrade;renderFind();}
+  // 수정내역 97: 목록에서 고른 번호(arg), 입력한 검색어(나머지 전부).
+  if(verb==='fgrade'){const L=['',...FIND_GRADES],i=arg!=null&&/^\d+$/.test(arg)?+arg:(L.indexOf(state.settings.findGrade??'')+1)%L.length;await saveSettings({findGrade:L[i]??''});$('findGrade').value=state.settings.findGrade;renderFind();}
+  if(verb==='stepfrom'&&/^\d+$/.test(arg??'')){await saveSettings({stepFrom:STEP_FROM[+arg]??''});renderQuick();}
+  if(verb==='findq'){$('findName').value=t.split(' ').slice(2).join(' ');renderFind();}
   if(verb==='diff'){const L=['auto','신','악몽','지옥'],i=L.indexOf(state.settings.difficulty??'auto');await saveSettings({difficulty:L[(i+1)%L.length]});$('difficulty').value=state.settings.difficulty;status();analyze();}
   if(verb==='cat'&&arg){const on=new Set(state.settings.cats??['legend','upper']);on.has(arg)?on.delete(arg):on.add(arg);await saveSettings({cats:[...on]});syncCats();analyze();}
   exportView();
@@ -523,6 +554,7 @@ async function setGoal(id){
   applyView();analyze();window.scrollTo({top:0,behavior:'smooth'});
 }
 $('goalSelect').onchange=e=>setGoal(e.target.value||null);
+$('goalBody').addEventListener('change',async e=>{if(e.target.id==='stepFrom'){await saveSettings({stepFrom:e.target.value});renderQuick();exportView();}});
 $('goalClear').onclick=()=>setGoal(null);
 // 목표 종류 (수정내역 49): saved in settings; default 전설 + 상위.
 function syncCats(){const on=new Set(state.settings.cats??['legend','upper']);for(const c of $('catBar').querySelectorAll('input'))c.checked=on.has(c.value);}
