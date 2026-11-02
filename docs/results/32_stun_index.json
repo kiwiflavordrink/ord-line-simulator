@@ -1,0 +1,3640 @@
+[
+ {
+  "code": "TR13",
+  "name": "샹크스",
+  "grade": "초월함",
+  "line": 5.094753823759525,
+  "boss": 2.312748066408221,
+  "parts": [
+   {
+    "cond": "마나35",
+    "rate": 0.038571428571428576,
+    "single": false,
+    "radius": 1100,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기",
+    "rate": 0.07017543859649122,
+    "single": false,
+    "radius": 1100,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "9%",
+    "rate": 0.6524999843537813,
+    "single": false,
+    "radius": 800,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.7249999826153126,
+    "single": false,
+    "radius": 800,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "12%",
+    "rate": 0.8699999791383751,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 3.0911927409476734,
+  "bossIdx": 4.263683421028619
+ },
+ {
+  "code": "E10",
+  "name": "카번딧슈",
+  "grade": "영원한",
+  "line": 5.076696639472472,
+  "boss": 3.863591782592807,
+  "parts": [
+   {
+    "cond": "마나100",
+    "rate": 0.05845070775480798,
+    "single": false,
+    "radius": 800,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.5845070775480797,
+    "single": false,
+    "radius": 550,
+    "normal": 2.3,
+    "hero": 0.46,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 1.1690141550961595,
+    "single": true,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 1.1690141550961595,
+    "single": false,
+    "radius": 500,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 3.080236718552679,
+  "bossIdx": 7.122752567964185
+ },
+ {
+  "code": "E1",
+  "name": "니카(루피)",
+  "grade": "영원한",
+  "line": 5.038277556147362,
+  "boss": 2.4675439294951635,
+  "parts": [
+   {
+    "cond": "마나150",
+    "rate": 0.05087719442258069,
+    "single": false,
+    "radius": 750,
+    "normal": 2.5,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.7631579163387104,
+    "single": false,
+    "radius": 500,
+    "normal": 2,
+    "hero": 0.4,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 1.5263158326774209,
+    "single": false,
+    "radius": 500,
+    "normal": 2,
+    "hero": 0.4,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 1.5263158326774209,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 3.056926310317721,
+  "bossIdx": 4.549058453732729
+ },
+ {
+  "code": "E2",
+  "name": "니카(스네이크)",
+  "grade": "영원한",
+  "line": 5.038277556147362,
+  "boss": 2.4675439294951635,
+  "parts": [
+   {
+    "cond": "마나150",
+    "rate": 0.05087719442258069,
+    "single": false,
+    "radius": 750,
+    "normal": 2.5,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.7631579163387104,
+    "single": false,
+    "radius": 500,
+    "normal": 2,
+    "hero": 0.4,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 1.5263158326774209,
+    "single": false,
+    "radius": 500,
+    "normal": 2,
+    "hero": 0.4,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 1.5263158326774209,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 3.056926310317721,
+  "bossIdx": 4.549058453732729
+ },
+ {
+  "code": "MY4",
+  "name": "미나토",
+  "grade": "신비함",
+  "line": 3.913598912036373,
+  "boss": 0.717493133873335,
+  "parts": [
+   {
+    "cond": "13.5%",
+    "rate": 0.817397241121521,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "6.25%",
+    "rate": 0.3784246486673708,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 2.3745383911288593,
+  "bossIdx": 1.3227396550583197
+ },
+ {
+  "code": "I9",
+  "name": "시키",
+  "grade": "불멸의",
+  "line": 3.4852884463007285,
+  "boss": 1.3357422829848904,
+  "parts": [
+   {
+    "cond": "마나125",
+    "rate": 0.07020407827135829,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "11.65%",
+    "rate": 1.022785665315851,
+    "single": true,
+    "radius": 400,
+    "normal": 1.5,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.8775509783919786,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 2.1146651473266806,
+  "bossIdx": 2.4625173443878015
+ },
+ {
+  "code": "E12",
+  "name": "핸콕",
+  "grade": "영원한",
+  "line": 2.655427389683865,
+  "boss": 1.710038640148814,
+  "parts": [
+   {
+    "cond": "마나175",
+    "rate": 0.033204633789297354,
+    "single": false,
+    "radius": 750,
+    "normal": 2.5,
+    "hero": 2.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.5810810913127037,
+    "single": false,
+    "radius": 650,
+    "normal": 2.75,
+    "hero": 0.55,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "15%",
+    "rate": 0.8716216369690556,
+    "single": true,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.611154955676978,
+  "bossIdx": 3.152554100129073
+ },
+ {
+  "code": "I1",
+  "name": "거프",
+  "grade": "불멸의",
+  "line": 2.456349170776391,
+  "boss": 2.4102182037216524,
+  "parts": [
+   {
+    "cond": "마나160",
+    "rate": 0.04265872926940978,
+    "single": false,
+    "radius": 800,
+    "normal": 2.5,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.6825396683105565,
+    "single": false,
+    "radius": 500,
+    "normal": 2.5,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 1.365079336621113,
+    "single": true,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.4903661665704875,
+  "bossIdx": 4.443375197467578
+ },
+ {
+  "code": "TR30",
+  "name": "베가펑크",
+  "grade": "초월함",
+  "line": 2.451786800538648,
+  "boss": 1.9407548499717502,
+  "parts": [
+   {
+    "cond": "마나200",
+    "rate": 0.035080645444272834,
+    "single": false,
+    "radius": 575,
+    "normal": 2.75,
+    "hero": 2.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "마나100",
+    "rate": 0.057999999999999996,
+    "single": false,
+    "radius": 575,
+    "normal": 3.75,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기",
+    "rate": 0.58,
+    "single": false,
+    "radius": 575,
+    "normal": 2.75,
+    "hero": 0.55,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기",
+    "rate": 1.5191891,
+    "single": true,
+    "normal": 0.75,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기",
+    "rate": 0.6847825,
+    "single": true,
+    "normal": 1,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.4875979924352316,
+  "bossIdx": 3.5778926370291755
+ },
+ {
+  "code": "TR26",
+  "name": "키자루",
+  "grade": "초월함",
+  "line": 2.1518555221737197,
+  "boss": 1.8377051481586402,
+  "parts": [
+   {
+    "cond": "8.25%",
+    "rate": 0.560742208869488,
+    "single": false,
+    "radius": 500,
+    "normal": 2.75,
+    "hero": 0.55,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "15%",
+    "rate": 1.0195312888536145,
+    "single": true,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.305617582284489,
+  "bossIdx": 3.3879146141116774
+ },
+ {
+  "code": "TR15",
+  "name": "시라호시",
+  "grade": "초월함",
+  "line": 2.1358468018095813,
+  "boss": 1.9065018334656456,
+  "parts": [
+   {
+    "cond": "마나120",
+    "rate": 0.05135773485980404,
+    "single": false,
+    "radius": 800,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "12%",
+    "rate": 0.7457143101643546,
+    "single": false,
+    "radius": 600,
+    "normal": 2.35,
+    "hero": 2.35,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.2959044456161959,
+  "bossIdx": 3.514745240769924
+ },
+ {
+  "code": "TR4",
+  "name": "로빈",
+  "grade": "초월함",
+  "line": 2.1043502880976472,
+  "boss": 1.4587588692291265,
+  "parts": [
+   {
+    "cond": "마나40",
+    "rate": 0.1656690211271608,
+    "single": false,
+    "radius": 600,
+    "normal": 1.15,
+    "hero": 1.15,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.6126760845086432,
+    "single": false,
+    "radius": 525,
+    "normal": 2.85,
+    "hero": 0.57,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "5%",
+    "rate": 0.3063380422543216,
+    "single": true,
+    "radius": 400,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.2767942397221563,
+  "bossIdx": 2.68930546147643
+ },
+ {
+  "code": "TR16",
+  "name": "아오키지",
+  "grade": "초월함",
+  "line": 2.0517786955470827,
+  "boss": 0.3845652247799142,
+  "parts": [
+   {
+    "cond": "마나40",
+    "rate": 0.1576086986802927,
+    "single": false,
+    "radius": 700,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.6304347947211708,
+    "single": false,
+    "radius": 550,
+    "normal": 2.3,
+    "hero": 0.46,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.2448969330231556,
+  "bossIdx": 0.7089680008876716
+ },
+ {
+  "code": "I2",
+  "name": "드래곤",
+  "grade": "불멸의",
+  "line": 2.0186288073709573,
+  "boss": 0.4229507977348672,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.7049179962247787,
+    "single": false,
+    "radius": 525,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.2247835581206468,
+  "bossIdx": 0.7797340014702139
+ },
+ {
+  "code": "E11",
+  "name": "테조로",
+  "grade": "영원한",
+  "line": 2.016313411675465,
+  "boss": 0.3548711604548818,
+  "parts": [
+   {
+    "cond": "체력89",
+    "rate": 0.0626538065774862,
+    "single": false,
+    "radius": 625,
+    "normal": 2.4,
+    "hero": 0.48,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "12%",
+    "rate": 0.676661111036851,
+    "single": false,
+    "radius": 625,
+    "normal": 2.4,
+    "hero": 0.48,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.2233787141156336,
+  "bossIdx": 0.654225293887068
+ },
+ {
+  "code": "TR20",
+  "name": "조로",
+  "grade": "초월함",
+  "line": 1.8910786869789955,
+  "boss": 3.7701492192274886,
+  "parts": [
+   {
+    "cond": "마나145",
+    "rate": 0.044776118993200574,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "17%",
+    "rate": 1.1037313331823941,
+    "single": true,
+    "radius": 415,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "3%",
+    "rate": 0.1947761176204225,
+    "single": false,
+    "radius": 500,
+    "normal": 2.5,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "25%",
+    "rate": 1.6231343135035208,
+    "single": true,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.1473937528617766,
+  "bossIdx": 6.950485854600171
+ },
+ {
+  "code": "H22",
+  "name": "피셔타이거",
+  "grade": "히든",
+  "line": 1.6789424714772152,
+  "boss": 1.5061224358751348,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.7346938711586024,
+    "single": false,
+    "radius": 515,
+    "normal": 2,
+    "hero": 0.4,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "22%",
+    "rate": 1.6163265165489251,
+    "single": true,
+    "normal": 0.75,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.0186821502730337,
+  "bossIdx": 2.776622907246905
+ },
+ {
+  "code": "I7",
+  "name": "센고쿠",
+  "grade": "불멸의",
+  "line": 1.6711363446083547,
+  "boss": 0.3501428531560362,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.6142857072912916,
+    "single": false,
+    "radius": 525,
+    "normal": 2.85,
+    "hero": 0.57,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1.0139458580896104,
+  "bossIdx": 0.6455083887764625
+ },
+ {
+  "code": "L13",
+  "name": "바르톨로메오",
+  "grade": "전설",
+  "line": 1.6481514582612589,
+  "boss": 0.5424295938581358,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.5563380449827035,
+    "single": false,
+    "radius": 550,
+    "normal": 2.75,
+    "hero": 0.55,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "17%",
+    "rate": 0.9457746764705958,
+    "single": true,
+    "normal": 0.5,
+    "hero": 0.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 1,
+  "bossIdx": 1
+ },
+ {
+  "code": "MY12",
+  "name": "타츠마키",
+  "grade": "신비함",
+  "line": 1.63662251474445,
+  "boss": 0.34291138404169424,
+  "parts": [
+   {
+    "cond": "18%",
+    "rate": 0.9797468115476979,
+    "single": false,
+    "radius": 525,
+    "normal": 1.75,
+    "hero": 0.35,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.9930049247239865,
+  "bossIdx": 0.6321767616008382
+ },
+ {
+  "code": "MY1",
+  "name": "고죠 사토루",
+  "grade": "신비함",
+  "line": 1.5536800681367045,
+  "boss": 0.9368612909367411,
+  "parts": [
+   {
+    "cond": "마나185",
+    "rate": 0.02016601813194089,
+    "single": false,
+    "radius": 3500,
+    "normal": 5,
+    "hero": 5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.4180156001385183,
+    "single": false,
+    "radius": 600,
+    "normal": 2,
+    "hero": 2,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.94268039526888,
+  "bossIdx": 1.7271574072371922
+ },
+ {
+  "code": "L17",
+  "name": "샹크스",
+  "grade": "전설",
+  "line": 1.5302168813434047,
+  "boss": 0.6942423966557101,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.5984848247031983,
+    "single": false,
+    "radius": 600,
+    "normal": 2,
+    "hero": 0.4,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 1.1969696494063966,
+    "single": true,
+    "normal": 0.75,
+    "hero": 0.38,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.9284443329969984,
+  "bossIdx": 1.2798755903374965
+ },
+ {
+  "code": "L23",
+  "name": "시키",
+  "grade": "전설",
+  "line": 1.508181913636364,
+  "boss": 0.31600002,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.5266667,
+    "single": false,
+    "radius": 525,
+    "normal": 3,
+    "hero": 0.6
+   }
+  ],
+  "lineIdx": 0.9150748288797694,
+  "bossIdx": 0.582564121828952
+ },
+ {
+  "code": "TR29",
+  "name": "후지토라",
+  "grade": "초월함",
+  "line": 1.4542855480264913,
+  "boss": 0.33678191638508226,
+  "parts": [
+   {
+    "cond": "4.5%",
+    "rate": 0.1507978730082458,
+    "single": false,
+    "radius": 475,
+    "normal": 2.5,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "15%",
+    "rate": 0.5026595766941526,
+    "single": false,
+    "radius": 475,
+    "normal": 2.6,
+    "hero": 0.52,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.8823737289051765,
+  "bossIdx": 0.6208767371810514
+ },
+ {
+  "code": "E7",
+  "name": "에이스",
+  "grade": "영원한",
+  "line": 1.3903560373591035,
+  "boss": 4.391995970447963,
+  "parts": [
+   {
+    "cond": "마나185",
+    "rate": 0.03858341322397408,
+    "single": false,
+    "radius": 850,
+    "normal": 5,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.17696089161082368,
+    "single": true,
+    "radius": 750,
+    "normal": 3.5,
+    "hero": 3.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "3%",
+    "rate": 0.21413794339305614,
+    "single": true,
+    "radius": 500,
+    "normal": 3.5,
+    "hero": 3.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "12.5%",
+    "rate": 0.8922414308044007,
+    "single": true,
+    "normal": 3.5,
+    "hero": 3.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.8435851149419724,
+  "bossIdx": 8.096895929311376
+ },
+ {
+  "code": "MY3",
+  "name": "료우기 시키",
+  "grade": "신비함",
+  "line": 1.3301891981387137,
+  "boss": 5.320756792554855,
+  "parts": [
+   {
+    "cond": "매 공격",
+    "rate": 1.7355505523489438,
+    "single": true,
+    "normal": 1.25,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "50%",
+    "rate": 2.7768808837583103,
+    "single": true,
+    "normal": 1.25,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "마나115",
+    "rate": 0.12105488169493964,
+    "single": true,
+    "normal": 1.25,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.8070794655862611,
+  "bossIdx": 9.80911965866379
+ },
+ {
+  "code": "L4",
+  "name": "드래곤",
+  "grade": "전설",
+  "line": 1.2824675845549967,
+  "boss": 0.28214286860209925,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.5129870338219986,
+    "single": false,
+    "radius": 500,
+    "normal": 2.75,
+    "hero": 0.55,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.7781248368447609,
+  "bossIdx": 0.5201465255523824
+ },
+ {
+  "code": "I12",
+  "name": "흰수염",
+  "grade": "불멸의",
+  "line": 1.2162190043603702,
+  "boss": 0.5251339800509898,
+  "parts": [
+   {
+    "cond": "마나115",
+    "rate": 0.05556878815318417,
+    "single": false,
+    "radius": 700,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "5%",
+    "rate": 0.294520531880809,
+    "single": false,
+    "radius": 625,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.7379291498145674,
+  "bossIdx": 0.9681145461033428
+ },
+ {
+  "code": "TR25",
+  "name": "키드",
+  "grade": "초월함",
+  "line": 1.0978972483084717,
+  "boss": 2.3476624075267756,
+  "parts": [
+   {
+    "cond": "매 공격",
+    "rate": 0.11779331848333256,
+    "single": false,
+    "radius": 500,
+    "normal": 2.2,
+    "hero": 0.44,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "매 공격",
+    "rate": 0.3808080831403307,
+    "single": true,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "35%",
+    "rate": 1.5378787972974892,
+    "single": true,
+    "normal": 1.5,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.6661385656065336,
+  "bossIdx": 4.328050007059111
+ },
+ {
+  "code": "RD2",
+  "name": "나루토",
+  "grade": "랜덤",
+  "line": 1.0073454575105147,
+  "boss": 0.19440000057220458,
+  "parts": [
+   {
+    "cond": "4%",
+    "rate": 0.3240000009536743,
+    "single": false,
+    "radius": 600,
+    "normal": 2.85,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.6111971399602002,
+  "bossIdx": 0.35838752673779617
+ },
+ {
+  "code": "MY11",
+  "name": "쿠죠 죠타로",
+  "grade": "신비함",
+  "line": 0.9538792338295816,
+  "boss": 1.8338971524953493,
+  "parts": [
+   {
+    "cond": "30%",
+    "rate": 1.134650196874335,
+    "single": true,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "마나145",
+    "rate": 0.03298046429596173,
+    "single": false,
+    "radius": 850,
+    "normal": 4,
+    "hero": 4,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.5787570244520429,
+  "bossIdx": 3.3808943561714613
+ },
+ {
+  "code": "L37",
+  "name": "후지토라",
+  "grade": "전설",
+  "line": 0.9144344612354061,
+  "boss": 0.27009684549453195,
+  "parts": [
+   {
+    "cond": "14%",
+    "rate": 0.46568421636988266,
+    "single": false,
+    "radius": 450,
+    "normal": 2.4,
+    "hero": 0.58,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.5548242891464004,
+  "bossIdx": 0.4979389925490895
+ },
+ {
+  "code": "I10",
+  "name": "제트",
+  "grade": "불멸의",
+  "line": 0.9050095198904535,
+  "boss": 3.117593428882413,
+  "parts": [
+   {
+    "cond": "마나160",
+    "rate": 0.039197809627471,
+    "single": false,
+    "radius": 725,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "100%",
+    "rate": 6.310847350022832,
+    "single": true,
+    "normal": 2.25,
+    "hero": 2.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.5491057968939373,
+  "bossIdx": 5.747461908757456
+ },
+ {
+  "code": "TR9",
+  "name": "바질호킨스",
+  "grade": "초월함",
+  "line": 0.8876840997142275,
+  "boss": 1.5454754231730525,
+  "parts": [
+   {
+    "cond": "마나100",
+    "rate": 0.06126760845086432,
+    "single": false,
+    "radius": 800,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "14%",
+    "rate": 0.8577465183121006,
+    "single": true,
+    "radius": 450,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "6.25%·라인만",
+    "rate": 0.382922552817902,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": true
+   },
+   {
+    "cond": "10.63%·보스·광폭만",
+    "rate": 0.6509683397904333,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": true,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.5385937653149321,
+  "bossIdx": 2.849172391536676
+ },
+ {
+  "code": "Z9",
+  "name": "크로커다일",
+  "grade": "제한됨",
+  "line": 0.870766309400159,
+  "boss": 0.17438108796825041,
+  "parts": [
+   {
+    "cond": "마나115",
+    "rate": 0.06265217426012021,
+    "single": false,
+    "radius": 500,
+    "normal": 0.2,
+    "hero": 0.04,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "5%",
+    "rate": 0.3437500019956912,
+    "single": false,
+    "radius": 550,
+    "normal": 2.5,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.5283290592229833,
+  "bossIdx": 0.321481515652439
+ },
+ {
+  "code": "L5",
+  "name": "라분",
+  "grade": "전설",
+  "line": 0.8653626276931737,
+  "boss": 0.1655476331239115,
+  "parts": [
+   {
+    "cond": "30.35%",
+    "rate": 0.36788362916424777,
+    "single": false,
+    "radius": 575,
+    "normal": 2.25,
+    "hero": 0.45,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.5250504274686627,
+  "bossIdx": 0.3051965361005136
+ },
+ {
+  "code": "TR22",
+  "name": "징베",
+  "grade": "초월함",
+  "line": 0.8578345317286732,
+  "boss": 1.2901348426859274,
+  "parts": [
+   {
+    "cond": "마나100",
+    "rate": 0.0715730340747035,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "40%",
+    "rate": 1.6629213629881403,
+    "single": true,
+    "normal": 1.5,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.5204828278547035,
+  "bossIdx": 2.37843741804276
+ },
+ {
+  "code": "Z6",
+  "name": "알비다",
+  "grade": "제한됨",
+  "line": 0.8518044155368134,
+  "boss": 1.475959610126235,
+  "parts": [
+   {
+    "cond": "마나55",
+    "rate": 0.06420875462618741,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "100%",
+    "rate": 0.8555555641651152,
+    "single": true,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.5168241130189799,
+  "bossIdx": 2.721016011733773
+ },
+ {
+  "code": "L32",
+  "name": "쿠마 폭군",
+  "grade": "전설",
+  "line": 0.7851188042342466,
+  "boss": 0.17065342328835587,
+  "parts": [
+   {
+    "cond": "마나115",
+    "rate": 0.049350324837581214,
+    "single": false,
+    "radius": 600,
+    "normal": 1.05,
+    "hero": 0.21,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.5724637681159421,
+    "single": false,
+    "radius": 500,
+    "normal": 1.4,
+    "hero": 0.28,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.47636326157944187,
+  "bossIdx": 0.31460935247752664
+ },
+ {
+  "code": "TR1",
+  "name": "검은수염",
+  "grade": "초월함",
+  "line": 0.75,
+  "boss": 1.8719262151065,
+  "parts": [
+   {
+    "cond": "17.5%",
+    "rate": 1.247950810071,
+    "single": true,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.4550552658499136,
+  "bossIdx": 3.4510031095318032
+ },
+ {
+  "code": "TR7",
+  "name": "루치",
+  "grade": "초월함",
+  "line": 0.75,
+  "boss": 2.013888840598,
+  "parts": [
+   {
+    "cond": "25%",
+    "rate": 2.013888840598,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.4550552658499136,
+  "bossIdx": 3.7127193342712457
+ },
+ {
+  "code": "E4",
+  "name": "미호크",
+  "grade": "영원한",
+  "line": 0.75,
+  "boss": 3,
+  "parts": [
+   {
+    "cond": "100%",
+    "rate": 2.5347417915091417,
+    "single": true,
+    "normal": 1.2,
+    "hero": 1.2,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.4550552658499136,
+  "bossIdx": 5.530671692637412
+ },
+ {
+  "code": "RD6",
+  "name": "엘리자베스",
+  "grade": "랜덤",
+  "line": 0.75,
+  "boss": 1.5463636073987352,
+  "parts": [
+   {
+    "cond": "14%",
+    "rate": 1.030909071599157,
+    "single": true,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.4550552658499136,
+  "bossIdx": 2.8508098099882857
+ },
+ {
+  "code": "MY2",
+  "name": "네즈코",
+  "grade": "신비함",
+  "line": 0.75,
+  "boss": 3,
+  "parts": [
+   {
+    "cond": "매 공격",
+    "rate": 4.300000011920929,
+    "single": true,
+    "normal": 1,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.4550552658499136,
+  "bossIdx": 5.530671692637412
+ },
+ {
+  "code": "E9",
+  "name": "우타",
+  "grade": "영원한",
+  "line": 0.7489094949676558,
+  "boss": 0.16476008889288427,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.5492002963096142,
+    "single": false,
+    "radius": 500,
+    "normal": 1.5,
+    "hero": 0.3,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.45439361244004156,
+  "bossIdx": 0.3037446532387662
+ },
+ {
+  "code": "E5",
+  "name": "버기",
+  "grade": "영원한",
+  "line": 0.7252110635077184,
+  "boss": 2.9008442540308734,
+  "parts": [
+   {
+    "cond": "7.77%",
+    "rate": 0.3733390288328023,
+    "single": true,
+    "normal": 7.77,
+    "hero": 7.77,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.44001481773573786,
+  "bossIdx": 5.347872400172814
+ },
+ {
+  "code": "TR10",
+  "name": "브룩",
+  "grade": "초월함",
+  "line": 0.7235525077160625,
+  "boss": 1.13540269974648,
+  "parts": [
+   {
+    "cond": "마나115",
+    "rate": 0.06200997814,
+    "single": false,
+    "radius": 525,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "17.5%",
+    "rate": 1.247950810071,
+    "single": true,
+    "normal": 1.75,
+    "hero": 0.88,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.439008505006806,
+  "bossIdx": 2.0931798570773172
+ },
+ {
+  "code": "SP4",
+  "name": "아이스버그",
+  "grade": "특수함",
+  "line": 0.7129629629629629,
+  "boss": 1.4259259259259258,
+  "parts": [
+   {
+    "cond": "50%",
+    "rate": 1.4259259259259258,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.43258340086967095,
+  "bossIdx": 2.6287760514387695
+ },
+ {
+  "code": "TR17",
+  "name": "아카이누",
+  "grade": "초월함",
+  "line": 0.6983203684244479,
+  "boss": 2.8611976116708333,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.5759343244737715,
+    "single": true,
+    "radius": 475,
+    "normal": 2.6,
+    "hero": 1.3,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "7.5%",
+    "rate": 0.4319507433553286,
+    "single": true,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기·보스·광폭만",
+    "rate": 0.27221025326298154,
+    "single": true,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": true,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.4236991478690624,
+  "bossIdx": 5.274781545969883
+ },
+ {
+  "code": "H18",
+  "name": "이완코브",
+  "grade": "히든",
+  "line": 0.6906976703628938,
+  "boss": 0.15195348747983664,
+  "parts": [
+   {
+    "cond": "11%",
+    "rate": 0.46046511357526254,
+    "single": false,
+    "radius": 500,
+    "normal": 1.65,
+    "hero": 0.33,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.41907414934520354,
+  "bossIdx": 0.28013495060075533
+ },
+ {
+  "code": "H11",
+  "name": "봉쿠레",
+  "grade": "히든",
+  "line": 0.6893617013340019,
+  "boss": 0.15165958251131242,
+  "parts": [
+   {
+    "cond": "12%",
+    "rate": 0.45957447419667363,
+    "single": false,
+    "radius": 500,
+    "normal": 1.649999976158142,
+    "hero": 0.33000001311302185,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.41826356302305734,
+  "bossIdx": 0.2795931199708412
+ },
+ {
+  "code": "Z2",
+  "name": "레베카",
+  "grade": "제한됨",
+  "line": 0.6750000053339384,
+  "boss": 1.350000010667877,
+  "parts": [
+   {
+    "cond": "33%",
+    "rate": 0.900000007111918,
+    "single": true,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.409549742501238,
+  "bossIdx": 2.488802281353677
+ },
+ {
+  "code": "TR11",
+  "name": "사보",
+  "grade": "초월함",
+  "line": 0.6318152992237795,
+  "boss": 0.9857215079431488,
+  "parts": [
+   {
+    "cond": "마나125",
+    "rate": 0.036151898283393824,
+    "single": false,
+    "radius": 500,
+    "normal": 1.25,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 0.9037974570848457,
+    "single": true,
+    "radius": 415,
+    "normal": 1.85,
+    "hero": 0.93,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기",
+    "rate": 0.08,
+    "single": false,
+    "radius": 475,
+    "normal": 2.5,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.3833478386084263,
+  "bossIdx": 1.8172340136016791
+ },
+ {
+  "code": "Z1",
+  "name": "레드필드",
+  "grade": "제한됨",
+  "line": 0.6201923343093977,
+  "boss": 2.4807693372375907,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 1.6538462248250605,
+    "single": true,
+    "normal": 1.5,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%·보스만",
+    "rate": 1.6538462248250605,
+    "single": true,
+    "normal": 1.5,
+    "hero": 0.75,
+    "onlySpecial": true,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.37629571675632195,
+  "bossIdx": 4.573440249807605
+ },
+ {
+  "code": "L1",
+  "name": "검은수염",
+  "grade": "전설",
+  "line": 0.6171874852540598,
+  "boss": 1.2343749705081195,
+  "parts": [
+   {
+    "cond": "15%",
+    "rate": 0.822916647005413,
+    "single": true,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.37447255357536774,
+  "bossIdx": 2.2756409024964657
+ },
+ {
+  "code": "H16",
+  "name": "아오키지",
+  "grade": "히든",
+  "line": 0.5845339374794346,
+  "boss": 0.15493670631985018,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.4556961950583828,
+    "single": false,
+    "radius": 415,
+    "normal": 1.7,
+    "hero": 0.34,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.35466032842400125,
+  "bossIdx": 0.28563468526455715
+ },
+ {
+  "code": "H20",
+  "name": "키쿠노죠",
+  "grade": "히든",
+  "line": 0.5806451630735,
+  "boss": 1.161290326147,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 1.161290326147,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.352300852062504,
+  "bossIdx": 2.1409051779182935
+ },
+ {
+  "code": "D3",
+  "name": "퀸",
+  "grade": "왜곡됨",
+  "line": 0.5791977272727271,
+  "boss": 0.1274235,
+  "parts": [
+   {
+    "cond": "15%",
+    "rate": 0.67065,
+    "single": false,
+    "radius": 500,
+    "normal": 0.95,
+    "hero": 0.19
+   }
+  ],
+  "lineIdx": 0.3514226343516755,
+  "bossIdx": 0.23491251480892775
+ },
+ {
+  "code": "TR27",
+  "name": "타시기",
+  "grade": "초월함",
+  "line": 0.575284091486357,
+  "boss": 1.150568182972714,
+  "parts": [
+   {
+    "cond": "25%",
+    "rate": 1.150568182972714,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.34904807358740025,
+  "bossIdx": 2.121138293338817
+ },
+ {
+  "code": "Z5",
+  "name": "아인",
+  "grade": "제한됨",
+  "line": 0.5330300541771311,
+  "boss": 1.072151880402001,
+  "parts": [
+   {
+    "cond": "25%",
+    "rate": 1.2183544095477283,
+    "single": true,
+    "normal": 1.75,
+    "hero": 0.88,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.3234108440127577,
+  "bossIdx": 1.9765733517157729
+ },
+ {
+  "code": "SR4",
+  "name": "s-베어",
+  "grade": "세라핌",
+  "line": 0.5314420890371786,
+  "boss": 0.7997421212972462,
+  "parts": [
+   {
+    "cond": "12.5%",
+    "rate": 0.6185492007108375,
+    "single": true,
+    "normal": 2.5,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기",
+    "rate": 0.12645533527952038,
+    "single": false,
+    "radius": 600,
+    "normal": 1.05,
+    "hero": 0.21,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.3224473614808624,
+  "bossIdx": 1.4743703705561584
+ },
+ {
+  "code": "H17",
+  "name": "아카이누",
+  "grade": "히든",
+  "line": 0.528,
+  "boss": 1.056,
+  "parts": [
+   {
+    "cond": "16%",
+    "rate": 0.768,
+    "single": true,
+    "normal": 2.75,
+    "hero": 1.375,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.3203589071583392,
+  "bossIdx": 1.9467964358083691
+ },
+ {
+  "code": "RD1",
+  "name": "K",
+  "grade": "랜덤",
+  "line": 0.525611301937847,
+  "boss": 0.12568965915905037,
+  "parts": [
+   {
+    "cond": "3%",
+    "rate": 0.20948276526508394,
+    "single": false,
+    "radius": 460,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.3189095876493949,
+  "bossIdx": 0.2317160799894015
+ },
+ {
+  "code": "TR19",
+  "name": "우솝",
+  "grade": "초월함",
+  "line": 0.5046453648997082,
+  "boss": 0.11585165023161319,
+  "parts": [
+   {
+    "cond": "마나140",
+    "rate": 0.05975275038602196,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기",
+    "rate": 0.2,
+    "single": false,
+    "radius": 425,
+    "normal": 2,
+    "hero": 0.4,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.30618870757915123,
+  "bossIdx": 0.2135791474937712
+ },
+ {
+  "code": "TR21",
+  "name": "보니",
+  "grade": "초월함",
+  "line": 0.4996960962566212,
+  "boss": 0.4071591783843069,
+  "parts": [
+   {
+    "cond": "주기",
+    "rate": 0.1314784280849693,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기",
+    "rate": 0.06058997204475707,
+    "single": false,
+    "radius": 600,
+    "normal": 1.05,
+    "hero": 0.21,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.3031857865682944,
+  "bossIdx": 0.7506212474291974
+ },
+ {
+  "code": "D2",
+  "name": "코알라",
+  "grade": "왜곡됨",
+  "line": 0.46920357768162796,
+  "boss": 1.6234102258572338,
+  "parts": [
+   {
+    "cond": "마나135",
+    "rate": 0.046651798051247834,
+    "single": false,
+    "radius": 625,
+    "normal": 1.25,
+    "hero": 0.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "50%",
+    "rate": 2.1489963684592293,
+    "single": true,
+    "normal": 0.75,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.28468474503952507,
+  "bossIdx": 2.992849660562237
+ },
+ {
+  "code": "I3",
+  "name": "레일리",
+  "grade": "불멸의",
+  "line": 0.46498697860022953,
+  "boss": 0.7991601260964185,
+  "parts": [
+   {
+    "cond": "마나115",
+    "rate": 0.06446776614005247,
+    "single": false,
+    "radius": 800,
+    "normal": 3,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "2.5%",
+    "rate": 0.11241830067803857,
+    "single": true,
+    "normal": 0.6,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "15%",
+    "rate": 1.1120689659159049,
+    "single": true,
+    "normal": 0.6,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.28212636421823406,
+  "bossIdx": 1.4732974290953356
+ },
+ {
+  "code": "E6",
+  "name": "비비",
+  "grade": "영원한",
+  "line": 0.45564794222287497,
+  "boss": 1.8225917688914999,
+  "parts": [
+   {
+    "cond": "25%·라인만",
+    "rate": 1.215061179261,
+    "single": true,
+    "normal": 1.5,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": true
+   },
+   {
+    "cond": "25%·보스·광폭만",
+    "rate": 1.215061179261,
+    "single": true,
+    "normal": 1.5,
+    "hero": 1.5,
+    "onlySpecial": true,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.2764599939762619,
+  "bossIdx": 3.360052234480722
+ },
+ {
+  "code": "D6",
+  "name": "바제스",
+  "grade": "왜곡됨",
+  "line": 0.4448496607146962,
+  "boss": 0.28784389810950933,
+  "parts": [
+   {
+    "cond": "주기",
+    "rate": 0.23027511848760746,
+    "single": false,
+    "radius": 425,
+    "normal": 2.5,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.26990824082635995,
+  "bossIdx": 0.5306566997242236
+ },
+ {
+  "code": "E8",
+  "name": "오뎅",
+  "grade": "영원한",
+  "line": 0.4402997573985546,
+  "boss": 1.166628563418486,
+  "parts": [
+   {
+    "cond": "마나145",
+    "rate": 0.044719829934584995,
+    "single": false,
+    "radius": 700,
+    "normal": 3.25,
+    "hero": 3.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "35%",
+    "rate": 2.2695313691801884,
+    "single": true,
+    "normal": 0.45,
+    "hero": 0.45,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.26714763087553567,
+  "bossIdx": 2.15074652384029
+ },
+ {
+  "code": "R28",
+  "name": "오즈",
+  "grade": "희귀함",
+  "line": 0.4291044621970894,
+  "boss": 0.7689551962571843,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 0.6865671395153431,
+    "single": true,
+    "normal": 2.5,
+    "hero": 1.12,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.260354993496641,
+  "bossIdx": 1.4176129122820182
+ },
+ {
+  "code": "Z4",
+  "name": "시노부",
+  "grade": "제한됨",
+  "line": 0.39971062463399,
+  "boss": 0.79942124926798,
+  "parts": [
+   {
+    "cond": "매 공격",
+    "rate": 0.12237282798787134,
+    "single": true,
+    "normal": 2.5,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "9%",
+    "rate": 0.5171641714265126,
+    "single": true,
+    "normal": 2.5,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.2425205660744738,
+  "bossIdx": 1.4737788246064178
+ },
+ {
+  "code": "E3",
+  "name": "류마",
+  "grade": "영원한",
+  "line": 0.37980634051563733,
+  "boss": 1.5192253620625493,
+  "parts": [
+   {
+    "cond": "8.5%",
+    "rate": 0.5064084540208498,
+    "single": true,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.23044383367310156,
+  "bossIdx": 2.8007789015653883
+ },
+ {
+  "code": "L26",
+  "name": "제파",
+  "grade": "전설",
+  "line": 0.3761904849982677,
+  "boss": 1.5047619399930707,
+  "parts": [
+   {
+    "cond": "30%",
+    "rate": 1.8809524249913383,
+    "single": true,
+    "normal": 0.8,
+    "hero": 0.8,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.22824994821479286,
+  "bossIdx": 2.774114755225944
+ },
+ {
+  "code": "SR1",
+  "name": "s-스네이크",
+  "grade": "세라핌",
+  "line": 0.3759293796096349,
+  "boss": 0.7518587592192698,
+  "parts": [
+   {
+    "cond": "12.5%",
+    "rate": 0.6014870073754158,
+    "single": true,
+    "normal": 2.5,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.2280915250387407,
+  "bossIdx": 1.3860946521585011
+ },
+ {
+  "code": "I11",
+  "name": "카이도",
+  "grade": "불멸의",
+  "line": 0.37082605653750866,
+  "boss": 1.139332652224137,
+  "parts": [
+   {
+    "cond": "마나100",
+    "rate": 0.020675886957294408,
+    "single": false,
+    "radius": 900,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "8%",
+    "rate": 0.13900709565835528,
+    "single": true,
+    "normal": 1.5,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.17375886957294412,
+    "single": true,
+    "normal": 2.5,
+    "hero": 2.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "10%",
+    "rate": 0.17375886957294412,
+    "single": true,
+    "normal": 2.5,
+    "hero": 2.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.22499513298900148,
+  "bossIdx": 2.100424949384513
+ },
+ {
+  "code": "SR3",
+  "name": "s-샤크",
+  "grade": "세라핌",
+  "line": 0.3470178748449193,
+  "boss": 0.6940357496898386,
+  "parts": [
+   {
+    "cond": "12.5%",
+    "rate": 0.5552285997518709,
+    "single": true,
+    "normal": 2.5,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.21054974838963575,
+  "bossIdx": 1.2794946248293249
+ },
+ {
+  "code": "SR2",
+  "name": "s-호크",
+  "grade": "세라핌",
+  "line": 0.3396126238732846,
+  "boss": 0.6792252477465692,
+  "parts": [
+   {
+    "cond": "12.5%",
+    "rate": 0.5433801981972554,
+    "single": true,
+    "normal": 2.5,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.20605668379019235,
+  "bossIdx": 1.2521906168788612
+ },
+ {
+  "code": "L10",
+  "name": "루피 나이트메어",
+  "grade": "전설",
+  "line": 0.3037500057475908,
+  "boss": 1.2150000229903632,
+  "parts": [
+   {
+    "cond": "18%",
+    "rate": 0.4050000076634544,
+    "single": true,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.1842973861565103,
+  "bossIdx": 2.2399220779022024
+ },
+ {
+  "code": "H21",
+  "name": "킬러",
+  "grade": "히든",
+  "line": 0.30374999119900203,
+  "boss": 0.6029999825283893,
+  "parts": [
+   {
+    "cond": "15%",
+    "rate": 0.8999999739229689,
+    "single": true,
+    "normal": 1.35,
+    "hero": 0.67,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.1842973773292944,
+  "bossIdx": 1.1116649780102055
+ },
+ {
+  "code": "L7",
+  "name": "레일리",
+  "grade": "전설",
+  "line": 0.2971254545454545,
+  "boss": 0.26915999999999995,
+  "parts": [
+   {
+    "cond": "시전",
+    "rate": 0.04,
+    "single": false,
+    "radius": 800,
+    "normal": 3,
+    "hero": 0.6
+   },
+   {
+    "cond": "12%",
+    "rate": 0.8171999999999999,
+    "single": true,
+    "normal": 0.6,
+    "hero": 0.3
+   }
+  ],
+  "lineIdx": 0.18027800361194432,
+  "bossIdx": 0.4962118642634285
+ },
+ {
+  "code": "Z8",
+  "name": "카타쿠리",
+  "grade": "제한됨",
+  "line": 0.28524589113925186,
+  "boss": 0.5704917822785037,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 0.9508196371308396,
+    "single": true,
+    "normal": 1.2,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.17307019309995705,
+  "bossIdx": 1.051734250376662
+ },
+ {
+  "code": "L24",
+  "name": "에이스",
+  "grade": "전설",
+  "line": 0.2821428664180699,
+  "boss": 0.5642857328361398,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.5642857328361398,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.17118746278070862,
+  "bossIdx": 1.0402930430519985
+ },
+ {
+  "code": "TR14",
+  "name": "스네이크맨",
+  "grade": "초월함",
+  "line": 0.2798713341951099,
+  "boss": 0.5597426683902198,
+  "parts": [
+   {
+    "cond": "마나85",
+    "rate": 0.10661765112194661,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 1.8125000690730926,
+    "single": true,
+    "normal": 0.5,
+    "hero": 0.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.16980923251456767,
+  "bossIdx": 1.031917643742373
+ },
+ {
+  "code": "H3",
+  "name": "레베카",
+  "grade": "히든",
+  "line": 0.27439024924881794,
+  "boss": 0.5443902586965178,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 0.8780487975962175,
+    "single": true,
+    "radius": 225,
+    "normal": 1.25,
+    "hero": 0.6200000047683716,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.16648363709139322,
+  "bossIdx": 1.0036145978401296
+ },
+ {
+  "code": "H7",
+  "name": "반더데켄",
+  "grade": "히든",
+  "line": 0.2630708943947135,
+  "boss": 0.2928229619584018,
+  "parts": [
+   {
+    "cond": "마나95",
+    "rate": 0.057416266278977286,
+    "single": false,
+    "radius": 800,
+    "normal": 1.5,
+    "hero": 0.30000001192092896,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "마나95",
+    "rate": 0.057416266278977286,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 1.0909090593005686,
+    "single": true,
+    "normal": 0.4000000059604645,
+    "hero": 0.20000000298023224,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.1596157277148812,
+  "bossIdx": 0.5398358888858582
+ },
+ {
+  "code": "T6",
+  "name": "캐럿",
+  "grade": "변화",
+  "line": 0.25477940718221226,
+  "boss": 0.49823528515632615,
+  "parts": [
+   {
+    "cond": "50%",
+    "rate": 2.2647058416196644,
+    "single": true,
+    "normal": 0.45,
+    "hero": 0.22,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.15458494782451332,
+  "bossIdx": 0.918525262629074
+ },
+ {
+  "code": "H10",
+  "name": "베르고",
+  "grade": "히든",
+  "line": 0.2533453418124272,
+  "boss": 0.5553355590880148,
+  "parts": [
+   {
+    "cond": "마나100",
+    "rate": 0.04400440078409287,
+    "single": false,
+    "radius": 600,
+    "normal": 2.5,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 0.888888895838676,
+    "single": true,
+    "normal": 0.6000000238418579,
+    "hero": 0.6000000238418579,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.15371484249372172,
+  "bossIdx": 1.023792885521018
+ },
+ {
+  "code": "Z3",
+  "name": "마르코",
+  "grade": "제한됨",
+  "line": 0.25,
+  "boss": 0.5,
+  "parts": [
+   {
+    "cond": "주기",
+    "rate": 0.5,
+    "single": true,
+    "radius": 450,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.15168508861663788,
+  "bossIdx": 0.9217786154395686
+ },
+ {
+  "code": "TR8",
+  "name": "루피",
+  "grade": "초월함",
+  "line": 0.23803013662442465,
+  "boss": 0.11659183602733936,
+  "parts": [
+   {
+    "cond": "마나160",
+    "rate": 0.0715460546567541,
+    "single": false,
+    "radius": 600,
+    "normal": 2.15,
+    "hero": 0.43,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "1.25%",
+    "rate": 0.11443604336658013,
+    "single": false,
+    "radius": 450,
+    "normal": 0.75,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.1444224894692251,
+  "bossIdx": 0.21494372236967618
+ },
+ {
+  "code": "R30",
+  "name": "우솝 보잉열도",
+  "grade": "희귀함",
+  "line": 0.23324090909090905,
+  "boss": 0.052899999999999996,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.22999999999999998,
+    "single": false,
+    "radius": 485,
+    "normal": 1.15,
+    "hero": 0.23,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.14151667185791889,
+  "bossIdx": 0.09752417751350635
+ },
+ {
+  "code": "R31",
+  "name": "이완코브",
+  "grade": "희귀함",
+  "line": 0.21569377990430622,
+  "boss": 0.04745263157894738,
+  "parts": [
+   {
+    "cond": "7%",
+    "rate": 0.16947368421052633,
+    "single": false,
+    "radius": 500,
+    "normal": 1.4,
+    "hero": 0.28,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.1308701204753691,
+  "bossIdx": 0.08748164207161213
+ },
+ {
+  "code": "R34",
+  "name": "죠즈",
+  "grade": "희귀함",
+  "line": 0.2093878944462474,
+  "boss": 0.03838778064847869,
+  "parts": [
+   {
+    "cond": "11%",
+    "rate": 0.21326544804710384,
+    "single": false,
+    "radius": 600,
+    "normal": 0.9,
+    "hero": 0.18,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.12704408529732103,
+  "bossIdx": 0.07077007059190511
+ },
+ {
+  "code": "L36",
+  "name": "핸콕",
+  "grade": "전설",
+  "line": 0.20789473684210527,
+  "boss": 0.41578947368421054,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 1.0394736842105263,
+    "single": true,
+    "normal": 0.8,
+    "hero": 0.4,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.1261381263233094,
+  "bossIdx": 0.7665316907339571
+ },
+ {
+  "code": "I4",
+  "name": "로져",
+  "grade": "불멸의",
+  "line": 0.20567601056061996,
+  "boss": 0.8227040422424798,
+  "parts": [
+   {
+    "cond": "12.5%",
+    "rate": 1.0969387229899732,
+    "single": true,
+    "normal": 0.75,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.12479193555281674,
+  "bossIdx": 1.516701985949619
+ },
+ {
+  "code": "L30",
+  "name": "카르가라",
+  "grade": "전설",
+  "line": 0.19362745766901424,
+  "boss": 0.7745098306760569,
+  "parts": [
+   {
+    "cond": "25%",
+    "rate": 1.9362745766901424,
+    "single": true,
+    "normal": 0.4,
+    "hero": 0.4,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.1174815923005549,
+  "bossIdx": 1.427853198729821
+ },
+ {
+  "code": "R13",
+  "name": "바제스",
+  "grade": "희귀함",
+  "line": 0.18818181083084448,
+  "boss": 0.04870588045033622,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.2705882247240901,
+    "single": false,
+    "radius": 425,
+    "normal": 0.9,
+    "hero": 0.18,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.11417749860766413,
+  "bossIdx": 0.08979207809055215
+ },
+ {
+  "code": "L20",
+  "name": "스모커",
+  "grade": "전설",
+  "line": 0.1869086510653999,
+  "boss": 0.7476346042615996,
+  "parts": [
+   {
+    "cond": "마나50",
+    "rate": 0.05634059216914578,
+    "single": true,
+    "normal": 0.5,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "18%",
+    "rate": 0.8464285978553255,
+    "single": true,
+    "normal": 0.85,
+    "hero": 0.85,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.11340502120028573,
+  "bossIdx": 1.3783071807419343
+ },
+ {
+  "code": "MY10",
+  "name": "콘파쿠 요우무",
+  "grade": "신비함",
+  "line": 0.18099563877993496,
+  "boss": 0.12443450166120529,
+  "parts": [
+   {
+    "cond": "마나120",
+    "rate": 0.04147816722040176,
+    "single": false,
+    "radius": 800,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.10981735803023766,
+  "bossIdx": 0.22940212530835705
+ },
+ {
+  "code": "R17",
+  "name": "벤 베크만",
+  "grade": "희귀함",
+  "line": 0.17968750363104943,
+  "boss": 0.3641666740255935,
+  "parts": [
+   {
+    "cond": "35%",
+    "rate": 0.9583333526989303,
+    "single": true,
+    "normal": 0.75,
+    "hero": 0.38,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.10902365964631269,
+  "bossIdx": 0.6713621051450887
+ },
+ {
+  "code": "L38",
+  "name": "흰수염",
+  "grade": "전설",
+  "line": 0.17620587094271303,
+  "boss": 0.08076102418207681,
+  "parts": [
+   {
+    "cond": "체력115",
+    "rate": 0.05384068278805121,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.10691121259486913,
+  "bossIdx": 0.14888757010407258
+ },
+ {
+  "code": "L28",
+  "name": "징베",
+  "grade": "전설",
+  "line": 0.17426470375545716,
+  "boss": 0.3485294075109143,
+  "parts": [
+   {
+    "cond": "25%",
+    "rate": 1.1617646917030477,
+    "single": true,
+    "normal": 0.6,
+    "hero": 0.3,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.10573342812759468,
+  "bossIdx": 0.6425339093907676
+ },
+ {
+  "code": "H14",
+  "name": "시류",
+  "grade": "히든",
+  "line": 0.17357143339529946,
+  "boss": 0.3471428667905989,
+  "parts": [
+   {
+    "cond": "15%",
+    "rate": 0.7714285928679976,
+    "single": true,
+    "normal": 0.9,
+    "hero": 0.45,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.10531279302353143,
+  "bossIdx": 0.6399777422199218
+ },
+ {
+  "code": "R26",
+  "name": "아오키지",
+  "grade": "희귀함",
+  "line": 0.17116537572495516,
+  "boss": 0.04648936130801252,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.24468084898953957,
+    "single": false,
+    "radius": 405,
+    "normal": 0.95,
+    "hero": 0.19,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.10385294073975977,
+  "bossIdx": 0.08570579819833926
+ },
+ {
+  "code": "L9",
+  "name": "루치",
+  "grade": "전설",
+  "line": 0.17091346780753017,
+  "boss": 0.34182693561506033,
+  "parts": [
+   {
+    "cond": "15%",
+    "rate": 1.1394231187168677,
+    "single": true,
+    "normal": 0.6,
+    "hero": 0.3,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.10370009804064839,
+  "bossIdx": 0.6301775188624018
+ },
+ {
+  "code": "L21",
+  "name": "시노부",
+  "grade": "전설",
+  "line": 0.16928571716863286,
+  "boss": 0.3385714343372657,
+  "parts": [
+   {
+    "cond": "8%",
+    "rate": 0.4514285791163543,
+    "single": true,
+    "normal": 1.5,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.10271247604102068,
+  "bossIdx": 0.6241758159415872
+ },
+ {
+  "code": "L39",
+  "name": "히바리",
+  "grade": "전설",
+  "line": 0.16875,
+  "boss": 0.675,
+  "parts": [
+   {
+    "cond": "매 공격·라인만",
+    "rate": 0.225,
+    "single": true,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": true
+   },
+   {
+    "cond": "매 공격·보스·광폭만",
+    "rate": 0.225,
+    "single": true,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": true,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.10238743481623058,
+  "bossIdx": 1.2444011308434177
+ },
+ {
+  "code": "R10",
+  "name": "모몬가",
+  "grade": "희귀함",
+  "line": 0.16376581653296615,
+  "boss": 0.3275316330659323,
+  "parts": [
+   {
+    "cond": "15%",
+    "rate": 0.4367088440879097,
+    "single": true,
+    "normal": 1.5,
+    "hero": 0.75,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.09936332957271612,
+  "bossIdx": 0.6038233104803519
+ },
+ {
+  "code": "D1",
+  "name": "블랙마리아",
+  "grade": "왜곡됨",
+  "line": 0.16071429046593164,
+  "boss": 0.6428571618637265,
+  "parts": [
+   {
+    "cond": "15%",
+    "rate": 0.3214285809318633,
+    "single": true,
+    "normal": 2,
+    "hero": 2,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.09751184556513968,
+  "bossIdx": 1.185143969176313
+ },
+ {
+  "code": "I6",
+  "name": "빅맘",
+  "grade": "불멸의",
+  "line": 0.1571629640985118,
+  "boss": 0.3857719630890709,
+  "parts": [
+   {
+    "cond": "18%",
+    "rate": 0.3429010125785712,
+    "single": true,
+    "normal": 1,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기·보스·광폭만",
+    "rate": 0.13908205853322161,
+    "single": true,
+    "normal": 1,
+    "hero": 0.5,
+    "onlySpecial": true,
+    "onlyLine": false
+   },
+   {
+    "cond": "20%",
+    "rate": 0.38100112508730133,
+    "single": true,
+    "normal": 0.75,
+    "hero": 0.38,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.09535711254614496,
+  "bossIdx": 0.7111926920232964
+ },
+ {
+  "code": "Z7",
+  "name": "에넬",
+  "grade": "제한됨",
+  "line": 0.1544827601752685,
+  "boss": 0.021241379524099418,
+  "parts": [
+   {
+    "cond": "마나145",
+    "rate": 0.03540229920683236,
+    "single": false,
+    "radius": 800,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.09373092466771367,
+  "bossIdx": 0.03915969881550153
+ },
+ {
+  "code": "H19",
+  "name": "캐럿",
+  "grade": "히든",
+  "line": 0.15428571857359952,
+  "boss": 0.30857143714719903,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 1.0285714571573301,
+    "single": true,
+    "normal": 0.6,
+    "hero": 0.3,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.09361137157647238,
+  "bossIdx": 0.568869104195486
+ },
+ {
+  "code": "OB1",
+  "name": "도움소",
+  "grade": "특수 기물",
+  "line": 0.14216382575757575,
+  "boss": 0.12760416666666669,
+  "parts": [
+   {
+    "cond": "주기",
+    "rate": 0.010416666666666666,
+    "single": false,
+    "radius": 450,
+    "normal": 1,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기",
+    "rate": 0.036458333333333336,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 1.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기",
+    "rate": 0.005208333333333333,
+    "single": true,
+    "normal": 5,
+    "hero": 6,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "주기",
+    "rate": 0.015625,
+    "single": true,
+    "normal": 2,
+    "hero": 2,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.08625653003247258,
+  "bossIdx": 0.23524558414863994
+ },
+ {
+  "code": "R2",
+  "name": "거프",
+  "grade": "희귀함",
+  "line": 0.1415210385053361,
+  "boss": 0.2830420770106722,
+  "parts": [
+   {
+    "cond": "12.5%",
+    "rate": 0.22643366160853776,
+    "single": true,
+    "normal": 2.5,
+    "hero": 1.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.0858665250672021,
+  "bossIdx": 0.5218042677160744
+ },
+ {
+  "code": "TR18",
+  "name": "야마토",
+  "grade": "초월함",
+  "line": 0.13664027852332156,
+  "boss": 0.09394019148478357,
+  "parts": [
+   {
+    "cond": "마나95",
+    "rate": 0.04175119621545936,
+    "single": false,
+    "radius": 800,
+    "normal": 2.25,
+    "hero": 2.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.08290517102564846,
+  "bossIdx": 0.17318411928194352
+ },
+ {
+  "code": "R37",
+  "name": "캡틴 키드",
+  "grade": "희귀함",
+  "line": 0.13529411764705881,
+  "boss": 0.27058823529411763,
+  "parts": [
+   {
+    "cond": "40%",
+    "rate": 1.0823529411764705,
+    "single": true,
+    "normal": 0.5,
+    "hero": 0.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.08208840089841579,
+  "bossIdx": 0.49884489776729596
+ },
+ {
+  "code": "MY9",
+  "name": "야쿠모 유카리",
+  "grade": "신비함",
+  "line": 0.13139801042961588,
+  "boss": 0.02408963524542958,
+  "parts": [
+   {
+    "cond": "마나125",
+    "rate": 0.04014939207571597,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 0.6,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.07972447542426478,
+  "bossIdx": 0.044410621245952624
+ },
+ {
+  "code": "TR12",
+  "name": "상디",
+  "grade": "초월함",
+  "line": 0.11820652145744498,
+  "boss": 0.22695652119829435,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 1.8913043433191197,
+    "single": true,
+    "normal": 0.25,
+    "hero": 0.12,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.0717206667293482,
+  "bossIdx": 0.41840733575028977
+ },
+ {
+  "code": "R6",
+  "name": "루피 기어써드",
+  "grade": "희귀함",
+  "line": 0.11486216426431027,
+  "boss": 0.22972432852862054,
+  "parts": [
+   {
+    "cond": "15%",
+    "rate": 0.22972432852862054,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.06969151026052288,
+  "bossIdx": 0.42350994696779287
+ },
+ {
+  "code": "R25",
+  "name": "시류",
+  "grade": "희귀함",
+  "line": 0.11249999914966201,
+  "boss": 0.22499999829932402,
+  "parts": [
+   {
+    "cond": "15%",
+    "rate": 0.49999999622072,
+    "single": true,
+    "normal": 0.9,
+    "hero": 0.45,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.06825828936155268,
+  "bossIdx": 0.4148003738125124
+ },
+ {
+  "code": "TR24",
+  "name": "코비",
+  "grade": "초월함",
+  "line": 0.10764612318735006,
+  "boss": 0.43058449274940025,
+  "parts": [
+   {
+    "cond": "매 공격",
+    "rate": 4.305844927494002,
+    "single": true,
+    "radius": 325,
+    "normal": 0.1,
+    "hero": 0.1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.06531324693964284,
+  "bossIdx": 0.7938071551125823
+ },
+ {
+  "code": "L31",
+  "name": "코비",
+  "grade": "전설",
+  "line": 0.1039473713723907,
+  "boss": 0.2078947427447814,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 1.385964951631876,
+    "single": true,
+    "normal": 0.3,
+    "hero": 0.15,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.06306906495235061,
+  "bossIdx": 0.3832658562488998
+ },
+ {
+  "code": "I5",
+  "name": "불릿",
+  "grade": "불멸의",
+  "line": 0.0984936702360919,
+  "boss": 0.09028586438308425,
+  "parts": [
+   {
+    "cond": "마나150",
+    "rate": 0.022571466095771063,
+    "single": false,
+    "radius": 600,
+    "normal": 1,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "매 공격",
+    "rate": 0.022571466095771063,
+    "single": false,
+    "radius": 600,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.059760084391758034,
+  "bossIdx": 0.16644715812960814
+ },
+ {
+  "code": "L27",
+  "name": "조로",
+  "grade": "전설",
+  "line": 0.09651898462584996,
+  "boss": 1.3512657847618994,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.38607593850339983,
+    "single": true,
+    "normal": 1,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   },
+   {
+    "cond": "30%·보스만",
+    "rate": 1.1582278155101995,
+    "single": true,
+    "normal": 1,
+    "hero": 1,
+    "onlySpecial": true,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.05856196294463984,
+  "bossIdx": 2.4911358083373716
+ },
+ {
+  "code": "L15",
+  "name": "블랙마리아",
+  "grade": "전설",
+  "line": 0.08928571707334658,
+  "boss": 0.17857143414669316,
+  "parts": [
+   {
+    "cond": "15%",
+    "rate": 0.3571428682933863,
+    "single": true,
+    "normal": 1,
+    "hero": 0.5,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.054173247625882534,
+  "bossIdx": 0.32920665864959386
+ },
+ {
+  "code": "R33",
+  "name": "조로 현상금 사냥꾼",
+  "grade": "희귀함",
+  "line": 0.07567304666266128,
+  "boss": 0.15134609332532256,
+  "parts": [
+   {
+    "cond": "매 공격",
+    "rate": 0.15134609332532256,
+    "single": true,
+    "normal": 2,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.045913891155667,
+  "bossIdx": 0.27901518471520714
+ },
+ {
+  "code": "R22",
+  "name": "샹크스",
+  "grade": "희귀함",
+  "line": 0.07187499813735487,
+  "boss": 0.14374999627470975,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 0.574999985098839,
+    "single": true,
+    "normal": 0.5,
+    "hero": 0.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.04360946184714143,
+  "bossIdx": 0.2650113450710902
+ },
+ {
+  "code": "XR1",
+  "name": "실버즈 레일리(희귀, 2.305 전용)",
+  "grade": "희귀함",
+  "line": 0.06764705692608057,
+  "boss": 0.13529411385216114,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 0.5411764554086446,
+    "single": true,
+    "normal": 0.5,
+    "hero": 0.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.04104419929794911,
+  "bossIdx": 0.24942244188753693
+ },
+ {
+  "code": "H9",
+  "name": "방주맥심",
+  "grade": "히든",
+  "line": 0.06502107309692243,
+  "boss": 0.008940397550826835,
+  "parts": [
+   {
+    "cond": "마나150",
+    "rate": 0.03725165646177848,
+    "single": false,
+    "radius": 800,
+    "normal": 1.2,
+    "hero": 0.24,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.03945090893862227,
+  "bossIdx": 0.01648213455176094
+ },
+ {
+  "code": "R18",
+  "name": "브룩 음악가",
+  "grade": "희귀함",
+  "line": 0.059553570519106425,
+  "boss": 0.11910714103821285,
+  "parts": [
+   {
+    "cond": "14.5%",
+    "rate": 0.5955357051910642,
+    "single": true,
+    "normal": 0.4,
+    "hero": 0.2,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.036133554486511406,
+  "bossIdx": 0.21958083111033855
+ },
+ {
+  "code": "R12",
+  "name": "바르톨로메오",
+  "grade": "희귀함",
+  "line": 0.058885542704161534,
+  "boss": 0.11777108540832307,
+  "parts": [
+   {
+    "cond": "17%",
+    "rate": 0.47108434163329227,
+    "single": true,
+    "normal": 0.5,
+    "hero": 0.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.035728235053278226,
+  "bossIdx": 0.21711773609299845
+ },
+ {
+  "code": "R42",
+  "name": "핸콕",
+  "grade": "희귀함",
+  "line": 0.05073529411764705,
+  "boss": 0.1014705882352941,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.338235294117647,
+    "single": true,
+    "normal": 0.6,
+    "hero": 0.3,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.03078315033690592,
+  "bossIdx": 0.18706683666273596
+ },
+ {
+  "code": "R15",
+  "name": "반더 데켄",
+  "grade": "희귀함",
+  "line": 0.04928571458221699,
+  "boss": 0.09857142916443398,
+  "parts": [
+   {
+    "cond": "20%",
+    "rate": 0.6571428610962265,
+    "single": true,
+    "normal": 0.3,
+    "hero": 0.15,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.029903631935751625,
+  "bossIdx": 0.18172207099418294
+ },
+ {
+  "code": "R19",
+  "name": "비비",
+  "grade": "희귀함",
+  "line": 0.03506097552942191,
+  "boss": 0.07012195105884382,
+  "parts": [
+   {
+    "cond": "10%",
+    "rate": 0.2804878042353753,
+    "single": true,
+    "normal": 0.5,
+    "hero": 0.25,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.02127290872066454,
+  "bossIdx": 0.1292738299178845
+ },
+ {
+  "code": "OB2",
+  "name": "군함",
+  "grade": "특수 기물",
+  "line": 0.008522727272727272,
+  "boss": 0.010416666666666666,
+  "parts": [
+   {
+    "cond": "주기",
+    "rate": 0.010416666666666666,
+    "single": false,
+    "radius": 450,
+    "normal": 1,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.005171082566476291,
+  "bossIdx": 0.019203721154991013
+ },
+ {
+  "code": "RD4",
+  "name": "센토 이스즈",
+  "grade": "랜덤",
+  "line": 0.001,
+  "boss": 0.004,
+  "parts": [
+   {
+    "cond": "주기",
+    "rate": 0.004,
+    "single": true,
+    "normal": 1,
+    "hero": 1,
+    "onlySpecial": false,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0.0006067403544665515,
+  "bossIdx": 0.00737422892351655
+ },
+ {
+  "code": "RD11",
+  "name": "토우마",
+  "grade": "랜덤",
+  "line": 0,
+  "boss": 3,
+  "parts": [
+   {
+    "cond": "매 공격·보스만",
+    "rate": 6.749999751647323,
+    "single": true,
+    "normal": 3,
+    "hero": 3,
+    "onlySpecial": true,
+    "onlyLine": false
+   }
+  ],
+  "lineIdx": 0,
+  "bossIdx": 5.530671692637412
+ }
+]

@@ -1,0 +1,16 @@
+{
+  "name": "사용자 조합 예시 (수정내역 29)",
+  "description": "시라호시 초월 + 라분 전설 + 루치 전설 2 + 후지토라 전설 + 아카이누 히든(보잡) + 모비딕호(이감) + 방주맥심, 신 난이도. 방깎은 기본 201(풀깍). 영웅 자기 오라만 보려면 cut 0과 heroArmorCuts true.",
+  "line": {
+    "team": [
+      {"code": "TR15", "count": 1},
+      {"code": "L5", "count": 1},
+      {"code": "L9", "count": 2},
+      {"code": "L37", "count": 1},
+      {"code": "H17", "count": 1},
+      {"code": "H6", "count": 1},
+      {"code": "H9", "count": 1}
+    ],
+    "options": {"difficulty": "신", "heroArmorCuts": true}
+  }
+}

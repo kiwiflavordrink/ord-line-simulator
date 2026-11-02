@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import {simulate} from './dist/engine.mjs';
-const data=JSON.parse(fs.readFileSync(new URL('./dist/data.json',import.meta.url),'utf8'));
+const data=JSON.parse(fs.readFileSync(new URL('./dist/data_legacy.json',import.meta.url),'utf8'));
 const expected=JSON.parse(fs.readFileSync(new URL('../work/physical_cut_screen.json',import.meta.url),'utf8'));
 let checked=0;
 for(const row of expected){

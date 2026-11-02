@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import {simulate} from './dist/engine.mjs';
 
-const data = JSON.parse(fs.readFileSync(new URL('./dist/data.json', import.meta.url), 'utf8'));
+const data = JSON.parse(fs.readFileSync(new URL('./dist/data_legacy.json', import.meta.url), 'utf8'));
 const estimate = JSON.parse(fs.readFileSync(new URL('../work/support_damage_65_proxy.json', import.meta.url), 'utf8'));
 const rows=[];
 for (const support of estimate.rows) {

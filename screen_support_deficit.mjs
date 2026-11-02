@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { simulate } from './dist/engine.mjs';
 
-const data = JSON.parse(fs.readFileSync(new URL('./dist/data.json', import.meta.url), 'utf8'));
+const data = JSON.parse(fs.readFileSync(new URL('./dist/data_legacy.json', import.meta.url), 'utf8'));
 const rows = [];
 const unit = 10000; // Round upward to 10,000 effective AoE damage per mob per second.
 const maxUnits = 5000;

@@ -1,0 +1,25 @@
+{
+  "name": "증폭 + 삭제 + 마무리",
+  "description": "워큐리 신 저주, 브룩 초월 마법 증폭·마방 감소, 방주맥심·드래곤 폭발형 증폭을 켜고, 니카·베가펑크·퀸·모리아 조합에 5초마다 3천만 마법 마무리를 넣는 예시",
+  "context": {
+    "selected": ["TR10", "TR10_CUT", "H9_EXP", "I2"],
+    "warcury": true
+  },
+  "line": {
+    "team": [
+      {"code": "E1", "count": 1},
+      {"code": "TR30", "count": 1},
+      {"code": "D3", "count": 1, "ab": true},
+      {"code": "L12", "count": 1}
+    ],
+    "options": {
+      "cut": 201,
+      "coverage": 0.85,
+      "red": true,
+      "fullResource": true,
+      "summons": true,
+      "finisher": {"mode": "damage", "interval": 5, "successChance": 1, "damageType": "magic", "flat": 30000000},
+      "deletion": {"seed": 202323, "L12Cooldown": 8.5, "L12Proc": 1}
+    }
+  }
+}

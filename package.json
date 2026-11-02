@@ -1,0 +1,20 @@
+{
+  "name": "ord-line-simulator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "원랜디 60–65라 조합·65라 단일 시뮬레이터 (정적 사이트 dist/ + Node.js CLI)",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "ordsim": "cli/ordsim.mjs"
+  },
+  "scripts": {
+    "sim": "node cli/ordsim.mjs",
+    "test": "node test_single.mjs && node test_support.mjs && node test_v2.mjs && node test_conditional.mjs && node test_v3_mechanics.mjs && node test_advisor.mjs && node test_story.mjs && node test_cli.mjs",
+    "test:cli": "node test_cli.mjs",
+    "test:legacy-engine": "node test_engine.mjs",
+    "serve": "python3 -m http.server 8000 -d dist"
+  }
+}

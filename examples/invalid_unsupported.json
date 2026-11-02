@@ -1,0 +1,11 @@
+{
+  "name": "미지원 영웅 예시 (실패해야 정상)",
+  "description": "X901·X902는 ORDR 목록에도 data.json에도 없는 코드(모든 유닛 등록 이후에도 미지원으로 남는다), count 7은 범위 초과",
+  "line": {
+    "team": [
+      {"code": "X901", "count": 1},
+      {"code": "X902", "count": 1},
+      {"code": "TR19", "count": 7}
+    ]
+  }
+}
