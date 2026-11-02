@@ -61,7 +61,8 @@ while ($listener.IsListening) {
       $body = [Text.Encoding]::UTF8.GetBytes('ok'); $res.ContentType = 'text/plain'
     } elseif ($path -eq '/cmd') {
       $cf = Join-Path $env:TEMP 'ordr_overlay_cmd.txt'
-      $body = [Text.Encoding]::UTF8.GetBytes($(if (Test-Path $cf) { (Get-Content $cf -Raw).Trim() } else { '' })); $res.ContentType = 'text/plain'
+      # 수정내역 98: UTF-8로 읽는다(Get-Content 기본 인코딩이라 한글 검색어가 깨졌다).
+      $body = [Text.Encoding]::UTF8.GetBytes($(if (Test-Path $cf) { [IO.File]::ReadAllText($cf, [Text.Encoding]::UTF8).Trim() } else { '' })); $res.ContentType = 'text/plain; charset=utf-8'
     } elseif ($path -eq '/ui') {
       $state = if ($ctx.Request.QueryString['fold'] -eq '1') { 'fold' } else { 'open' }
       Set-Content -Path (Join-Path $env:TEMP 'ordr_overlay_ui.txt') -Value $state -Encoding ascii

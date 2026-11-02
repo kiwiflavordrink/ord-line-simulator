@@ -187,32 +187,17 @@ export function fulfillment(target,owned,recipes,tier,prices){
   return {pct:full>0&&Number.isFinite(now.price)?Math.max(0,Math.min(1,1-now.price/full)):0,full,remaining:now.price,plan:now};
 }
 
-// ---- 따라가는 조합 안내 (수정내역 97) --------------------------------------------------------------------------------
-// 유저: 앱이 내가 한 조합을 보고 다음을 알려 줄 것(지시한 조합이 확인되면 다음 단계, 미리 만든 것은 빼기), 원하면
-// 희귀함급부터만 보여 줄 것(샹크스 전설 → 우솝 화염탄·버기 마기탄으로 희귀 조합부터).
-// stages = craftStages(...) (지금 패 기준이라 이미 만든 것은 들어 있지 않다). from = '' | '특별' | '희귀' | '전설':
-// 그 등급 아래 단계는 감추고, 감춘 단계에서 나오는 재료를 "준비할 것"(필요 수·보유 수)으로 묶는다.
-// 결과 {shown, prep, next}: next = {kind:'craft', id, count, materials} 지금 바로 할 조합 |
-//   {kind:'prep', items} 감춘 단계 재료가 모자람 | {kind:'draw', commons} 선택위습으로 뽑기 | {kind:'special'} | null(끝).
-export const STEP_FROM=['','특별','희귀','전설'];
-export function stepView(st,hand={},{from=''}={}){
-  if(!st)return {shown:[],prep:[],next:null};
-  const minRank=from?STAGE.indexOf(from):-1;
-  const real=st.stages.map(g=>({...g,items:g.items.filter(x=>x.materials.length)})).filter(g=>g.items.length);
-  const shown=real.filter(g=>g.rank>=minRank),hidden=real.filter(g=>g.rank<minRank);
-  const fromHidden=new Set(hidden.flatMap(g=>g.items.map(x=>x.id)));
-  const need=new Map();
-  if(from)for(const g of shown)for(const x of g.items)for(const m of x.materials)
-    if(fromHidden.has(m.id)||st.commons?.[m.id])need.set(m.id,(need.get(m.id)??0)+m.count*x.count);
-  const prep=[...need].map(([id,n])=>({id,need:n,have:hand[id]??0}));
-  const can=x=>x.materials.every(m=>(hand[m.id]??0)>=m.count);
-  let next=null;
-  for(const g of (from?shown:real)){const x=g.items.find(can);if(x){next={kind:'craft',id:x.id,count:x.count,materials:x.materials,tier:g.tier};break;}}
-  if(!next){
-    const lack=prep.filter(p=>p.have<p.need);
-    if(from&&lack.length)next={kind:'prep',items:lack};
-    else if(Object.keys(st.commons??{}).length)next={kind:'draw',commons:st.commons};
-    else if(Object.keys(st.specials??{}).length)next={kind:'special',specials:st.specials};
-  }
-  return {shown,prep,next};
+// ---- 따라가는 조합 안내 (수정내역 97, 98) ----------------------------------------------------------------------------
+// 유저: 단계 전체를 나열하지 말고 지금 할 조합 하나만(이나즈마 ×5) 보여 주고, 그게 확인되면 다음(로빈)을 보여 줄 것.
+// 목표가 제프면 블루노·봉쿠레·로빈이 있는지, 아무것도 없는지 보고 안내할 것.
+// stages = craftStages(지금 패로 세운 계획): 이미 가진 중간 유닛은 계획에서 빠져 있으므로, 남은 조합 중 가장 아래 단계의
+// 첫 조합이 "지금 할 것"이다. 결과 {item, mats:[{id,need,have,common}], draws:{id:n}, canNow, left, total} 또는 null.
+export function nextCraft(st,hand={}){
+  if(!st)return null;
+  const items=st.stages.flatMap(g=>g.items.filter(x=>x.materials.length).map(x=>({...x,tier:g.tier})));
+  if(!items.length)return null;
+  const x=items[0];
+  const mats=x.materials.map(m=>({id:m.id,per:m.count,need:m.count*x.count,have:hand[m.id]??0,common:!!st.commons?.[m.id]}));
+  const draws={};for(const m of mats)if(m.common&&m.have<m.need)draws[m.id]=m.need-m.have;
+  return {item:x,mats,draws,canNow:x.materials.every(m=>(hand[m.id]??0)>=m.count),left:items.length,total:items.reduce((a,y)=>a+y.count,0)};
 }

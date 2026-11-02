@@ -1,7 +1,7 @@
 // Overlay page (수정내역 34). Runs inside the Electron window (window.ordApi from preload.js) or in a plain browser
 // (folder/file inputs) for testing. No calculation here: worker.mjs calls dist/advisor.mjs.
 import {parseHelperText,snapshotFromValue,goalId} from './logparse.mjs';
-import {handFromUnits,reverseRawcode,stepView,STEP_FROM} from '../../dist/planner.mjs';
+import {handFromUnits,reverseRawcode,nextCraft} from '../../dist/planner.mjs';
 import {PERSONAL_QUESTS,liveAlarms} from '../../dist/coach.mjs';
 import {findUnits,FIND_GRADES} from '../../dist/advisor.mjs';
 
@@ -265,7 +265,7 @@ function renderQuick(){
     const p=g.plan,lum=state.meta.lumber,gold=state.meta.gold;
     const miss=Object.keys(p.missing).length,owned=state.hand[g.id]??0;
     $('goalBody').innerHTML=owned?`<span class="ok big">보유 중</span> ${esc(nameOf(g.id))}${owned>1?' ×'+owned:''} · 다른 목표를 고르거나 아래 후보를 누르세요.`:`
-      <div>${p.ok?'<span class="ok big">지금 제작 가능</span>':`<span class="big">${p.wisps}</span> 흔함 선택 위습`}
+      <div>${p.ok?'<span class="ok big">위습 없이 지금 패로 만들 수 있음</span>':`<span class="big">${p.wisps}</span> 흔함 선택 위습`}
         ${p.wood?` · 나무 <b class="${lum!=null&&lum<p.wood?'bad':''}">${p.wood}</b>${lum!=null?` (보유 ${lum})`:''}`:''}
         ${p.gold?` · 골드 <b class="${gold!=null&&gold<p.gold?'bad':''}">${p.gold}</b>${gold!=null?` (보유 ${gold})`:''}`:''}</div>
       ${miss?`<div class="warn">특수 기물·못 뽑는 재료: ${specialChips(p.missing)}</div>`:''}
@@ -310,41 +310,47 @@ const wispBadge=n=>`<span class="wisp${n?'':' zero'}">${n?`위습 ${n}`:'바로'
 const specialChips=obj=>'<span class="chips">'+Object.entries(obj).map(([id,n])=>`<span class="sp">${esc(nameOf(id))}${n>1?'×'+n:''} <small>${esc(tierShort(id)||'특수')}</small></span>`).join('')+'</span>';
 // Craft order by stage: 위습 → 안흔함 → 희귀 → … each "name ×n (materials)".
 // 수정내역 94: one line per step (유저: 줄글이라 읽기 힘듦) — 단계 제목 줄, 그 아래 "만들 유닛 = 재료 + 재료" 한 줄씩.
-// 수정내역 97: 보기 시작 등급(설정 stepFrom: 처음부터·특별부터·희귀부터·전설부터). 아래 단계는 감추고 "준비할 것"으로 묶는다.
 const nmOf=st=>{const ids=new Set(st.stages.flatMap(g=>g.items.flatMap(x=>[x.id,...x.materials.map(m=>m.id)]))),byName={};
   for(const id of ids)(byName[nameOf(id)]??=new Set()).add(id);
   return id=>esc(nameOf(id))+(byName[nameOf(id)]?.size>1?`<span class="muted small">(${esc(tierShort(id))})</span>`:'');};
+// 수정내역 98: 전체 순서는 접어 둔다("▸ 전체 순서 보기"). 평소에는 지금 할 조합 하나만(renderNextStep).
 function stagesHtml(st){
   if(!st)return '';
-  const from=state.settings.stepFrom??'',v=stepView(st,state.hand,{from}),nm=nmOf(st);
-  const out=[];let k=0;
-  out.push(`<div class="stage muted small">보기: <select id="stepFrom">${STEP_FROM.map(f=>`<option value="${f}"${f===from?' selected':''}>${f?f+'부터':'처음부터'}</option>`).join('')}</select></div>`);
-  if(!from&&Object.keys(st.commons).length){out.push(`<div class="stage"><b>${++k}단계. 흔함 선택위습으로 뽑기</b></div>`);
-    for(const [id,n] of Object.entries(st.commons))out.push(`<div class="step">· ${esc(nameOf(id))}${n>1?' ×'+n:''}</div>`);}
-  if(from&&v.prep.length){out.push(`<div class="stage"><b>${++k}단계. 준비할 것 (${esc(from)} 아래 단계)</b></div>`);
-    for(const p of v.prep)out.push(`<div class="step ${p.have>=p.need?'ok':''}">${p.have>=p.need?'✓':'·'} ${nm(p.id)} ${Math.min(p.have,p.need)}/${p.need}</div>`);}
-  for(const g of v.shown){
-    out.push(`<div class="stage"><b>${++k}단계. ${esc(g.tier)} 조합</b></div>`);
-    for(const x of g.items)out.push(`<div class="step">· ${nm(x.id)}${x.count>1?' ×'+x.count:''} = ${x.materials.map(m=>nm(m.id)+(m.count>1?'×'+m.count:'')).join(' + ')}${x.wood?` <span class="muted small">나무 ${x.wood}</span>`:''}</div>`);
+  const open=!!state.settings.showAllSteps,nm=nmOf(st),out=[];
+  out.push(`<div class="stage toggle-all click">${open?'▾ 전체 순서 접기':'▸ 전체 순서 보기'}</div>`);
+  if(open){
+    let k=0;
+    if(Object.keys(st.commons).length){out.push(`<div class="stage"><b>${++k}. 흔함 선택위습으로 뽑기</b></div>`);
+      out.push(`<div class="step">${Object.entries(st.commons).map(([id,n])=>esc(nameOf(id))+(n>1?' ×'+n:'')).join(', ')}</div>`);}
+    for(const g of st.stages){const items=g.items.filter(x=>x.materials.length);if(!items.length)continue;
+      out.push(`<div class="stage"><b>${++k}. ${esc(g.tier)} 조합</b></div>`);
+      for(const x of items)out.push(`<div class="step">· ${nm(x.id)}${x.count>1?' ×'+x.count:''} = ${x.materials.map(m=>nm(m.id)+(m.count>1?'×'+m.count:'')).join(' + ')}</div>`);}
   }
   return '<div class="stages">'+out.join('')+'</div>';
 }
-// 다음 할 일: 지금 패로 바로 할 수 있는 조합 하나. 지시한 조합이 패에 생기면 "확인"을 띄우고 다음으로.
-// 패를 기준으로 매번 다시 계산하므로 미리 만들거나 뽑은 것은 저절로 빠진다.
+// 지금 할 것: 남은 조합 중 가장 아래 단계의 첫 조합 하나. 패를 보고(이미 가진 중간 유닛은 계획에서 빠짐) 재료 보유/필요,
+// 모자란 흔함은 뽑을 수, 조합이 패에 생기면 "✓ 확인" 후 다음 조합. 중간 목표(희귀·전설 재료)는 눌러서 따로 목표로.
 function renderNextStep(g){
   const el=$('nextStep');if(!el||!g)return;
-  const v=stepView(g.stages,state.hand,{from:state.settings.stepFrom??''}),n=v.next,nm=nmOf(g.stages);
+  const n=nextCraft(g.stages,state.hand),nm=nmOf(g.stages);
   const prev=state.stepPrev;
   if(prev&&prev.goal===g.id&&(state.hand[prev.id]??0)>prev.had)state.stepDone={text:`✓ ${nameOf(prev.id)} 조합 확인`,at:Date.now()};
-  state.stepPrev=n?.kind==='craft'?{goal:g.id,id:n.id,had:state.hand[n.id]??0}:null;
-  const done=state.stepDone&&Date.now()-state.stepDone.at<8000?`<div class="ok small">${esc(state.stepDone.text)} → 다음 단계</div>`:'';
-  let t='';
-  if(!n)t='<b>다음 할 일:</b> 목표 조합 재료가 다 모였습니다.';
-  else if(n.kind==='craft')t=`<b>다음 할 일:</b> ${nm(n.id)} 조합 = ${n.materials.map(m=>nm(m.id)+(m.count>1?'×'+m.count:'')).join(' + ')} <span class="muted small">(${esc(n.tier)}${n.count>1?', 이번 목표에 '+n.count+'번':''})</span>`;
-  else if(n.kind==='prep')t=`<b>다음 할 일:</b> 준비 — ${n.items.map(p=>nm(p.id)+' '+p.have+'/'+p.need).join(', ')}`;
-  else if(n.kind==='draw')t=`<b>다음 할 일:</b> 흔함 선택위습으로 뽑기 — ${Object.entries(n.commons).map(([id,c])=>esc(nameOf(id))+(c>1?' ×'+c:'')).join(', ')}`;
-  else t='<b>다음 할 일:</b> 특수 기물을 구하세요 (위 특수 기물 줄).';
-  el.className='nextstep';el.innerHTML=done+`<div>${t}</div>`;
+  state.stepPrev=n?{goal:g.id,id:n.item.id,had:state.hand[n.item.id]??0}:null;
+  const out=[];
+  if(state.stepDone&&Date.now()-state.stepDone.at<8000)out.push(`<div class="ok">${esc(state.stepDone.text)} → 다음</div>`);
+  if(!n)out.push('<div><b>지금 할 것:</b> 남은 조합 없음 (특수 기물·조건만 남았거나 바로 만들 수 있음)</div>');
+  else{
+    out.push(`<div class="now"><b>지금 할 것:</b> ${nm(n.item.id)}${n.item.count>1?' ×'+n.item.count:''} = ${n.item.materials.map(m=>nm(m.id)+(m.count>1?'×'+m.count:'')).join(' + ')} <span class="muted small">${esc(n.item.tier)} · 남은 조합 ${n.total}번</span></div>`);
+    out.push(`<div class="small">${n.mats.map(m=>`<span class="${m.have>=m.need?'ok':''}">${nm(m.id)} ${Math.min(m.have,m.need)}/${m.need}</span>`).join(' · ')}</div>`);
+    const d=Object.entries(n.draws),sp=n.mats.filter(m=>!m.common&&m.have<m.need);
+    if(d.length)out.push(`<div class="warn small">→ 흔함 선택위습으로 ${d.map(([id,c])=>esc(nameOf(id))+' '+c).join(', ')} 뽑기</div>`);
+    if(sp.length)out.push(`<div class="warn small">→ 먼저 구할 것: ${sp.map(m=>nm(m.id)+' '+(m.need-m.have)).join(', ')}</div>`);
+    if(n.canNow)out.push(`<div class="ok small">→ 지금 조합 가능</div>`);
+  }
+  // 중간 목표: 계획에 든 희귀·전설·히든 재료(목표 자신 제외) — 눌러서 그것만 따로 목표로.
+  const mids=g.stages.stages.filter(s=>/^(희귀|전설|히든)/.test(s.tier)).flatMap(s=>s.items).filter(x=>x.id!==g.id&&x.materials.length);
+  if(mids.length)out.push(`<div class="mids small muted">중간 목표로: ${mids.map(x=>`<span class="click mid" data-goal="${esc(x.id)}">${nm(x.id)}</span>`).join(' ')}</div>`);
+  el.className='nextstep';el.innerHTML=out.join('');
 }
 const stageLine=st=>st?.stages?.length?`<span class="muted small">만들기 </span>`+st.stages.map(g=>`${esc(g.tier)} ${g.items.reduce((a,x)=>a+x.count,0)}`).join(' → '):'';
 function howTo(p,st){
@@ -382,9 +388,11 @@ function exportView(now){
       if(sec.id==='goal'){const g=$('goalSelect').value;rows.push({t:'목표: '+(g?nameOf(g):'(목록에서 유닛을 누르면 목표로 지정)'),c:g?'':'muted'});
         if(g)rows.push({t:'✕ 목표 해제',c:'muted',a:'goal none',i:1});
         for(const d of $('goalBody').children.length?[...$('goalBody').children].flatMap(x=>x.classList.contains('stages')?[...x.children]:[x]):[$('goalBody')]){
-          if(d.querySelector?.('#stepFrom')){const f=state.settings.stepFrom??'';rows.push({t:`보기: ${f?f+'부터':'처음부터'}  ▼`,c:'acc',a:'stepfrom',m:STEP_FROM.map(x=>x?x+'부터':'처음부터'),i:1});continue;}
           const t=d.innerText.replace(/\s+/g,' ').trim();if(!t)continue;
-          if(d.id==='nextStep'){for(const c of d.children){const tt=c.innerText.replace(/\s+/g,' ').trim();if(tt)rows.push({t:tt,c:c.classList.contains('ok')?'ok':'acc',b:true,i:1});}continue;}
+          if(d.classList.contains('toggle-all')){rows.push({t,c:'acc',a:'allsteps',i:1});continue;}
+          if(d.id==='nextStep'){for(const c of d.children){
+            if(c.classList.contains('mids')){rows.push({t:'중간 목표로 (눌러서 그것만 목표로):',c:'muted',i:1});for(const m of c.querySelectorAll('[data-goal]'))rows.push({t:'  '+m.innerText.trim(),a:'goal '+m.dataset.goal,i:2});continue;}
+            const tt=c.innerText.replace(/\s+/g,' ').trim();if(tt)rows.push({t:tt,c:c.classList.contains('ok')?'ok':c.classList.contains('warn')?'warn':c.classList.contains('now')?'acc':'',b:c.classList.contains('now')||c.classList.contains('ok'),i:1});}continue;}
           rows.push({t,c:d.classList.contains('warn')?'warn':d.classList.contains('ok')?'ok':d.classList.contains('muted')?'muted':d.classList.contains('stage')?'acc':'',b:d.classList.contains('stage'),i:d.classList.contains('step')?2:1});}
         continue;}
       const body=sec.id==='next'?$('nextBody'):(sec.querySelector('[id$=Body]')??sec);
@@ -515,7 +523,7 @@ if(webLive)setInterval(async()=>{
   if(verb==='goal'&&arg){await setGoal(arg==='none'?null:arg);}
   // 수정내역 97: 목록에서 고른 번호(arg), 입력한 검색어(나머지 전부).
   if(verb==='fgrade'){const L=['',...FIND_GRADES],i=arg!=null&&/^\d+$/.test(arg)?+arg:(L.indexOf(state.settings.findGrade??'')+1)%L.length;await saveSettings({findGrade:L[i]??''});$('findGrade').value=state.settings.findGrade;renderFind();}
-  if(verb==='stepfrom'&&/^\d+$/.test(arg??'')){await saveSettings({stepFrom:STEP_FROM[+arg]??''});renderQuick();}
+  if(verb==='allsteps'){await saveSettings({showAllSteps:!state.settings.showAllSteps});renderQuick();}
   if(verb==='findq'){$('findName').value=t.split(' ').slice(2).join(' ');renderFind();}
   if(verb==='diff'){const L=['auto','신','악몽','지옥'],i=L.indexOf(state.settings.difficulty??'auto');await saveSettings({difficulty:L[(i+1)%L.length]});$('difficulty').value=state.settings.difficulty;status();analyze();}
   if(verb==='cat'&&arg){const on=new Set(state.settings.cats??['legend','upper']);on.has(arg)?on.delete(arg):on.add(arg);await saveSettings({cats:[...on]});syncCats();analyze();}
@@ -554,7 +562,7 @@ async function setGoal(id){
   applyView();analyze();window.scrollTo({top:0,behavior:'smooth'});
 }
 $('goalSelect').onchange=e=>setGoal(e.target.value||null);
-$('goalBody').addEventListener('change',async e=>{if(e.target.id==='stepFrom'){await saveSettings({stepFrom:e.target.value});renderQuick();exportView();}});
+$('goalBody').addEventListener('click',async e=>{const m=e.target.closest('[data-goal]');if(m){setGoal(m.dataset.goal);return;}if(e.target.closest('.toggle-all')){await saveSettings({showAllSteps:!state.settings.showAllSteps});renderQuick();exportView();}});
 $('goalClear').onclick=()=>setGoal(null);
 // 목표 종류 (수정내역 49): saved in settings; default 전설 + 상위.
 function syncCats(){const on=new Set(state.settings.cats??['legend','upper']);for(const c of $('catBar').querySelectorAll('input'))c.checked=on.has(c.value);}

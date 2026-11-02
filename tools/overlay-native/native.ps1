@@ -45,7 +45,7 @@ public class OrdrOverlay : Form {
   }
   protected override bool ShowWithoutActivation { get { return true; } }
   protected override CreateParams CreateParams { get { var cp = base.CreateParams; cp.ExStyle |= 0x08000000 | 0x00000008 | 0x00000080; return cp; } }   // NOACTIVATE | TOPMOST | TOOLWINDOW
-  protected override void OnHandleCreated(EventArgs e) { base.OnHandleCreated(e); RegisterHotKey(Handle, 1, 0x4000, HideVk); RegisterHotKey(Handle, 2, 0x4000, TabVk); }
+  protected override void OnHandleCreated(EventArgs e) { base.OnHandleCreated(e); InstallHooks(); }
   protected override void WndProc(ref Message m) {
     if (m.Msg == 0x21) { m.Result = (IntPtr)3; return; }   // WM_MOUSEACTIVATE -> MA_NOACTIVATE
     if (m.Msg == 0x312) { if ((int)m.WParam == 1) Toggle(); else NextTab(); return; }
@@ -59,49 +59,80 @@ public class OrdrOverlay : Form {
     switch (c) { case "ok": return Color.FromArgb(90,209,154); case "bad": return Color.FromArgb(255,122,122); case "warn": return Color.FromArgb(255,209,102);
       case "muted": return Color.FromArgb(154,164,181); case "acc": return Color.FromArgb(124,184,255); default: return Color.FromArgb(232,236,243); }
   }
+  // 수정내역 98: 목록을 먼저 그리고, 머리줄·탭·스크롤 단추를 그 위에 덮어 그린다(스크롤하면 글자가 머리줄에 겹치던 문제).
   protected override void OnPaint(PaintEventArgs e) {
     var g = e.Graphics; g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit; hits.Clear();
     using (var f = new Font("Malgun Gothic", FontSize)) using (var fb = new Font("Malgun Gothic", FontSize, FontStyle.Bold)) using (var fs = new Font("Malgun Gothic", FontSize - 1)) {
-      int W = ClientSize.Width, y = 4, lh = (int)(f.GetHeight(g) + 3);
-      // header: status + buttons
+      int W = ClientSize.Width, lh = (int)(f.GetHeight(g) + 3); LineH = lh;
+      int top = 4 + lh + 6 + lh + 10, bottom = ClientSize.Height - lh - 8; contentTop = top; contentBottom = bottom;
+      if (!folded) {
+        g.SetClip(new Rectangle(0, top, W, bottom - top));
+        int cy = top - scroll;
+        foreach (var row in Rows) {
+          var font = row.Bold ? fb : (row.Color == "muted" ? fs : f);
+          int x = 8 + row.Indent * 14, w = W - x - 8;
+          var sz = TextRenderer.MeasureText(g, row.Text ?? "", font, new Size(w, 10000), TextFormatFlags.WordBreak);
+          if (cy + sz.Height >= top && cy <= bottom) {
+            var r = new Rectangle(x, cy, w, sz.Height + 2);
+            if (!string.IsNullOrEmpty(row.Act)) { using (var br = new SolidBrush(Color.FromArgb(32,37,48))) g.FillRectangle(br, new Rectangle(4, cy, W - 8, sz.Height + 2));
+              hits.Add(new KeyValuePair<Rectangle,string>(Rectangle.Intersect(new Rectangle(4, cy, W - 8, sz.Height + 2), new Rectangle(0, top, W, bottom - top)), row.Act)); }
+            TextRenderer.DrawText(g, row.Text ?? "", font, r, C(row.Color), TextFormatFlags.WordBreak);
+          }
+          cy += sz.Height + 4;
+        }
+        contentH = cy + scroll - top; g.ResetClip(); ViewHeight = bottom - top;
+        using (var bg = new SolidBrush(BackColor)) { g.FillRectangle(bg, 0, 0, W, top); g.FillRectangle(bg, 0, bottom, W, ClientSize.Height - bottom); }
+      }
+      int y = 4;
       string[] tools = {"가−","가+","▤","✕"}; int bx = W - 4;
       for (int i = tools.Length - 1; i >= 0; i--) { int bw = (int)g.MeasureString(tools[i], fs).Width + 10; bx -= bw + 3; var r = new Rectangle(bx, y, bw, lh);
         using (var br = new SolidBrush(Color.FromArgb(45,50,62))) g.FillRectangle(br, r); TextRenderer.DrawText(g, tools[i], fs, r, C(""), TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         hits.Add(new KeyValuePair<Rectangle,string>(r, "tool " + i)); }
       TextRenderer.DrawText(g, Status, fb, new Rectangle(6, y, bx - 10, lh), C("acc"), TextFormatFlags.EndEllipsis | TextFormatFlags.VerticalCenter);
       hits.Add(new KeyValuePair<Rectangle,string>(new Rectangle(0, 0, bx, lh + 6), "drag"));
-      y += lh + 6;
       if (folded) return;
-      // tabs
+      y += lh + 6;
       int tw = (W - 8) / Views.Length;
       for (int i = 0; i < Views.Length; i++) { var r = new Rectangle(4 + i * tw, y, tw - 3, lh + 4); bool on = Views[i] == View;
         using (var br = new SolidBrush(on ? C("acc") : Color.FromArgb(45,50,62))) g.FillRectangle(br, r);
         TextRenderer.DrawText(g, Labels[i], on ? fb : fs, r, on ? Color.FromArgb(11,15,23) : C(""), TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         hits.Add(new KeyValuePair<Rectangle,string>(r, "view " + Views[i])); }
-      y += lh + 10;
-      int top = y, bottom = ClientSize.Height - lh - 8; contentTop = top; contentBottom = bottom;
-      // rows (word-wrapped), clipped to the content area
-      g.SetClip(new Rectangle(0, top, W, bottom - top));
-      int cy = top - scroll;
-      foreach (var row in Rows) {
-        var font = row.Bold ? fb : (row.Color == "muted" ? fs : f);
-        int x = 8 + row.Indent * 14, w = W - x - 8;
-        var sz = TextRenderer.MeasureText(g, row.Text ?? "", font, new Size(w, 10000), TextFormatFlags.WordBreak);
-        var r = new Rectangle(x, cy, w, sz.Height + 2);
-        if (!string.IsNullOrEmpty(row.Act)) { using (var br = new SolidBrush(Color.FromArgb(32,37,48))) g.FillRectangle(br, new Rectangle(4, cy, W - 8, sz.Height + 2));
-          if (cy + sz.Height > top && cy < bottom) hits.Add(new KeyValuePair<Rectangle,string>(Rectangle.Intersect(new Rectangle(4, cy, W - 8, sz.Height + 2), new Rectangle(0, top, W, bottom - top)), row.Act)); }
-        TextRenderer.DrawText(g, row.Text ?? "", font, r, C(row.Color), TextFormatFlags.WordBreak);
-        cy += sz.Height + 4;
-      }
-      contentH = cy + scroll - top; g.ResetClip();
-      // scroll buttons
       var up = new Rectangle(4, bottom + 4, W / 2 - 6, lh); var dn = new Rectangle(W / 2 + 2, bottom + 4, W / 2 - 6, lh);
       foreach (var p in new[] { new KeyValuePair<Rectangle,string>(up, "▲ 위로"), new KeyValuePair<Rectangle,string>(dn, "▼ 아래로") }) {
         using (var br = new SolidBrush(Color.FromArgb(45,50,62))) g.FillRectangle(br, p.Key);
         TextRenderer.DrawText(g, p.Value, fs, p.Key, C(""), TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter); }
       hits.Add(new KeyValuePair<Rectangle,string>(up, "up")); hits.Add(new KeyValuePair<Rectangle,string>(dn, "down"));
-      ViewHeight = bottom - top;
     }
+  }
+  int LineH = 20;
+  // 수정내역 98: 휠과 F1·F2를 저수준 훅으로 받는다. 이 창은 포커스를 받지 않아 WM_MOUSEWHEEL이 오지 않고,
+  // RegisterHotKey는 몇 번 조작 뒤 안 먹는 경우가 있었다. 휠은 마우스가 이 창 위에 있을 때만, 키는 눌림 1회만.
+  public delegate IntPtr HookProc(int n, IntPtr w, IntPtr l);
+  [DllImport("user32.dll")] static extern IntPtr SetWindowsHookEx(int id, HookProc fn, IntPtr mod, uint tid);
+  [DllImport("user32.dll")] static extern IntPtr CallNextHookEx(IntPtr h, int n, IntPtr w, IntPtr l);
+  [DllImport("kernel32.dll")] static extern IntPtr GetModuleHandle(string n);
+  [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+  [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
+  HookProc mouseProc, keyProc; IntPtr mouseHook = IntPtr.Zero, keyHook = IntPtr.Zero; bool hideDown = false, tabDown = false;
+  void InstallHooks() {
+    if (mouseHook != IntPtr.Zero) return;
+    IntPtr mod = GetModuleHandle("user32.dll");
+    mouseProc = (n, w, l) => {
+      if (n >= 0 && (int)w == 0x020A && Visible && !Hidden) {
+        int mx = Marshal.ReadInt32(l, 0), my = Marshal.ReadInt32(l, 4), data = Marshal.ReadInt32(l, 8);
+        if (Bounds.Contains(mx, my)) { int d = (short)((data >> 16) & 0xffff);
+          BeginInvoke((Action)(() => { scroll = Math.Max(0, Math.Min(Math.Max(0, contentH - ViewHeight), scroll - d / 120 * LineH * 3)); Invalidate(); }));
+          return (IntPtr)1; }
+      }
+      return CallNextHookEx(mouseHook, n, w, l);
+    };
+    keyProc = (n, w, l) => {
+      if (n >= 0) { int vk = Marshal.ReadInt32(l, 0), msg = (int)w; bool down = msg == 0x100 || msg == 0x104, up = msg == 0x101 || msg == 0x105;
+        if (vk == (int)HideVk) { if (down && !hideDown) { hideDown = true; BeginInvoke((Action)Toggle); } if (up) hideDown = false; return (IntPtr)1; }
+        if (vk == (int)TabVk) { if (down && !tabDown) { tabDown = true; BeginInvoke((Action)NextTab); } if (up) tabDown = false; return (IntPtr)1; } }
+      return CallNextHookEx(keyHook, n, w, l);
+    };
+    mouseHook = SetWindowsHookEx(14, mouseProc, mod, 0); keyHook = SetWindowsHookEx(13, keyProc, mod, 0);
   }
   int ViewHeight = 400, contentTop = 0, contentBottom = 0;
   // 수정내역 97: 목록 영역은 끌어서 스크롤(6px 넘게 움직이면 스크롤, 아니면 놓을 때 클릭). ▼ 줄은 목록 메뉴, ✎ 줄은 입력 창.
@@ -110,6 +141,7 @@ public class OrdrOverlay : Form {
     if (a.StartsWith("input ")) { string txt = OrdrInput.Ask("유닛 찾기 검색어", ""); if (txt != null) Send(a.Substring(6) + " " + txt); return; }
     var row = Rows.Find(r => r.Act == a && r.Menu != null && r.Menu.Length > 0);
     if (row != null) { var cm = new ContextMenuStrip(); cm.Font = new Font("Malgun Gothic", FontSize);
+      IntPtr prev = GetForegroundWindow(); cm.Closed += (s3, ev3) => { if (prev != IntPtr.Zero && prev != Handle) SetForegroundWindow(prev); };
       for (int k = 0; k < row.Menu.Length; k++) { int idx = k; cm.Items.Add(row.Menu[k], null, (s2, ev) => Send(a + " " + idx)); }
       cm.Show(this, pt); return; }
     Send(a);
@@ -191,10 +223,13 @@ public class OrdrInput : Form {
     Text = title; FormBorderStyle = FormBorderStyle.FixedToolWindow; StartPosition = FormStartPosition.CenterScreen; TopMost = true;
     ClientSize = new Size(360, 72); Font = new Font("Malgun Gothic", 12f);
     box.SetBounds(10, 10, 340, 28); box.Text = init;
+    box.ImeMode = ImeMode.Hangul;
     var ok = new Button { Text = "찾기", DialogResult = DialogResult.OK }; ok.SetBounds(190, 40, 76, 28);
     var no = new Button { Text = "취소", DialogResult = DialogResult.Cancel }; no.SetBounds(274, 40, 76, 28);
     Controls.Add(box); Controls.Add(ok); Controls.Add(no); AcceptButton = ok; CancelButton = no;
-    Shown += (s, e) => { Activate(); box.Focus(); };
+    // 수정내역 98: 항상 맨 앞에(게임 뒤에 숨어 오버레이가 멈춰 보이던 문제), 다른 곳을 누르면 취소로 닫힌다.
+    Shown += (s, e) => { OrdrOverlay.SetWindowPos(Handle, (IntPtr)(-1), 0, 0, 0, 0, 0x0001 | 0x0002 | 0x0040); SetForegroundWindow(Handle); Activate(); box.Focus(); box.ImeMode = ImeMode.Hangul; };
+    Deactivate += (s, e) => { if (DialogResult == DialogResult.None) { DialogResult = DialogResult.Cancel; } };
   }
   public static string Ask(string title, string init) {
     IntPtr prev = GetForegroundWindow(); string r = null;

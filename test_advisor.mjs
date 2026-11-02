@@ -164,18 +164,16 @@ console.log('test_advisor: log parser ok');
     assert.equal(situationPicks(data,{},R,t4,nm,{round:5}).need,'build');
     console.log('test_advisor: situation picks ok');
   }
-  {// 수정내역 97: 따라가는 조합 안내 — 다음 할 일, 보기 시작 등급
-    const {stepView}=await import('./dist/planner.mjs');
-    const st={commons:{c1:2},specials:{},stages:[
+  {// 수정내역 98: 지금 할 조합 하나 — 가장 아래 단계의 첫 조합, 재료 보유/필요, 뽑을 흔함
+    const {nextCraft}=await import('./dist/planner.mjs');
+    const st={commons:{c1:4},specials:{},stages:[
       {rank:1,tier:'안흔함',items:[{id:'u1',count:2,materials:[{id:'c1',count:2}]}]},
-      {rank:2,tier:'특별함',items:[{id:'s1',count:1,materials:[{id:'u1',count:2}]},{id:'s2',count:1,materials:[{id:'u1',count:1},{id:'c2',count:1}]}]},
-      {rank:3,tier:'희귀함',items:[{id:'r1',count:1,materials:[{id:'s1',count:1},{id:'s2',count:1}]}]}]};
-    assert.equal(stepView(st,{c1:2}).next.id,'u1','가장 아래 단계부터');
-    const v=stepView(st,{s1:1},{from:'희귀'});
-    assert.deepEqual(v.shown.map(g=>g.tier),['희귀함']);
-    assert.deepEqual(v.prep.map(p=>[p.id,p.have,p.need]),[['s1',1,1],['s2',0,1]]);
-    assert.equal(v.next.kind,'prep');
-    assert.equal(stepView(st,{s1:1,s2:1},{from:'희귀'}).next.id,'r1','재료가 모이면 희귀 조합');
+      {rank:2,tier:'특별함',items:[{id:'s1',count:1,materials:[{id:'u1',count:2}]}]}]};
+    const n=nextCraft(st,{c1:1});
+    assert.equal(n.item.id,'u1');assert.deepEqual(n.draws,{c1:3});assert.equal(n.canNow,false);assert.equal(n.total,3);
+    assert.equal(nextCraft(st,{c1:2}).canNow,true,'1번은 지금 가능');
+    // 중간 유닛을 이미 가졌으면 계획에서 빠지므로 다음은 특별 조합
+    assert.equal(nextCraft({commons:{},stages:[st.stages[1]]},{u1:2}).item.id,'s1');
     console.log('test_advisor: step guide ok');
   }
   {// 수정내역 92: quest progress rows
