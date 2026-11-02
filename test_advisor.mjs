@@ -157,4 +157,22 @@ console.log('test_advisor: log parser ok');
     const u=questStatus({quests:['Q007']});assert(u[0].have===null&&u[0].text.startsWith('MVP 선정 ?/4'),'unknown counter shows ?');
     console.log('test_advisor: quest progress ok');
   }
+  {// 수정내역 94: alarms (boss/story/egghead appear, red story risk once per stage) and unit search with aliases
+    const {liveAlarms}=await import('./dist/coach.mjs');
+    const a1=liveAlarms({round:9,story:2,boss:''},{round:10,story:3,storyName:'3. 워터세븐',boss:'레벨 10 [보스]아론'});
+    assert(a1.some(x=>x.level==='red'&&x.text==='보스 등장: [보스]아론')&&a1.some(x=>x.id==='story-3'),'boss + story appear');
+    assert(liveAlarms(null,{round:1,story:1,boss:''}).length===0,'no alarm on the first read');
+    assert(liveAlarms({story:13},{story:14,boss:''})[0].text==='에그헤드 등장!','egghead');
+    const r=liveAlarms({story:9},{story:9},[{level:'red',text:'[신] 스토리 늦음 → 36라 패배 위험 (1.0단계 뒤처짐)'},{level:'yellow',text:'[신] x'}]);
+    assert(r.length===1&&r[0].id==='risk-신-9','red story risk only');
+    const {findUnits}=await import('./dist/advisor.mjs');
+    const U=[{id:'a',name:'우솝 화염탄',tier:'특별함'},{id:'b',name:'파이러츠 도킹 5',tier:'특별함'},{id:'c',name:'루피',tier:'초월 [물딜]'},
+      {id:'d',name:'루피 기어포스',tier:'초월 [마딜]'},{id:'e',name:'니카(루초)',tier:'영원 [물딜]'},{id:'f',name:'니카(뱀초)',tier:'영원 [물딜]'},{id:'g',name:'바제스',tier:'왜곡됨'},{id:'h',name:'우솝',tier:'흔함'}];
+    const ids=(g,q)=>findUnits(U,{grade:g,query:q}).map(u=>u.id).join('');
+    assert(ids('특별함','우솝')==='a'&&ids('특별함','프랑키')==='b','우솝 특별 / 프랑키 = 파이러츠');
+    assert(ids('초월','루피')==='cd','루피 초월 first, 스네이크맨 second');
+    assert(ids('','기어5')==='ef'&&ids('','스네이크 맨')==='fd','기어5·스네이크맨 modes');
+    assert(ids('왜곡됨','')==='g','왜곡됨 separate grade');
+    console.log('test_advisor: alarms + unit search ok');
+  }
 }

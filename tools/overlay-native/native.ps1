@@ -18,10 +18,21 @@ using System.Windows.Forms;
 public class OrdrRow { public string Text; public string Color; public bool Bold; public string Act; public int Indent; }
 public class OrdrOverlay : Form {
   [DllImport("user32.dll")] static extern bool RegisterHotKey(IntPtr h, int id, uint mod, uint vk);
+  [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr h, IntPtr after, int x, int y, int cx, int cy, uint flags);
+  [DllImport("user32.dll")] static extern int GetWindowLong(IntPtr h, int i);
+  [DllImport("user32.dll")] static extern int SetWindowLong(IntPtr h, int i, int v);
+  // 수정내역 94: F1로 숨긴 뒤 다시 안 열리던 문제 — Hide()/Show() 대신 투명 + 클릭 통과로 숨기고, 보일 때마다 맨 위로 다시 올린다.
+  public bool Hidden = false;
+  public void Toggle() {
+    Hidden = !Hidden; int ex = GetWindowLong(Handle, -20);
+    if (Hidden) { Opacity = 0; SetWindowLong(Handle, -20, GetWindowLong(Handle, -20) | 0x20 | 0x80000); }
+    else { SetWindowLong(Handle, -20, ex & ~0x20); Opacity = 0.93; Raise(); }
+  }
+  public void Raise() { SetWindowPos(Handle, (IntPtr)(-1), 0, 0, 0, 0, 0x0001 | 0x0002 | 0x0010 | 0x0040); }   // TOPMOST, NOSIZE|NOMOVE|NOACTIVATE|SHOWWINDOW
   public List<OrdrRow> Rows = new List<OrdrRow>();
   public string View = "now"; public string Status = "";
   public static readonly string[] Views = {"now","next","upper","lack","hand"};
-  static readonly string[] Labels = {"지금 조합","목표 후보","추천 상위","부족한 것","보유 유닛"};
+  static readonly string[] Labels = {"지금 조합","목표·찾기","가이드","부족한 것","보유 유닛"};
   public float FontSize = 11f; int scroll = 0, contentH = 0; bool folded = false; int fullH;
   Point dragFrom; bool dragging = false;
   readonly List<KeyValuePair<Rectangle,string>> hits = new List<KeyValuePair<Rectangle,string>>();
@@ -37,7 +48,7 @@ public class OrdrOverlay : Form {
   protected override void OnHandleCreated(EventArgs e) { base.OnHandleCreated(e); RegisterHotKey(Handle, 1, 0x4000, HideVk); RegisterHotKey(Handle, 2, 0x4000, TabVk); }
   protected override void WndProc(ref Message m) {
     if (m.Msg == 0x21) { m.Result = (IntPtr)3; return; }   // WM_MOUSEACTIVATE -> MA_NOACTIVATE
-    if (m.Msg == 0x312) { if ((int)m.WParam == 1) { if (Visible) Hide(); else Show(); } else NextTab(); return; }
+    if (m.Msg == 0x312) { if ((int)m.WParam == 1) Toggle(); else NextTab(); return; }
     base.WndProc(ref m);
   }
   public void Send(string cmd) {
@@ -108,15 +119,44 @@ public class OrdrOverlay : Form {
   protected override void OnMouseMove(MouseEventArgs e) { if (dragging) Location = new Point(Location.X + e.X - dragFrom.X, Location.Y + e.Y - dragFrom.Y); }
   protected override void OnMouseUp(MouseEventArgs e) { dragging = false; Capture = false; }
 }
+
+// 수정내역 94: 알람 배너 — 화면 위쪽 가운데, 맨 위, 포커스를 뺏지 않음. 오버레이를 F1로 숨겨도 뜬다. 누르면 닫힘, 10초 뒤 자동으로 닫힘.
+public class OrdrBanner : Form {
+  public string Title = "", Detail = ""; public bool Red = true; readonly Timer close = new Timer();
+  public OrdrBanner() {
+    FormBorderStyle = FormBorderStyle.None; StartPosition = FormStartPosition.Manual; TopMost = true; ShowInTaskbar = false; DoubleBuffered = true; Opacity = 0.95;
+    var wa = Screen.PrimaryScreen.Bounds; Bounds = new Rectangle(wa.Left + wa.Width / 2 - 380, wa.Top + 90, 760, 110);
+    close.Interval = 10000; close.Tick += (s, e) => { close.Stop(); Hide(); };
+  }
+  protected override bool ShowWithoutActivation { get { return true; } }
+  protected override CreateParams CreateParams { get { var cp = base.CreateParams; cp.ExStyle |= 0x08000000 | 0x00000008 | 0x00000080; return cp; } }
+  protected override void WndProc(ref Message m) { if (m.Msg == 0x21) { m.Result = (IntPtr)3; return; } base.WndProc(ref m); }
+  public void ShowAlarm(string title, string detail, bool red) {
+    Title = title; Detail = detail; Red = red; BackColor = red ? Color.FromArgb(150, 20, 20) : Color.FromArgb(120, 95, 0);
+    if (!Visible) Show(); OrdrOverlay.SetWindowPos(Handle, (IntPtr)(-1), 0, 0, 0, 0, 0x0001 | 0x0002 | 0x0010 | 0x0040);
+    Invalidate(); close.Stop(); close.Start();
+    try { if (red) System.Media.SystemSounds.Hand.Play(); else System.Media.SystemSounds.Exclamation.Play(); } catch {}
+  }
+  protected override void OnPaint(PaintEventArgs e) {
+    using (var fb = new Font("Malgun Gothic", 20f, FontStyle.Bold)) using (var fs = new Font("Malgun Gothic", 12f)) {
+      TextRenderer.DrawText(e.Graphics, Title, fb, new Rectangle(10, 8, Width - 20, 50), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis);
+      TextRenderer.DrawText(e.Graphics, Detail, fs, new Rectangle(10, 60, Width - 20, Height - 64), Color.FromArgb(240, 240, 240), TextFormatFlags.HorizontalCenter | TextFormatFlags.WordBreak);
+    }
+  }
+  protected override void OnMouseDown(MouseEventArgs e) { close.Stop(); Hide(); }
+}
 '@
 $keys = @{ F1=0x70; F2=0x71; F3=0x72; F4=0x73; F5=0x74; F6=0x75; F7=0x76; F8=0x77; F9=0x78; F10=0x79; F11=0x7A; F12=0x7B }
 $form = New-Object OrdrOverlay $Width, $Height
 if ($keys.ContainsKey($HideKey)) { $form.HideVk = $keys[$HideKey] }
 if ($keys.ContainsKey($TabKey)) { $form.TabVk = $keys[$TabKey] }
 $viewFile = Join-Path $env:TEMP 'ordr_overlay_view.json'
-$script:last = $null
+$script:last = $null; $script:seen = @{}; $script:raiseAt = 0
+$banner = New-Object OrdrBanner
 $timer = New-Object System.Windows.Forms.Timer; $timer.Interval = 120   # 수정내역 79: 0.4 s -> 0.12 s
 $timer.Add_Tick({
+  # 수정내역 94: 게임이 맨 위를 가져가도 2초마다 다시 올린다(숨김 상태가 아닐 때).
+  if ([Environment]::TickCount - $script:raiseAt -gt 2000) { $script:raiseAt = [Environment]::TickCount; if (-not $form.Hidden -and $form.IsHandleCreated) { $form.Raise() } }
   if (-not (Test-Path $viewFile)) { $form.Status = '계산 준비 중… (엣지 백그라운드)'; $form.Invalidate(); return }
   $t = (Get-Item $viewFile).LastWriteTimeUtc.Ticks
   if ($t -eq $script:last) { return }
@@ -125,11 +165,12 @@ $timer.Add_Tick({
   $rows = New-Object 'System.Collections.Generic.List[OrdrRow]'
   foreach ($r in $j.rows) { $o = New-Object OrdrRow; $o.Text = [string]$r.t; $o.Color = [string]$r.c; $o.Bold = [bool]$r.b; $o.Act = [string]$r.a; $o.Indent = [int]$r.i; $rows.Add($o) }
   $form.Rows = $rows; $form.Status = [string]$j.status
+  foreach ($a in @($j.alarms)) { if ($a -and $a.id -and -not $script:seen.ContainsKey([string]$a.id)) { $script:seen[[string]$a.id] = 1; $banner.ShowAlarm([string]$a.text, [string]$a.detail, ([string]$a.level -eq 'red')) } }
   if ($j.view) { $form.View = [string]$j.view }
   $form.Invalidate()
 })
 $timer.Start()
-Write-Host "네이티브 오버레이: $HideKey 숨기기/보이기, $TabKey 다음 탭. 이 창을 닫으면 오버레이가 꺼집니다."
+Write-Host "네이티브 오버레이: $HideKey 숨기기/보이기(숨겨도 보스·스토리 알람은 뜸), $TabKey 다음 탭. 이 창을 닫으면 오버레이가 꺼집니다."
 [System.Windows.Forms.Application]::Run($form)
 # Window closed: stop the hidden Edge that did the calculation.
 Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*ordr-overlay-edge*' } |

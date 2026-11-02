@@ -55,6 +55,8 @@ ul.lack{margin:2px 0;padding-left:1.1em}ul.lack li{margin:2px 0}
 /* 수정내역 79: craft stages and special pieces */
 .stages{margin-top:4px;border-left:2px solid var(--acc,#6cf);padding-left:6px}
 .stage{margin:2px 0;line-height:1.35}
+.stage+.step,.step+.step{}
+.step{margin:1px 0 1px 10px;line-height:1.35}
 .chips .sp{border-color:#e0a030;color:#ffcf70}
 /* 수정내역 81: current goal in lists, clear button */
 .row.cur{outline:1px solid var(--acc,#6cf)}
@@ -67,3 +69,4 @@ ul.lack{margin:2px 0;padding-left:1.1em}ul.lack li{margin:2px 0}
 #situation label{margin-right:8px}#situation input{width:3.5em}
 #coachBody .watch{opacity:.7;margin-top:2px}#coachBody .watch span{color:#9cd2ff}
 #coachBody .quests{margin-top:2px}#coachBody .quests .done{color:#7fd47f}
+#alarm{position:sticky;top:0;z-index:50;margin:4px 0}#alarm>div{padding:8px 10px;margin-bottom:4px;border-radius:6px;font-weight:700;font-size:1.15em}#alarm .red{background:#7a1515;color:#fff}#alarm .yellow{background:#6b5400;color:#fff}#alarm small{display:block;font-weight:400;font-size:.8em;opacity:.9}

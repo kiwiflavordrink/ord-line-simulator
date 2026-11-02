@@ -68,7 +68,7 @@ onmessage=e=>{
         const LABEL={rare:'희귀',legend:'전설',hidden:'히든',upper:'상위(초불영제)',mystic:'신비·기타',ship:'해적선',support:'보조'};
         // 수정내역 66: only the list the open tab shows is searched (each candidate costs one simulation).
         const view=m.view??'now';
-        const next=view==='next'?cats.map(c=>({cat:c,label:LABEL[c],list:nextTargets(data,hand,recipes,tier,{limit:5,difficulty,red,growthCut,simulate:false,
+        const next=view==='next'?cats.map(c=>({cat:c,label:LABEL[c],list:nextTargets(data,hand,recipes,tier,{limit:12,difficulty,red,growthCut,simulate:false,
           isTarget:id=>CAT[c].test(tier(id)??'')})})):null;
         // 추천 상위: the nearest 초월·불멸·영원·제한·신비 targets, ranked by the simulation after crafting (clear first, fewer left).
         let upper=null,guide=null;

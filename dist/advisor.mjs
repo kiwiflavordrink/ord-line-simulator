@@ -192,3 +192,28 @@ export function buildKeyIndex(recipes,tier){
   for(const id of recipes.keys())if(UPPER_GRADE.test(tier(id)??'')||LEGEND_GRADE.test(tier(id)??''))m.set(id,keyMaterials(planTarget(id,{},recipes,tier),tier));
   return m;
 }
+
+// ---- 유닛 찾기 (수정내역 94) -----------------------------------------------------------------------------------------
+// 등급을 고르고 이름 일부를 친다. 등급은 헬퍼 카탈로그 tier에서 "[마딜]" 같은 꼬리를 뗀 것. 왜곡됨은 따로 둔다.
+export const FIND_GRADES=['흔함','안흔함','특별함','희귀함','전설','히든','변화된','세라핌','왜곡됨','초월','불멸','영원','제한됨','신비함','특수함','해적선','랜덤유닛'];
+export const gradeOf=tier=>String(tier??'').replace(/\s*\[.*\]/,'').trim();
+// 유저가 부르는 이름(별칭). 이름에 match가 들어 있으면 also의 말로도 찾힌다. mode는 결과에 붙는 설명.
+export const FIND_ALIASES=[
+  {match:/파이러츠/,also:['프랑키']},                                        // 파이러츠 도킹 5 = 프랑키 특별
+  {match:/^루피 기어포스$/,also:['스네이크맨','기어4','기어포스'],mode:'스네이크맨'},
+  {match:/^니카\(루초\)$/,also:['기어5','니카','루피'],mode:'기어 5 · 루피 초월에서'},
+  {match:/^니카\(뱀초\)$/,also:['기어5','니카','스네이크맨'],mode:'기어 5 · 스네이크맨에서'},
+];
+const norm=s=>String(s??'').toLowerCase().replace(/[\s.()\-·]/g,'');
+// units: [{id,name,tier}] → 걸린 것 [{id,name,tier,grade,mode}], 이름이 정확히 같은 것 → 짧은 이름 순.
+export function findUnits(units,{grade='',query=''}={}){
+  const q=norm(query),out=[];
+  for(const u of units){
+    const g=gradeOf(u.tier);if(!FIND_GRADES.includes(g)||(grade&&g!==grade))continue;
+    const al=FIND_ALIASES.filter(a=>a.match.test(u.name));
+    const keys=[u.name,...al.flatMap(a=>a.also)].map(norm);
+    if(q&&!keys.some(k=>k.includes(q)))continue;
+    out.push({...u,grade:g,mode:al.find(a=>a.mode)?.mode??null,exact:q&&keys.includes(q)?1:0});
+  }
+  return out.sort((a,b)=>b.exact-a.exact||a.name.length-b.name.length||a.name.localeCompare(b.name,'ko'));
+}

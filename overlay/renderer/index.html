@@ -19,6 +19,7 @@
     </span>
   </header>
   <!-- 수정내역 85: 코치 경고 (최대 3줄) + 상황 입력(자동 읽기가 되면 채워진다) -->
+  <div id="alarm" hidden></div>
   <section id="coach" class="card">
     <div id="coachBody"></div>
     <div id="situation" class="small">
@@ -31,7 +32,7 @@
     </div>
   </section>
   <nav id="tabs">
-    <button data-view="now">지금 조합</button><button data-view="next">목표 후보</button><button data-view="upper">가이드</button><button data-view="lack">부족한 것</button><button data-view="hand">보유 유닛</button>
+    <button data-view="now">지금 조합</button><button data-view="next">목표·찾기</button><button data-view="upper">가이드</button><button data-view="lack">부족한 것</button><button data-view="hand">보유 유닛</button>
   </nav>
 
   <section id="settings" hidden>
@@ -56,6 +57,7 @@
     <label>오로성
       <select id="gorosei"><option value="">모름·없음</option><option>나스쥬로</option><option>워큐리</option><option>새턴</option></select>
     </label>
+    <button id="alarmTest">알람 시험</button>
     <p class="hint">Ctrl+Shift+O 마우스 통과 · Ctrl+Shift+H 숨기기 · Ctrl+Shift+M 접기</p>
   </section>
 
@@ -75,6 +77,8 @@
 
   <section id="next" class="card" data-view="next">
     <h2>목표 후보 <span class="muted small">(필요한 선택 위습 수가 적은 순)</span></h2>
+    <div id="findBar" class="find small">유닛 찾기 <select id="findGrade"></select> <input id="findName" placeholder="이름 일부 (예: 우솝, 프랑키, 기어5)"></div>
+    <div id="findBody"></div>
     <div id="catBar" class="catbar">
       <label><input type="checkbox" value="rare">희귀</label><label><input type="checkbox" value="legend">전설</label>
       <label><input type="checkbox" value="hidden">히든</label><label><input type="checkbox" value="upper">상위(초불영제)</label>

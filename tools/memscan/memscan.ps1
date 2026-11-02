@@ -108,7 +108,7 @@ public static class OrdrMemScan {
   // Game state from the same unit records (수정내역 90, probe 2026-10-25): story = owner 5 record named "N. 이름"
   // (n000 "1. 로그타운" … n009 "14. 에그헤드"), round = highest "레벨 NN" in owner 6 line-mob names, 오로성 = unit o02E/o031/o032
   // (owner 7, placed at game start), other players = owners 0..3 except this player.
-  public class GameState { public int round = 0, story = 0; public string storyName = "", gorosei = "";
+  public class GameState { public int round = 0, story = 0; public string storyName = "", gorosei = "", boss = "";
     public Dictionary<int, Dictionary<string, int>> others = new Dictionary<int, Dictionary<string, int>>(); }
   static string StripColor(string s) { return System.Text.RegularExpressions.Regex.Replace(s, "\\|c[0-9a-fA-F]{8}|\\|r", ""); }
   static void HandRegion(IntPtr h, MBI64 m, int player, bool full, List<string> rows, Dictionary<string, int> counts,
@@ -149,6 +149,8 @@ public static class OrdrMemScan {
           } else if (owner == 6) {
             var lm = System.Text.RegularExpressions.Regex.Match(plain, "레벨 (\\d+)");
             if (lm.Success) { int lv = int.Parse(lm.Groups[1].Value); if (lv > gs.round) gs.round = lv; }
+            // 수정내역 94: boss line mobs are named "레벨 10 [보스]아론" (2.305 wts) -> boss on the field.
+            if (plain.IndexOf("[\ubcf4\uc2a4]") >= 0) gs.boss = plain.Replace("\\", "").Replace("\"", "");
           } else if (owner >= 0 && owner <= 3 && owner != player) {
             Dictionary<string, int> d0; if (!gs.others.TryGetValue(owner, out d0)) { d0 = new Dictionary<string, int>(); gs.others[owner] = d0; }
             int c1; d0.TryGetValue(code, out c1); d0[code] = c1 + 1;
@@ -277,7 +279,7 @@ public static class OrdrMemScan {
     var reg = new List<string>(); foreach (var b in mine) reg.Add("\"0x" + b.ToString("x") + "\"");
     var oth = new List<string>();
     foreach (var kv in gs.others) { var it = new List<string>(); foreach (var u in kv.Value) it.Add("\"" + u.Key + "\":" + u.Value); oth.Add("\"" + kv.Key + "\":{" + string.Join(",", it.ToArray()) + "}"); }
-    string game = "{\"round\":" + gs.round + ",\"story\":" + gs.story + ",\"storyName\":\"" + gs.storyName + "\",\"gorosei\":\"" + gs.gorosei + "\",\"others\":{" + string.Join(",", oth.ToArray()) + "}}";
+    string game = "{\"round\":" + gs.round + ",\"story\":" + gs.story + ",\"storyName\":\"" + gs.storyName + "\",\"gorosei\":\"" + gs.gorosei + "\",\"boss\":\"" + gs.boss + "\",\"others\":{" + string.Join(",", oth.ToArray()) + "}}";
     return "{\"bytesScanned\":" + scanned + ",\"game\":" + game + ",\"regions\":[" + string.Join(",", reg.ToArray()) + "],\"hand\":[" +
       string.Join(",", hand.ToArray()) + "],\"units\":[" + string.Join(",", rows.ToArray()) + "]}";
   }

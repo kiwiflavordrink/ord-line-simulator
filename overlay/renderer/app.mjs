@@ -2,7 +2,8 @@
 // (folder/file inputs) for testing. No calculation here: worker.mjs calls dist/advisor.mjs.
 import {parseHelperText,snapshotFromValue,goalId} from './logparse.mjs';
 import {handFromUnits,reverseRawcode} from '../../dist/planner.mjs';
-import {PERSONAL_QUESTS} from '../../dist/coach.mjs';
+import {PERSONAL_QUESTS,liveAlarms} from '../../dist/coach.mjs';
+import {findUnits,FIND_GRADES} from '../../dist/advisor.mjs';
 
 const api=window.ordApi??null;
 const $=id=>document.getElementById(id);
@@ -53,6 +54,7 @@ async function loadHelperFrom(readByName,names){
 function applyHelper({recipes,catalog,samples,recipeFile}){
   state.names=new Map((catalog?.units??[]).map(u=>[reverseRawcode(u.rawcode),u.name]));
   state.tiers=new Map((catalog?.units??[]).map(u=>[reverseRawcode(u.rawcode),u.tier]));
+  state.catalogUnits=(catalog?.units??[]).map(u=>({id:reverseRawcode(u.rawcode),name:u.name,tier:u.tier}));renderFind();
   const outs=new Set();for(const r of recipes?.recipes??[])for(const o of r.outputs??[])if(o.kind==='UNIT')outs.add(o.id);
   state.outputs=[...outs].filter(id=>/전설|히든|초월|불멸|영원|제한|신비|변화|왜곡|세라핌|해적선/.test(state.tiers.get(id)??''))
     .sort((a,b)=>nameOf(a).localeCompare(nameOf(b),'ko'));
@@ -69,7 +71,7 @@ async function loadHelperDir(dir){
 
 function fillUnitLists(){
   const sel=$('goalSelect'),cur=state.meta.goal??state.settings.goal??'';
-  sel.innerHTML='<option value="">(선택)</option>'+state.outputs.map(id=>`<option value="${id}">${esc(nameOf(id))} · ${esc(state.tiers.get(id)??'')}</option>`).join('');
+  sel.innerHTML='<option value="">(선택)</option>'+(cur&&!state.outputs.includes(cur)?[cur]:[]).concat(state.outputs).map(id=>`<option value="${id}">${esc(nameOf(id))} · ${esc(state.tiers.get(id)??'')}</option>`).join('');
   sel.value=cur;
   const all=new Set([...state.names.keys(),...state.codeNames.keys()]);
   $('unitList').innerHTML=[...all].map(id=>`<option value="${esc(nameOf(id))} (${id})">`).join('');
@@ -115,9 +117,11 @@ async function readLive(){
   const g=j.Game;
   if(g){const gsig=JSON.stringify(g);if(gsig!==state.gameSig){state.gameSig=gsig;
     const others={};for(const o of Object.values(g.others??{}))for(const [c,n] of Object.entries(o))others[c]=(others[c]??0)+n;
-    state.live={round:g.round||null,story:g.story||null,storyName:g.storyName||'',gorosei:GORO_CODE[g.gorosei]??null,othersHand:others,players:1+Object.keys(g.others??{}).length,
+    const prevLive=state.live;
+    state.live={boss:g.boss||'',round:g.round||null,story:g.story||null,storyName:g.storyName||'',gorosei:GORO_CODE[g.gorosei]??null,othersHand:others,players:1+Object.keys(g.others??{}).length,
       // 수정내역 91: 개인 퀘스트 3개(이름 → 퀘스트 id).
       quests:(g.quests??[]).map(n=>PERSONAL_QUESTS.find(q=>q.name===n)?.id).filter(Boolean)};
+    fireAlarms(liveAlarms(prevLive,state.live));
     showLive();requestCoach();if(state.live.gorosei&&state.live.gorosei!==state.lastGoro){state.lastGoro=state.live.gorosei;analyze();}}}
   // 수정내역 66: redraw only when the hand itself changed (memscan rewrites the file every few seconds).
   const sig=(j.Units??[]).map(u=>u.Rawcode+':'+u.Count+':'+u.Owner).sort().join('|')+'#'+String(j.Status??'').replace(/\s*\d+ms$/,'');
@@ -173,7 +177,7 @@ worker.onmessage=e=>{
   if(m.type==='error'){status('계산 오류: '+m.message);return;}
   if(m.type==='helper-ok'){status();return;}
   if(m.id!==state.reqId)return;
-  if(m.type==='coach'){if(m.id===state.reqId){state.coach=m.warnings;state.coachActive=m.active??[];state.questRows=m.quests??[];renderCoach();}return;}
+  if(m.type==='coach'){if(m.id===state.reqId){state.coach=m.warnings;state.coachActive=m.active??[];state.questRows=m.quests??[];renderCoach();fireAlarms(liveAlarms(state.live,state.live,m.warnings));}return;}
   if(m.type==='quick'){
     // Keep the numbers of the same team while the new ones are computed (no flicker); start the simulations.
     const same=state.quick&&JSON.stringify(state.quick.team)===JSON.stringify(m.team)&&state.quick.red===m.red;
@@ -203,6 +207,17 @@ function showLive(){const l=state.live??{};$('sitRound').placeholder=l.round?'�
   [...document.querySelectorAll('.sitQuest')].forEach((x,k)=>{const id=l.quests?.[k];x.options[0].textContent=id?'자동 '+PERSONAL_QUESTS.find(q=>q.id===id).name:'-';});}
 // 직접 고른 칸이 하나라도 있으면 직접 고른 것만, 없으면 게임에서 읽은 3개.
 const liveQuests=()=>{const mine=(state.settings.sitQuests??[]).filter(Boolean);return mine.length?mine:(state.live?.quests??[]);};
+// 수정내역 94: 알람 — 페이지 맨 위 배너 + 네이티브 창(오버레이를 숨겨도 게임 위 배너·소리). 같은 알람은 한 번만.
+const alarmSeen=new Set();state.alarms=[];
+function fireAlarms(list){
+  const now=Date.now(),fresh=list.filter(a=>!alarmSeen.has(a.id));
+  for(const a of fresh){alarmSeen.add(a.id);state.alarms.push({...a,at:now});}
+  state.alarms=state.alarms.filter(a=>now-a.at<15000).slice(-3);
+  if(!fresh.length)return;
+  const box=$('alarm');box.innerHTML=state.alarms.map(a=>`<div class="${a.level}">${esc(a.text)}${a.detail?`<small>${esc(a.detail)}</small>`:''}</div>`).join('');box.hidden=false;
+  clearTimeout(fireAlarms.t);fireAlarms.t=setTimeout(()=>{box.hidden=true;},10000);
+  exportView(true);
+}
 let coachTimer=null;
 function requestCoach(){
   clearTimeout(coachTimer);
@@ -247,10 +262,9 @@ function renderQuick(){
       <div>${p.ok?'<span class="ok big">지금 제작 가능</span>':`<span class="big">${p.wisps}</span> 흔함 선택 위습`}
         ${p.wood?` · 나무 <b class="${lum!=null&&lum<p.wood?'bad':''}">${p.wood}</b>${lum!=null?` (보유 ${lum})`:''}`:''}
         ${p.gold?` · 골드 <b class="${gold!=null&&gold<p.gold?'bad':''}">${p.gold}</b>${gold!=null?` (보유 ${gold})`:''}`:''}</div>
-      ${p.wisps?`<div>위습으로 뽑을 흔함: ${chips(p.commons)}</div>`:''}
       ${miss?`<div class="warn">특수 기물·못 뽑는 재료: ${specialChips(p.missing)}</div>`:''}
       ${p.special.length?`<div class="warn">특수 조건: ${p.special.map(s=>esc(s.kind+(s.id?' '+nameOf(s.id):''))).join(', ')}</div>`:''}
-      ${Object.keys(p.used).length?`<div class="muted">쓰는 보유 유닛: ${chips(p.used)}</div>`:''}
+      ${Object.keys(p.used).length?`<div class="muted small">쓰는 보유 유닛: ${Object.entries(p.used).map(([id,n])=>esc(nameOf(id))+(n>1?'×'+n:'')).join(', ')}</div>`:''}
       ${stagesHtml(g.stages)}`;
   }
   // combo
@@ -286,12 +300,22 @@ const wispBadge=n=>`<span class="wisp${n?'':' zero'}">${n?`위습 ${n}`:'바로'
 // 수정내역 79: special pieces (해적선·레일리(희귀)·토큰·초월쿠마 …) are named with their grade so they stand out.
 const specialChips=obj=>'<span class="chips">'+Object.entries(obj).map(([id,n])=>`<span class="sp">${esc(nameOf(id))}${n>1?'×'+n:''} <small>${esc(tierShort(id)||'특수')}</small></span>`).join('')+'</span>';
 // Craft order by stage: 위습 → 안흔함 → 희귀 → … each "name ×n (materials)".
+// 수정내역 94: one line per step (유저: 줄글이라 읽기 힘듦) — 단계 제목 줄, 그 아래 "만들 유닛 = 재료 + 재료" 한 줄씩.
 function stagesHtml(st){
   if(!st)return '';
-  const out=[];
-  if(Object.keys(st.commons).length)out.push(`<div class="stage"><b>1. 위습으로 흔함</b> ${chips(st.commons)}</div>`);
-  st.stages.forEach((g,k)=>out.push(`<div class="stage"><b>${k+(Object.keys(st.commons).length?2:1)}. ${esc(g.tier)}</b> `+
-    g.items.map(x=>`${esc(nameOf(x.id))}${x.count>1?' ×'+x.count:''} <span class="muted small">(${x.materials.map(m=>esc(nameOf(m.id))+(m.count>1?'×'+m.count:'')).join('+')})</span>`).join(', ')+'</div>'));
+  const out=[];let k=0;
+  if(Object.keys(st.commons).length){out.push(`<div class="stage"><b>${++k}단계. 흔함 선택위습으로 뽑기</b></div>`);
+    for(const [id,n] of Object.entries(st.commons))out.push(`<div class="step">· ${esc(nameOf(id))}${n>1?' ×'+n:''}</div>`);}
+  // 이름이 같은 다른 등급(예: 트라팔가 로우 특별·희귀)은 등급을 붙여 구분한다.
+  const ids=new Set(st.stages.flatMap(g=>g.items.flatMap(x=>[x.id,...x.materials.map(m=>m.id)]))),byName={};
+  for(const id of ids)(byName[nameOf(id)]??=new Set()).add(id);
+  const nm=id=>esc(nameOf(id))+(byName[nameOf(id)]?.size>1?`<span class="muted small">(${esc(tierShort(id))})</span>`:'');
+  for(const g of st.stages){
+    const items=g.items.filter(x=>x.materials.length);   // 재료가 없는 것(랜덤유닛 K 등)은 특수 기물 줄에 있다
+    if(!items.length)continue;
+    out.push(`<div class="stage"><b>${++k}단계. ${esc(g.tier)} 조합</b></div>`);
+    for(const x of items)out.push(`<div class="step">· ${nm(x.id)}${x.count>1?' ×'+x.count:''} = ${x.materials.map(m=>nm(m.id)+(m.count>1?'×'+m.count:'')).join(' + ')}${x.wood?` <span class="muted small">나무 ${x.wood}</span>`:''}</div>`);
+  }
   return out.length?'<div class="stages">'+out.join('')+'</div>':'';
 }
 const stageLine=st=>st?.stages?.length?`<span class="muted small">만들기 </span>`+st.stages.map(g=>`${esc(g.tier)} ${g.items.reduce((a,x)=>a+x.count,0)}`).join(' → '):'';
@@ -310,7 +334,7 @@ function fill(id,html){$(id).innerHTML=html;$(id).dataset.filled='1';exportView(
 // 수정내역 68: the visible tab as plain rows for the native window (tools/overlay-native/native.ps1), sent to /view.
 const native=webLive&&new URLSearchParams(location.search).get('native')==='1';
 let exportTimer=null;
-function exportView(){
+function exportView(now){
   if(!native)return;clearTimeout(exportTimer);
   exportTimer=setTimeout(()=>{
     const rows=(state.coach??[]).map(x=>({t:x.text,c:x.level==='red'?'bad':x.level==='yellow'?'warn':'ok',b:true})),colorOf=el=>el.closest?.('.bad')||el.querySelector?.('.bad')?'bad':el.querySelector?.('.warn')||el.classList?.contains('warn')?'warn':el.querySelector?.('.ok:not(.wisp)')?'ok':'';
@@ -318,6 +342,8 @@ function exportView(){
       if(sec.hidden)continue;
       rows.push({t:[...(sec.querySelector('h2')?.childNodes??[])].filter(n=>n.nodeName!=='SELECT').map(n=>n.textContent).join('').replace(/\s+/g,' ').trim(),c:'acc',b:true});
       if(sec.id==='next'){
+        const fg=state.settings.findGrade??'';rows.push({t:`유닛 찾기 등급: ${fg||'(전체)'}  ▶ 눌러서 바꾸기`,c:'acc',a:'fgrade',i:1});
+        for(const el of $('findBody').querySelectorAll('.row'))rows.push({t:el.innerText.replace(/\s+/g,' ').trim(),a:'goal '+el.dataset.goal,i:1});
         const on=new Set(state.settings.cats??['legend','upper']);
         const cats=[...$('catBar').querySelectorAll('input')].map(i=>(on.has(i.value)?'☑ ':'☐ ')+i.parentElement.innerText.trim());
         [...$('catBar').querySelectorAll('input')].forEach((inp,k)=>rows.push({t:cats[k],c:on.has(inp.value)?'ok':'muted',a:'cat '+inp.value,i:1}));
@@ -325,9 +351,9 @@ function exportView(){
       if(sec.id==='lack'){const d=state.settings.difficulty??'auto';rows.push({t:`난이도: ${d==='auto'?'자동('+difficulty()+')':d}  ▶ 눌러서 바꾸기`,c:'acc',a:'diff',i:1});}
       if(sec.id==='goal'){const g=$('goalSelect').value;rows.push({t:'목표: '+(g?nameOf(g):'(목록에서 유닛을 누르면 목표로 지정)'),c:g?'':'muted'});
         if(g)rows.push({t:'✕ 목표 해제',c:'muted',a:'goal none',i:1});
-        for(const d of $('goalBody').children.length?[...$('goalBody').children].flatMap(x=>x.classList.contains('stages')?[...x.children]:[x]):[$('goalBody')]){const t=d.innerText.replace(/\s+/g,' ').trim();if(t)rows.push({t,c:d.classList.contains('warn')?'warn':d.classList.contains('muted')?'muted':'',i:1});}
+        for(const d of $('goalBody').children.length?[...$('goalBody').children].flatMap(x=>x.classList.contains('stages')?[...x.children]:[x]):[$('goalBody')]){const t=d.innerText.replace(/\s+/g,' ').trim();if(t)rows.push({t,c:d.classList.contains('warn')?'warn':d.classList.contains('muted')?'muted':d.classList.contains('stage')?'acc':'',b:d.classList.contains('stage'),i:d.classList.contains('step')?2:1});}
         continue;}
-      const body=sec.querySelector('[id$=Body]')??sec;
+      const body=sec.id==='next'?$('nextBody'):(sec.querySelector('[id$=Body]')??sec);
       const items=body.querySelectorAll(':scope > .row, :scope > div.muted, :scope ul.lack > li, :scope .hand-row, :scope table tr');
       if(!items.length){const t=body.innerText.trim();if(t)rows.push({t,c:'muted'});continue;}
       for(const el of items){
@@ -338,8 +364,18 @@ function exportView(){
         }else rows.push({t:el.innerText.replace(/\s+/g,' ').trim(),c:colorOf(el)});
       }
     }
-    fetch('/view',{method:'POST',body:JSON.stringify({view:view(),status:$('status').textContent,rows})}).catch(()=>{});
-  },30);
+    fetch('/view',{method:'POST',body:JSON.stringify({view:view(),status:$('status').textContent,rows,alarms:state.alarms.map(({id,level,text,detail})=>({id,level,text,detail}))})}).catch(()=>{});
+  },now?0:30);
+}
+// 수정내역 94: 유닛 찾기 — 등급 + 이름 일부(별칭: 우솝 특별, 프랑키 = 파이러츠, 기어5·스네이크맨). 누르면 목표로.
+function renderFind(){
+  const g=state.settings?.findGrade??'',q=$('findName')?.value??'';
+  if(!$('findBody'))return;
+  if(!state.catalogUnits?.length){$('findBody').innerHTML='';return;}
+  if(!g&&!q.trim()){$('findBody').innerHTML='<div class="muted small">등급을 고르거나 이름을 치면 아무 유닛이나 찾아 목표로 정할 수 있습니다.</div>';return;}
+  const list=findUnits(state.catalogUnits,{grade:g,query:q});
+  $('findBody').innerHTML=list.length?list.slice(0,40).map(u=>`<div class="row click" data-goal="${esc(u.id)}"><div class="top"><span><span class="name">${esc(u.name)}</span> <span class="muted small">${esc(u.grade)}${u.mode?' · '+esc(u.mode):''}</span></span></div></div>`).join('')+(list.length>40?`<div class="muted small">… ${list.length-40}개 더 (이름을 더 치세요)</div>`:''):'<div class="muted small">찾는 유닛 없음</div>';
+  exportView();
 }
 function renderNext(){
   if(state.next==null&&state.helper)return;
@@ -435,6 +471,7 @@ if(webLive)setInterval(async()=>{
   const [,verb,arg]=t.split(' ');
   if(verb==='view'&&VIEWS.includes(arg)){await saveSettings({view:arg});applyView();analyze();}
   if(verb==='goal'&&arg){await setGoal(arg==='none'?null:arg);}
+  if(verb==='fgrade'){const L=['',...FIND_GRADES],i=L.indexOf(state.settings.findGrade??'');await saveSettings({findGrade:L[(i+1)%L.length]});$('findGrade').value=state.settings.findGrade;renderFind();}
   if(verb==='diff'){const L=['auto','신','악몽','지옥'],i=L.indexOf(state.settings.difficulty??'auto');await saveSettings({difficulty:L[(i+1)%L.length]});$('difficulty').value=state.settings.difficulty;status();analyze();}
   if(verb==='cat'&&arg){const on=new Set(state.settings.cats??['legend','upper']);on.has(arg)?on.delete(arg):on.add(arg);await saveSettings({cats:[...on]});syncCats();analyze();}
   exportView();
@@ -466,6 +503,8 @@ for(const [k,sel] of [...document.querySelectorAll('.sitQuest')].entries()){
 for(const [id,key] of [['sitRound','sitRound'],['sitStage','sitStage'],['sitPlayers','sitPlayers'],['sitHp','sitHp'],['sitEgg','sitEgg']])
   $(id).onchange=async e=>{await saveSettings({[key]:e.target.value});requestCoach();};
 async function setGoal(id){
+  // 찾기로 고른 하위 등급 유닛도 목표 목록에 넣는다.
+  if(id&&![...$('goalSelect').options].some(o=>o.value===id))$('goalSelect').add(new Option(nameOf(id)+' ('+tierShort(id)+')',id));
   $('goalSelect').value=id??'';await saveSettings({goal:id||null});state.meta.goal=id||null;
   applyView();analyze();window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -474,7 +513,10 @@ $('goalClear').onclick=()=>setGoal(null);
 // 목표 종류 (수정내역 49): saved in settings; default 전설 + 상위.
 function syncCats(){const on=new Set(state.settings.cats??['legend','upper']);for(const c of $('catBar').querySelectorAll('input'))c.checked=on.has(c.value);}
 $('catBar').onchange=async()=>{await saveSettings({cats:[...$('catBar').querySelectorAll('input:checked')].map(c=>c.value)});analyze();};
-$('nowBody').onclick=$('upperBody').onclick=$('nextBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g)setGoal(g);};
+$('findGrade').innerHTML='<option value="">(전체 등급)</option>'+FIND_GRADES.map(g=>`<option>${g}</option>`).join('');
+$('findGrade').onchange=async e=>{await saveSettings({findGrade:e.target.value});renderFind();};
+$('findName').oninput=()=>renderFind();
+$('findBody').onclick=$('nowBody').onclick=$('upperBody').onclick=$('nextBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g)setGoal(g);};
 $('handBody').onclick=e=>{const b=e.target.closest('button[data-id]');if(b)editHand(b.dataset.id,+b.dataset.d);};
 $('addUnit').onclick=()=>{
   const v=$('unitSearch').value.trim();if(!v)return;
@@ -525,6 +567,7 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   $('growthCut').value=state.settings.growthCut??0;
   $('gorosei').value=state.settings.gorosei??'';
   [...document.querySelectorAll('.sitQuest')].forEach((x,k)=>x.value=(state.settings.sitQuests??[])[k]??'');
+  $('findGrade').value=state.settings.findGrade??'';renderFind();
   $('sitRound').value=state.settings.sitRound??'';$('sitStage').value=state.settings.sitStage??'';$('sitPlayers').value=state.settings.sitPlayers??'';$('sitHp').value=state.settings.sitHp??'';$('sitEgg').value=state.settings.sitEgg??'';
   $('memPlayer').value=String(state.settings.memPlayer??0);
   syncCats();applyView();applyFont();
@@ -543,3 +586,6 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   if(!state.settings.helperDir&&!state.settings.source)$('settings').hidden=false;
   status();
 })();
+
+// 수정내역 94: 알람 시험 버튼(설정) — 배너·소리가 게임 위에 뜨는지 확인용.
+$('alarmTest')?.addEventListener('click',()=>fireAlarms([{id:'test-'+Date.now(),level:'red',text:'알람 시험: 보스 등장',detail:'이 배너가 게임 화면 위에 보이면 정상입니다.'}]));

@@ -2,7 +2,6 @@
 // Inputs come from the overlay (hand of this player, other players' units when the memory probe finds them, round,
 // the story stage that is still alive, difficulty, 오로성). Numbers: 2.305 map (docs/coach/quests.md) unless noted.
 import {storyKillTime} from './story.mjs';
-import {controlSums} from './advisor.mjs';
 import {planTarget,priceModel,lockedPieces} from './planner.mjs';
 
 export const ROUND_SECONDS=35;                       // 신세계 전 라운드 길이 (2.305 j:85387)
@@ -10,9 +9,6 @@ export const BOSS_ROUNDS=[10,20,30,40,50];           // 보스 라운드: 60초 
 export const BOSS_SECONDS=60;
 export const EGGHEAD_SECONDS=240;                    // 신·악몽: 와노쿠니(13) 처치 120초 뒤 등장, 그때부터 240초 (j:69060-69086, 14284-14288)
 export const ARMOR_TARGET={지옥:180,신:201,악몽:211},SLOW_TARGET={지옥:90,신:102,악몽:102};   // ORDR 가이드, 1인 라인
-const GORO_ARMOR={워큐리:{신:7,악몽:10}},GORO_SLOW={나스쥬로:{신:10,악몽:15}};
-// 맵 전체 효과 (docs/coach/global_units.md): 누가 가졌든 모든 라인에. 우솝 초월 A0OS 방깎 8.
-const MAP_WIDE_ARMOR={TR19:8},MAP_WIDE_SLOW={TR10:.05};
 // 니카 영원(E1·E2)은 오로성을 없앤다 — 이스터 에그, 유저 지시로 있다고 본다.
 export const NIKA=['E1','E2'];
 export const goroseiActive=(team,gorosei)=>gorosei&&!team.some(t=>NIKA.includes(t.code))?gorosei:null;
@@ -73,16 +69,7 @@ export function coachWarnings(data,{myTeam=[],team=null,difficulty='신',gorosei
   }
   // 3. 보스 라운드 직전.
   if(round!=null&&BOSS_ROUNDS.includes(round+1))push('yellow',50,`다음 ${round+1}라 보스: 60초 안에 처치`,'못 잡으면 그 플레이어 패배. 단일·보스 피해 유닛을 내 라인에 두세요.');
-  // 4. 방깎·이감 (내 라인, 맵 전체 효과 포함, 오로성 반영).
-  if(myTeam.length){
-    const c=controlSums(data,myTeam,red);
-    const others=(team??[]).filter(t=>!myTeam.some(m=>m.code===t.code));
-    const cut=c.armorCut+others.reduce((a,t)=>a+(MAP_WIDE_ARMOR[t.code]??0),0);
-    const slow=c.slow+others.reduce((a,t)=>a+(MAP_WIDE_SLOW[t.code]??0),0);
-    const at=ARMOR_TARGET[difficulty]+(GORO_ARMOR[goro]?.[difficulty]??0),st=SLOW_TARGET[difficulty]+(GORO_SLOW[goro]?.[difficulty]??0);
-    const lack=[];if(cut<at)lack.push(`방깎 ${cut}/${at}`);if(slow*100<st)lack.push(`이감 ${Math.round(slow*100)}/${st}%`);
-    if(lack.length&&(round==null||round>=40))push('yellow',30,'내 라인 '+lack.join(' · ')+' 부족',`ORDR 가이드 목표(1인 라인, 상시 오라)${goro?`, 오로성 ${goro} 반영`:''}.`);
-  }
+  // 4. 방깎·이감 줄은 뺐다(수정내역 94, 유저: 게임 좌측 상단 유틸보드에 나온다).
   // 5. 60~65라 클리어 각 (시뮬, 50라 이후).
   const s=stats?.[difficulty];
   if(s&&(round==null||round>=50)){
@@ -184,5 +171,22 @@ export function questHints(data,{quests=[],hand={},round=null,storyStage=null,te
     if(need<=left)push('green',35,'미션 파괴왕 가능: 29라까지 드레스로자',detail);
     else push('yellow',34,'미션 파괴왕 어려움 (29라까지 드레스로자)',detail);
   }
+  return out;
+}
+
+// ---- 알람 (수정내역 94) ----------------------------------------------------------------------------------------------
+// 유저 결정: 보스·스토리 등장과 스토리 사망 위험에만 집중. 오버레이를 숨겨도 게임 화면 위 배너 + 소리로 알린다.
+// prev/cur = 메모리에서 읽은 게임 상태 {round, story, storyName, boss}. warnings = coachWarnings 결과.
+// 같은 id는 한 번만 띄운다(호출하는 쪽이 본 id를 기억).
+export function liveAlarms(prev,cur,warnings=[]){
+  const out=[];if(!cur)return out;
+  if(cur.boss&&cur.boss!==prev?.boss)out.push({id:`boss-${cur.round??''}-${cur.boss}`,level:'red',
+    text:`보스 등장: ${cur.boss.replace(/^레벨 \d+\s*/,'')}`,detail:'60초 안에 처치하지 못하면 패배.'});
+  if(prev&&cur.story&&prev.story!=null&&cur.story>prev.story){
+    if(cur.story===14)out.push({id:'story-14',level:'red',text:'에그헤드 등장!',detail:`${EGGHEAD_SECONDS}초 안에 처치하지 못하면 패배.`});
+    else out.push({id:`story-${cur.story}`,level:'yellow',text:`스토리 등장: ${cur.storyName||cur.story+'단계'}`,detail:''});
+  }
+  for(const w of warnings)if(w.level==='red'&&/^\[(신|악몽|에그헤드)\]/.test(w.text))
+    out.push({id:`risk-${w.text.match(/^\[(.+?)\]/)[1]}-${cur.story??''}`,level:'red',text:w.text,detail:w.detail??''});
   return out;
 }
