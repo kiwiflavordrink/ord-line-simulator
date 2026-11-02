@@ -407,7 +407,7 @@ if ($Watch) {
   # restarts. Writes {Source,Time,Status,Units:[{Rawcode,Code,Count,Owner,Name}]} to $Out (temp file + rename).
   # 수정내역 79: re-read every 0.3 s (was 3 s); the file is rewritten only when the hand changes (plus a 5 s heartbeat),
   # and the status carries the read time so slow PCs show up.
-  $tmp = "$Out.tmp"; $bases = ''; $lastFull = [DateTime]::MinValue; $pid0 = 0; $lastUnits = $null; $lastPut = [DateTime]::MinValue; $quests = '[]'
+  $tmp = "$Out.tmp"; $bases = ''; $lastFull = [DateTime]::MinValue; $pid0 = 0; $lastUnits = $null; $lastPut = [DateTime]::MinValue; $quests = '[]'; $logFile = $null; $logPid = 0
   # 수정내역 90: "Game" = {round, story, storyName, gorosei, others} read from the same unit records.
   function Put($status, $units, $game = 'null') {
     $o = '{"Source":"memscan","Time":"' + (Get-Date -Format o) + '","Status":' + (ConvertTo-Json $status) + ',"Units":' + $units + ',"Game":' + $game + '}'
@@ -433,6 +433,12 @@ if ($Watch) {
     $game = if ($obj.game) { ConvertTo-Json -Compress -Depth 4 $obj.game } else { 'null' }
     if ($full -or ($units + $game) -ne $lastUnits -or ((Get-Date) - $lastPut).TotalSeconds -ge 5) {
       Put ("{0} {1}ms" -f $(if ($full) { '전체' } else { '빠름' }), $ms) $units $game
+      # 수정내역 96: 게임 기록 — 패·게임 상태가 바뀔 때마다 바탕화면 ordr_logs\game_<시작 시각>.jsonl 에 한 줄.
+      if (($units + $game) -ne $lastUnits -and $game -ne 'null') {
+        if (-not $logFile -or $pid0 -ne $logPid) { $ld = Join-Path ([Environment]::GetFolderPath('Desktop')) 'ordr_logs'; if (-not (Test-Path $ld)) { New-Item -ItemType Directory -Path $ld | Out-Null }
+          $logFile = Join-Path $ld ('game_' + (Get-Date -Format 'yyyyMMdd_HHmmss') + '.jsonl'); $logPid = $pid0 }
+        try { [IO.File]::AppendAllText($logFile, '{"t":"' + (Get-Date -Format o) + '","game":' + $game + ',"units":' + $units + '}' + "`n", (New-Object Text.UTF8Encoding $false)) } catch { }
+      }
       $lastUnits = $units + $game; $lastPut = Get-Date
       Write-Host ("{0:HH:mm:ss} {1} {2}종 {3}ms" -f (Get-Date), $(if ($full) { '전체' } else { '빠름' }), @($obj.hand).Count, $ms)
     }

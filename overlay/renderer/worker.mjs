@@ -7,14 +7,14 @@ import {teamFromHand,controlSums,comboStats,similarClears,nextTargets,unitIndex,
 import {indexRecipes,planTarget,reverseRawcode,reachable,craftStages} from '../../dist/planner.mjs';
 import {coachWarnings,questHints,coachActive,questStatus} from '../../dist/coach.mjs';
 
-let situationKey=null,situation=null;
+let situationKey=null,situation=null,egg=null;
 let data=null,index=null,recipes=new Map(),tiers=new Map(),names=new Map(),samples=[],latest=0,keyIndex=null,pairs=null;
 const tier=id=>tiers.get(id);
 
 onmessage=e=>{
   const m=e.data;
   try{
-    if(m.type==='data'){data=m.data;index=unitIndex(data);return;}
+    if(m.type==='data'){data=m.data;index=unitIndex(data);egg=m.egg??null;return;}
     if(m.type==='helper'){
       recipes=m.recipes?indexRecipes(m.recipes):new Map();
       tiers=new Map((m.catalog?.units??[]).map(u=>[reverseRawcode(u.rawcode),u.tier]));
@@ -36,11 +36,11 @@ onmessage=e=>{
       // 수정내역 95: 상황 추천 — 보스 임박·스토리 늦음·후반 라인 중 급한 것. 상황이나 패가 바뀔 때만 다시 계산.
       if(recipes.size&&c.hand){
         const storyRisk=w.some(x=>(x.level==='red'||x.level==='yellow')&&/^\[(신|악몽|에그헤드)\]/.test(x.text));
-        const nextBoss=c.round==null?'':[10,20,30,40,50].find(b=>b>=c.round&&b-c.round<=2)??'';
-        const key=JSON.stringify([c.hand,nextBoss,storyRisk&&c.storyStage,c.round>=40,c.difficulty,c.players,c.gorosei,c.othersHand]);
+        const nextBoss=c.round==null?'':[40,50].find(b=>b>=c.round&&b-c.round<=3)??'';
+        const key=JSON.stringify([c.hand,nextBoss,storyRisk&&c.storyStage,c.storyStage>=13,c.round>=40,c.difficulty,c.players,c.gorosei,c.othersHand]);
         if(key!==situationKey){situationKey=key;
           const others=c.othersHand&&Object.keys(c.othersHand).length?teamFromHand(data,c.othersHand,index).team:[];
-          situation=situationPicks(data,c.hand,recipes,tier,id=>names.get(id),{round:c.round,storyStage:c.storyStage,storyRisk,difficulty:c.difficulty,players:c.players,gorosei:c.gorosei,red:c.red,others});}
+          situation=situationPicks(data,c.hand,recipes,tier,id=>names.get(id),{round:c.round,storyStage:c.storyStage,storyRisk,difficulty:c.difficulty,players:c.players,gorosei:c.gorosei,red:c.red,others,egg});}
       }
       postMessage({type:'coach',id:m.id,warnings:w.sort((a,b)=>b.priority-a.priority).slice(0,3),active:coachActive(c),situation,
         quests:questStatus({quests:c.quests,hand:c.hand??{},recipes,tier,progress:c.questProgress??{}})});

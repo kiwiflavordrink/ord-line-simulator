@@ -151,7 +151,14 @@ console.log('test_advisor: log parser ok');
   {// 수정내역 95: 상황 추천 — 무엇이 급한지
     const {situationPicks}=await import('./dist/advisor.mjs');
     const R=indexRecipes(fx),nm=id=>id;
-    assert.equal(situationPicks(data,{},R,t4,nm,{round:9}).need,'boss','보스 2라 전, 단일·보스 처리 없음');
+    assert.equal(situationPicks(data,{},R,t4,nm,{round:9}).need,'build','30라까지 보스는 추천 안 함');
+    assert.equal(situationPicks(data,{},R,t4,nm,{round:38}).need,'boss','40라 보스를 못 잡는 팀');
+    const egg={difficulties:['신'],units:{}};
+    assert.equal(situationPicks(data,{},R,t4,nm,{round:34,storyStage:13,egg}).need,'egghead','상위 없음 + 에그헤드 무렵');
+    {const {midBossKillTime,storyDps}=await import('./dist/story.mjs');
+      assert.ok(midBossKillTime(data,[{code:'TR8',count:1}],40)<60&&midBossKillTime(data,[],40)===Infinity,'40라 보스 처치 시간');
+      const a=storyDps(data,[{code:'TR8',count:1}],14),b=storyDps(data,[{code:'TR8',count:1}],14,{gorosei:'워큐리'});
+      assert.ok(a>b&&b>0,'에그헤드 딜, 워큐리면 줄어듦');}
     assert.equal(situationPicks(data,{},R,t4,nm,{round:27,storyStage:9,storyRisk:true}).need,'story');
     assert.equal(situationPicks(data,{},R,t4,nm,{round:45}).need,'line');
     assert.equal(situationPicks(data,{},R,t4,nm,{round:5}).need,'build');

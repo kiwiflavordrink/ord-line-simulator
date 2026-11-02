@@ -177,7 +177,7 @@ worker.onmessage=e=>{
   if(m.type==='error'){status('계산 오류: '+m.message);return;}
   if(m.type==='helper-ok'){status();return;}
   if(m.id!==state.reqId)return;
-  if(m.type==='coach'){if(m.id===state.reqId){state.coach=m.warnings;state.coachActive=m.active??[];state.questRows=m.quests??[];renderCoach();state.situation=m.situation??null;renderSituation();fireAlarms(liveAlarms(state.live,state.live,m.warnings));}return;}
+  if(m.type==='coach'){if(m.id===state.reqId){state.coach=m.warnings;state.coachActive=m.active??[];state.questRows=m.quests??[];renderCoach();state.situation=m.situation??null;renderSituation();logCoach('warnings',{warnings:(m.warnings??[]).map(x=>`${x.level} ${x.text}`)});if(m.situation)logCoach('situation',{need:m.situation.need,picks:m.situation.picks.map(p=>`${nameOf(p.id)} 흔함${Math.round(p.price)} ${p.why}`)});fireAlarms(liveAlarms(state.live,state.live,m.warnings));}return;}
   if(m.type==='quick'){
     // Keep the numbers of the same team while the new ones are computed (no flicker); start the simulations.
     const same=state.quick&&JSON.stringify(state.quick.team)===JSON.stringify(m.team)&&state.quick.red===m.red;
@@ -209,9 +209,15 @@ function showLive(){const l=state.live??{};$('sitRound').placeholder=l.round?'�
 const liveQuests=()=>{const mine=(state.settings.sitQuests??[]).filter(Boolean);return mine.length?mine:(state.live?.quests??[]);};
 // 수정내역 94: 알람 — 페이지 맨 위 배너 + 네이티브 창(오버레이를 숨겨도 게임 위 배너·소리). 같은 알람은 한 번만.
 const alarmSeen=new Set();state.alarms=[];
+// 수정내역 96: 코치 기록 — serve.ps1 이 바탕화면 ordr_logs\coach_<날짜>.jsonl 에 남긴다(바뀔 때만).
+const logSig={};
+function logCoach(kind,obj){
+  if(!native&&!webLive)return;const sig=JSON.stringify(obj);if(logSig[kind]===sig)return;logSig[kind]=sig;
+  fetch('/log',{method:'POST',body:JSON.stringify({t:new Date().toISOString(),kind,round:state.live?.round??null,story:state.live?.story??null,...obj})}).catch(()=>{});
+}
 function fireAlarms(list){
   const now=Date.now(),fresh=list.filter(a=>!alarmSeen.has(a.id));
-  for(const a of fresh){alarmSeen.add(a.id);state.alarms.push({...a,at:now});}
+  for(const a of fresh){alarmSeen.add(a.id);state.alarms.push({...a,at:now});logCoach('alarm:'+a.id,{alarm:a.text,detail:a.detail});}
   state.alarms=state.alarms.filter(a=>now-a.at<15000).slice(-3);
   if(!fresh.length)return;
   const box=$('alarm');box.innerHTML=state.alarms.map(a=>`<div class="${a.level}">${esc(a.text)}${a.detail?`<small>${esc(a.detail)}</small>`:''}</div>`).join('');box.hidden=false;
@@ -369,7 +375,7 @@ function exportView(now){
 }
 // 수정내역 94: 유닛 찾기 — 등급 + 이름 일부(별칭: 우솝 특별, 프랑키 = 파이러츠, 기어5·스네이크맨). 누르면 목표로.
 // 수정내역 95: 상황 추천 (가이드 탭 맨 위). 누르면 목표.
-const NEED_LABEL={boss:'보스 임박 — 단일·보스 처리 유닛이 없음',story:'스토리가 늦음 — 스토리 처치를 가장 줄이는 유닛',line:'후반 라인 — 남은 몹을 가장 줄이는 유닛',build:'급한 것 없음 — 가장 가까운 상위·전설'};
+const NEED_LABEL={boss:'40·50라 보스를 60초 안에 못 잡을 수 있음 — 보스 처치 시간을 가장 줄이는 유닛',egghead:'에그헤드 무렵인데 상위 유닛이 없음 — 에그헤드 딜이 큰 상위 유닛',story:'스토리가 늦음 — 스토리 처치를 가장 줄이는 유닛',line:'후반 라인 — 남은 몹을 가장 줄이는 유닛',build:'급한 것 없음 — 가장 가까운 상위·전설'};
 function renderSituation(){
   const s=state.situation,el=$('situationBody');if(!el)return;
   if(!s){el.innerHTML='<span class="muted small">계산 중…</span>';return;}
@@ -569,7 +575,9 @@ api?.onToggleCompact(()=>document.body.classList.toggle('compact'));
   if(new URLSearchParams(location.search).get('src')==='memory'&&!state.settings.source)await saveSettings({source:'memory'});
   const data=await (await fetch(new URL('../../dist/data.json',import.meta.url))).json();
   for(const h of data.heroes)for(const f of h.forms)if(f.rawcode&&!state.codeNames.has(f.rawcode))state.codeNames.set(f.rawcode,h.name);
-  worker.postMessage({type:'data',data});
+  // 수정내역 96: 에그헤드 딜량 표(상황 추천). 없으면 에그헤드 추천만 빠진다.
+  const egg=await fetch(new URL('../../dist/egghead_dps.json',import.meta.url)).then(r=>r.ok?r.json():null).catch(()=>null);
+  worker.postMessage({type:'data',data,egg});
   for(const w of simWorkers)w.postMessage({type:'data',data});
   $('difficulty').value=state.settings.difficulty??'auto';
   $('growthCut').value=state.settings.growthCut??0;

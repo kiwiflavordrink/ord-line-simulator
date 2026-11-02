@@ -61,3 +61,30 @@ export function storyKillTime(data,team,stage,{difficulty='신',players=1,level=
     return r.story.killed?r.story.second:Infinity;
   }finally{for(const [code,a] of Object.entries(saved))SUPPORTS[code].attack=a;}
 }
+
+// 수정내역 96: damage per second on a story stage (no regen) — for ranking units on 에그헤드 (stage 14).
+// A unit alone gets only its own armor cut (유저: "방깎은 자체 방깎만"). opts.gorosei measures each 오로성.
+// Real stage HP (players) so percent-of-HP skills stay realistic; killed early → HP / kill time.
+export function storyDps(data,team,stage,{difficulty='신',players=1,seconds=240,...opts}={}){
+  const s=data.stories.stages[stage-1];if(!s)throw new Error(`스토리 ${stage}단계가 없습니다.`);
+  const HP=s.hp*storyHpMultiplier(data,difficulty,players,stage),d=dataAtUpgrade(data,()=>99);
+  const units=team.flatMap(t=>{const x=typeof t==='string'?{code:t}:t;return x.code==='L19'||x.code==='L19S'?[{...x,code:'L19S'},{...x,code:'L19T'}]:[x];});
+  const r=simulateV2(d,units,{difficulty,red:false,redDamage:false,cut:0,heroArmorCuts:true,...opts,story:{hp:HP,armor:s.armor,regen:0,seconds}});
+  return r.story.killed?HP/r.story.second:(HP-r.story.hpLeft)/seconds;
+}
+
+// 수정내역 96: seconds to kill the 30·40·50라 boss (data.mid_bosses, 2.305) within its 60 s limit; Infinity if not.
+// Large armor (typeRound 61), boss-only skill parts and the engine's boss regen apply. 오로성 워큐리 adds boss HP.
+export function midBossKillTime(data,team,round,{difficulty='신',gorosei=null,seconds=60,...opts}={}){
+  const b=data.mid_bosses?.[String(round)];if(!b)throw new Error(`${round}라 보스 자료가 없습니다.`);
+  const mb=data.mid_bosses,diff=data.difficulties?.[difficulty];
+  const curse=gorosei&&data.gorosei?.[gorosei]?.[difficulty]?data.gorosei[gorosei][difficulty]:{};
+  const hp=b.uhpm*(mb.hp_multiplier[difficulty]??mb.hp_multiplier['신'])+(diff?.common?.hp??0)+(curse.boss_hp??0);
+  const armor=b.udef+b.udup*(mb.armor_level[difficulty]??1)+mb.armor_flat;
+  const d=dataAtUpgrade(data,()=>99);
+  const units=team.map(t=>typeof t==='string'?{code:t}:t);
+  if(!units.length)return Infinity;
+  const r=simulateV2(d,units,{difficulty,red:false,redDamage:false,cut:0,heroArmorCuts:true,gorosei,...opts,
+    story:{hp,armor,regen:0,seconds,kind:'boss',typeRound:'61'}});
+  return r.story.killed?r.story.second:Infinity;
+}

@@ -53,6 +53,12 @@ while ($listener.IsListening) {
       $vf = Join-Path $env:TEMP 'ordr_overlay_view.json'; $tmp = "$vf.tmp"
       [IO.File]::WriteAllText($tmp, $txt, (New-Object Text.UTF8Encoding($false))); Move-Item -Force $tmp $vf
       $body = [Text.Encoding]::UTF8.GetBytes('ok'); $res.ContentType = 'text/plain'
+    } elseif ($path -eq '/log' -and $ctx.Request.HttpMethod -eq 'POST') {
+      # 수정내역 96: 코치 기록(알람·경고·상황 추천)을 바탕화면 ordr_logs 폴더에 한 줄씩 남긴다. 게임 상태·패는 memscan이 따로 남긴다.
+      $sr = New-Object IO.StreamReader($ctx.Request.InputStream, [Text.Encoding]::UTF8); $txt = $sr.ReadToEnd(); $sr.Close()
+      $ld = Join-Path ([Environment]::GetFolderPath('Desktop')) 'ordr_logs'; if (-not (Test-Path $ld)) { New-Item -ItemType Directory -Path $ld | Out-Null }
+      [IO.File]::AppendAllText((Join-Path $ld ('coach_' + (Get-Date -Format 'yyyyMMdd') + '.jsonl')), ($txt -replace "`r?`n", ' ') + "`n", (New-Object Text.UTF8Encoding($false)))
+      $body = [Text.Encoding]::UTF8.GetBytes('ok'); $res.ContentType = 'text/plain'
     } elseif ($path -eq '/cmd') {
       $cf = Join-Path $env:TEMP 'ordr_overlay_cmd.txt'
       $body = [Text.Encoding]::UTF8.GetBytes($(if (Test-Path $cf) { (Get-Content $cf -Raw).Trim() } else { '' })); $res.ContentType = 'text/plain'

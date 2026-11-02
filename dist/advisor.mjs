@@ -3,7 +3,7 @@
 // web. Helper data (recipes, catalog, tmo clears) is read from the player's own ORD_JHelper Data folder at run time.
 import {simulateV2,FRESH_SINGLES} from './engine_v3.mjs';
 import {reverseRawcode,planTarget,reachable,priceModel,lockedPieces} from './planner.mjs';
-import {storyKillTime} from './story.mjs';
+import {storyKillTime,midBossKillTime} from './story.mjs';
 
 // 2.321~2.323 alternative rawcodes for units whose data.json form uses a 2.305 rawcode, and engine-built units.
 export const RAWCODE_ALIASES={H09G:'TR12',H093:'TR23',h0BM:'I7',H0B1:'TR16',H08J:'TR26',H0CL:'TR7',h0CE:'MY1',h07Z:'E4',
@@ -219,12 +219,15 @@ export function findUnits(units,{grade='',query=''}={}){
   return out.sort((a,b)=>b.exact-a.exact||a.name.length-b.name.length||a.name.localeCompare(b.name,'ko'));
 }
 
-// ---- 상황 추천 (수정내역 95) -----------------------------------------------------------------------------------------
+// ---- 상황 추천 (수정내역 95, 96) ------------------------------------------------------------------------------------
 // 유저: 후반에는 선택위습을 수십 개 태워서라도 올려야 하는 유닛만 남는데 가까운 5개만 떠서 못 쓴다, 지금 상황에 맞는
-// 추천이 없다. → 지금 무엇이 급한지(보스 임박·스토리 늦음·후반 라인)를 정하고, 거리 제한 없이 모든 상위·전설 후보 중
-// 값싼 순으로 pool개를 시뮬로 비교해 효과가 큰 것을 고른다. 결과 = {needs:[...], picks:[{id,price,why,gain}]}.
-const BOSS_RECOMMEND=[10,20,30,40,50];
-export function situationPicks(data,hand,recipes,tier,name,{round=null,storyStage=null,storyRisk=false,difficulty='신',players=1,gorosei=null,red=false,others=[],pool=12,limit=5}={}){
+// 추천이 없다. → 지금 무엇이 급한지 정하고, 거리 제한 없이 후보를 비교한다. 결과 = {needs, need, picks:[{id,price,why}]}.
+// 96(유저 피드백): 보스는 30라까지 전설·희귀 1기로 잡히고 40라부터 죽는다 → 40·50라 보스만, 내 팀이 60초 안에 잡는지
+// 시뮬(midBossKillTime)로 본다. 단일 유닛은 보통 보스 잡이가 아니다 → 역할이 아니라 보스 처치 시간을 줄이는 순.
+// 에그헤드(13~14단계) 무렵엔 덱 구성이 중요해 스토리용 유닛을 안 올린다 → 상위 유닛이 없을 때만, 에그헤드 딜량 표
+// (dist/egghead_dps.json: 1기 혼자, 자기 방깎만, 난이도·오로성별) 순으로 상위 유닛을 추천한다.
+const MID_BOSS_ROUNDS=[40,50];
+export function situationPicks(data,hand,recipes,tier,name,{round=null,storyStage=null,storyRisk=false,difficulty='신',players=1,gorosei=null,red=false,others=[],pool=12,limit=5,egg=null}={}){
   const index=unitIndex(data),locked=lockedPieces(hand,recipes,name),prices=priceModel(recipes,tier,name,{locked});
   const have=new Map(Object.entries(hand)),cands=[];
   for(const id of recipes.keys()){
@@ -233,21 +236,32 @@ export function situationPicks(data,hand,recipes,tier,name,{round=null,storyStag
   }
   cands.sort((a,b)=>a.plan.price-b.plan.price);
   const teamAfter=c=>{const after={...hand};after[c.id]=(after[c.id]??0)+1;for(const [u,n] of Object.entries(c.plan.used))after[u]-=n;return teamFromHand(data,after,index).team;};
-  const mine=teamFromHand(data,hand,index).team,codes=new Set(mine.map(t=>t.code));
+  const mine=teamFromHand(data,hand,index).team;
+  const hasUpper=Object.entries(hand).some(([id,n])=>n>0&&UPPER_GRADE.test(tier(id)??''));
+  // 비교 후보: 가장 싼 pool개 + 상위 등급 중 가장 싼 8개 — 후반에 위습을 많이 태워야 하는 유닛도 넣는다.
+  const near=cands.slice(0,pool),upper=cands.filter(c=>UPPER_GRADE.test(tier(c.id)??'')&&!near.includes(c)).slice(0,8),test=[...near,...upper];
+  const goro=gorosei??null;
   const needs=[];
-  const nextBoss=round==null?null:BOSS_RECOMMEND.find(b=>b>=round&&b-round<=2);
-  if(nextBoss&&!ROLE_CODES.single.some(x=>codes.has(x))&&!ROLE_CODES.special.some(x=>codes.has(x)))needs.push('boss');
-  if(storyRisk&&storyStage)needs.push('story');
+  const boss=round==null?null:MID_BOSS_ROUNDS.find(b=>b>=round&&b-round<=3);
+  let bossT0=null;
+  if(boss&&data.mid_bosses?.[boss]){bossT0=midBossKillTime(data,mine,boss,{difficulty,gorosei:goro});if(!(bossT0<=45))needs.push('boss');}
+  if(storyStage>=13&&!hasUpper&&egg)needs.push('egghead');
+  else if(storyRisk&&storyStage&&storyStage<13)needs.push('story');
   if(round!=null&&round>=40)needs.push('line');
   if(!needs.length)needs.push('build');
   const need=needs[0],picks=[];
-  // 비교 후보: 가장 싼 pool개 + 상위 등급(초월·불멸·영원 …) 중 가장 싼 8개 — 후반에 위습을 많이 태워야 하는 유닛도 넣는다.
-  const near=cands.slice(0,pool),upper=cands.filter(c=>UPPER_GRADE.test(tier(c.id)??'')&&!near.includes(c)).slice(0,8),test=[...near,...upper];
+  const fmt=t=>Number.isFinite(t)?Math.round(t)+'초':'못 잡음';
   if(need==='boss'){
-    for(const c of cands){if(![...ROLE_CODES.single,...ROLE_CODES.special].includes(c.code))continue;
-      picks.push({id:c.id,price:c.plan.price,why:`${nextBoss}라 보스 대비: ${roleOf(data,c.code,tier(c.id)).filter(r=>r==='단일'||r==='보스·광폭').join('·')}`});if(picks.length>=limit)break;}
+    for(const c of test){const t=midBossKillTime(data,teamAfter(c),boss,{difficulty,gorosei:goro});
+      if(t<(bossT0??Infinity))picks.push({id:c.id,price:c.plan.price,gain:t,why:`${boss}라 보스: 지금 ${fmt(bossT0)} → ${fmt(t)} (60초 안에 잡아야 함)`});}
+    picks.sort((a,b)=>a.gain-b.gain||a.price-b.price);picks.length=Math.min(picks.length,limit);
+  }else if(need==='egghead'){
+    const g=goro??'없음',dif=egg.difficulties?.includes(difficulty)?difficulty:'신';
+    for(const c of cands){if(!UPPER_GRADE.test(tier(c.id)??''))continue;const v=egg.units?.[c.code]?.[dif]?.[g];if(v==null)continue;
+      picks.push({id:c.id,price:c.plan.price,gain:v,why:`에그헤드 딜 ${Math.round(v/1e4).toLocaleString()}만/초 (1기 혼자, ${dif}${g!=='없음'?' · '+g:''})`});}
+    picks.sort((a,b)=>b.gain-a.gain);picks.length=Math.min(picks.length,limit);
   }else if(need==='story'){
-    const st=Math.min(14,storyStage),opt={difficulty,players,seconds:600,gorosei};
+    const st=Math.min(14,storyStage),opt={difficulty,players,seconds:600,gorosei:goro};
     const kill=team=>team.length?storyKillTime(data,team,st,opt):Infinity;   // 팀이 비면 못 잡음
     const t0=kill([...mine,...others]);
     for(const c of test){const t=kill([...teamAfter(c),...others]);
@@ -263,5 +277,5 @@ export function situationPicks(data,hand,recipes,tier,name,{round=null,storyStag
   }else{
     for(const c of cands.slice(0,limit))picks.push({id:c.id,price:c.plan.price,why:'가장 가까운 상위·전설: '+roleOf(data,c.code,tier(c.id)).slice(0,3).join('·')});
   }
-  return {needs,need,picks};
+  return {needs,need,picks,bossT0};
 }

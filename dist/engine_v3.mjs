@@ -709,7 +709,7 @@ export function simulateV2(data,composition,options={}){
     averageAb:mobs.length?mobs.reduce((a,m)=>a+m.ab,0)/mobs.length:0});
   let storyKill=null;
   const result=(clear,failedRound=null,failedSecond=null)=>({clear,failedRound,failedSecond,
-    story:options.story?{killed:storyKill!=null,second:storyKill,hpLeft:specials.find(x=>x.kind==='story')?.hp??0}:null,
+    story:options.story?{killed:storyKill!=null,second:storyKill,hpLeft:specials.find(x=>x.kind===(options.story.kind??'story'))?.hp??0}:null,
     bench:bench?{round:bench.round,to50:bench.to50,to30:bench.to30,to15:bench.to15,kill:bench.kill,hp:benchMob?.maxhp??null}:null,
     ...snapshot(),checkpoints,timeline,totalLineSpawned,totalLineKilled,
     holding:holdStat.samples?(()=>{const H=holdStat,m=H.gaps?H.gapSum/H.gaps:0,v=H.gaps?H.gapSq/H.gaps-m*m:0;
@@ -760,7 +760,9 @@ export function simulateV2(data,composition,options={}){
     let spawned=0,specialKill=null;
     if(story&&round===60){
       // Fort armor: attack-type multipliers of round 62 (fort line mob). Not an arrival (no approach skills).
-      specials.push({hp:story.hp,maxhp:story.hp,armor:story.armor,ab:0,kind:'story',round,typeRound:'62',regen:story.regen??0,arrived:true});
+      // 수정내역 96: story.kind 'boss' + story.typeRound (e.g. '61' large) measures a 40·50라 boss the same way
+      // (boss-only skill parts and boss regen apply). Default unchanged.
+      specials.push({hp:story.hp,maxhp:story.hp,armor:story.armor,ab:0,kind:story.kind??'story',round,born:0,typeRound:story.typeRound??'62',regen:story.regen??0,arrived:true});
     }
     if(!story&&!bench&&diff.boss[String(round)]){
       const [bossHp,dataBossArmor]=diff.boss[String(round)],hp=bossHp+diff.common.hp+(curse.boss_hp??0);
