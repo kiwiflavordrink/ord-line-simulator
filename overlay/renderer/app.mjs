@@ -177,7 +177,7 @@ worker.onmessage=e=>{
   if(m.type==='error'){status('계산 오류: '+m.message);return;}
   if(m.type==='helper-ok'){status();return;}
   if(m.id!==state.reqId)return;
-  if(m.type==='coach'){if(m.id===state.reqId){state.coach=m.warnings;state.coachActive=m.active??[];state.questRows=m.quests??[];renderCoach();fireAlarms(liveAlarms(state.live,state.live,m.warnings));}return;}
+  if(m.type==='coach'){if(m.id===state.reqId){state.coach=m.warnings;state.coachActive=m.active??[];state.questRows=m.quests??[];renderCoach();state.situation=m.situation??null;renderSituation();fireAlarms(liveAlarms(state.live,state.live,m.warnings));}return;}
   if(m.type==='quick'){
     // Keep the numbers of the same team while the new ones are computed (no flicker); start the simulations.
     const same=state.quick&&JSON.stringify(state.quick.team)===JSON.stringify(m.team)&&state.quick.red===m.red;
@@ -368,6 +368,14 @@ function exportView(now){
   },now?0:30);
 }
 // 수정내역 94: 유닛 찾기 — 등급 + 이름 일부(별칭: 우솝 특별, 프랑키 = 파이러츠, 기어5·스네이크맨). 누르면 목표로.
+// 수정내역 95: 상황 추천 (가이드 탭 맨 위). 누르면 목표.
+const NEED_LABEL={boss:'보스 임박 — 단일·보스 처리 유닛이 없음',story:'스토리가 늦음 — 스토리 처치를 가장 줄이는 유닛',line:'후반 라인 — 남은 몹을 가장 줄이는 유닛',build:'급한 것 없음 — 가장 가까운 상위·전설'};
+function renderSituation(){
+  const s=state.situation,el=$('situationBody');if(!el)return;
+  if(!s){el.innerHTML='<span class="muted small">계산 중…</span>';return;}
+  el.innerHTML=`<div class="muted small">${esc(NEED_LABEL[s.need]??'')}</div>`+(s.picks.length?s.picks.map(p=>`<div class="row click" data-goal="${esc(p.id)}"><div class="top"><span><span class="name">${esc(nameOf(p.id))}</span> <span class="muted small">${esc(tierShort(p.id))} · 흔함 ${Math.round(p.price)}</span></span></div><div class="how muted small">${esc(p.why)}</div></div>`).join(''):'<div class="muted small">효과 있는 후보 없음</div>');
+  exportView();
+}
 function renderFind(){
   const g=state.settings?.findGrade??'',q=$('findName')?.value??'';
   if(!$('findBody'))return;
@@ -516,7 +524,7 @@ $('catBar').onchange=async()=>{await saveSettings({cats:[...$('catBar').querySel
 $('findGrade').innerHTML='<option value="">(전체 등급)</option>'+FIND_GRADES.map(g=>`<option>${g}</option>`).join('');
 $('findGrade').onchange=async e=>{await saveSettings({findGrade:e.target.value});renderFind();};
 $('findName').oninput=()=>renderFind();
-$('findBody').onclick=$('nowBody').onclick=$('upperBody').onclick=$('nextBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g)setGoal(g);};
+$('situationBody').onclick=$('findBody').onclick=$('nowBody').onclick=$('upperBody').onclick=$('nextBody').onclick=e=>{const g=e.target.closest('[data-goal]')?.dataset.goal;if(g)setGoal(g);};
 $('handBody').onclick=e=>{const b=e.target.closest('button[data-id]');if(b)editHand(b.dataset.id,+b.dataset.d);};
 $('addUnit').onclick=()=>{
   const v=$('unitSearch').value.trim();if(!v)return;

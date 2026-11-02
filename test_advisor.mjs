@@ -148,6 +148,15 @@ console.log('test_advisor: log parser ok');
   assert.ok(h.some(x=>/트리플: 최상위 0\/3 · 다음 TOP1/.test(x.text)));
   assert.ok(!h.some(x=>/도박/.test(x.text)),'도박 퀘스트는 조언 안 함');
   console.log('test_advisor: quest hints ok');
+  {// 수정내역 95: 상황 추천 — 무엇이 급한지
+    const {situationPicks}=await import('./dist/advisor.mjs');
+    const R=indexRecipes(fx),nm=id=>id;
+    assert.equal(situationPicks(data,{},R,t4,nm,{round:9}).need,'boss','보스 2라 전, 단일·보스 처리 없음');
+    assert.equal(situationPicks(data,{},R,t4,nm,{round:27,storyStage:9,storyRisk:true}).need,'story');
+    assert.equal(situationPicks(data,{},R,t4,nm,{round:45}).need,'line');
+    assert.equal(situationPicks(data,{},R,t4,nm,{round:5}).need,'build');
+    console.log('test_advisor: situation picks ok');
+  }
   {// 수정내역 92: quest progress rows
     const {questStatus}=await import('./dist/coach.mjs');
     const r=questStatus({quests:['Q011','Q002','Q003'],hand:{z1:1},tier:id=>id==='z1'?'제한':null,progress:{Q002:5,Q003:[4,2,4]}});
@@ -171,7 +180,7 @@ console.log('test_advisor: log parser ok');
     const ids=(g,q)=>findUnits(U,{grade:g,query:q}).map(u=>u.id).join('');
     assert(ids('특별함','우솝')==='a'&&ids('특별함','프랑키')==='b','우솝 특별 / 프랑키 = 파이러츠');
     assert(ids('초월','루피')==='cd','루피 초월 first, 스네이크맨 second');
-    assert(ids('','기어5')==='ef'&&ids('','스네이크 맨')==='fd','기어5·스네이크맨 modes');
+    assert(ids('','스네이크 맨')==='d'&&ids('','기어포스')==='d'&&ids('','니카')==='ef','기어포스 = 스네이크맨, 니카 두 모드');
     assert(ids('왜곡됨','')==='g','왜곡됨 separate grade');
     console.log('test_advisor: alarms + unit search ok');
   }

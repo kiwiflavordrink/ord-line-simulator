@@ -3,6 +3,7 @@
 // web. Helper data (recipes, catalog, tmo clears) is read from the player's own ORD_JHelper Data folder at run time.
 import {simulateV2,FRESH_SINGLES} from './engine_v3.mjs';
 import {reverseRawcode,planTarget,reachable,priceModel,lockedPieces} from './planner.mjs';
+import {storyKillTime} from './story.mjs';
 
 // 2.321~2.323 alternative rawcodes for units whose data.json form uses a 2.305 rawcode, and engine-built units.
 export const RAWCODE_ALIASES={H09G:'TR12',H093:'TR23',h0BM:'I7',H0B1:'TR16',H08J:'TR26',H0CL:'TR7',h0CE:'MY1',h07Z:'E4',
@@ -200,9 +201,9 @@ export const gradeOf=tier=>String(tier??'').replace(/\s*\[.*\]/,'').trim();
 // 유저가 부르는 이름(별칭). 이름에 match가 들어 있으면 also의 말로도 찾힌다. mode는 결과에 붙는 설명.
 export const FIND_ALIASES=[
   {match:/파이러츠/,also:['프랑키']},                                        // 파이러츠 도킹 5 = 프랑키 특별
-  {match:/^루피 기어포스$/,also:['스네이크맨','기어4','기어포스'],mode:'스네이크맨'},
-  {match:/^니카\(루초\)$/,also:['기어5','니카','루피'],mode:'기어 5 · 루피 초월에서'},
-  {match:/^니카\(뱀초\)$/,also:['기어5','니카','스네이크맨'],mode:'기어 5 · 스네이크맨에서'},
+  {match:/^루피 기어포스$/,also:['스네이크맨','기어4','기어포스'],mode:'스네이크맨'},   // 유저: 기어포스 = 스네이크맨
+  {match:/^니카\(루초\)$/,also:['니카'],mode:'루피 초월에서'},
+  {match:/^니카\(뱀초\)$/,also:['니카'],mode:'스네이크맨에서'},
 ];
 const norm=s=>String(s??'').toLowerCase().replace(/[\s.()\-·]/g,'');
 // units: [{id,name,tier}] → 걸린 것 [{id,name,tier,grade,mode}], 이름이 정확히 같은 것 → 짧은 이름 순.
@@ -216,4 +217,51 @@ export function findUnits(units,{grade='',query=''}={}){
     out.push({...u,grade:g,mode:al.find(a=>a.mode)?.mode??null,exact:q&&keys.includes(q)?1:0});
   }
   return out.sort((a,b)=>b.exact-a.exact||a.name.length-b.name.length||a.name.localeCompare(b.name,'ko'));
+}
+
+// ---- 상황 추천 (수정내역 95) -----------------------------------------------------------------------------------------
+// 유저: 후반에는 선택위습을 수십 개 태워서라도 올려야 하는 유닛만 남는데 가까운 5개만 떠서 못 쓴다, 지금 상황에 맞는
+// 추천이 없다. → 지금 무엇이 급한지(보스 임박·스토리 늦음·후반 라인)를 정하고, 거리 제한 없이 모든 상위·전설 후보 중
+// 값싼 순으로 pool개를 시뮬로 비교해 효과가 큰 것을 고른다. 결과 = {needs:[...], picks:[{id,price,why,gain}]}.
+const BOSS_RECOMMEND=[10,20,30,40,50];
+export function situationPicks(data,hand,recipes,tier,name,{round=null,storyStage=null,storyRisk=false,difficulty='신',players=1,gorosei=null,red=false,others=[],pool=12,limit=5}={}){
+  const index=unitIndex(data),locked=lockedPieces(hand,recipes,name),prices=priceModel(recipes,tier,name,{locked});
+  const have=new Map(Object.entries(hand)),cands=[];
+  for(const id of recipes.keys()){
+    if(!(UPPER_GRADE.test(tier(id)??'')||LEGEND_GRADE.test(tier(id)??''))||(have.get(id)??0)>0||!index.get(id))continue;
+    const plan=planTarget(id,hand,recipes,tier,{prices});if(Number.isFinite(plan.price))cands.push({id,code:index.get(id),plan});
+  }
+  cands.sort((a,b)=>a.plan.price-b.plan.price);
+  const teamAfter=c=>{const after={...hand};after[c.id]=(after[c.id]??0)+1;for(const [u,n] of Object.entries(c.plan.used))after[u]-=n;return teamFromHand(data,after,index).team;};
+  const mine=teamFromHand(data,hand,index).team,codes=new Set(mine.map(t=>t.code));
+  const needs=[];
+  const nextBoss=round==null?null:BOSS_RECOMMEND.find(b=>b>=round&&b-round<=2);
+  if(nextBoss&&!ROLE_CODES.single.some(x=>codes.has(x))&&!ROLE_CODES.special.some(x=>codes.has(x)))needs.push('boss');
+  if(storyRisk&&storyStage)needs.push('story');
+  if(round!=null&&round>=40)needs.push('line');
+  if(!needs.length)needs.push('build');
+  const need=needs[0],picks=[];
+  // 비교 후보: 가장 싼 pool개 + 상위 등급(초월·불멸·영원 …) 중 가장 싼 8개 — 후반에 위습을 많이 태워야 하는 유닛도 넣는다.
+  const near=cands.slice(0,pool),upper=cands.filter(c=>UPPER_GRADE.test(tier(c.id)??'')&&!near.includes(c)).slice(0,8),test=[...near,...upper];
+  if(need==='boss'){
+    for(const c of cands){if(![...ROLE_CODES.single,...ROLE_CODES.special].includes(c.code))continue;
+      picks.push({id:c.id,price:c.plan.price,why:`${nextBoss}라 보스 대비: ${roleOf(data,c.code,tier(c.id)).filter(r=>r==='단일'||r==='보스·광폭').join('·')}`});if(picks.length>=limit)break;}
+  }else if(need==='story'){
+    const st=Math.min(14,storyStage),opt={difficulty,players,seconds:600,gorosei};
+    const kill=team=>team.length?storyKillTime(data,team,st,opt):Infinity;   // 팀이 비면 못 잡음
+    const t0=kill([...mine,...others]);
+    for(const c of test){const t=kill([...teamAfter(c),...others]);
+      if(Number.isFinite(t)&&!(t>=t0))picks.push({id:c.id,price:c.plan.price,gain:(Number.isFinite(t0)?t0:600)-t,why:`스토리 ${st}단계 처치 ${Number.isFinite(t0)?Math.round(t0):'600+'}→${Math.round(t)}초`});}
+    picks.sort((a,b)=>b.gain/Math.max(1,b.price)-a.gain/Math.max(1,a.price));picks.length=Math.min(picks.length,limit);
+  }else if(need==='line'){
+    const stats=team=>team.length?comboStats(data,team,{red,difficulties:[difficulty]})[difficulty]:null;
+    const base=stats(mine);
+    for(const c of test){const s=stats(teamAfter(c));if(!s)continue;
+      const gain=(base?.remaining??0)-s.remaining;
+      if(gain>0||s.clear)picks.push({id:c.id,price:c.plan.price,gain,why:`${difficulty} 남은 몹 ${base?.remaining??'?'}→${s.remaining}`+(s.clear?' (클리어)':` (${s.failedRound}라 패배)`)});}
+    picks.sort((a,b)=>b.gain-a.gain);picks.length=Math.min(picks.length,limit);
+  }else{
+    for(const c of cands.slice(0,limit))picks.push({id:c.id,price:c.plan.price,why:'가장 가까운 상위·전설: '+roleOf(data,c.code,tier(c.id)).slice(0,3).join('·')});
+  }
+  return {needs,need,picks};
 }
